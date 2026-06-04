@@ -18,6 +18,7 @@
   --theme-toggle-border: var(--line);
   --theme-toggle-fg: var(--ink);
   --theme-toggle-muted: var(--muted);
+  --font-family: "Lora", ui-serif, Georgia, serif;
 }
 
 :root[data-theme="light"] {
@@ -57,7 +58,7 @@ body {
     radial-gradient(circle at 12% 82%, oklch(0.72 0.18 145 / 0.14), transparent 30rem),
     linear-gradient(180deg, oklch(0.22 0.05 255), var(--bg) 44%, oklch(0.2 0.04 258));
   color: var(--ink);
-  font-family: "Lora", ui-serif, Georgia, serif;
+  font-family: var(--font-family);
   font-feature-settings: "kern", "liga", "onum";
   -webkit-font-smoothing: antialiased;
 }
@@ -311,6 +312,8 @@ button {
 .stage__controls {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -387,6 +390,7 @@ button {
 
 .select-control select {
   min-height: 2rem;
+  max-width: 8.5rem;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -396,6 +400,10 @@ button {
   font-size: 0.95rem;
   font-weight: 600;
   outline: none;
+}
+
+.select-control--font select {
+  max-width: 9.4rem;
 }
 
 .select-control:has(select:disabled) {
@@ -657,7 +665,7 @@ button {
 
 .reveal {
   color: var(--ink);
-  font-family: "Lora", ui-serif, Georgia, serif;
+  font-family: var(--font-family);
 }
 
 .reveal .slides {
@@ -678,7 +686,7 @@ button {
 .reveal h3 {
   margin: 0 0 0.45em;
   color: var(--ink);
-  font-family: "Lora", ui-serif, Georgia, serif;
+  font-family: var(--font-family);
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.04;
@@ -844,7 +852,7 @@ button {
 
 .reveal .steps-3__num {
   color: var(--primary);
-  font-family: "Lora", serif;
+  font-family: var(--font-family);
   font-size: clamp(2.5rem, 4vw, 3.6rem);
   font-weight: 300;
   line-height: 1;

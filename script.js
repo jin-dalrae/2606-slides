@@ -31,7 +31,20 @@ const githubEditBase = "https://github.com/jin-dalrae/2606-slides/edit/master/";
 const storageKeys = {
   transition: "rae-slides-transition",
   theme: "rae-slides-theme",
-  background: "rae-slides-background"
+  background: "rae-slides-background",
+  font: "rae-slides-font"
+};
+
+const fontOptions = {
+  lora: '"Lora", ui-serif, Georgia, serif',
+  inter: '"Inter", ui-sans-serif, system-ui, sans-serif',
+  roboto: '"Roboto", ui-sans-serif, system-ui, sans-serif',
+  playfair: '"Playfair Display", ui-serif, Georgia, serif',
+  merriweather: '"Merriweather", ui-serif, Georgia, serif',
+  montserrat: '"Montserrat", ui-sans-serif, system-ui, sans-serif',
+  poppins: '"Poppins", ui-sans-serif, system-ui, sans-serif',
+  "noto-sans": '"Noto Sans", ui-sans-serif, system-ui, sans-serif',
+  "source-serif": '"Source Serif 4", ui-serif, Georgia, serif'
 };
 
 const appShell = document.querySelector(".app-shell");
@@ -48,6 +61,7 @@ const fullscreen = document.querySelector("#fullscreen");
 const editDeck = document.querySelector("#editDeck");
 const transitionSelect = document.querySelector("#transitionSelect");
 const backgroundSelect = document.querySelector("#backgroundSelect");
+const fontSelect = document.querySelector("#fontSelect");
 const themeToggle = document.querySelector("#themeToggle");
 const homeLink = document.querySelector("#homeLink");
 const openSidebar = document.querySelector("#openSidebar");
@@ -63,6 +77,7 @@ let pendingSlideIndex = null;
 let currentTransition = window.localStorage.getItem(storageKeys.transition) || "slide";
 let currentTheme = window.localStorage.getItem(storageKeys.theme) || "dark";
 let currentBackground = window.localStorage.getItem(storageKeys.background) || "shader";
+let currentFont = window.localStorage.getItem(storageKeys.font) || "lora";
 
 function selectedPresentation() {
   return presentations[currentPresentation];
@@ -639,6 +654,17 @@ function updateBackground(value) {
   }
 }
 
+function updateFont(value) {
+  currentFont = fontOptions[value] ? value : "lora";
+  window.localStorage.setItem(storageKeys.font, currentFont);
+  document.documentElement.style.setProperty("--font-family", fontOptions[currentFont]);
+  fontSelect.value = currentFont;
+
+  if (deck) {
+    window.requestAnimationFrame(() => deck.layout());
+  }
+}
+
 function applyTheme(theme) {
   currentTheme = theme;
   document.documentElement.dataset.theme = currentTheme;
@@ -712,6 +738,7 @@ nextSlide.addEventListener("click", goToNextSlide);
 fullscreen.addEventListener("click", toggleFullscreen);
 transitionSelect.addEventListener("change", (event) => updateTransition(event.target.value));
 backgroundSelect.addEventListener("change", (event) => updateBackground(event.target.value));
+fontSelect.addEventListener("change", (event) => updateFont(event.target.value));
 editDeck.addEventListener("click", () => {
   if (currentView !== "presentation") {
     return;
@@ -785,6 +812,7 @@ window.addEventListener("hashchange", () => {
   goToSlide(target.slideIndex);
 });
 
+updateFont(currentFont);
 applyTheme(currentTheme);
 if (isPresentationRoute()) {
   const target = presentationTargetFromLocation();
