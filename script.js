@@ -77,9 +77,42 @@ function markdownSlideTitles(markdown) {
   return markdown
     .split(/\n---+\n/g)
     .map((part, index) => {
-      const heading = part.match(/^#{1,3}\s+(.+)$/m);
-      return heading ? heading[1].trim() : `Slide ${index + 1}`;
+      const headings = [...part.matchAll(/^(#{1,3})\s+(.+)$/gm)].map((match) => ({
+        level: match[1].length,
+        text: match[2].trim()
+      }));
+
+      if (!headings.length) {
+        return `Slide ${index + 1}`;
+      }
+
+      const first = headings[0];
+      const second = headings[1];
+
+      if (first.level === 1 && second) {
+        return `${first.text}: ${second.text}`;
+      }
+
+      return first.text;
     });
+}
+
+function firstSlideHeaderTitle(markdown) {
+  const firstSlide = markdown.split(/\n---+\n/g)[0];
+  const headings = [...firstSlide.matchAll(/^(#{1,3})\s+(.+)$/gm)].map((match) => ({
+    level: match[1].length,
+    text: match[2].trim()
+  }));
+
+  if (!headings.length) {
+    return null;
+  }
+
+  if (headings[0].level === 1 && headings[1]) {
+    return headings[1].text;
+  }
+
+  return headings[0].text;
 }
 
 function firstSlidePreview(markdown) {
@@ -98,6 +131,23 @@ function firstSlidePreview(markdown) {
     title: headings[0] || "Untitled deck",
     subtitle: headings[1] || body || "Open this deck"
   };
+}
+
+async function preloadPresentationTitles() {
+  await Promise.all(
+    presentations.map(async (item) => {
+      if (item.resolvedTitle) {
+        return;
+      }
+      try {
+        const markdown = await loadMarkdown(item.file);
+        item.resolvedTitle = firstSlideHeaderTitle(markdown) || item.title;
+      } catch {
+        item.resolvedTitle = item.title;
+      }
+    })
+  );
+  renderPresentationList();
 }
 
 async function loadMarkdown(file) {
@@ -122,7 +172,7 @@ function renderPresentationList() {
     button.setAttribute("aria-current", currentView === "presentation" && index === currentPresentation ? "true" : "false");
     button.innerHTML = `
       <span class="presentation-list__date">${escapeHtml(item.date)}</span>
-      <span class="presentation-list__title">${escapeHtml(item.title)}</span>
+      <span class="presentation-list__title">${escapeHtml(item.resolvedTitle || item.title)}</span>
     `;
     button.addEventListener("click", () => goToPresentation(index));
 
@@ -430,6 +480,9 @@ async function renderPresentation() {
   try {
     const markdown = await loadMarkdown(deckMeta.file);
     currentSlideTitles = markdownSlideTitles(markdown);
+    deckMeta.resolvedTitle = firstSlideHeaderTitle(markdown) || deckMeta.title;
+    presentationTitle.textContent = deckMeta.resolvedTitle;
+    renderPresentationList();
     currentSlide = 0;
     renderDeckShell(markdown);
 
@@ -447,7 +500,7 @@ async function renderPresentation() {
       progress: true,
       center: true,
       transition: currentTransition,
-      keyboardCondition: "focused",
+      keyboard: false,
       plugins: [RevealMarkdown, RevealNotes]
     });
 
@@ -586,7 +639,23 @@ document.addEventListener("keydown", (event) => {
     return;
   }
 
+  const editableTarget = event.target.closest?.("input, textarea, select, [contenteditable='true']");
+  if (editableTarget) {
+    return;
+  }
+
+  if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+    event.preventDefault();
+    goToPreviousSlide();
+  }
+
+  if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === " ") {
+    event.preventDefault();
+    goToNextSlide();
+  }
+
   if (event.key.toLowerCase() === "f") {
+    event.preventDefault();
     toggleFullscreen();
   }
 });
@@ -607,3 +676,4 @@ window.addEventListener("resize", () => {
 
 applyTheme(currentTheme);
 renderHome();
+preloadPresentationTitles();

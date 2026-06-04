@@ -17,6 +17,8 @@ June 4, 2026
     <p>Cosmos is a spatial discourse browser for AR, VR, and desktop.</p>
     <p>Instead of presenting conversation as a feed, it places posts and perspectives on the inner surface of a 3D sphere.</p>
     <p>Browsing becomes spatial: users drag to look around, and content appears as their attention approaches it.</p>
+    <p>A lightweight agentic layer helps cluster, label, and surface posts without steering the conversation.</p>
+    <p><a href="https://cosmosweb.web.app/web" target="_blank" rel="noreferrer">Try the prototype &rarr;</a></p>
   </div>
   <img src="assets/images/cosmos-sphere-browse.png" alt="Cosmos interface showing discourse cards arranged inside a spherical spatial browser">
 </div>
@@ -32,7 +34,7 @@ June 4, 2026
   </article>
   <article>
     <h3>Meaning drives position</h3>
-    <p>AI analyzes stance, emotion, assumptions, and relationships so opposing views, bridges, and clusters can be spatially encoded.</p>
+    <p>The prototype explores how stance, emotion, assumptions, and relationships could shape where discussion cards appear.</p>
   </article>
   <article>
     <h3>Attention replaces ranking</h3>
@@ -42,102 +44,95 @@ June 4, 2026
 
 ---
 
-## From Prototype to Research Question
+## The Agentic Layer
 
-The existing prototype proves that discourse can be browsed as a spatial environment.
+### Quiet help, not autopilot
 
-This research plan asks what must be validated next: whether the experience can support asynchronous community, readable long-form text, and healthier participation in spatial computing contexts.
+<div class="orbital-3">
+  <article>
+    <span class="orbital-3__circle">Cluster</span>
+    <p>Group nearby posts so a region of the sphere reads as a stance, a tension, or a shared question.</p>
+  </article>
+  <article>
+    <span class="orbital-3__circle">Label</span>
+    <p>Offer short, transparent summaries so users see what a region is about before diving in.</p>
+  </article>
+  <article>
+    <span class="orbital-3__circle">Surface</span>
+    <p>Notice quiet posts, missing voices, or unresolved threads that the topology hides.</p>
+  </article>
+</div>
 
 ---
 
-## The Core Problem & Current Landscape
+## What the Market Shows
 
 <div class="cards-3">
   <article>
-    <h3>The Flat Web</h3>
-    <p>Reddit, Threads, and Discord flatten human nuance into vertical, linear feeds sorted by reactive algorithms.</p>
+    <h3>Flat Feeds</h3>
+    <p>Reddit, Threads, and Discord make discussion easy to enter, but feed design hides the structure of debate.</p>
     <ul>
-      <li>Endless doom-scrolling</li>
+      <li>Endless scrolling</li>
       <li>Fragmented replies</li>
       <li>Shallow engagement</li>
     </ul>
   </article>
   <article>
-    <h3>The Screen Mirror</h3>
-    <p>Apple visionOS and Android XR mostly float the same 2D text panels in 3D rooms.</p>
+    <h3>Spatial Windows</h3>
+    <p>Apple visionOS and Android XR float 2D text panels in 3D rooms.</p>
     <p>They spatialize windows, but not content or community.</p>
   </article>
   <article>
-    <h3>The Cosmos Intervention</h3>
-    <p>Cosmos treats a forum not as a document to scroll, but as a topography to explore.</p>
-    <p>It creates a low-energy, ambient environment for asynchronous text-based community.</p>
+    <h3>Live Social VR</h3>
+    <p>VRChat and Horizon Worlds bring presence, but lean on synchronous voice.</p>
+    <p>Strong feeling of being there, limited room for slower written exchange.</p>
   </article>
 </div>
 
 ---
 
-## Why Do We Need It?
-
-Current digital design forces a binary choice between two extreme, flawed experiences.
+## What Users Feel
 
 <div class="cards-3">
   <article>
-    <h3>The Voice / Live Anxiety</h3>
-    <p>VRChat and Horizon Worlds offer spatial presence, but rely on real-time voice chat.</p>
-    <ul>
-      <li>Chaotic and loud</li>
-      <li>Exclusionary for introverts</li>
-      <li>Difficult to moderate</li>
-      <li>Demands synchronous attention</li>
-    </ul>
+    <h3>Voice Anxiety</h3>
+    <p>Live audio excludes introverts, raises social cost, and demands real-time attention.</p>
   </article>
   <article>
-    <h3>The Text / Feed Toxicity</h3>
-    <p>Text forums allow deeper asynchronous thought, but upvote-driven design rewards polarization, hostile hot takes, and performance anxiety.</p>
+    <h3>Feed Fatigue</h3>
+    <p>Upvote-driven design rewards polarization and performance, leaving users tired or quiet.</p>
   </article>
   <article>
-    <h3>The Opportunity</h3>
-    <p>Cosmos explores ambient, low-energy, asynchronous immersion: look around and absorb human gossip and advice without live talking or feed fatigue.</p>
+    <h3>Quieter Middle</h3>
+    <p>People still want to browse community thought, without live talking or endless feed scanning.</p>
   </article>
 </div>
 
 ---
 
-## Research Plan Summary
+## How I'll Research It
 
-<div class="cards-3">
+<div class="steps-3">
   <article>
-    <h3>Context & Customer Needs</h3>
-    <p>Understand who needs an asynchronous spatial community, what they currently use, and where existing tools fail.</p>
+    <span class="steps-3__num">01</span>
+    <div>
+      <h3>Background</h3>
+      <p>Literature review and competitive analysis to ground the design in what already works and what does not.</p>
+    </div>
   </article>
   <article>
-    <h3>Competitive Landscape</h3>
-    <p>Compare text forums, live social VR, and spatial computing tools to identify a clear product position.</p>
+    <span class="steps-3__num">02</span>
+    <div>
+      <h3>People</h3>
+      <p>User interviews and prototype testing to learn whether the spatial idea feels useful, calm, and readable.</p>
+    </div>
   </article>
   <article>
-    <h3>Prototype Validation</h3>
-    <p>Test whether the current Cosmos concept is readable, useful, and emotionally comfortable for real users.</p>
-  </article>
-</div>
-
----
-
-## Research Needed
-
-### What We Need to Learn Before Moving Forward
-
-<div class="cards-3">
-  <article>
-    <h3>Customer Research</h3>
-    <p>Interview people who participate in online communities, including users who avoid live voice spaces or feel exhausted by feeds.</p>
-  </article>
-  <article>
-    <h3>Market & Business Context</h3>
-    <p>Study where Cosmos could fit: social platforms, XR tools, community software, research tools, or creator/community products.</p>
-  </article>
-  <article>
-    <h3>Technical Feasibility</h3>
-    <p>Check what current XR and browser hardware can support for readable text, navigation, and longer sessions.</p>
+    <span class="steps-3__num">03</span>
+    <div>
+      <h3>Viability</h3>
+      <p>Market opportunity research to check whether Cosmos can live in a real product context.</p>
+    </div>
   </article>
 </div>
 
@@ -197,7 +192,7 @@ We compare existing tools by interaction type and content format.
 | Can users understand the space? | Give users a short discussion and ask them to explain what groups, conflicts, or missing voices they notice. |
 | Is the text readable? | Test font size, distance, contrast, and the amount of text shown at once. |
 | Does spatial browsing help? | Compare a flat thread view with the Cosmos sphere view using the same discussion content. |
-| Can AI help without taking over? | Test whether AI labels, clusters, and summaries feel useful, accurate, and transparent. |
+| Does the agentic layer help without taking over? | Test whether clustering, labels, and surfacing feel useful, accurate, and transparent rather than directive. |
 
 ---
 
@@ -214,37 +209,45 @@ We compare existing tools by interaction type and content format.
 
 ---
 
-## Professional Deliverables
-
-### What the Research Should Produce
+## Deliverables
 
 | Deliverable | Purpose |
 | --- | --- |
-| Customer needs summary | Clear evidence of who Cosmos serves and what problem it solves |
-| Competitive landscape | A grounded map of where Cosmos sits against forums, social VR, and spatial OS tools |
-| Prototype findings | Usability evidence for navigation, reading comfort, and perceived value |
-| Product direction | A realistic recommendation for what to build next and what not to build yet |
-| Presentation and report | A professional-level explanation of the challenge, tradeoffs, and proposed solution |
+| Literature review notes | Short summary of spatial interaction, reading in XR, and online community behavior, with takeaways for Cosmos |
+| Competitive comparison | One clear matrix comparing forums, social VR, spatial OS tools, and Cosmos |
+| Interview notes summary | 3-5 short interviews, grouped by repeated needs and pain points |
+| User test results | 3-5 short user tests with a summary of what users understood, where they got confused, and what felt useful |
+| Market opportunity notes | Short read on likely adopters, where value sits, what support is needed, and where the business risk is |
+| Product requirements document | One concise PRD describing the next version of Cosmos: scope, priorities, constraints, and what to defer |
 
 ---
 
-## Expected Outcomes & Final Value
+## Development and Testing Plan
 
-The research should produce a grounded roadmap for deciding what Cosmos should become next.
+### If This Goes Well
 
-<div class="cards-3">
+<div class="steps-3">
   <article>
-    <h3>Validated AI Prompt Matrix</h3>
-    <p>A system prompt blueprint that balances user authenticity with community civility.</p>
+    <span class="steps-3__num">01</span>
+    <div>
+      <h3>Development</h3>
+      <p>Rebuild the prototype against the PRD: refined sphere layout, clearer labels, and a small set of agentic actions.</p>
+    </div>
   </article>
   <article>
-    <h3>Spatial Layout Blueprint</h3>
-    <p>A proven architectural direction: Canyon, Constellation, or Room.</p>
+    <span class="steps-3__num">02</span>
+    <div>
+      <h3>Testing</h3>
+      <p>Run a second round of user sessions focused on reading comfort, navigation, and trust in the agentic layer.</p>
+    </div>
   </article>
   <article>
-    <h3>Typographic Spec Sheet</h3>
-    <p>Spatial font size, contrast, and alignment standards configured for XR headset constraints.</p>
+    <span class="steps-3__num">03</span>
+    <div>
+      <h3>Roadmap</h3>
+      <p>If signals hold, scope a longer arc: device targets, community pilot, moderation model, and a path to release.</p>
+    </div>
   </article>
 </div>
 
-<p class="slide-closing">Cosmos aims to prove that spatial computing can make online communities more human, reflective, and connected.</p>
+<p class="slide-closing">The goal is not to prove Cosmos is right. The goal is to learn whether spatial discussion is worth developing further.</p>
