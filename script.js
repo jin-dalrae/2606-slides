@@ -10,12 +10,14 @@ const home = {
 
 const presentations = [
   {
+    slug: "gtr-partners",
     title: "GTR Partners",
     date: "May 2026",
     file: "presentations/gtr-startups-climate-awareness.md",
     transition: "slide"
   },
   {
+    slug: "experience",
     title: "Experience",
     date: "June 4, 2026",
     file: "presentations/experience-cosmos-research-plan.md",
@@ -66,38 +68,68 @@ function selectedPresentation() {
   return presentations[currentPresentation];
 }
 
-function isPresentationRoute() {
-  const path = window.location.pathname.replace(/\/+$/, "");
-  const hash = window.location.hash.replace(/^#\/?/, "").toLowerCase();
-
-  return path.endsWith("/presentation") || hash.startsWith("presentation");
+function selectedPresentationSlug() {
+  return selectedPresentation().slug || String(currentPresentation + 1);
 }
 
-function slideIndexFromLocation() {
+function isPresentationRoute() {
   const hash = window.location.hash.replace(/^#\/?/, "");
-  const hashWithoutRoute = hash.replace(/^presentation\/?/i, "");
-  const match = hashWithoutRoute.match(/\d+/);
+  const firstPart = hash.split("/").filter(Boolean)[0]?.toLowerCase();
 
-  if (!match) {
+  return Boolean(firstPart) && firstPart !== "home";
+}
+
+function presentationIndexFromSlug(slug) {
+  if (!slug) {
     return 0;
   }
 
-  return Math.max(0, Number(match[0]) - 1);
+  const numericIndex = Number(slug);
+  if (Number.isInteger(numericIndex) && numericIndex > 0) {
+    return Math.min(numericIndex - 1, presentations.length - 1);
+  }
+
+  const index = presentations.findIndex((item) => item.slug === slug.toLowerCase());
+  return index >= 0 ? index : 0;
 }
 
-function presentationPath() {
+function presentationTargetFromLocation() {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  const hashParts = hash.split("/").filter(Boolean);
+  let slug = "";
+  let slide = "";
+
+  if (hashParts[0]?.toLowerCase() === "presentation") {
+    slug = hashParts[1] || "";
+    slide = hashParts[2] || "";
+  } else {
+    slug = hashParts[0] || "";
+    slide = hashParts[1] || "";
+  }
+
+  if (/^\d+$/.test(slug) && !slide) {
+    slide = slug;
+    slug = "";
+  }
+
+  return {
+    presentationIndex: presentationIndexFromSlug(slug),
+    slideIndex: /^\d+$/.test(slide) ? Math.max(0, Number(slide) - 1) : 0
+  };
+}
+
+function appRootPath() {
   const parts = window.location.pathname.split("/").filter(Boolean);
   const routeIndex = parts.lastIndexOf("presentation");
 
   if (routeIndex >= 0) {
-    return `/${parts.slice(0, routeIndex + 1).join("/")}`;
+    return `/${parts.slice(0, routeIndex).join("/")}`;
   }
 
   if (parts[parts.length - 1] === "index.html") {
     parts.pop();
   }
-
-  return `/${[...parts, "presentation"].join("/")}`;
+  return `/${parts.join("/")}`;
 }
 
 function syncPresentationUrl(slideIndex = currentSlide, replace = true) {
@@ -106,15 +138,10 @@ function syncPresentationUrl(slideIndex = currentSlide, replace = true) {
   }
 
   const url = new URL(window.location.href);
-  const isHashRoute = url.hash.replace(/^#\/?/, "").toLowerCase().startsWith("presentation");
+  const slug = selectedPresentationSlug();
 
-  if (isHashRoute) {
-    url.pathname = window.location.pathname;
-    url.hash = `presentation/${slideIndex + 1}`;
-  } else {
-    url.pathname = presentationPath();
-    url.hash = String(slideIndex + 1);
-  }
+  url.pathname = appRootPath();
+  url.hash = `${slug}/${slideIndex + 1}`;
 
   window.history[replace ? "replaceState" : "pushState"](null, "", `${url.pathname}${url.search}${url.hash}`);
 }
@@ -625,7 +652,7 @@ function applyTheme(theme) {
 }
 
 function showHome() {
-  window.history.pushState(null, "", window.location.pathname.replace(/\/presentation\/?$/, "/") || "/");
+  window.history.pushState(null, "", appRootPath() || "/");
   renderHome();
 }
 
@@ -744,18 +771,24 @@ window.addEventListener("hashchange", () => {
     return;
   }
 
-  const slideIndex = slideIndexFromLocation();
+  const target = presentationTargetFromLocation();
   if (currentView !== "presentation") {
-    goToPresentation(0, slideIndex);
+    goToPresentation(target.presentationIndex, target.slideIndex);
     return;
   }
 
-  goToSlide(slideIndex);
+  if (target.presentationIndex !== currentPresentation) {
+    goToPresentation(target.presentationIndex, target.slideIndex);
+    return;
+  }
+
+  goToSlide(target.slideIndex);
 });
 
 applyTheme(currentTheme);
 if (isPresentationRoute()) {
-  goToPresentation(0, slideIndexFromLocation());
+  const target = presentationTargetFromLocation();
+  goToPresentation(target.presentationIndex, target.slideIndex);
 } else {
   renderHome();
 }
