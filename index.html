@@ -4,27 +4,36 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Slides</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="app-shell" data-sidebar-open="true">
-      <aside class="slide-list" aria-label="Slide list">
-        <div class="slide-list__header">
-          <h1>Slides</h1>
-          <button class="icon-button" id="closeSidebar" type="button" aria-label="Close slide list" title="Close slide list">
-            <span aria-hidden="true">×</span>
+      <aside class="presentation-list" aria-label="Presentation list">
+        <div class="presentation-list__header">
+          <h1>Presentations</h1>
+          <button class="icon-button" id="closeSidebar" type="button" aria-label="Close presentation list" title="Close presentation list">
+            <span aria-hidden="true">‹</span>
           </button>
         </div>
-        <ol class="slide-list__items" id="slideList"></ol>
+        <ol class="presentation-list__items" id="presentationList"></ol>
       </aside>
 
       <main class="stage">
-        <div class="stage__toolbar" aria-label="Presentation controls">
-          <button class="icon-button sidebar-toggle" id="openSidebar" type="button" aria-label="Open slide list" title="Open slide list">
-            <span aria-hidden="true">☰</span>
-          </button>
-          <div class="stage__counter" id="slideCounter" aria-live="polite"></div>
+        <header class="presentation-header">
           <div class="stage__controls">
+            <button class="icon-button sidebar-toggle" id="openSidebar" type="button" aria-label="Open presentation list" title="Open presentation list">
+              <span aria-hidden="true">☰</span>
+            </button>
+          </div>
+          <div class="presentation-header__title">
+            <p id="presentationDate"></p>
+            <h2 id="presentationTitle"></h2>
+          </div>
+          <div class="stage__controls" aria-label="Presentation controls">
             <button class="icon-button" id="prevSlide" type="button" aria-label="Previous slide" title="Previous slide">
               <span aria-hidden="true">‹</span>
             </button>
@@ -35,12 +44,25 @@
               <span aria-hidden="true">⛶</span>
             </button>
           </div>
-        </div>
+        </header>
 
-        <section class="slide" id="slide" tabindex="0" aria-live="polite"></section>
+        <div class="presentation-workspace">
+          <nav class="slide-list" aria-label="Slides in this presentation">
+            <div class="slide-list__header">
+              <h3>Slides</h3>
+              <span id="slideCounter" aria-live="polite"></span>
+            </div>
+            <ol class="slide-list__items" id="slideList"></ol>
+          </nav>
+
+          <section class="slide" id="slide" tabindex="0" aria-live="polite"></section>
+        </div>
       </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
