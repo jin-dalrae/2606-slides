@@ -264,7 +264,7 @@ button {
 
 .stage {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   min-width: 0;
   min-height: 100vh;
   padding: 18px;
@@ -282,7 +282,7 @@ button {
 
 .presentation-header {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 16px;
   min-height: 76px;
@@ -300,13 +300,10 @@ button {
 }
 
 .presentation-header__title h2 {
-  overflow: hidden;
   margin: 0;
   font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   font-weight: 500;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.18;
 }
 
 .stage__controls {
@@ -439,6 +436,7 @@ button {
 .presentation-workspace {
   display: grid;
   grid-template-columns: 244px minmax(0, 1fr);
+  align-items: start;
   gap: 18px;
   min-height: 0;
   padding-top: 18px;
@@ -448,13 +446,40 @@ button {
   display: block;
 }
 
+.stage[data-view="home"] .presentation-stage {
+  display: block;
+}
+
 .stage[data-view="home"] .slide-list,
-.stage[data-view="home"] .stage__controls:last-child {
+.stage[data-view="home"] .presentation-settings {
   display: none;
 }
 
+.presentation-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.presentation-settings {
+  display: flex;
+  justify-content: flex-end;
+  width: min(100%, 1180px);
+  padding-top: 10px;
+}
+
+.presentation-settings__inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
 .slide-list {
-  max-height: calc(100vh - 174px);
+  max-height: calc(100vh - 230px);
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
@@ -1217,6 +1242,14 @@ button {
 
   .presentation-workspace {
     grid-template-columns: 1fr;
+  }
+
+  .presentation-settings {
+    justify-content: flex-start;
+  }
+
+  .presentation-settings__inner {
+    justify-content: flex-start;
   }
 
   .slide-list {

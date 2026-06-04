@@ -41,54 +41,6 @@
             <p id="presentationDate"></p>
             <h2 id="presentationTitle"></h2>
           </div>
-          <div class="stage__controls" aria-label="Presentation controls">
-            <label class="select-control" for="transitionSelect">
-              <span>Transition</span>
-              <select id="transitionSelect">
-                <option value="slide">Slide</option>
-                <option value="fade">Fade</option>
-                <option value="convex">Convex</option>
-                <option value="concave">Concave</option>
-                <option value="zoom">Zoom</option>
-                <option value="none">None</option>
-              </select>
-            </label>
-            <label class="select-control" for="backgroundSelect">
-              <span>Background</span>
-              <select id="backgroundSelect">
-                <option value="shader">Shader</option>
-                <option value="plain">Plain</option>
-                <option value="ivory">Ivory</option>
-                <option value="gray">Gray</option>
-              </select>
-            </label>
-            <label class="select-control select-control--font" for="fontSelect">
-              <span>Font</span>
-              <select id="fontSelect">
-                <option value="lora">Lora</option>
-                <option value="inter">Inter</option>
-                <option value="roboto">Roboto</option>
-                <option value="playfair">Playfair</option>
-                <option value="merriweather">Merriweather</option>
-                <option value="montserrat">Montserrat</option>
-                <option value="poppins">Poppins</option>
-                <option value="noto-sans">Noto Sans</option>
-                <option value="source-serif">Source Serif</option>
-              </select>
-            </label>
-            <button class="text-button" id="editDeck" type="button" aria-label="Edit this deck" title="Edit this deck">
-              Edit
-            </button>
-            <button class="icon-button" id="prevSlide" type="button" aria-label="Previous slide" title="Previous slide">
-              <span aria-hidden="true">‹</span>
-            </button>
-            <button class="icon-button" id="nextSlide" type="button" aria-label="Next slide" title="Next slide">
-              <span aria-hidden="true">›</span>
-            </button>
-            <button class="icon-button" id="fullscreen" type="button" aria-label="Full screen" title="Full screen">
-              <span aria-hidden="true">⛶</span>
-            </button>
-          </div>
         </header>
 
         <div class="presentation-workspace">
@@ -100,7 +52,60 @@
             <ol class="slide-list__items" id="slideList"></ol>
           </nav>
 
-          <section class="slide" id="slide" tabindex="0" aria-live="polite"></section>
+          <div class="presentation-stage">
+            <section class="slide" id="slide" tabindex="0" aria-live="polite"></section>
+
+            <div class="presentation-settings" aria-label="Presentation controls and settings">
+              <div class="presentation-settings__inner">
+                <label class="select-control" for="transitionSelect">
+                  <span>Transition</span>
+                  <select id="transitionSelect">
+                    <option value="slide">Slide</option>
+                    <option value="fade">Fade</option>
+                    <option value="convex">Convex</option>
+                    <option value="concave">Concave</option>
+                    <option value="zoom">Zoom</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label class="select-control" for="backgroundSelect">
+                  <span>Background</span>
+                  <select id="backgroundSelect">
+                    <option value="shader">Shader</option>
+                    <option value="plain">Plain</option>
+                    <option value="ivory">Ivory</option>
+                    <option value="gray">Gray</option>
+                  </select>
+                </label>
+                <label class="select-control select-control--font" for="fontSelect">
+                  <span>Font</span>
+                  <select id="fontSelect">
+                    <option value="lora">Lora</option>
+                    <option value="inter">Inter</option>
+                    <option value="roboto">Roboto</option>
+                    <option value="playfair">Playfair</option>
+                    <option value="merriweather">Merriweather</option>
+                    <option value="montserrat">Montserrat</option>
+                    <option value="poppins">Poppins</option>
+                    <option value="noto-sans">Noto Sans</option>
+                    <option value="source-serif">Source Serif</option>
+                  </select>
+                </label>
+                <button class="text-button" id="editDeck" type="button" aria-label="Edit this deck" title="Edit this deck">
+                  Edit
+                </button>
+                <button class="icon-button" id="prevSlide" type="button" aria-label="Previous slide" title="Previous slide">
+                  <span aria-hidden="true">‹</span>
+                </button>
+                <button class="icon-button" id="nextSlide" type="button" aria-label="Next slide" title="Next slide">
+                  <span aria-hidden="true">›</span>
+                </button>
+                <button class="icon-button" id="fullscreen" type="button" aria-label="Full screen" title="Full screen">
+                  <span aria-hidden="true">⛶</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <footer class="site-footer">All rights reserved by Rae Jin 2026</footer>
