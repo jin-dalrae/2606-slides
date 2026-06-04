@@ -57,12 +57,66 @@ let currentSlide = 0;
 let currentSlideTitles = [];
 let deck = null;
 let cleanupShader = null;
+let pendingSlideIndex = null;
 let currentTransition = window.localStorage.getItem(storageKeys.transition) || "slide";
 let currentTheme = window.localStorage.getItem(storageKeys.theme) || "dark";
 let currentBackground = window.localStorage.getItem(storageKeys.background) || "shader";
 
 function selectedPresentation() {
   return presentations[currentPresentation];
+}
+
+function isPresentationRoute() {
+  const path = window.location.pathname.replace(/\/+$/, "");
+  const hash = window.location.hash.replace(/^#\/?/, "").toLowerCase();
+
+  return path.endsWith("/presentation") || hash.startsWith("presentation");
+}
+
+function slideIndexFromLocation() {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  const hashWithoutRoute = hash.replace(/^presentation\/?/i, "");
+  const match = hashWithoutRoute.match(/\d+/);
+
+  if (!match) {
+    return 0;
+  }
+
+  return Math.max(0, Number(match[0]) - 1);
+}
+
+function presentationPath() {
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const routeIndex = parts.lastIndexOf("presentation");
+
+  if (routeIndex >= 0) {
+    return `/${parts.slice(0, routeIndex + 1).join("/")}`;
+  }
+
+  if (parts[parts.length - 1] === "index.html") {
+    parts.pop();
+  }
+
+  return `/${[...parts, "presentation"].join("/")}`;
+}
+
+function syncPresentationUrl(slideIndex = currentSlide, replace = true) {
+  if (currentView !== "presentation") {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  const isHashRoute = url.hash.replace(/^#\/?/, "").toLowerCase().startsWith("presentation");
+
+  if (isHashRoute) {
+    url.pathname = window.location.pathname;
+    url.hash = `presentation/${slideIndex + 1}`;
+  } else {
+    url.pathname = presentationPath();
+    url.hash = String(slideIndex + 1);
+  }
+
+  window.history[replace ? "replaceState" : "pushState"](null, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
 function escapeHtml(value) {
@@ -509,8 +563,17 @@ async function renderPresentation() {
     deck.on("slidechanged", (event) => {
       currentSlide = event.indexh;
       updateSlideControls();
+      syncPresentationUrl(currentSlide);
     });
+
+    if (Number.isInteger(pendingSlideIndex)) {
+      currentSlide = Math.max(0, Math.min(pendingSlideIndex, currentSlideTitles.length - 1));
+      deck.slide(currentSlide);
+      pendingSlideIndex = null;
+    }
+
     updateSlideControls();
+    syncPresentationUrl(currentSlide);
   } catch (error) {
     currentSlideTitles = [];
     slide.classList.remove("slide--home");
@@ -562,11 +625,13 @@ function applyTheme(theme) {
 }
 
 function showHome() {
+  window.history.pushState(null, "", window.location.pathname.replace(/\/presentation\/?$/, "/") || "/");
   renderHome();
 }
 
-function goToPresentation(index) {
+function goToPresentation(index, slideIndex = 0) {
   currentPresentation = Math.max(0, Math.min(index, presentations.length - 1));
+  pendingSlideIndex = Math.max(0, slideIndex);
   renderPresentation();
 }
 
@@ -674,6 +739,24 @@ window.addEventListener("resize", () => {
   }
 });
 
+window.addEventListener("hashchange", () => {
+  if (!isPresentationRoute()) {
+    return;
+  }
+
+  const slideIndex = slideIndexFromLocation();
+  if (currentView !== "presentation") {
+    goToPresentation(0, slideIndex);
+    return;
+  }
+
+  goToSlide(slideIndex);
+});
+
 applyTheme(currentTheme);
-renderHome();
+if (isPresentationRoute()) {
+  goToPresentation(0, slideIndexFromLocation());
+} else {
+  renderHome();
+}
 preloadPresentationTitles();
