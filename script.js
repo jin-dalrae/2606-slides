@@ -1,5 +1,5 @@
 const home = {
-  title: "Rae Jin Slides for 2026 Summer, MDes IxD CCA",
+  title: "Slides for 2026 Summer, MDes IxD CCA",
   date: "Home",
   links: [
     { label: "LinkedIn", url: "https://www.linkedin.com/in/dalraejin1/" },
@@ -10,21 +10,27 @@ const home = {
 
 const presentations = [
   {
+    title: "GTR Partners",
+    date: "May 2026",
+    file: "presentations/gtr-startups-climate-awareness.md",
+    transition: "slide"
+  },
+  {
     title: "Experience",
     date: "June 4, 2026",
-    file: "presentations/experience-cosmos-research-plan.md"
-  },
-  {
-    title: "Presentation Title",
-    date: "June 2026",
-    file: "presentations/summer-intro.md"
-  },
-  {
-    title: "Second Presentation",
-    date: "July 2026",
-    file: "presentations/second-presentation.md"
+    file: "presentations/experience-cosmos-research-plan.md",
+    transition: "slide"
   }
 ];
+
+presentations.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+const githubEditBase = "https://github.com/jin-dalrae/2606-slides/edit/master/";
+const storageKeys = {
+  transition: "rae-slides-transition",
+  theme: "rae-slides-theme",
+  background: "rae-slides-background"
+};
 
 const appShell = document.querySelector(".app-shell");
 const stage = document.querySelector(".stage");
@@ -37,6 +43,11 @@ const slideCounter = document.querySelector("#slideCounter");
 const prevSlide = document.querySelector("#prevSlide");
 const nextSlide = document.querySelector("#nextSlide");
 const fullscreen = document.querySelector("#fullscreen");
+const editDeck = document.querySelector("#editDeck");
+const transitionSelect = document.querySelector("#transitionSelect");
+const backgroundSelect = document.querySelector("#backgroundSelect");
+const themeToggle = document.querySelector("#themeToggle");
+const homeLink = document.querySelector("#homeLink");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
 
@@ -46,6 +57,9 @@ let currentSlide = 0;
 let currentSlideTitles = [];
 let deck = null;
 let cleanupShader = null;
+let currentTransition = window.localStorage.getItem(storageKeys.transition) || "slide";
+let currentTheme = window.localStorage.getItem(storageKeys.theme) || "dark";
+let currentBackground = window.localStorage.getItem(storageKeys.background) || "shader";
 
 function selectedPresentation() {
   return presentations[currentPresentation];
@@ -68,6 +82,24 @@ function markdownSlideTitles(markdown) {
     });
 }
 
+function firstSlidePreview(markdown) {
+  const firstSlide = markdown.split(/\n---+\n/g)[0];
+  const headings = [...firstSlide.matchAll(/^#{1,3}\s+(.+)$/gm)].map((match) => match[1].trim());
+  const body = firstSlide
+    .replace(/^#{1,3}\s+.+$/gm, "")
+    .replace(/<[^>]*>/g, "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(" ");
+
+  return {
+    title: headings[0] || "Untitled deck",
+    subtitle: headings[1] || body || "Open this deck"
+  };
+}
+
 async function loadMarkdown(file) {
   const response = await fetch(file);
 
@@ -80,19 +112,6 @@ async function loadMarkdown(file) {
 
 function renderPresentationList() {
   presentationList.innerHTML = "";
-
-  const homeItem = document.createElement("li");
-  const homeButton = document.createElement("button");
-  homeButton.className = "presentation-list__item";
-  homeButton.type = "button";
-  homeButton.setAttribute("aria-current", currentView === "home" ? "true" : "false");
-  homeButton.innerHTML = `
-    <span class="presentation-list__date">${home.date}</span>
-    <span class="presentation-list__title">Home</span>
-  `;
-  homeButton.addEventListener("click", () => showHome());
-  homeItem.append(homeButton);
-  presentationList.append(homeItem);
 
   presentations.forEach((item, index) => {
     const li = document.createElement("li");
@@ -142,12 +161,29 @@ function updateSlideControls() {
   renderSlideList();
 }
 
-function initShaderBackground(canvas) {
+function initShaderBackground(canvas, theme = "dark") {
   const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: false });
 
   if (!gl) {
     return () => {};
   }
+
+  const palette =
+    theme === "light"
+      ? {
+          ink: "vec3(0.985, 0.955, 0.965)",
+          cyan: "vec3(0.58, 0.28, 0.38)",
+          lime: "vec3(1.0, 0.82, 0.88)",
+          vignetteLow: "0.98",
+          grain: "0.008"
+        }
+      : {
+          ink: "vec3(0.045, 0.055, 0.10)",
+          cyan: "vec3(0.20, 0.75, 0.95)",
+          lime: "vec3(0.70, 0.98, 0.35)",
+          vignetteLow: "0.5",
+          grain: "0.04"
+        };
 
   const vert = "attribute vec2 p; void main(){ gl_Position = vec4(p,0.0,1.0); }";
   const frag = `
@@ -170,15 +206,15 @@ function initShaderBackground(canvas) {
       vec2 m = (uMouse - 0.5*uRes)/uRes.y;
       float md = exp(-2.5*length(uv-m));
       n += 0.22*md;
-      vec3 ink  = vec3(0.045, 0.055, 0.10);
-      vec3 cyan = vec3(0.20, 0.75, 0.95);
-      vec3 lime = vec3(0.70, 0.98, 0.35);
+      vec3 ink  = ${palette.ink};
+      vec3 cyan = ${palette.cyan};
+      vec3 lime = ${palette.lime};
       vec3 col = ink;
       col = mix(col, cyan*0.55, smoothstep(0.35, 0.75, n));
       col = mix(col, lime*0.85, smoothstep(0.62, 0.92, n+0.08*md));
       float vig = smoothstep(1.25, 0.2, length(uv));
-      col *= mix(0.5, 1.0, vig);
-      col += (hash(gl_FragCoord.xy + uTime)-0.5)*0.04;
+      col *= mix(${palette.vignetteLow}, 1.0, vig);
+      col += (hash(gl_FragCoord.xy + uTime)-0.5)*${palette.grain};
       gl_FragColor = vec4(col, 1.0);
     }
   `;
@@ -250,6 +286,20 @@ function initShaderBackground(canvas) {
   };
 }
 
+function restartShaderBackground() {
+  const canvas = slide.querySelector(".slide-shader");
+
+  if (!canvas) {
+    return;
+  }
+
+  if (cleanupShader) {
+    cleanupShader();
+  }
+
+  cleanupShader = initShaderBackground(canvas, currentTheme);
+}
+
 function sizeFullscreenSlide() {
   if (deck) {
     window.requestAnimationFrame(() => deck.layout());
@@ -269,10 +319,11 @@ function destroyDeck() {
   deck = null;
 }
 
-function renderHome() {
+async function renderHome() {
   currentView = "home";
   stage.dataset.view = "home";
   destroyDeck();
+  homeLink.setAttribute("aria-current", "page");
 
   presentationTitle.textContent = home.title;
   presentationDate.textContent = "";
@@ -281,21 +332,62 @@ function renderHome() {
   prevSlide.disabled = true;
   nextSlide.disabled = true;
   fullscreen.disabled = true;
+  editDeck.disabled = true;
+  transitionSelect.disabled = true;
+  backgroundSelect.disabled = true;
 
   slide.classList.add("slide--home");
   slide.innerHTML = `
+    <div class="home-deck-grid" id="homeDeckGrid"></div>
     <div class="home-links">
       ${home.links.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a>`).join("")}
     </div>
   `;
 
   renderPresentationList();
+
+  const deckGrid = document.querySelector("#homeDeckGrid");
+  const cards = await Promise.all(
+    presentations.map(async (item, index) => {
+      try {
+        const markdown = await loadMarkdown(item.file);
+        return { item, index, preview: firstSlidePreview(markdown) };
+      } catch {
+        return {
+          item,
+          index,
+          preview: { title: item.title, subtitle: "Preview unavailable" }
+        };
+      }
+    })
+  );
+
+  deckGrid.innerHTML = cards
+    .map(
+      ({ item, index, preview }) => `
+        <button class="home-deck-card" type="button" data-presentation-index="${index}">
+          <span class="home-deck-card__thumb">
+            <em>${escapeHtml(preview.title)}</em>
+            <span>${escapeHtml(preview.subtitle)}</span>
+          </span>
+          <span class="home-deck-card__body">
+            <strong>${escapeHtml(item.title)}</strong>
+            <span class="home-deck-card__meta">${escapeHtml(item.date)}</span>
+          </span>
+        </button>
+      `
+    )
+    .join("");
+
+  deckGrid.querySelectorAll("[data-presentation-index]").forEach((card) => {
+    card.addEventListener("click", () => goToPresentation(Number(card.dataset.presentationIndex)));
+  });
 }
 
 function renderDeckShell(markdown) {
   slide.classList.remove("slide--home");
   slide.innerHTML = `
-    <div class="reveal deck-root">
+    <div class="reveal deck-root" data-background-mode="${currentBackground}">
       <canvas class="slide-shader" aria-hidden="true"></canvas>
       <div class="slides">
         <section
@@ -310,15 +402,19 @@ function renderDeckShell(markdown) {
     </div>
   `;
 
-  cleanupShader = initShaderBackground(slide.querySelector(".slide-shader"));
+  restartShaderBackground();
 }
 
 async function renderPresentation() {
   currentView = "presentation";
   stage.dataset.view = "presentation";
   destroyDeck();
+  homeLink.removeAttribute("aria-current");
 
   const deckMeta = selectedPresentation();
+  currentTransition = window.localStorage.getItem(storageKeys.transition) || deckMeta.transition || currentTransition;
+  transitionSelect.value = currentTransition;
+  backgroundSelect.value = currentBackground;
   presentationTitle.textContent = deckMeta.title;
   presentationDate.textContent = deckMeta.date;
   slideCounter.textContent = "Loading";
@@ -326,6 +422,9 @@ async function renderPresentation() {
   prevSlide.disabled = true;
   nextSlide.disabled = true;
   fullscreen.disabled = true;
+  editDeck.disabled = false;
+  transitionSelect.disabled = false;
+  backgroundSelect.disabled = false;
   renderPresentationList();
 
   try {
@@ -347,7 +446,7 @@ async function renderPresentation() {
       controls: false,
       progress: true,
       center: true,
-      transition: "slide",
+      transition: currentTransition,
       keyboardCondition: "focused",
       plugins: [RevealMarkdown, RevealNotes]
     });
@@ -372,6 +471,41 @@ async function renderPresentation() {
     updateSlideControls();
     fullscreen.disabled = true;
   }
+}
+
+function updateTransition(value) {
+  currentTransition = value;
+  window.localStorage.setItem(storageKeys.transition, currentTransition);
+
+  if (!deck) {
+    return;
+  }
+
+  deck.configure({
+    transition: currentTransition
+  });
+}
+
+function updateBackground(value) {
+  currentBackground = value;
+  window.localStorage.setItem(storageKeys.background, currentBackground);
+
+  const deckRoot = slide.querySelector(".deck-root");
+  if (deckRoot) {
+    deckRoot.dataset.backgroundMode = currentBackground;
+  }
+}
+
+function applyTheme(theme) {
+  currentTheme = theme;
+  document.documentElement.dataset.theme = currentTheme;
+  window.localStorage.setItem(storageKeys.theme, currentTheme);
+  themeToggle.querySelector(".theme-toggle__label").textContent = currentTheme === "dark" ? "Light" : "Dark";
+  themeToggle.setAttribute(
+    "aria-label",
+    currentTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+  );
+  restartShaderBackground();
 }
 
 function showHome() {
@@ -431,8 +565,21 @@ async function toggleFullscreen() {
 prevSlide.addEventListener("click", goToPreviousSlide);
 nextSlide.addEventListener("click", goToNextSlide);
 fullscreen.addEventListener("click", toggleFullscreen);
+transitionSelect.addEventListener("change", (event) => updateTransition(event.target.value));
+backgroundSelect.addEventListener("change", (event) => updateBackground(event.target.value));
+editDeck.addEventListener("click", () => {
+  if (currentView !== "presentation") {
+    return;
+  }
+
+  window.open(`${githubEditBase}${selectedPresentation().file}`, "_blank", "noreferrer");
+});
 openSidebar.addEventListener("click", () => toggleSidebar(true));
 closeSidebar.addEventListener("click", () => toggleSidebar(false));
+homeLink.addEventListener("click", showHome);
+themeToggle.addEventListener("click", () => {
+  applyTheme(currentTheme === "dark" ? "light" : "dark");
+});
 
 document.addEventListener("keydown", (event) => {
   if (currentView !== "presentation") {
@@ -458,4 +605,5 @@ window.addEventListener("resize", () => {
   }
 });
 
+applyTheme(currentTheme);
 renderHome();
