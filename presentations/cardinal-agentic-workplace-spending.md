@@ -22,6 +22,7 @@ It lets workplace AI agents purchase reports, supplies, subscriptions, and servi
 - **Continuous learning from past procurements**
 - **Memory and adaptation from past events**
 
+---
 # Why Now?
 
 ## Agents are moving from conversation to action
@@ -32,11 +33,9 @@ It lets workplace AI agents purchase reports, supplies, subscriptions, and servi
 
 **The opportunity**: Design a shared interface between agents and humans.
 
-Note: (1:15–2:00) Walk through the shift. “I researched 2026 Gartner and McKinsey reports showing 90% of B2B buying will be AI-agent-intermediated by 2028 — a $15T opportunity. This slide grounds the problem in real market data.”
-
 **The core design challenge** is creating an interface that both agents and humans can understand, reducing agent confusion while increasing human trust.
 
-Note: I started here because the biggest risk in agentic systems is losing human trust or wasting compute.
+Note: (1:15–2:00) Walk through the shift. “I researched 2026 Gartner and McKinsey reports showing 90% of B2B buying will be AI-agent-intermediated by 2028 — a $15T opportunity. This slide grounds the problem in real market data.” I started here because the biggest risk in agentic systems is losing human trust or wasting compute.
 
 
 
@@ -53,7 +52,7 @@ Note: I started here because the biggest risk in agentic systems is losing human
 **Decision driver**: Every feature traces back to this research.
 
 Note: (2:00–2:30) Explicitly show process: “This is the slide I added to prove how I think — not just the product, but the research behind it. I chose WorkOS because their Fine-Grained Authorization and audit logs are perfect infrastructure for CadinalPay.”
-
+---
 # Background
 ## Agents are moving from conversation to action
 
@@ -294,7 +293,7 @@ It uses structured fields, simple decision states, and shared logs so that agent
 6. Payment executes + receipt logged
 7. Agent learns and loops
 **Design principle**: Shared logs, no repeated inference.
-
+---
 # Agent-side flow (mockup)
 **Placeholder:** Agent-side flow mockup
 
@@ -363,8 +362,6 @@ For a WorkOS-style product, CadinalPay could be:
 - A notification layer inside Slack or Teams
 - A browser extension for vendor context
 - An API-based control layer for SaaS products using AI agents
-
-
 
 Note: (7:45–8:15) “These controls directly answer the design challenge. I prototyped the interruption moment first because it’s the highest-stakes interaction.” The strongest direction is a seamless web dashboard with heavy notification integration, especially Slack alerts for approvals.
 
