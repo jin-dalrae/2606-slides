@@ -22,6 +22,13 @@ const presentations = [
     date: "June 4, 2026",
     file: "presentations/experience-cosmos-research-plan.md",
     transition: "slide"
+  },
+  {
+    slug: "cardinal-agentic-spending",
+    title: "Cardinal",
+    date: "June 11, 2026",
+    file: "presentations/cardinal-agentic-workplace-spending.md",
+    transition: "slide"
   }
 ];
 
@@ -62,9 +69,11 @@ const slideCounter = document.querySelector("#slideCounter");
 const prevSlide = document.querySelector("#prevSlide");
 const nextSlide = document.querySelector("#nextSlide");
 const fullscreen = document.querySelector("#fullscreen");
+const openSlideWindow = document.querySelector("#openSlideWindow");
 const editDeck = document.querySelector("#editDeck");
 const accountPanel = document.querySelector("#accountPanel");
 const markdownEditor = document.querySelector("#markdownEditor");
+const speakerNotes = document.querySelector("#speakerNotes");
 const transitionSelect = document.querySelector("#transitionSelect");
 const backgroundSelect = document.querySelector("#backgroundSelect");
 const fontSelect = document.querySelector("#fontSelect");
@@ -73,14 +82,19 @@ const homeLink = document.querySelector("#homeLink");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
 const mobileMedia = window.matchMedia("(max-width: 760px)");
+const displayMode = new URLSearchParams(window.location.search).get("display") === "slide";
+const presentationChannel = "BroadcastChannel" in window ? new BroadcastChannel("rae-slides-presentation") : null;
 
 let currentView = "home";
 let currentPresentation = 0;
 let currentSlide = 0;
 let currentSlideTitles = [];
+let currentSlideNotes = [];
 let deck = null;
 let cleanupShader = null;
 let pendingSlideIndex = null;
+let slideWindow = null;
+let suppressBroadcast = false;
 let currentTheme = window.localStorage.getItem(storageKeys.theme) || "dark";
 let currentTransition = defaultPresentationSettings.transition;
 let currentBackground = defaultPresentationSettings.background;
@@ -401,6 +415,31 @@ function markdownSlideTitles(markdown) {
     });
 }
 
+function markdownSlideNotes(markdown) {
+  return markdown.split(/\n---+\n/g).map((part) => {
+    const lines = part.split("\n");
+    const noteIndex = lines.findIndex((line) => /^Note:\s*/i.test(line));
+
+    if (noteIndex < 0) {
+      return "";
+    }
+
+    const firstLine = lines[noteIndex].replace(/^Note:\s*/i, "");
+    return [firstLine, ...lines.slice(noteIndex + 1)].join("\n").trim();
+  });
+}
+
+function speakerNoteHtml(note) {
+  if (!note) {
+    return "<p>No speaker note for this slide.</p>";
+  }
+
+  return note
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${escapeHtml(paragraph).replaceAll("\n", "<br>")}</p>`)
+    .join("");
+}
+
 function firstSlideHeaderTitle(markdown) {
   const firstSlide = markdown.split(/\n---+\n/g)[0];
   const headings = [...firstSlide.matchAll(/^(#{1,3})\s+(.+)$/gm)].map((match) => ({
@@ -543,6 +582,7 @@ async function rerenderActiveDeck(markdown, slideIndex = currentSlide) {
   const targetSlide = Math.max(0, slideIndex);
   destroyDeck();
   currentSlideTitles = markdownSlideTitles(markdown);
+  currentSlideNotes = markdownSlideNotes(markdown);
   renderDeckShell(markdown);
 
   deck = new Reveal(slide.querySelector(".deck-root"), {
@@ -684,7 +724,100 @@ function updateSlideControls() {
   prevSlide.disabled = currentSlide === 0;
   nextSlide.disabled = currentSlide >= totalSlides - 1;
   fullscreen.disabled = false;
+  openSlideWindow.disabled = false;
   renderSlideList();
+  renderSpeakerNotes();
+  broadcastPresentationState();
+}
+
+function renderSpeakerNotes() {
+  if (!speakerNotes || displayMode || currentView !== "presentation") {
+    if (speakerNotes) {
+      speakerNotes.hidden = true;
+      speakerNotes.innerHTML = "";
+    }
+    return;
+  }
+
+  speakerNotes.hidden = false;
+  speakerNotes.innerHTML = `
+    <div class="speaker-notes__header">
+      <p>Speaker notes</p>
+      <span>Slide ${currentSlide + 1}</span>
+    </div>
+    <div class="speaker-notes__body">${speakerNoteHtml(currentSlideNotes[currentSlide])}</div>
+  `;
+}
+
+function broadcastPresentationState() {
+  if (!presentationChannel || suppressBroadcast || currentView !== "presentation") {
+    return;
+  }
+
+  presentationChannel.postMessage({
+    type: "state",
+    slug: currentDeckSlug(),
+    slide: currentSlide,
+    theme: currentTheme,
+    transition: currentTransition,
+    background: currentBackground,
+    font: currentFont
+  });
+}
+
+function openConnectedSlideWindow() {
+  if (currentView !== "presentation") {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("display", "slide");
+  url.hash = `${currentDeckSlug()}/${currentSlide + 1}`;
+  slideWindow = window.open(url.toString(), "rae-slides-display", "popup=yes,width=1280,height=720");
+  broadcastPresentationState();
+}
+
+function applyRemotePresentationState(message) {
+  if (!message || message.type !== "state") {
+    return;
+  }
+
+  const targetIndex = presentationIndexFromSlug(message.slug);
+  currentTransition = message.transition || currentTransition;
+  currentBackground = message.background || currentBackground;
+  currentFont = fontOptions[message.font] ? message.font : currentFont;
+
+  suppressBroadcast = true;
+
+  if (message.theme && message.theme !== currentTheme) {
+    applyTheme(message.theme);
+  }
+
+  transitionSelect.value = currentTransition;
+  backgroundSelect.value = currentBackground;
+  fontSelect.value = currentFont;
+
+  if (deck) {
+    deck.configure({ transition: currentTransition });
+  }
+
+  const deckRoot = slide.querySelector(".deck-root");
+  if (deckRoot) {
+    deckRoot.dataset.backgroundMode = currentBackground;
+  }
+  applyCurrentDeckFont();
+
+  if (currentView !== "presentation" || targetIndex !== currentPresentation) {
+    goToPresentation(targetIndex, message.slide || 0);
+    suppressBroadcast = false;
+    return;
+  }
+
+  if (Number.isInteger(message.slide) && message.slide !== currentSlide) {
+    goToSlide(message.slide);
+  }
+
+  suppressBroadcast = false;
 }
 
 function initShaderBackground(canvas, theme = "dark") {
@@ -858,12 +991,14 @@ async function renderHome() {
   prevSlide.disabled = true;
   nextSlide.disabled = true;
   fullscreen.disabled = true;
+  openSlideWindow.disabled = true;
   editDeck.disabled = true;
   transitionSelect.disabled = true;
   backgroundSelect.disabled = true;
   fontSelect.disabled = true;
   editorOpen = false;
   hideMarkdownEditor();
+  renderSpeakerNotes();
   updateEditButtonState();
 
   slide.classList.add("slide--home");
@@ -967,6 +1102,7 @@ async function renderPresentation() {
   try {
     const markdown = await loadDeckMarkdown(deckMeta);
     currentSlideTitles = markdownSlideTitles(markdown);
+    currentSlideNotes = markdownSlideNotes(markdown);
     deckMeta.resolvedTitle = firstSlideHeaderTitle(markdown) || deckMeta.title;
     presentationTitle.textContent = deckMeta.resolvedTitle;
     renderPresentationList();
@@ -1010,6 +1146,7 @@ async function renderPresentation() {
     renderMarkdownEditor();
   } catch (error) {
     currentSlideTitles = [];
+    currentSlideNotes = [];
     slide.classList.remove("slide--home");
     slide.innerHTML = `
       <div class="slide__error">
@@ -1045,6 +1182,7 @@ function updateTransition(value) {
   deck.configure({
     transition: currentTransition
   });
+  broadcastPresentationState();
 }
 
 function updateBackground(value) {
@@ -1055,6 +1193,7 @@ function updateBackground(value) {
   if (deckRoot) {
     deckRoot.dataset.backgroundMode = currentBackground;
   }
+  broadcastPresentationState();
 }
 
 function updateFont(value) {
@@ -1065,6 +1204,7 @@ function updateFont(value) {
   if (deck) {
     window.requestAnimationFrame(() => deck.layout());
   }
+  broadcastPresentationState();
 }
 
 function applyTheme(theme) {
@@ -1077,6 +1217,7 @@ function applyTheme(theme) {
     currentTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"
   );
   restartShaderBackground();
+  broadcastPresentationState();
 }
 
 function showHome() {
@@ -1144,6 +1285,7 @@ async function toggleFullscreen() {
 
 prevSlide.addEventListener("click", goToPreviousSlide);
 nextSlide.addEventListener("click", goToNextSlide);
+openSlideWindow.addEventListener("click", openConnectedSlideWindow);
 fullscreen.addEventListener("click", toggleFullscreen);
 transitionSelect.addEventListener("change", (event) => updateTransition(event.target.value));
 backgroundSelect.addEventListener("change", (event) => updateBackground(event.target.value));
@@ -1212,6 +1354,10 @@ window.addEventListener("resize", () => {
 
 mobileMedia.addEventListener("change", syncSidebarForViewport);
 
+if (presentationChannel) {
+  presentationChannel.addEventListener("message", (event) => applyRemotePresentationState(event.data));
+}
+
 window.addEventListener("hashchange", () => {
   if (!isPresentationRoute()) {
     return;
@@ -1232,6 +1378,10 @@ window.addEventListener("hashchange", () => {
 });
 
 async function initApp() {
+  if (displayMode) {
+    document.body.dataset.displayMode = "slide";
+  }
+
   syncSidebarForViewport();
   applyTheme(currentTheme);
   renderAccountPanel();

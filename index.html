@@ -55,7 +55,6 @@
 
           <div class="presentation-stage">
             <section class="slide" id="slide" tabindex="0" aria-live="polite"></section>
-            <section class="markdown-editor" id="markdownEditor" aria-label="Markdown editor" hidden></section>
 
             <div class="presentation-settings" aria-label="Presentation controls and settings">
               <div class="presentation-settings__inner">
@@ -102,11 +101,17 @@
                 <button class="icon-button" id="nextSlide" type="button" aria-label="Next slide" title="Next slide">
                   <span aria-hidden="true">›</span>
                 </button>
+                <button class="icon-button" id="openSlideWindow" type="button" aria-label="Open connected slide window" title="Open connected slide window">
+                  <span aria-hidden="true">□</span>
+                </button>
                 <button class="icon-button" id="fullscreen" type="button" aria-label="Full screen" title="Full screen">
                   <span aria-hidden="true">⛶</span>
                 </button>
               </div>
             </div>
+
+            <section class="speaker-notes" id="speakerNotes" aria-label="Speaker notes" hidden></section>
+            <section class="markdown-editor" id="markdownEditor" aria-label="Markdown editor" hidden></section>
           </div>
         </div>
 
