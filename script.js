@@ -29,10 +29,14 @@ presentations.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 const githubEditBase = "https://github.com/jin-dalrae/2606-slides/edit/master/";
 const storageKeys = {
-  transition: "rae-slides-transition",
   theme: "rae-slides-theme",
-  background: "rae-slides-background",
-  font: "rae-slides-font"
+  presentationSettings: "rae-slides-presentation-settings"
+};
+
+const defaultPresentationSettings = {
+  transition: "slide",
+  background: "shader",
+  font: "lora"
 };
 
 const fontOptions = {
@@ -59,6 +63,8 @@ const prevSlide = document.querySelector("#prevSlide");
 const nextSlide = document.querySelector("#nextSlide");
 const fullscreen = document.querySelector("#fullscreen");
 const editDeck = document.querySelector("#editDeck");
+const accountPanel = document.querySelector("#accountPanel");
+const markdownEditor = document.querySelector("#markdownEditor");
 const transitionSelect = document.querySelector("#transitionSelect");
 const backgroundSelect = document.querySelector("#backgroundSelect");
 const fontSelect = document.querySelector("#fontSelect");
@@ -66,6 +72,7 @@ const themeToggle = document.querySelector("#themeToggle");
 const homeLink = document.querySelector("#homeLink");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
+const mobileMedia = window.matchMedia("(max-width: 760px)");
 
 let currentView = "home";
 let currentPresentation = 0;
@@ -74,10 +81,21 @@ let currentSlideTitles = [];
 let deck = null;
 let cleanupShader = null;
 let pendingSlideIndex = null;
-let currentTransition = window.localStorage.getItem(storageKeys.transition) || "slide";
 let currentTheme = window.localStorage.getItem(storageKeys.theme) || "dark";
-let currentBackground = window.localStorage.getItem(storageKeys.background) || "shader";
-let currentFont = window.localStorage.getItem(storageKeys.font) || "lora";
+let currentTransition = defaultPresentationSettings.transition;
+let currentBackground = defaultPresentationSettings.background;
+let currentFont = defaultPresentationSettings.font;
+let currentUser = null;
+let authMode = "signin";
+let authStatus = "";
+let authBusy = false;
+let apiAvailable = true;
+let editorOpen = false;
+let editorStatus = "";
+let editorBusy = false;
+let baseMarkdown = "";
+let activeMarkdown = "";
+let hasUserMarkdown = false;
 
 function selectedPresentation() {
   return presentations[currentPresentation];
@@ -85,6 +103,196 @@ function selectedPresentation() {
 
 function selectedPresentationSlug() {
   return selectedPresentation().slug || String(currentPresentation + 1);
+}
+
+function presentationSettingsKey(index = currentPresentation) {
+  const item = presentations[index];
+  const slug = item.slug || String(index + 1);
+  return `${storageKeys.presentationSettings}:${slug}`;
+}
+
+function readPresentationSettings(index = currentPresentation) {
+  const item = presentations[index];
+  let saved = {};
+
+  try {
+    saved = JSON.parse(window.localStorage.getItem(presentationSettingsKey(index))) || {};
+  } catch {
+    saved = {};
+  }
+
+  return {
+    transition: saved.transition || item.transition || defaultPresentationSettings.transition,
+    background: saved.background || defaultPresentationSettings.background,
+    font: fontOptions[saved.font] ? saved.font : defaultPresentationSettings.font
+  };
+}
+
+function saveCurrentPresentationSettings() {
+  window.localStorage.setItem(
+    presentationSettingsKey(),
+    JSON.stringify({
+      transition: currentTransition,
+      background: currentBackground,
+      font: currentFont
+    })
+  );
+}
+
+function applyCurrentDeckFont() {
+  const deckRoot = slide.querySelector(".deck-root");
+  fontSelect.value = currentFont;
+
+  if (deckRoot) {
+    deckRoot.style.setProperty("--font-family", fontOptions[currentFont]);
+  }
+}
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`/api/${path}`, {
+    credentials: "include",
+    ...options,
+    headers: {
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(options.headers || {})
+    }
+  });
+
+  let data = {};
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
+
+  if (!response.ok) {
+    const error = new Error(data.error || "Request failed.");
+    error.status = response.status;
+    throw error;
+  }
+
+  return data;
+}
+
+function userCanEdit() {
+  return Boolean(currentUser && apiAvailable);
+}
+
+function currentDeckSlug() {
+  return selectedPresentationSlug();
+}
+
+function renderAccountPanel() {
+  if (!accountPanel) {
+    return;
+  }
+
+  if (!apiAvailable) {
+    accountPanel.innerHTML = `
+      <p class="account-panel__label">Account</p>
+      <p class="account-panel__message">Backend not configured.</p>
+    `;
+    return;
+  }
+
+  if (currentUser) {
+    accountPanel.innerHTML = `
+      <p class="account-panel__label">Signed in</p>
+      <p class="account-panel__user">${escapeHtml(currentUser.username)}</p>
+      <button class="text-button account-panel__button" id="logoutButton" type="button">Sign out</button>
+    `;
+    accountPanel.querySelector("#logoutButton").addEventListener("click", logout);
+    return;
+  }
+
+  const isSignup = authMode === "signup";
+  accountPanel.innerHTML = `
+    <form class="account-form" id="accountForm">
+      <p class="account-panel__label">${isSignup ? "Create account" : "Sign in"}</p>
+      <label>
+        <span>ID</span>
+        <input id="accountUsername" name="username" autocomplete="username" minlength="3" maxlength="32" ${authBusy ? "disabled" : ""}>
+      </label>
+      <label>
+        <span>PW</span>
+        <input id="accountPassword" name="password" type="password" autocomplete="${isSignup ? "new-password" : "current-password"}" minlength="8" ${authBusy ? "disabled" : ""}>
+      </label>
+      <div class="account-form__actions">
+        <button class="text-button account-panel__button" type="submit" ${authBusy ? "disabled" : ""}>${isSignup ? "Create" : "Sign in"}</button>
+        <button class="text-button account-panel__button" id="authModeToggle" type="button" ${authBusy ? "disabled" : ""}>${isSignup ? "Use login" : "Create"}</button>
+      </div>
+      <p class="account-panel__message" aria-live="polite">${escapeHtml(authStatus)}</p>
+    </form>
+  `;
+
+  accountPanel.querySelector("#accountForm").addEventListener("submit", submitAuth);
+  accountPanel.querySelector("#authModeToggle").addEventListener("click", () => {
+    authMode = isSignup ? "signin" : "signup";
+    authStatus = "";
+    renderAccountPanel();
+  });
+}
+
+async function submitAuth(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const username = String(form.get("username") || "").trim();
+  const password = String(form.get("password") || "");
+
+  authBusy = true;
+  authStatus = "";
+  renderAccountPanel();
+
+  try {
+    const data = await apiRequest(authMode === "signup" ? "signup" : "login", {
+      method: "POST",
+      body: JSON.stringify({ username, password })
+    });
+    currentUser = data.user;
+    authStatus = "";
+    editorStatus = "";
+    await reloadCurrentPresentationMarkdown();
+  } catch (error) {
+    authStatus = error.message;
+  } finally {
+    authBusy = false;
+    renderAccountPanel();
+    updateEditButtonState();
+  }
+}
+
+async function logout() {
+  authBusy = true;
+  renderAccountPanel();
+
+  try {
+    await apiRequest("logout", { method: "POST" });
+  } catch {
+    // Continue client-side logout even if the session was already gone.
+  }
+
+  currentUser = null;
+  authBusy = false;
+  editorOpen = false;
+  editorStatus = "";
+  hideMarkdownEditor();
+  renderAccountPanel();
+  updateEditButtonState();
+  if (currentView === "presentation") {
+    await reloadCurrentPresentationMarkdown();
+  }
+}
+
+async function loadCurrentUser() {
+  try {
+    const data = await apiRequest("me");
+    currentUser = data.user;
+    apiAvailable = true;
+  } catch {
+    currentUser = null;
+    apiAvailable = false;
+  }
+  renderAccountPanel();
 }
 
 function isPresentationRoute() {
@@ -256,6 +464,173 @@ async function loadMarkdown(file) {
   return response.text();
 }
 
+async function loadDeckMarkdown(deckMeta) {
+  baseMarkdown = await loadMarkdown(deckMeta.file);
+  activeMarkdown = baseMarkdown;
+  hasUserMarkdown = false;
+
+  if (!currentUser || !apiAvailable) {
+    return activeMarkdown;
+  }
+
+  try {
+    const data = await apiRequest(`decks/${encodeURIComponent(deckMeta.slug || deckMeta.file)}`);
+    if (data.markdown) {
+      activeMarkdown = data.markdown;
+      hasUserMarkdown = true;
+    }
+  } catch (error) {
+    editorStatus = error.message;
+  }
+
+  return activeMarkdown;
+}
+
+function updateEditButtonState() {
+  if (currentView !== "presentation") {
+    editDeck.disabled = true;
+    return;
+  }
+
+  editDeck.disabled = !userCanEdit();
+  editDeck.textContent = editorOpen ? "Close edit" : "Edit";
+  editDeck.title = userCanEdit() ? "Edit this deck on site" : "Sign in to edit this deck";
+  editDeck.setAttribute("aria-label", editDeck.title);
+}
+
+function hideMarkdownEditor() {
+  markdownEditor.hidden = true;
+  markdownEditor.innerHTML = "";
+}
+
+function renderMarkdownEditor() {
+  if (!editorOpen || currentView !== "presentation") {
+    hideMarkdownEditor();
+    updateEditButtonState();
+    return;
+  }
+
+  markdownEditor.hidden = false;
+  markdownEditor.innerHTML = `
+    <div class="markdown-editor__header">
+      <div>
+        <p class="markdown-editor__eyebrow">Markdown editor</p>
+        <h3>${escapeHtml(selectedPresentation().resolvedTitle || selectedPresentation().title)}</h3>
+      </div>
+      <p class="markdown-editor__state">${hasUserMarkdown ? "Using your saved version" : "Editing public source copy"}</p>
+    </div>
+    <textarea id="markdownEditorInput" spellcheck="false" ${editorBusy ? "disabled" : ""}>${escapeHtml(activeMarkdown)}</textarea>
+    <div class="markdown-editor__actions">
+      <button class="text-button" id="saveMarkdown" type="button" ${editorBusy ? "disabled" : ""}>Save</button>
+      <button class="text-button" id="previewMarkdown" type="button" ${editorBusy ? "disabled" : ""}>Preview</button>
+      <button class="text-button" id="resetMarkdown" type="button" ${editorBusy || !hasUserMarkdown ? "disabled" : ""}>Reset</button>
+      <a class="text-button markdown-editor__github" href="${githubEditBase}${selectedPresentation().file}" target="_blank" rel="noreferrer">GitHub</a>
+      <span class="markdown-editor__message" aria-live="polite">${escapeHtml(editorStatus)}</span>
+    </div>
+  `;
+
+  markdownEditor.querySelector("#saveMarkdown").addEventListener("click", saveMarkdown);
+  markdownEditor.querySelector("#previewMarkdown").addEventListener("click", previewMarkdown);
+  markdownEditor.querySelector("#resetMarkdown").addEventListener("click", resetMarkdown);
+  updateEditButtonState();
+}
+
+function editorValue() {
+  return markdownEditor.querySelector("#markdownEditorInput")?.value || activeMarkdown;
+}
+
+async function rerenderActiveDeck(markdown, slideIndex = currentSlide) {
+  const targetSlide = Math.max(0, slideIndex);
+  destroyDeck();
+  currentSlideTitles = markdownSlideTitles(markdown);
+  renderDeckShell(markdown);
+
+  deck = new Reveal(slide.querySelector(".deck-root"), {
+    embedded: true,
+    width: 1600,
+    height: 900,
+    margin: 0.02,
+    hash: false,
+    controls: false,
+    progress: true,
+    center: true,
+    transition: currentTransition,
+    keyboard: false,
+    plugins: [RevealMarkdown, RevealNotes]
+  });
+
+  await deck.initialize();
+  deck.layout();
+  deck.on("slidechanged", (event) => {
+    currentSlide = event.indexh;
+    updateSlideControls();
+    syncPresentationUrl(currentSlide);
+  });
+
+  currentSlide = Math.min(targetSlide, Math.max(0, currentSlideTitles.length - 1));
+  deck.slide(currentSlide);
+  updateSlideControls();
+  syncPresentationUrl(currentSlide);
+}
+
+async function previewMarkdown() {
+  activeMarkdown = editorValue();
+  editorStatus = "Preview updated.";
+  await rerenderActiveDeck(activeMarkdown);
+  renderMarkdownEditor();
+}
+
+async function saveMarkdown() {
+  if (!userCanEdit()) {
+    editorStatus = "Sign in to save.";
+    renderMarkdownEditor();
+    return;
+  }
+
+  editorBusy = true;
+  editorStatus = "Saving...";
+  renderMarkdownEditor();
+
+  try {
+    activeMarkdown = editorValue();
+    await apiRequest(`decks/${encodeURIComponent(currentDeckSlug())}/markdown`, {
+      method: "PUT",
+      body: JSON.stringify({ markdown: activeMarkdown })
+    });
+    hasUserMarkdown = true;
+    editorStatus = "Saved.";
+    await rerenderActiveDeck(activeMarkdown);
+  } catch (error) {
+    editorStatus = error.message;
+  } finally {
+    editorBusy = false;
+    renderMarkdownEditor();
+  }
+}
+
+async function resetMarkdown() {
+  if (!userCanEdit()) {
+    return;
+  }
+
+  editorBusy = true;
+  editorStatus = "Resetting...";
+  renderMarkdownEditor();
+
+  try {
+    await apiRequest(`decks/${encodeURIComponent(currentDeckSlug())}/markdown`, { method: "DELETE" });
+    activeMarkdown = baseMarkdown;
+    hasUserMarkdown = false;
+    editorStatus = "Reset to public source.";
+    await rerenderActiveDeck(activeMarkdown, 0);
+  } catch (error) {
+    editorStatus = error.message;
+  } finally {
+    editorBusy = false;
+    renderMarkdownEditor();
+  }
+}
+
 function renderPresentationList() {
   presentationList.innerHTML = "";
 
@@ -270,7 +645,12 @@ function renderPresentationList() {
       <span class="presentation-list__date">${escapeHtml(item.date)}</span>
       <span class="presentation-list__title">${escapeHtml(item.resolvedTitle || item.title)}</span>
     `;
-    button.addEventListener("click", () => goToPresentation(index));
+    button.addEventListener("click", () => {
+      goToPresentation(index);
+      if (mobileMedia.matches) {
+        toggleSidebar(false);
+      }
+    });
 
     li.append(button);
     presentationList.append(li);
@@ -481,6 +861,10 @@ async function renderHome() {
   editDeck.disabled = true;
   transitionSelect.disabled = true;
   backgroundSelect.disabled = true;
+  fontSelect.disabled = true;
+  editorOpen = false;
+  hideMarkdownEditor();
+  updateEditButtonState();
 
   slide.classList.add("slide--home");
   slide.innerHTML = `
@@ -548,6 +932,7 @@ function renderDeckShell(markdown) {
     </div>
   `;
 
+  applyCurrentDeckFont();
   restartShaderBackground();
 }
 
@@ -555,12 +940,17 @@ async function renderPresentation() {
   currentView = "presentation";
   stage.dataset.view = "presentation";
   destroyDeck();
+  hideMarkdownEditor();
   homeLink.removeAttribute("aria-current");
 
   const deckMeta = selectedPresentation();
-  currentTransition = window.localStorage.getItem(storageKeys.transition) || deckMeta.transition || currentTransition;
+  const deckSettings = readPresentationSettings();
+  currentTransition = deckSettings.transition;
+  currentBackground = deckSettings.background;
+  currentFont = deckSettings.font;
   transitionSelect.value = currentTransition;
   backgroundSelect.value = currentBackground;
+  fontSelect.value = currentFont;
   presentationTitle.textContent = deckMeta.title;
   presentationDate.textContent = deckMeta.date;
   slideCounter.textContent = "Loading";
@@ -568,13 +958,14 @@ async function renderPresentation() {
   prevSlide.disabled = true;
   nextSlide.disabled = true;
   fullscreen.disabled = true;
-  editDeck.disabled = false;
+  editDeck.disabled = !userCanEdit();
   transitionSelect.disabled = false;
   backgroundSelect.disabled = false;
+  fontSelect.disabled = false;
   renderPresentationList();
 
   try {
-    const markdown = await loadMarkdown(deckMeta.file);
+    const markdown = await loadDeckMarkdown(deckMeta);
     currentSlideTitles = markdownSlideTitles(markdown);
     deckMeta.resolvedTitle = firstSlideHeaderTitle(markdown) || deckMeta.title;
     presentationTitle.textContent = deckMeta.resolvedTitle;
@@ -616,6 +1007,7 @@ async function renderPresentation() {
 
     updateSlideControls();
     syncPresentationUrl(currentSlide);
+    renderMarkdownEditor();
   } catch (error) {
     currentSlideTitles = [];
     slide.classList.remove("slide--home");
@@ -628,12 +1020,23 @@ async function renderPresentation() {
     `;
     updateSlideControls();
     fullscreen.disabled = true;
+    updateEditButtonState();
   }
+}
+
+async function reloadCurrentPresentationMarkdown() {
+  if (currentView !== "presentation") {
+    return;
+  }
+
+  const keepEditorOpen = editorOpen && userCanEdit();
+  editorOpen = keepEditorOpen;
+  await renderPresentation();
 }
 
 function updateTransition(value) {
   currentTransition = value;
-  window.localStorage.setItem(storageKeys.transition, currentTransition);
+  saveCurrentPresentationSettings();
 
   if (!deck) {
     return;
@@ -646,7 +1049,7 @@ function updateTransition(value) {
 
 function updateBackground(value) {
   currentBackground = value;
-  window.localStorage.setItem(storageKeys.background, currentBackground);
+  saveCurrentPresentationSettings();
 
   const deckRoot = slide.querySelector(".deck-root");
   if (deckRoot) {
@@ -656,9 +1059,8 @@ function updateBackground(value) {
 
 function updateFont(value) {
   currentFont = fontOptions[value] ? value : "lora";
-  window.localStorage.setItem(storageKeys.font, currentFont);
-  document.documentElement.style.setProperty("--font-family", fontOptions[currentFont]);
-  fontSelect.value = currentFont;
+  saveCurrentPresentationSettings();
+  applyCurrentDeckFont();
 
   if (deck) {
     window.requestAnimationFrame(() => deck.layout());
@@ -679,6 +1081,9 @@ function applyTheme(theme) {
 
 function showHome() {
   window.history.pushState(null, "", appRootPath() || "/");
+  if (mobileMedia.matches) {
+    toggleSidebar(false);
+  }
   renderHome();
 }
 
@@ -718,6 +1123,10 @@ function toggleSidebar(open) {
   appShell.dataset.sidebarOpen = String(open);
 }
 
+function syncSidebarForViewport() {
+  toggleSidebar(!mobileMedia.matches);
+}
+
 async function toggleFullscreen() {
   if (currentView !== "presentation") {
     return;
@@ -744,7 +1153,15 @@ editDeck.addEventListener("click", () => {
     return;
   }
 
-  window.open(`${githubEditBase}${selectedPresentation().file}`, "_blank", "noreferrer");
+  if (!userCanEdit()) {
+    editorStatus = "Sign in to edit.";
+    updateEditButtonState();
+    return;
+  }
+
+  editorOpen = !editorOpen;
+  editorStatus = "";
+  renderMarkdownEditor();
 });
 openSidebar.addEventListener("click", () => toggleSidebar(true));
 closeSidebar.addEventListener("click", () => toggleSidebar(false));
@@ -793,6 +1210,8 @@ window.addEventListener("resize", () => {
   }
 });
 
+mobileMedia.addEventListener("change", syncSidebarForViewport);
+
 window.addEventListener("hashchange", () => {
   if (!isPresentationRoute()) {
     return;
@@ -812,12 +1231,19 @@ window.addEventListener("hashchange", () => {
   goToSlide(target.slideIndex);
 });
 
-updateFont(currentFont);
-applyTheme(currentTheme);
-if (isPresentationRoute()) {
-  const target = presentationTargetFromLocation();
-  goToPresentation(target.presentationIndex, target.slideIndex);
-} else {
-  renderHome();
+async function initApp() {
+  syncSidebarForViewport();
+  applyTheme(currentTheme);
+  renderAccountPanel();
+  await loadCurrentUser();
+
+  if (isPresentationRoute()) {
+    const target = presentationTargetFromLocation();
+    goToPresentation(target.presentationIndex, target.slideIndex);
+  } else {
+    renderHome();
+  }
+  preloadPresentationTitles();
 }
-preloadPresentationTitles();
+
+initApp();

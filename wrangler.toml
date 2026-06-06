@@ -1,0 +1,8 @@
+name = "rae-slides"
+compatibility_date = "2026-06-06"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "rae-slides"
+database_id = "6ba4a2e4-5155-44c2-b3fc-27fbe6096704"
