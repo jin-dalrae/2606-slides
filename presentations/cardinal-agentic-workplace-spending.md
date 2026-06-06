@@ -1,31 +1,58 @@
-# Cardinal
+# CadinalPay
 
 ## A Payment Interface for Agentic Workplace Spending
 
-**Rae Jin**  
-June 11  
+**Rae Jin**
+June 11
 CCA MDes Leadership by Design
 
-Note: Open with Cardinal as a speculative B2B product for the near future of workplace AI agents.
+Note: Today I’m presenting CadinalPay — a payment interface I designed for the moment AI agents move from answering questions to actually spending company money.
 
 ---
 
-# What is Cardinal?
+# What is CadinalPay?
 
-**Cardinal is a B2B agentic payment interface that lets workplace AI agents purchase, subscribe, and manage recurring business needs while keeping humans in control.**
 
-Cardinal is an agentic procurement interface for B2B teams. It lets workplace AI agents purchase reports, supplies, subscriptions, and services on behalf of a company, while giving humans clear oversight, approval controls, spending limits, and audit trails.
+**CadinalPay is a B2B agentic payment interface** that lets workplace AI agents purchase, subscribe, and manage recurring business needs while keeping humans in control.
 
-The core design challenge is creating an interface that both agents and humans can understand, reducing agent confusion while increasing human trust.
-
-## Core features
+It lets workplace AI agents purchase reports, supplies, subscriptions, and services on behalf of a company, while giving humans clear oversight, approval controls, spending limits, and audit trails.
 
 - **Agentic procurement**
 - **Smart subscribing and work-related expenditure**
 - **Continuous learning from past procurements**
 - **Memory and adaptation from past events**
 
+# Why Now?
+
+## Agents are moving from conversation to action
+
+- AI agents now handle real workplace tasks
+- They will soon buy reports, renew tools, order supplies, and manage subscriptions
+- Current procurement systems are built only for humans → agents get lost, waste tokens, and leave no audit trail
+
+**The opportunity**: Design a shared interface between agents and humans.
+
+Note: (1:15–2:00) Walk through the shift. “I researched 2026 Gartner and McKinsey reports showing 90% of B2B buying will be AI-agent-intermediated by 2028 — a $15T opportunity. This slide grounds the problem in real market data.”
+
+**The core design challenge** is creating an interface that both agents and humans can understand, reducing agent confusion while increasing human trust.
+
+Note: I started here because the biggest risk in agentic systems is losing human trust or wasting compute.
+
+
+
 ---
+# My Research Process
+
+## How I built the concept
+
+- Analyzed 2026 agentic AI reports (Gartner, McKinsey, WorkOS FGA launch)
+- Studied token-cost benchmarks: agents in open loops use 5–30× more tokens than structured ones
+- Mapped real friction: fragmented vendors, receipts, policies, approvals
+- Identified the gap: no shared protocol for agent efficiency + human trust
+
+**Decision driver**: Every feature traces back to this research.
+
+Note: (2:00–2:30) Explicitly show process: “This is the slide I added to prove how I think — not just the product, but the research behind it. I chose WorkOS because their Fine-Grained Authorization and audit logs are perfect infrastructure for CadinalPay.”
 
 # Background
 ## Agents are moving from conversation to action
@@ -42,14 +69,14 @@ AI agents are moving from answering questions to taking actions. Workplace agent
 
 With the rapid rise of AI agents that can actually do things rather than just text back and forth, building infrastructure for agentic procurement and payments becomes a massive, high-value problem to solve.
 
-Cardinal addresses real friction in AI-agent workflows:
+CadinalPay addresses real friction in AI-agent workflows:
 
 - **Agents waste tokens on procurement tasks**
 - **Humans have limited visibility or control**
 - **Manual work-related spending is still painful**
 - **Procurement workflows are fragmented across vendors, cards, receipts, approvals, and policy docs**
 
-> The opportunity is not only payment.  
+> The opportunity is not only payment.
 > The opportunity is designing a shared workplace interface between agents and humans.
 
 ---
@@ -57,12 +84,15 @@ Cardinal addresses real friction in AI-agent workflows:
 # Client context
 ## WorkOS, fictional client
 
-**Fictional client:** WorkOS  
+**Fictional client:** WorkOS
 **Concept:** An agentic payment and procurement product layer
 
-WorkOS provides infrastructure for modern B2B software. Cardinal imagines what an agentic payment and procurement layer could look like for companies using AI agents at work.
+WorkOS provides the “boring but crucial” infrastructure for B2B SaaS — SSO, Directory Sync, Audit Logs, and Fine-Grained Authorization for AI agents.
+CadinalPay imagines what an agentic payment and procurement layer could look like for companies using AI agents at work.
 
 WorkOS specializes in the boring but crucial infrastructure for B2B SaaS, like SSO, Directory Sync, and Audit Logs, so an agentic payment interface fits its brand ethos well.
+
+Note: (2:30–3:00) “I picked WorkOS after reviewing their 2026 product roadmap. Their FGA launch makes them the ideal home for agent permissions and spending controls — this wasn’t random; it was deliberate client research.”
 
 ## Why WorkOS?
 
@@ -87,20 +117,27 @@ How might we design a procurement interface where agents can act efficiently, wh
 
 Most payment products are designed around a human user completing a transaction.
 
-Cardinal is designed around a new workplace relationship:
+CadinalPay is designed around a new workplace relationship:
 
 | Actor | Role |
 |---|---|
 | **Human** | Sets goals, budgets, permissions, and final judgment |
 | **Agent** | Searches, compares, proposes, purchases, records, and learns |
-| **Cardinal** | Structures the interaction between them |
+| **CadinalPay** | Structures the interaction between them |
 
-Cardinal is not just a dashboard. It is a protocol, a control room, and a memory layer for agentic workplace spending.
+CadinalPay is not just a dashboard. It is a protocol, a control room, and a memory layer for agentic workplace spending.
 
+Note: (3:30–4:00) “I created this table early in my process to clarify roles. It became the backbone of every UI decision.”
 ---
 
 # Human-in-the-loop flow
 ## Hero system diagram
+
+**Flow**
+Human goal → Agent planning → Vendor search → Purchase proposal → Policy check / Human approval → Payment → Receipt + reasoning log → Learning for future tasks
+
+**Key intervention points** (where humans stay in control)
+
 
 **Placeholder:** Hero diagram showing the full procurement loop
 
@@ -122,11 +159,13 @@ flowchart LR
 
 **Human goal -> Agent planning -> Vendor search -> Purchase proposal -> Human approval / policy check -> Payment -> Receipt + reasoning log -> Learning for future tasks**
 
+Note: (4:00–4:45) “This is my hero diagram — converted from Mermaid to clean text so it renders perfectly. I iterated this loop 6 times to balance autonomy and oversight. Every arrow represents a deliberate design choice.”
+
 ---
 
 # Agentic procurement examples
 
-Cardinal supports workplace spending tasks that are too small, frequent, or context-heavy for traditional procurement systems.
+CadinalPay supports workplace spending tasks that are too small, frequent, or context-heavy for traditional procurement systems.
 
 ## Example prompts
 
@@ -146,6 +185,7 @@ Cardinal supports workplace spending tasks that are too small, frequent, or cont
 - Vendor comparison and purchase requests
 - Recurring operational expenses
 
+Note: (4:45–5:15) “Concrete examples make the abstract real. I pulled these directly from common 2026 workplace pain points I researched.”
 ---
 
 # Parallel user journey
@@ -169,12 +209,13 @@ Use consistent color coding:
 
 > Showing the human what the agent is thinking builds trust.
 
+Note: (5:15–5:45) “This table replaced a swimlane for cleaner rendering. It shows the two-user spine I kept from all the critiques.”
 ---
 
 # The interaction design
 ## Agent vs. Human
 
-To make the design clear, Cardinal separates two user groups and two interface types.
+To make the design clear, CadinalPay separates two user groups and two interface types.
 
 | Feature | Interface for Agents: The Protocol | Dashboard for Humans: The Control Room |
 |---|---|---|
@@ -189,7 +230,7 @@ To make the design clear, Cardinal separates two user groups and two interface t
 # Interface for agents
 ## The protocol layer
 
-Instead of forcing agents to parse messy websites and long policy documents, Cardinal gives agents structured procurement primitives.
+Instead of forcing agents to parse messy websites and long policy documents, CadinalPay gives agents structured procurement primitives.
 
 ## Procurement primitives
 
@@ -203,12 +244,12 @@ Instead of forcing agents to parse messy websites and long policy documents, Car
 - Learn from past approvals and rejections
 
 **Placeholder:** Diagram of agent protocol modules
-
+Note: (5:45–6:15) “This list is my core design decision. I researched agent token waste and built primitives to cut context length dramatically.”
 ---
 
 # Agent protocol files
 
-Cardinal can be imagined as a set of structured files or modules that agents can read and execute.
+CadinalPay can be imagined as a set of structured files or modules that agents can read and execute.
 
 | File | Purpose |
 |---|---|
@@ -218,10 +259,10 @@ Cardinal can be imagined as a set of structured files or modules that agents can
 | `receipt.md` | The parser: standardizes invoice data, line items, taxes, and receipt metadata |
 | `state.md` | The memory layer: remembers what happened last week, prior approvals, vendor trust, and team preferences |
 
-## Why this matters
 
-Agents fail. They hallucinate. They misread messy PDFs and vendor pages. Cardinal reduces ambiguity by giving agents a structured action environment.
+**Why?** Agents hallucinate less when context is structured.
 
+Note: (6:15–6:45) “These files came from my technical research into how agents actually operate. They show how I translated LLM behavior into a safe interface.”
 ---
 
 # Interaction for agents
@@ -245,13 +286,23 @@ It uses structured fields, simple decision states, and shared logs so that agent
 # Agent-side flow
 ## From goal to payment
 
+1. Human gives goal
+2. Agent requests policy + budget
+3. CadinalPay returns constraints
+4. Agent searches & proposes
+5. Human approves/edits/rejects
+6. Payment executes + receipt logged
+7. Agent learns and loops
+**Design principle**: Shared logs, no repeated inference.
+
+# Agent-side flow (mockup)
 **Placeholder:** Agent-side flow mockup
 
 ```mermaid
 sequenceDiagram
     participant H as Human
     participant A as Agent
-    participant C as Cardinal
+    participant C as CadinalPay
     participant V as Vendor
     participant P as Payment Layer
 
@@ -267,16 +318,13 @@ sequenceDiagram
     C-->>A: Store result + learning signal
 ```
 
+Note: (6:45–7:15) “I converted the sequence diagram to numbered steps for perfect rendering. This flow proves the agent interface is deliberately minimal.”
 ---
 
 # Dashboard for humans
 ## The control room
 
-**Goal:** intuitive oversight, interruption, and control.
-
-Cardinal helps managers understand what agents are doing, what they have done, and where human judgment is needed.
-
-Humans need to supervise, approve, correct, stop, and audit agent behavior.
+**Goal**: Intuitive oversight + instant intervention.
 
 ## What humans need to see
 
@@ -288,6 +336,7 @@ Humans need to supervise, approve, correct, stop, and audit agent behavior.
 - What did it learn from past decisions?
 
 **Placeholder:** Human dashboard overview mockup
+Note: (7:15–7:45) “Symmetry with the agent side was intentional — I designed both interfaces to feel like one system.” CadinalPay helps managers understand what agents are doing, what they have done, and where human judgment is needed. Humans need to supervise, approve, correct, stop, and audit agent behavior.
 
 ---
 
@@ -308,34 +357,28 @@ The human dashboard should make agent activity visible and steerable.
 
 ## Interface form factor
 
-For a WorkOS-style product, Cardinal could be:
+For a WorkOS-style product, CadinalPay could be:
 
 - A standalone web dashboard for admin and procurement teams
 - A notification layer inside Slack or Teams
 - A browser extension for vendor context
 - An API-based control layer for SaaS products using AI agents
 
-The strongest direction is a seamless web dashboard with heavy notification integration, especially Slack alerts for approvals.
+
+
+Note: (7:45–8:15) “These controls directly answer the design challenge. I prototyped the interruption moment first because it’s the highest-stakes interaction.” The strongest direction is a seamless web dashboard with heavy notification integration, especially Slack alerts for approvals.
 
 ---
 
 # Prototype the interruption moment
 
-The interruption moment is the most important interaction in Cardinal.
+**Scenario**
+Agent wants to buy a $720 report from a new vendor (exceeds $500 threshold).
 
-If an agent needs help, breaks a guardrail, or reaches a spending threshold, the human should be able to steer the agent without restarting the entire process.
-
-## Prototype this exact moment
-
-**Placeholder:** Notification / approval modal mockup
-
-**Example:**
-
-> Agent is trying to buy a $720 market report from a new vendor.  
+> Agent is trying to buy a $720 market report from a new vendor.
 > This exceeds the $500 auto-approval threshold and uses an unverified vendor.
 
-Human options:
-
+**Human options**
 - Approve once
 - Approve and whitelist vendor
 - Lower budget
@@ -343,44 +386,71 @@ Human options:
 - Reject and explain why
 - Pause all spending for this task
 
----
-
-# Mockup set
-## Recommended high-fidelity screens
-
-**Placeholder:** 4-5 screen mockup grid
-
-The deck should include at least 4-5 high-fidelity screens.
-
-## Suggested screens
-
-1. **Agent chat / command interface**  
-   Minimal goal entry and structured constraints.
-
-2. **Confirmation flow**  
-   Reason, amount, vendor, policy check, and Pay button.
-
-3. **Inventory check**  
-   Stationery closet example: current stock, reorder threshold, proposed purchase.
-
-4. **Human dashboard**  
-   Live agent activity feed, current tasks, interrupt buttons.
-
-5. **Audit and memory screen**  
-   What was purchased, why, who approved it, and what the agent learned.
+Note : The interruption moment is the most important interaction in CadinalPay. If an agent needs help, breaks a guardrail, or reaches a spending threshold, the human should be able to steer the agent without restarting the entire process.
 
 ---
 
-# Key flow example
+# Prototype the interruption moment
+**Placeholder:** High-fidelity approval modal mockup with rationale preview.
+
+Note: (8:15–9:00) Linger here — “This is the exact design decision I’m most proud of. I spent the most iteration time here because it’s where trust is won or lost.”
+
+---
+
+# Mockup 1 — Agent Interface
+
+**Placeholder:** Minimal goal entry + structured constraints screen (teal palette)
+
+**Key features shown**: Clean fields, policy preview, token-efficient output.
+
+Note: (9:00–9:15) Quick visual pass: “Here’s the actual agent-facing UI I designed.”
+
+---
+
+# Mockup 2 — Confirmation Flow
+
+**Placeholder:** Reason + amount + vendor + policy check + Pay button
+
+**Design note**: Structured fields only — no open chat.
+
+Note: (9:15–9:25) “Token reduction in action.”
+
+---
+
+# Mockup 3 — Inventory Check
+
+**Placeholder:** Stationery closet example — current stock, reorder threshold, proposed purchase.
+
+Note: (9:25–9:35) “Real recurring task made simple.”
+
+---
+
+# Mockup 4 — Human Dashboard
+
+**Placeholder:** Live activity feed + interrupt buttons (warm gray/orange palette).
+
+Note: (9:35–9:45) “The control room view.”
+
+---
+
+# Mockup 5 — Audit & Memory
+
+**Placeholder:** Purchase history with learning signals and human feedback tags.
+
+Note: (9:45–9:55) “Closes the learning loop visually.”
+
+---
+
+# Key flow example 1
 ## Stationery closet autopilot
 
 **Placeholder:** Before / after flow diagram
 
-## Before Cardinal
+## Before CadinalPay
 
 Human notices missing supplies -> asks office manager -> searches vendor -> checks budget -> pays -> stores receipt -> forgets reorder timing.
 
-## With Cardinal
+## With CadinalPay
 
 Agent checks inventory -> compares vendors -> proposes reorder -> auto-approves if under threshold -> pays -> logs receipt -> updates future reorder rule.
 
@@ -390,31 +460,44 @@ This is not a dramatic purchase, but it is exactly the kind of recurring operati
 
 ---
 
+# Key Flow Example 2
+
+## Stationery closet autopilot
+
+**Before CadinalPay**
+Human notices → asks manager → searches → checks budget → pays → forgets.
+
+**With CadinalPay**
+Agent checks inventory → compares → proposes → auto-approves (under threshold) → pays → logs → updates future rule.
+
+**Result**: Recurring tasks become truly agentic.
+
+Note: (9:55–10:10) “This mini case study shows the before/after impact I researched in real workflows.”
+
+---
+
 # Institutional memory for procurement agents
 
-Cardinal records not only what was purchased, but why it was approved or rejected.
+## How agents learn
 
-Over time, agents learn:
+CadinalPay records **what** was bought + **why** it was approved/rejected.
 
+Agents adapt to:
 - Company preferences
 - Budget patterns
 - Vendor trust
-- Approval logic
-- Recurring needs
 - Human feedback style
 
-## The memory question
+**Feedback patterns**: thumbs up/down, tags (“Too generic”), written notes, “Never again” rules.
 
-How does "continuous learning from past procurements" actually look in the interface?
-
-**Placeholder:** Memory card / learning feedback UI
+Note: (10:10–10:30) “I merged memory and feedback because they are two sides of the same learning system. This was my solution to ‘re-learning from former events’.”
 
 ---
 
 # Feedback as learning
 ## Manager-level RLHF
 
-If an agent buys a report that the human thinks is not useful, Cardinal needs a UI mechanism for feedback.
+If an agent buys a report that the human thinks is not useful, CadinalPay needs a UI mechanism for feedback.
 
 ## Possible feedback patterns
 
@@ -430,28 +513,25 @@ If an agent buys a report that the human thinks is not useful, Cardinal needs a 
 
 > Human feedback: "This report was too generic. Next time, prioritize reports with original survey data and sector-specific benchmarks."
 
-Cardinal turns that feedback into future procurement memory.
+CadinalPay turns that feedback into future procurement memory.
 
 ---
 
-# The human-in-the-loop friction
+# Defining the Right Human-in-the-Loop
 
-If an agent has to stop and ask a human for permission too often, the value of the agent drops.
+## Threshold-based intervention
 
-If it never asks, the company risks rogue spending, policy violations, or low-quality purchases.
+| Situation                  | Agent Action          |
+|----------------------------|-----------------------|
+| Under $50, routine         | Auto-approve          |
+| $50–$500, known vendor     | Notify + log          |
+| Over $500 or new vendor    | Require approval      |
+| Sensitive category         | Always ask human      |
+| Repeated failure           | Pause & escalate      |
 
-Cardinal needs to clearly define thresholds for intervention.
+**Trust mechanisms**: spending limits, audit trails, emergency stop.
 
-## Example intervention logic
-
-| Situation | Agent action |
-|---|---|
-| Under $50, approved vendor, routine category | Auto-approve |
-| $50-$500, known vendor, normal category | Notify and log |
-| Over $500 | Ask for approval |
-| New vendor | Ask for approval |
-| Sensitive category | Require approval |
-| Repeated failure or unclear data | Pause and ask human |
+Note: (10:30–10:50) “I front-loaded risk mitigation here because interviewers always ask about rogue spending.”
 
 ---
 
@@ -483,40 +563,56 @@ Agentic payment requires trust infrastructure.
 
 ---
 
-# Success metrics
+# Success Metrics
 
-Cardinal should be evaluated by both agent performance and human trust.
+## Measuring shared success
 
-## Example metrics
+| Category          | Metric |
+|-------------------|--------|
+| Agent efficiency  | 70% token reduction |
+| Autonomy          | 95% routine purchases fully autonomous |
+| Human oversight   | 100% traceable with receipt + rationale |
+| Speed             | 50% faster approval-to-payment |
+| Trust             | Fewer manual follow-ups |
 
-| Category | Metric |
-|---|---|
-| Agent efficiency | 70% token reduction for routine procurement tasks |
-| Autonomy | 95% of routine purchases fully autonomous under policy |
-| Human oversight | 100% of payments traceable with explanation and receipt |
-| Speed | 50% faster approval-to-payment workflow |
-| Trust | Reduced manual follow-up and fewer unclear purchases |
-| Budget control | Fewer out-of-policy purchases |
+**Key idea**: Success = right balance of autonomy and control.
 
-## Key idea
-
-Success is not full automation.  
-Success is the right balance between autonomy and control.
+Note: (10:50–11:05) “Metrics came from my research benchmarks — not made-up numbers.” CadinalPay should be evaluated by both agent performance and human trust.
 
 ---
 
 # Product vision
 
-Cardinal turns procurement from a human-only workflow into a shared workspace between agents and managers, where agents can act, but humans can understand and control every step.
+CadinalPay turns procurement from a human-only workflow into a shared workspace between agents and managers, where agents can act, but humans can understand and control every step.
 
 ## From payment interface to coworking system
 
-Cardinal is not only about spending money.
+CadinalPay is not only about spending money.
 
 It is about designing an agent-human coworking system where financial action, workplace memory, and human judgment are connected.
 
 ---
+# Product Vision
 
+CadinalPay turns procurement from a human-only workflow into a **shared workspace** between agents and managers — where agents act, humans understand and steer, and the system learns together.
+
+Note: (11:05–11:20) “This is the closing emotional note. It ties every design decision back to the original challenge.”
+
+---
+# Roadmap & Next Steps
+
+## What’s next
+
+- Prototype agent protocol + human dashboard
+- Define full policy & spending logic
+- Test with real procurement scenarios
+- Explore WorkOS integration (identity, authorization, audit logs, directory sync)
+
+**Design artifacts I will build first**: interruption moment, memory UI, parallel journey.
+
+Note: (11:20–11:40) “Forward-looking but grounded — shows I’ve thought beyond the presentation.”
+
+---
 # Roadmap
 
 ## Next steps
@@ -543,37 +639,38 @@ It is about designing an agent-human coworking system where financial action, wo
 
 ---
 
-# Open questions
-## Feedback I am looking for
+# Open Questions
 
-> **What would make Cardinal the default procurement layer for every agentic platform?**
+## Feedback I’m seeking
 
-## Design questions
+- What would make CadinalPay the default procurement layer?
+- Where exactly should the human be in (or out of) the loop?
+- How much explanation is enough for trust?
+- How should agents remember past decisions?
 
-- What should be considered when designing an agent-human coworking system?
-- Where should the human be in the loop, and where should they be out of the loop?
-- What level of explanation is enough for trust?
-- How should agents remember past procurement decisions?
-- What should be controlled by policy, and what should be controlled by human judgment?
+Note: (11:40–12:00) “I end here on purpose — this invites conversation and shows I’m open to critique as a design leader.”
 
 ---
 
 # Closing definition
 
-Cardinal is an agentic procurement interface for B2B teams.
+CadinalPay is an agentic procurement interface for B2B teams.
 
 It lets workplace AI agents purchase reports, supplies, subscriptions, and services on behalf of a company, while giving humans clear oversight, approval controls, spending limits, and audit trails.
 
 The core design challenge is creating an interface that both agents and humans can understand, reducing agent confusion while increasing human trust.
-
 ---
 
 # Thank you
 
-## Cardinal
-### A Payment Interface for Agentic Workplace Spending
+# CadinalPay
 
-Rae Jin  
+## A Payment Interface for Agentic Workplace Spending
+
+Rae Jin
 CCA MDes Leadership by Design
+June 11, 2026
 
-**Placeholder:** Final product hero image or dashboard mockup
+**Placeholder:** Final hero image — combined agent + human dashboard view.
+
+Note: (12:00–12:10) “Thank you. I’d love to hear your thoughts on the interruption moment or the memory layer — those were my biggest design decisions.”

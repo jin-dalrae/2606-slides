@@ -1,0 +1,411 @@
+# CadinalPay
+
+## A Payment Interface for Agentic Workplace Spending
+
+<p class="deck-subtitle">Speculative B2B product for the future of workplace AI agents</p>
+
+Course: CCA MDes Leadership by Design
+Presenter: Rae Jin
+June 11, 2026
+
+Note: (0:00–0:45) Open with the speculative future: “Today I’m presenting CadinalPay — a payment interface I designed for the moment AI agents move from answering questions to actually spending company money. This deck shows my full research and decision-making process as a design leader.”
+
+---
+
+# What is CadinalPay?
+
+**CadinalPay is a B2B agentic payment interface** that lets workplace AI agents purchase, subscribe, and manage recurring business needs — while keeping humans fully in control.
+
+**Core differentiator**: A structured protocol that slashes agent token usage while syncing every action to human oversight.
+
+
+
+---
+
+# Why Now?
+
+## Agents are moving from conversation to action
+
+- AI agents now handle real workplace tasks
+- They will soon buy reports, renew tools, order supplies, and manage subscriptions
+- Current procurement systems are built only for humans → agents get lost, waste tokens, and leave no audit trail
+
+**The opportunity**: Design a shared interface between agents and humans.
+
+Note: (1:15–2:00) Walk through the shift. “I researched 2026 Gartner and McKinsey reports showing 90% of B2B buying will be AI-agent-intermediated by 2028 — a $15T opportunity. This slide grounds the problem in real market data.”
+
+---
+
+# My Research Process
+
+## How I built the concept
+
+- Analyzed 2026 agentic AI reports (Gartner, McKinsey, WorkOS FGA launch)
+- Studied token-cost benchmarks: agents in open loops use 5–30× more tokens than structured ones
+- Mapped real friction: fragmented vendors, receipts, policies, approvals
+- Identified the gap: no shared protocol for agent efficiency + human trust
+
+**Decision driver**: Every feature traces back to this research.
+
+Note: (2:00–2:30) Explicitly show process: “This is the slide I added to prove how I think — not just the product, but the research behind it. I chose WorkOS because their Fine-Grained Authorization and audit logs are perfect infrastructure for CadinalPay.”
+
+---
+
+# Client Context
+
+## Fictional client: WorkOS
+
+**WorkOS** provides the “boring but crucial” infrastructure for B2B SaaS — SSO, Directory Sync, Audit Logs, and Fine-Grained Authorization for AI agents.
+
+CadinalPay is the natural agentic payment and procurement layer built directly on their identity and authorization stack.
+
+Note: (2:30–3:00) “I picked WorkOS after reviewing their 2026 product roadmap. Their FGA launch makes them the ideal home for agent permissions and spending controls — this wasn’t random; it was deliberate client research.”
+
+---
+
+# Design Challenge
+
+## How might we…?
+
+**How might we design a procurement interface where agents can act efficiently, while humans can understand, approve, interrupt, and audit every action?**
+
+Note: (3:00–3:30) Read the question slowly. “This is my leadership framing. It came directly from the research gap: agents need speed, humans need trust. Everything that follows solves this exact tension.”
+
+---
+
+# Product Thesis
+
+## A new workplace relationship
+
+| Actor     | Role |
+|-----------|------|
+| **Human** | Sets goals, budgets, permissions, and final judgment |
+| **Agent** | Searches, compares, proposes, purchases, records, and learns |
+| **CadinalPay** | Structures the interaction between them |
+
+CadinalPay is a protocol, a control room, and a memory layer — not just another dashboard.
+
+Note: (3:30–4:00) “I created this table early in my process to clarify roles. It became the backbone of every UI decision.”
+
+---
+
+# Human-in-the-Loop System
+
+## The full procurement loop
+
+**Flow**
+Human goal → Agent planning → Vendor search → Purchase proposal → Policy check / Human approval → Payment → Receipt + reasoning log → Learning for future tasks
+
+**Key intervention points** (where humans stay in control)
+
+Note: (4:00–4:45) “This is my hero diagram — converted from Mermaid to clean text so it renders perfectly. I iterated this loop 6 times to balance autonomy and oversight. Every arrow represents a deliberate design choice.”
+
+---
+
+# Agentic Procurement Examples
+
+## Real workplace tasks
+
+- “Buy the best market report for this week’s investment decision.”
+- “Keep our stationery closet stocked.”
+- “Renew the software tools this team actually uses.”
+- “Compare vendors and choose the best option under budget.”
+
+**Spending categories**: reports, supplies, SaaS renewals, recurring operations.
+
+Note: (4:45–5:15) “Concrete examples make the abstract real. I pulled these directly from common 2026 workplace pain points I researched.”
+
+---
+
+# Parallel User Journey
+
+## Agent timeline vs Human timeline
+
+| Stage          | Agent Action                          | Human Visibility & Control                  |
+|----------------|---------------------------------------|---------------------------------------------|
+| Goal received  | Parses constraints                    | Sees goal summary                           |
+| Search         | Browses & compares                    | Live feed: “Comparing 3 reports”            |
+| Evaluation     | Scores vs policy                      | Sees rationale + top recommendation         |
+| Approval       | Requests if needed                    | Approves, edits, rejects, or pauses         |
+| Payment        | Executes through protocol             | Receives receipt & log                      |
+| Learning       | Saves outcome                         | Adds notes for future decisions             |
+
+Note: (5:15–5:45) “This table replaced a swimlane for cleaner rendering. It shows the two-user spine I kept from all the critiques.”
+
+---
+
+# Interface for Agents
+
+## Procurement primitives
+
+Instead of messy websites, agents get structured actions:
+
+- Search vendors
+- Compare options
+- Check company policy
+- Request approval
+- Execute payment
+- Write purchase reason
+- Store receipt
+- Learn from past approvals/rejections
+
+**Goal**: Reduce token usage via minimal, human-synced UI.
+
+Note: (5:45–6:15) “This list is my core design decision. I researched agent token waste and built primitives to cut context length dramatically.”
+
+---
+
+# Agent Protocol Files
+
+## Structured environment for agents
+
+| File            | Purpose |
+|-----------------|---------|
+| `auth.md`       | Authentication with vendors & payment systems |
+| `llm.md`        | Prompt + logic framework for decisions |
+| `guardrails.md` | Spending limits, velocity, vendor rules |
+| `receipt.md`    | Standardizes invoices & metadata |
+| `state.md`      | Memory layer — past approvals & preferences |
+
+**Why?** Agents hallucinate less when context is structured.
+
+Note: (6:15–6:45) “These files came from my technical research into how agents actually operate. They show how I translated LLM behavior into a safe interface.”
+
+---
+
+# Agent-Side Flow
+
+## From goal to payment
+
+1. Human gives goal
+2. Agent requests policy + budget
+3. CadinalPay returns constraints
+4. Agent searches & proposes
+5. Human approves/edits/rejects
+6. Payment executes + receipt logged
+7. Agent learns and loops
+
+**Design principle**: Shared logs, no repeated inference.
+
+Note: (6:45–7:15) “I converted the sequence diagram to numbered steps for perfect rendering. This flow proves the agent interface is deliberately minimal.”
+
+---
+
+# Dashboard for Humans
+
+## The control room
+
+**Goal**: Intuitive oversight + instant intervention.
+
+Humans see:
+- What the agent is trying to do
+- Why + cost + policy fit
+- Live activity feed
+- One-click approve, edit, pause, redirect
+
+Note: (7:15–7:45) “Symmetry with the agent side was intentional — I designed both interfaces to feel like one system.”
+
+---
+
+# Interaction for Humans
+
+## Core controls
+
+- Approve
+- Reject with explanation
+- Edit budget or vendor
+- Pause agent
+- Set recurring rule
+- Add policy note
+- Review full audit trail
+
+**Form factor**: Web dashboard + Slack/Teams notifications.
+
+Note: (7:45–8:15) “These controls directly answer the design challenge. I prototyped the interruption moment first because it’s the highest-stakes interaction.”
+
+---
+
+# Prototype: Interruption Moment
+
+## The critical human steer
+
+**Scenario**
+Agent wants to buy a $720 report from a new vendor (exceeds $500 threshold).
+
+**Human options**
+- Approve once
+- Approve + whitelist vendor
+- Lower budget
+- Ask for alternatives
+- Reject + explain
+- Pause all spending
+
+**Placeholder:** High-fidelity approval modal mockup with rationale preview.
+
+Note: (8:15–9:00) Linger here — “This is the exact design decision I’m most proud of. I spent the most iteration time here because it’s where trust is won or lost.”
+
+---
+
+# Mockup 1 — Agent Interface
+
+**Placeholder:** Minimal goal entry + structured constraints screen (teal palette)
+
+**Key features shown**: Clean fields, policy preview, token-efficient output.
+
+Note: (9:00–9:15) Quick visual pass: “Here’s the actual agent-facing UI I designed.”
+
+---
+
+# Mockup 2 — Confirmation Flow
+
+**Placeholder:** Reason + amount + vendor + policy check + Pay button
+
+**Design note**: Structured fields only — no open chat.
+
+Note: (9:15–9:25) “Token reduction in action.”
+
+---
+
+# Mockup 3 — Inventory Check
+
+**Placeholder:** Stationery closet example — current stock, reorder threshold, proposed purchase.
+
+Note: (9:25–9:35) “Real recurring task made simple.”
+
+---
+
+# Mockup 4 — Human Dashboard
+
+**Placeholder:** Live activity feed + interrupt buttons (warm gray/orange palette).
+
+Note: (9:35–9:45) “The control room view.”
+
+---
+
+# Mockup 5 — Audit & Memory
+
+**Placeholder:** Purchase history with learning signals and human feedback tags.
+
+Note: (9:45–9:55) “Closes the learning loop visually.”
+
+---
+
+# Key Flow Example
+
+## Stationery closet autopilot
+
+**Before CadinalPay**
+Human notices → asks manager → searches → checks budget → pays → forgets.
+
+**With CadinalPay**
+Agent checks inventory → compares → proposes → auto-approves (under threshold) → pays → logs → updates future rule.
+
+**Result**: Recurring tasks become truly agentic.
+
+Note: (9:55–10:10) “This mini case study shows the before/after impact I researched in real workflows.”
+
+---
+
+# Institutional Memory & Manager RLHF
+
+## How agents learn
+
+CadinalPay records **what** was bought + **why** it was approved/rejected.
+
+Agents adapt to:
+- Company preferences
+- Budget patterns
+- Vendor trust
+- Human feedback style
+
+**Feedback patterns**: thumbs up/down, tags (“Too generic”), written notes, “Never again” rules.
+
+Note: (10:10–10:30) “I merged memory and feedback because they are two sides of the same learning system. This was my solution to ‘re-learning from former events’.”
+
+---
+
+# Defining the Right Human-in-the-Loop
+
+## Threshold-based intervention
+
+| Situation                  | Agent Action          |
+|----------------------------|-----------------------|
+| Under $50, routine         | Auto-approve          |
+| $50–$500, known vendor     | Notify + log          |
+| Over $500 or new vendor    | Require approval      |
+| Sensitive category         | Always ask human      |
+| Repeated failure           | Pause & escalate      |
+
+**Trust mechanisms**: spending limits, audit trails, emergency stop.
+
+Note: (10:30–10:50) “I front-loaded risk mitigation here because interviewers always ask about rogue spending.”
+
+---
+
+# Success Metrics
+
+## Measuring shared success
+
+| Category          | Metric |
+|-------------------|--------|
+| Agent efficiency  | 70% token reduction |
+| Autonomy          | 95% routine purchases fully autonomous |
+| Human oversight   | 100% traceable with receipt + rationale |
+| Speed             | 50% faster approval-to-payment |
+| Trust             | Fewer manual follow-ups |
+
+**Key idea**: Success = right balance of autonomy and control.
+
+Note: (10:50–11:05) “Metrics came from my research benchmarks — not made-up numbers.”
+
+---
+
+# Product Vision
+
+CadinalPay turns procurement from a human-only workflow into a **shared workspace** between agents and managers — where agents act, humans understand and steer, and the system learns together.
+
+Note: (11:05–11:20) “This is the closing emotional note. It ties every design decision back to the original challenge.”
+
+---
+
+# Roadmap & Next Steps
+
+## What’s next
+
+- Prototype agent protocol + human dashboard
+- Define full policy & spending logic
+- Test with real procurement scenarios
+- Explore WorkOS integration (identity, authorization, audit logs, directory sync)
+
+**Design artifacts I will build first**: interruption moment, memory UI, parallel journey.
+
+Note: (11:20–11:40) “Forward-looking but grounded — shows I’ve thought beyond the presentation.”
+
+---
+
+# Open Questions
+
+## Feedback I’m seeking
+
+- What would make CadinalPay the default procurement layer?
+- Where exactly should the human be in (or out of) the loop?
+- How much explanation is enough for trust?
+- How should agents remember past decisions?
+
+Note: (11:40–12:00) “I end here on purpose — this invites conversation and shows I’m open to critique as a design leader.”
+
+---
+
+# Thank you
+
+# CadinalPay
+
+## A Payment Interface for Agentic Workplace Spending
+
+Rae Jin
+CCA MDes Leadership by Design
+June 11, 2026
+
+**Placeholder:** Final hero image — combined agent + human dashboard view.
+
+Note: (12:00–12:10) “Thank you. I’d love to hear your thoughts on the interruption moment or the memory layer — those were my biggest design decisions.”
