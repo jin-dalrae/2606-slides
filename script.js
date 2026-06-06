@@ -43,7 +43,8 @@ const storageKeys = {
 const defaultPresentationSettings = {
   transition: "slide",
   background: "shader",
-  font: "lora"
+  font: "lora",
+  theme: "dark"
 };
 
 const fontOptions = {
@@ -137,8 +138,9 @@ function readPresentationSettings(index = currentPresentation) {
 
   return {
     transition: saved.transition || item.transition || defaultPresentationSettings.transition,
-    background: saved.background || defaultPresentationSettings.background,
-    font: fontOptions[saved.font] ? saved.font : defaultPresentationSettings.font
+    background: saved.background || item.background || defaultPresentationSettings.background,
+    font: fontOptions[saved.font] ? saved.font : fontOptions[item.font] ? item.font : defaultPresentationSettings.font,
+    theme: saved.theme || item.theme || defaultPresentationSettings.theme
   };
 }
 
@@ -148,7 +150,8 @@ function saveCurrentPresentationSettings() {
     JSON.stringify({
       transition: currentTransition,
       background: currentBackground,
-      font: currentFont
+      font: currentFont,
+      theme: currentTheme
     })
   );
 }
@@ -1083,6 +1086,9 @@ async function renderPresentation() {
   currentTransition = deckSettings.transition;
   currentBackground = deckSettings.background;
   currentFont = deckSettings.font;
+  if (!window.localStorage.getItem(presentationSettingsKey()) && deckSettings.theme !== currentTheme) {
+    applyTheme(deckSettings.theme);
+  }
   transitionSelect.value = currentTransition;
   backgroundSelect.value = currentBackground;
   fontSelect.value = currentFont;
@@ -1216,6 +1222,9 @@ function applyTheme(theme) {
     "aria-label",
     currentTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"
   );
+  if (currentView === "presentation") {
+    saveCurrentPresentationSettings();
+  }
   restartShaderBackground();
   broadcastPresentationState();
 }

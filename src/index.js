@@ -290,15 +290,10 @@ async function resetDeck(request, env, slug) {
   return json({ ok: true });
 }
 
-function routePath(context) {
-  const raw = context.params.path;
-  return Array.isArray(raw) ? raw.join("/") : String(raw || "");
-}
-
-export async function onRequest(context) {
-  const { request, env } = context;
+async function handleApi(request, env) {
   const method = request.method.toUpperCase();
-  const path = routePath(context);
+  const url = new URL(request.url);
+  const path = url.pathname.replace(/^\/api\/?/, "");
   const parts = path.split("/").filter(Boolean);
 
   if (!env.DB) {
@@ -339,3 +334,15 @@ export async function onRequest(context) {
 
   return notFound();
 }
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname.startsWith("/api/")) {
+      return handleApi(request, env);
+    }
+
+    return env.ASSETS.fetch(request);
+  }
+};
