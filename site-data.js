@@ -58,6 +58,15 @@
       transition: "slide"
     },
     {
+      slug: "social-lab-climate-goal-platform",
+      title: "Social Lab",
+      docTitle: "Climate goal platform",
+      project: "Social Lab",
+      date: "June 15, 2026",
+      file: "presentations/social-lab-climate-goal-platform.md",
+      transition: "slide"
+    },
+    {
       slug: "gtr-partners",
       title: "GTR Partners",
       docTitle: "Climate awareness",
