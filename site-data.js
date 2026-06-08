@@ -103,14 +103,6 @@
       file: "social-lab-climate-goal-platform-report-jun15.md"
     },
     {
-      slug: "social-lab-climate-goal-deck",
-      title: "Climate Goal Platform Deck",
-      docTitle: "Climate goal platform deck",
-      project: "Social Lab",
-      date: "June 15, 2026",
-      file: "../presentations/social-lab-climate-goal-platform.md"
-    },
-    {
       slug: "social-lab-prd-stage1",
       title: "Climate Goal Platform PRD — Stage 1",
       docTitle: "PRD Stage 1: climate startup +/- impact dashboard",

@@ -8,21 +8,22 @@ Social Lab
 Presenter: Rae Jin  
 June 15, 2026
 
-Note: New direction. The MVP narrows to climate startups and a two-sided (positive and negative) environmental impact dashboard with a gamified operating layer. The earlier "any startup / harm-reduction" version becomes the stretch tier. Two methodology questions drive this deck: (1) how to use the Climate Brick method properly, customize it, and produce a better evaluation; (2) what environmental impact can actually be addressed in a dashboard, and whether it can be checked at the right time.
+Note: New direction. The MVP narrows to climate startups and a two-sided (positive and negative) environmental impact dashboard with a gamified operating layer. The earlier "any startup / harm-reduction" version becomes the stretch tier. Two methodology questions drive this deck: (1) a viable, reliable method for a startup to monitor its own handprint and footprint, with Climate Brick only as a reference; (2) what environmental impact can actually be addressed in a dashboard, and whether it can be checked at the right time.
 
 ---
 
 ## The New Direction
 
-### Rescoped since the last review
+### From advisory service to product
 
-| Tier | Before | Now |
+| | Before: advisory service (GTR) | Now: product (dashboard) |
 | --- | --- | --- |
-| MVP | Any startup, harm-reduction "benign business" | Climate startup, +/- net impact dashboard, gamified |
-| Stretch | Climate startups as a sub-case | All tech startups, result customization, follow-up components |
-| Method gap | Climate Brick used as loose inspiration | Climate Brick used properly, customized, and made measurable |
+| Form | One-to-one consulting: measure, reduce, reconnect founders | Self-serve gamified +/- impact dashboard |
+| MVP focus | Bespoke per client | Climate startups first |
+| Stretch | Did not scale past hands-on work | All tech startups, customization, follow-up |
+| Method | Climate Brick in an AI Capital Navigator score | Our own net-impact method; Climate Brick a reference |
 
-<p class="slide-closing">Start where impact is the whole thesis: climate startups. Then generalize.</p>
+<p class="slide-closing">Same climate intent as the GTR service. Scalable product form, climate startups first.</p>
 
 ---
 
@@ -44,6 +45,44 @@ Note: New direction. The MVP narrows to climate startups and a two-sided (positi
     <p>A climate-focused fund underwrites impact. It needs a defensible net number, not a slogan, before it writes a check or reports to LPs.</p>
   </article>
 </div>
+
+---
+
+## The Market
+
+### Big, funded, and under regulatory pull
+
+| Signal | Figure |
+| --- | --- |
+| Climate tech VC, 2025 | $40.5B invested, +8% YoY; ~$255B since 2020 |
+| Climate startups | 20,000+ tracked globally; SF took 16% of US climate VC in 2024 |
+| Carbon / ESG software | ~$11-24B in 2025, ~22-28% CAGR (analyst range) |
+| Validation | Watershed $1.8B valuation; carbon-accounting raised ~€270M in 2024 |
+
+<p class="slide-source">Sources: Sightline/CTVC; HolonIQ; Dealroom; multiple analyst firms (figures are estimates, ranges given)</p>
+
+---
+
+## Why Now
+
+### Reporting pressure is moving down to startups
+
+<div class="cards-3">
+  <article>
+    <h3>California SB 253</h3>
+    <p>Scope 1-2 due Aug 2026, Scope 3 from 2027. Large CA-nexus firms must pull emissions data from their whole supplier base, startups included.</p>
+  </article>
+  <article>
+    <h3>EU CSRD</h3>
+    <p>Narrowed in 2025, but still binds the largest enterprises, who cascade Scope 3 requests onto vendors.</p>
+  </article>
+  <article>
+    <h3>The honest caveat</h3>
+    <p>The US SEC climate rule is being rescinded. ~$90B climate "dry powder" exists, but most is infra/PE, not early-stage VC.</p>
+  </article>
+</div>
+
+<p class="slide-source">Sources: CARB / SB 253; EU Omnibus; SEC; Sightline dry-powder report</p>
 
 ---
 
@@ -80,7 +119,7 @@ Note: New direction. The MVP narrows to climate startups and a two-sided (positi
 
 ---
 
-## The Cardinal Rule
+## The Non-Negotiable
 
 ### Never net naively
 
@@ -135,150 +174,139 @@ California's forest-offset program was over-credited by roughly 30 million tonne
 
 ## Methodology 1
 
-### Using Climate Brick properly, customizing it, and evaluating better
+### Our own method for monitoring handprint and footprint
 
 <p class="slide-ref">Methodology question 1</p>
 
-Three moves:
+Every startup is different, so we do not sort companies into fixed types. We give them a method they run on their own activities.
 
-1. Use the framework for what it is actually good at.
-2. Add the dimension it deliberately leaves out.
-3. Score on two axes instead of one.
+The bar: **viable** to start in minutes, **reliable** enough for a climate VC.
 
 ---
 
-## What Climate Brick Actually Is
+## Climate Brick As A Reference
 
-<p class="slide-ref">Research baseline</p>
+<p class="slide-ref">Reference, not engine</p>
 
-A "missing manual" for scaling climate tech, launched April 2024 by EQT Foundation and Contrarian Ventures with ~50 European climate founders and investors.
+Climate Brick is a useful shelf to consult, not our backbone.
 
-| Attribute | Detail |
+| What it is | Why it stays a reference |
 | --- | --- |
-| Structure | Seven sector "bricks" organized by technological risk and capital intensity |
-| Per brick | A scaling roadmap, suggested capital stack, and three "critical unlocks" |
-| Evidence base | 100+ interviews, 3,000+ companies, 15,000+ data points |
+| A "missing manual" for scaling climate tech (EQT + Contrarian, 2024) | It measures scaling readiness, not impact |
+| Seven archetypes by technological risk and capital intensity | Every startup is different; fixed buckets do not fit measurement |
+| 100+ interviews, 3,000+ companies | No avoided emissions or additionality anywhere in it |
 
-<p class="slide-source">Sources: climatebrick.com; EQT Foundation; CTVC #194</p>
+<p class="slide-closing">We borrow its vocabulary, not its structure.</p>
+
+<p class="slide-source">Source: climatebrick.com</p>
 
 ---
 
-## The Seven Bricks
+## The Net Impact Method
 
-<p class="slide-ref">Climate Brick framework</p>
+### A five-step loop a startup repeats
 
-| Brick | Company pattern |
+| Step | What happens |
 | --- | --- |
-| Gigascaling | CAPEX-intensive large-scale plants (green steel, batteries, fuels) |
-| Green Deployment | Operating, deploying, or owning green assets (solar, wind, storage) |
-| Asset-as-a-Service | Enabling green assets through software or tech (EV charging) |
-| Product Disruption | Greener product value chains through design and engineering |
-| New Technology | Disruptive lower-carbon alternatives |
-| Moonshot | Novel, game-changing science (fusion, long-duration storage) |
-| Companion Software | Software enabled by hardware |
+| 1. Map | List your real activities and product use, your own value chain |
+| 2. Rank | Order by materiality, so effort goes where impact is biggest |
+| 3. Measure | Use a tiered ladder; every reading carries its confidence |
+| 4. Gate | A positive claim ships only past baseline, additionality, marginal, rebound |
+| 5. Monitor | Track at the right cadence; leading and lagging; maturity 0 to 5 |
+
+<p class="slide-closing">Viable to start, reliable to defend.</p>
 
 ---
 
-## What "Critical Unlocks" Look Like
+## Steps 1 and 2: Map, Then Rank
 
-### Three per brick, concrete and stage-specific
+### Start from the company, not a template
 
 <div class="cards-2">
   <article>
-    <h3>Gigascaling</h3>
-    <p>1. Clear roadmap to cost competitiveness. 2. Execute seamlessly and scale rapidly. 3. Committed take-or-pay offtakes.</p>
+    <h3>Map</h3>
+    <p>The team lists its own activities: compute, hardware, travel, vendors, logistics, and the product's effect on customers. No archetype assumed.</p>
   </article>
   <article>
-    <h3>Green Deployment</h3>
-    <p>1. Scalable org to out-execute on operations and commercial traction. 2. Roadmap to profitable unit economics. 3. Ramp value, sales, and scale fast.</p>
+    <h3>Rank</h3>
+    <p>Sort by likely impact size. A startup cannot measure everything, so it measures what matters first. This is what keeps the method viable.</p>
   </article>
 </div>
 
-<p class="slide-source">Source: climatebrick.com brick pages</p>
+---
+
+## Step 3: The Measurement Ladder
+
+### Start cheap, deepen only where it matters
+
+| Tier | How | Confidence | Use when |
+| --- | --- | --- | --- |
+| T0 Proxy | Spend or industry averages | Low | First pass, finding materiality |
+| T1 Metered | Bills, cloud and grid APIs | High | Material footprint items |
+| T2 Modeled | Baseline and avoided emissions | Medium, with bands | The positive side and use-phase |
+
+<p class="slide-closing">Every number shows its tier. Honesty about confidence is the reliability.</p>
 
 ---
 
-## What Climate Brick Measures
+## Steps 4 and 5: Gate, Then Monitor
 
-### Five dimensions, all about scaling
-
-| Dimension | Question |
-| --- | --- |
-| Commercial | Can it sell and reach profitable unit economics? |
-| Product & Offering | Is the offering ready and differentiated? |
-| Technology | Are technology milestones met? |
-| Value Chain | Are suppliers, offtakers, and partners secured? |
-| Execution | Can the team build and ramp? |
-
-<p class="slide-closing">Every dimension asks: can this company scale and fundraise?</p>
-
----
-
-## The Gap We Customize
-
-### Climate Brick has no impact-integrity axis
-
-Climate Brick assumes a company is climate-positive and asks how it scales. It does not measure how much impact the company actually creates, or whether that claim is credible.
+### Reliability lives in the gate and the cadence
 
 <div class="cards-2">
   <article>
-    <h3>What it answers</h3>
-    <p>Is this a fundable, scalable climate company for its archetype?</p>
+    <h3>Gate the positive side</h3>
+    <p>Baseline, displacement, additionality, marginal grid, rebound. No + number is counted until it passes. See the integrity-gate slides.</p>
   </article>
   <article>
-    <h3>What it leaves out</h3>
-    <p>Is the net impact real, additional, and verifiable over time?</p>
+    <h3>Monitor over time</h3>
+    <p>Each metric updates at its natural cadence: real-time, monthly, quarterly, annual. Maturity climbs from 0 unmapped to 5 improving.</p>
   </article>
 </div>
 
-<p class="slide-closing">That missing axis is exactly our product. We are complementary, not derivative.</p>
+---
+
+## Where Positive Claims Usually Break
+
+### The same failure points, whatever the business
+
+| Pattern | The question that exposes it |
+| --- | --- |
+| Asset or plant | Would it have been built anyway? Which grid does it displace? |
+| Product vs incumbent | Is the baseline the real incumbent, or a strawman? |
+| Software or service | Real usage vs installed capacity? Does cheaper drive more use? |
+| Hardware-enabled software | How much of the gain is actually the software's? |
+| Frontier or early tech | Wide uncertainty bands, risk-adjusted, not a headline number |
+
+<p class="slide-closing">The method forces these questions before a claim is shown.</p>
 
 ---
 
-## The Two-Axis Evaluation
+## The Two-Axis Read
 
-### Scaling readiness x impact integrity
+### Impact integrity is ours; scaling is the reference
 
 | | Low scaling readiness | High scaling readiness |
 | --- | --- | --- |
 | High impact integrity | Real impact, unproven business: grant and patient capital | The fundable climate company a VC wants |
 | Low impact integrity | Weak on both: pass | Great scaler, soft impact claim: greenwashing risk |
 
-<p class="slide-closing">Climate Brick scores the columns. We add the rows. A climate VC needs both to underwrite.</p>
+<p class="slide-closing">Our method scores the rows. Climate Brick, if you want it, informs the columns.</p>
 
 ---
 
-## Customizing The Method Per Brick
+## Viable And Reliable
 
-### The archetype sets the denominator
+### The whole method in two words
 
-| Brick | Where impact integrity is won or lost |
-| --- | --- |
-| Gigascaling | Marginal grid displaced by the plant; embodied emissions of construction |
-| Green Deployment | Additionality of each asset; would it have been built anyway? |
-| Asset-as-a-Service | Real utilization vs. installed capacity; rebound in usage |
-| Product Disruption | Use-phase displacement vs. the incumbent product, not a strawman |
-| New Technology / Moonshot | Forward-looking estimate with wide bands; risk-adjusted, not headline |
-| Companion Software | Attribution: how much of the hardware's gain is the software's? |
-
----
-
-## Better Evaluation, In One Line
-
-### Archetype-aware, additionality-gated, time-resolved
-
-<div class="cards-3">
+<div class="cards-2">
   <article>
-    <h3>Archetype-aware</h3>
-    <p>Use the brick to set the right milestones, capital stack, and impact baseline for this company type.</p>
+    <h3>Viable</h3>
+    <p>Map and rank in minutes, start at proxy tier, deepen only where impact is material. A founder gets a first net read in one session.</p>
   </article>
   <article>
-    <h3>Additionality-gated</h3>
-    <p>No positive number passes without a baseline, displacement, and additionality check.</p>
-  </article>
-  <article>
-    <h3>Time-resolved</h3>
-    <p>Each metric carries a freshness and certainty label, because not all impact can be checked at the same cadence.</p>
+    <h3>Reliable</h3>
+    <p>Every number carries its tier and freshness; every positive claim passes an additionality gate; net is shown as derived, never as an offset.</p>
   </article>
 </div>
 
@@ -406,7 +434,7 @@ A good dashboard never displays the two with equal confidence.
 | Freshness layer | Per-metric cadence and certainty: metered vs modeled |
 | Goal board | Owned actions, deadlines, evidence per goal |
 | Progress game | Levels, streaks, evidence points tied to integrity |
-| Climate Brick lens | Archetype, critical unlocks, scaling milestones |
+| Net Impact Method | Activity map, materiality ranking, tiered measurement |
 | Share page | Investor and LP-ready view with uncertainty intact |
 
 ---
@@ -419,12 +447,12 @@ A good dashboard never displays the two with equal confidence.
 
 The dashboard's evaluation, goals, and narrative are tailored, not generic:
 
-- Rubric weights shift by Climate Brick archetype.
+- Rubric weights shift by the company's mapped activities and materiality.
 - Goal cards match business model and stage.
 - Measurement cadence is set per metric, not company-wide.
 - The share page renders the right metrics for the audience: VC, LP, customer, or team.
 
-<p class="slide-closing">Same engine, archetype-specific result.</p>
+<p class="slide-closing">Same engine, company-specific result.</p>
 
 ---
 
@@ -445,18 +473,18 @@ A dashboard component is only useful if it hands the team an action.
 
 ---
 
-## From All Startups To Climate-First
+## From Service To Product
 
-### What changes when we narrow the MVP
+### What changes in the pivot
 
-| Earlier broad version | Climate-startup MVP |
+| Advisory & transition service (before) | Climate impact dashboard (now) |
 | --- | --- |
-| Mostly harm reduction | Two-sided net impact, handprint and footprint |
-| Generic goal cards | Archetype-specific, Climate-Brick-informed |
-| Concern made visible | Impact claim made verifiable |
-| Audience: any team | Audience: climate founders and their VCs |
+| One-to-one consulting engagements | Self-serve product a team runs weekly |
+| Measure, reduce, reconnect founders | Two-sided net impact, gated and time-resolved |
+| Climate Brick inside an AI Capital Navigator | Our own viable, reliable net-impact method |
+| Advisor drives each client | Advisor view optional; the team self-drives |
 
-<p class="slide-closing">The broad "any tech startup" version is the stretch, once the rigorous core works.</p>
+<p class="slide-closing">Same climate intent, scalable form. Climate startups first; broad tech is the stretch.</p>
 
 ---
 
@@ -466,7 +494,7 @@ A dashboard component is only useful if it hands the team an action.
 
 | Feature | MVP behavior |
 | --- | --- |
-| Company intake | URL, archetype, stage, business model |
+| Company intake | URL, activity map, stage, business model |
 | Impact ledger | Footprint estimate plus gated avoided-emissions estimate |
 | Integrity gates | Baseline, displacement, additionality prompts |
 | Freshness labels | Metered vs modeled, with a date per metric |
@@ -487,7 +515,7 @@ A dashboard component is only useful if it hands the team an action.
   </article>
   <article>
     <h3>Result customization</h3>
-    <p>Deeper per-archetype rubrics and audience-specific share pages.</p>
+    <p>Deeper per-company rubrics and audience-specific share pages.</p>
   </article>
   <article>
     <h3>Follow-up components</h3>
@@ -497,15 +525,38 @@ A dashboard component is only useful if it hands the team an action.
 
 ---
 
-## Competitive Position
+## The Landscape Is Split
 
-| Tool type | Common focus | Our opening |
+### Nobody fuses the two sides for startups
+
+| Player | Side | Who it serves |
 | --- | --- | --- |
-| Climate Brick | Scaling and fundraising readiness | The impact-integrity axis it omits |
-| Carbon accounting | Footprint inventory | Adds the gated positive side and the net |
-| Avoided-emissions tools (CRANE) | One-off impact estimate | Makes it a live, owned, time-resolved dashboard |
-| ESG reporting | Compliance and disclosure | Early-stage operating habits |
-| Workplace gamification | Engagement loops | Environmental integrity as shared behavior |
+| Watershed, Persefoni, Normative | − footprint only | Enterprise |
+| Greenly, Plan A | − footprint only | SMB / mid-market |
+| Sweep | − + a Scope-4 "handprint" add-on | Large emitters |
+| Sylvera, BeZero | + additionality, but on others' credits | Traders, investors |
+| CRANE (Prime Coalition) | + avoided emissions | Early-stage climate startups |
+
+<p class="slide-source">Sources: company sites; CRANE / Prime Coalition; Sweep Scope-4 guide</p>
+
+---
+
+## What We Do And Do Not Claim
+
+### Be precise, or a VC breaks it
+
+<div class="cards-2">
+  <article>
+    <h3>We do not claim</h3>
+    <p>"No one measures positive impact." Sweep ships Scope 4, Sylvera and BeZero gate additionality, and CRANE already serves climate startups.</p>
+  </article>
+  <article>
+    <h3>We do claim</h3>
+    <p>No one fuses additionality-gated + and − into a single live net surface, for early-stage climate startups, with a team workflow.</p>
+  </article>
+</div>
+
+<p class="slide-closing">CRANE is the closest: a free, point-in-time estimate. Our move is partner-or-displace, not pretend-it-is-absent.</p>
 
 ---
 
@@ -517,7 +568,7 @@ A dashboard component is only useful if it hands the team an action.
 | Naive netting | + and − shown on separate accounting bases, net labeled as derived |
 | Rebound and Jevons effects | Track total consumption, not only per-unit efficiency |
 | Modeled-as-metered confusion | Uncertainty bands and freshness dates on every modeled figure |
-| Climate Brick mismatch | Use it as the scaling lens, not the whole product |
+| Over-reliance on Climate Brick | Keep it a reference; our net-impact method is the engine |
 | Founder time pressure | Intake and first ledger under fifteen minutes |
 
 ---
@@ -539,7 +590,7 @@ A dashboard component is only useful if it hands the team an action.
 
 | Participant | What to test |
 | --- | --- |
-| 3 climate-startup founders | Intake, archetype fit, ledger clarity |
+| 3 climate-startup founders | Intake, activity map, ledger clarity |
 | 2 climate VCs | Whether the two-axis score supports diligence |
 | 2 sustainability or impact analysts | Additionality gates and timing honesty |
 | 3 startup operators | Whether goals and ownership feel manageable |
@@ -552,7 +603,7 @@ A dashboard component is only useful if it hands the team an action.
 | Goal | Metric |
 | --- | --- |
 | Integrity | Every + claim has a baseline and additionality note |
-| Relevance | Founder selects at least three archetype-appropriate goals |
+| Relevance | Founder selects at least three material, company-appropriate goals |
 | Clarity | User can explain why net is shown as derived, not absolute |
 | Timing fit | User can say which metrics are metered vs modeled |
 | Credibility | A climate VC would accept the share page in diligence |
@@ -564,7 +615,7 @@ A dashboard component is only useful if it hands the team an action.
 
 ### The product is the axis Climate Brick is missing
 
-Climate Brick tells a climate startup how to scale. Carbon accounting tells it what it emits. Neither makes the two-sided, additionality-gated, time-resolved net impact a live operating surface.
+Climate Brick tells a climate startup how to scale. Carbon accounting tells it what it emits. CRANE estimates what it avoids, once. None of them fuses the two sides into a live, additionality-gated, team-run net surface.
 
 <p class="slide-closing">A gamified +/- impact dashboard that a climate founder runs weekly and a climate VC trusts in diligence.</p>
 
@@ -576,7 +627,7 @@ Climate Brick tells a climate startup how to scale. Carbon accounting tells it w
 
 Prototype screens:
 
-1. Archetype intake
+1. Activity-map intake
 2. Impact ledger: footprint and gated handprint
 3. Integrity gates
 4. Freshness and cadence view
@@ -621,6 +672,18 @@ https://www.electricitymaps.com/
 
 California over-crediting (Badgley et al., 2022):  
 https://onlinelibrary.wiley.com/doi/10.1111/gcb.15943
+
+Market sizing — climate VC, dry powder:
+
+https://www.ctvc.co/40-5bn-and-8-upturn-as-power-demand-drives-25-investment/ · https://www.ctvc.co/new-the-2026-climate-dry-powder-new-funds-report/
+
+Regulation — California SB 253/261:
+
+https://www.persefoni.com/blog/california-sb253-sb261
+
+Competitors:
+
+Watershed watershed.com · Sweep sweep.net (Scope 4 guide) · Sylvera sylvera.com · BeZero bezerocarbon.com · CRANE cranetool.org
 
 Source PDFs (local):  
 /Users/rae/Documents/Social Lab_Project direction updated.pdf  

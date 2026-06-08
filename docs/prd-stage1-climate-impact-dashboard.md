@@ -10,7 +10,7 @@ Owner: Rae Jin · Project: Social Lab · Date: June 15, 2026 · Status: Draft fo
 
 Stage 1 ships a gamified, two-sided environmental impact dashboard for **climate startups**. It tracks positive impact (handprint: avoided and enabled emissions) and negative impact (footprint: Scope 1/2/3) on separate accounting bases, gates every positive claim behind an additionality check, and labels every metric by how and when it can be measured. The output is a net impact picture a climate founder can run weekly and a climate VC will accept in diligence.
 
-The product's defensible wedge: **Climate Brick scores scaling readiness but has no impact-integrity axis.** Stage 1 supplies that axis.
+The product's defensible wedge: **footprint tools measure the negative side and avoided-emissions tools estimate the positive side, but neither turns both into a live, additionality-gated operating workflow for early-stage climate startups.**
 
 ---
 
@@ -35,7 +35,7 @@ The product's defensible wedge: **Climate Brick scores scaling readiness but has
 ### Non-Goals (Stage 1)
 - NG1. Not a certified carbon-accounting or audit product (no assurance-grade inventory).
 - NG2. Not for non-climate / footprint-only startups yet (that is Stage 2).
-- NG3. No deep per-archetype rubric customization engine yet (Stage 2).
+- NG3. No deep per-company rubric customization engine yet (Stage 2).
 - NG4. No automated follow-up workflow engine yet (Stage 2).
 - NG5. Not a regulatory disclosure (CSRD/ISSB) filing tool.
 
@@ -66,9 +66,9 @@ Primary buyer/champion: the climate founder. Primary credibility judge: the clim
 
 ## 6. Scope — Modules and Requirements
 
-### 6.1 Archetype Intake
-- R1.1 Collect company URL, Climate Brick archetype (7 options), stage, business model, team size.
-- R1.2 Suggest an archetype from URL + description; founder confirms or overrides.
+### 6.1 Activity Map Intake
+- R1.1 Collect company URL, activity map, stage, business model, team size.
+- R1.2 Prompt for startup-relevant activities: compute, hardware, travel, vendors, logistics, and customer product effects; rank by likely materiality.
 - R1.3 Complete in ≤ 15 minutes.
 - Acceptance: founder reaches a first impact ledger from a cold start in one session.
 
@@ -94,8 +94,8 @@ Primary buyer/champion: the climate founder. Primary credibility judge: the clim
 
 ### 6.5 Goal Board
 - R5.1 Goal cards with owner, status, deadline, evidence slot.
-- R5.2 Recommend goals by archetype (Climate Brick critical unlocks + impact-integrity gaps).
-- Acceptance: founder selects ≥ 3 archetype-appropriate goals.
+- R5.2 Recommend goals by material activity, business model, stage, and impact-integrity gaps.
+- Acceptance: founder selects ≥ 3 material, company-appropriate goals.
 
 ### 6.6 Progress Game (cooperative)
 - R6.1 Maturity levels 0–5 (Unmapped → Improved); team streaks; evidence points.
@@ -114,8 +114,8 @@ Primary buyer/champion: the climate founder. Primary credibility judge: the clim
 
 - M1. Footprint follows GHG Protocol scope definitions; Scope 3 estimate is allowed to be coarse but must be labeled as estimate.
 - M2. Handprint follows the comparative/avoided-emissions frame (GHG Protocol comparative guidance; Project Frame principles): explicit baseline, conservative estimation, uncertainty grows with horizon, reported separately.
-- M3. Climate Brick used as the scaling lens: archetype → milestones, critical unlocks, capital-stack expectations.
-- M4. Two-axis evaluation = scaling readiness (Climate Brick) × impact integrity (our axis).
+- M3. Net Impact Method: map activities → rank materiality → measure in tiers → gate positive claims → monitor by cadence.
+- M4. Two-axis evaluation = scaling readiness (Climate Brick may inform this reference axis) × impact integrity (our scored axis).
 - M5. Grid signal: marginal (e.g., WattTime MOER) for claims; average (e.g., Electricity Maps) acceptable for context only.
 
 ---
@@ -131,12 +131,53 @@ Primary buyer/champion: the climate founder. Primary credibility judge: the clim
 
 ---
 
-## 9. Success Metrics
+## 9. Business Model, Pricing & GTM
+
+- **Buyer:** the climate founder is champion and, at seed/Series A, usually the economic buyer. Climate VCs and accelerators are a second buyer that wants portfolio impact verification.
+- **Pricing hypothesis (to validate):** free single-company net ledger as the wedge → paid per-company team tier once goals/owners/evidence are in active use → investor/LP share-page and portfolio view as upsell. Incumbents (Watershed, Persefoni) are enterprise, custom-quote, and do not publish per-seat pricing, so price discovery is itself a research task.
+- **GTM motion:** top-down via climate funds and accelerators (one fund onboards many portfolio companies) plus self-serve, mirroring CRANE's 6,000+ self-serve users as proof the audience exists.
+
+---
+
+## 10. Defensibility & Moat
+
+The market is split between footprint accountants (−) and avoided-emissions/ratings tools (+); none fuse them into a live net surface for early-stage startups. Moat sources, most durable first:
+
+| Moat | Why it holds |
+| --- | --- |
+| Additionality-gated, activity-aware method + data | A trusted evaluation library is hard to copy credibly |
+| Two-sided net as a workflow, not a report | Incumbents are compliance/reporting tools; re-architecting to a team operating loop is costly |
+| Investor / portfolio network effects | Each VC that adopts pulls in its portfolio; share pages become a standard |
+| Company-specific operating data | Repeated activity maps, gates, evidence, and cadence choices compound into a better evaluation library |
+
+Honest threats to defend against: Sweep already ships Scope 4; CRANE owns the early-stage + estimate; Sylvera/BeZero own "additionality" as a brand. The defense is the **fused net + team workflow**, not any single feature.
+
+---
+
+## 11. Data Model
+
+Minimum viable schema:
+
+| Entity | Key fields | Relations |
+| --- | --- | --- |
+| Company | id, url, stage, business_model, activity_map, scaling_reference | has many Goals, Claims, Metrics, Members |
+| Member | id, role (owner/member/advisor), email | belongs to Company; owns Goals |
+| Metric | id, scope (1/2/3/avoided), value, unit, cadence, source_type (metered/modeled), measured_at, uncertainty | belongs to Company |
+| Claim (+) | id, baseline, displacement, additionality_status, marginal_signal, value, uncertainty | belongs to Company; gated before publish |
+| Goal | id, title, owner_id, status, deadline, level | has many Evidence |
+| Evidence | id, type (doc/link/metric), ref, verified_at | belongs to Goal or Claim |
+| SharePage | id, audience, published_at, visible_metrics | belongs to Company |
+
+Invariant: a Claim cannot be published or counted toward net unless `additionality_status` is set and not "would-have-happened-anyway."
+
+---
+
+## 12. Success Metrics
 
 | Goal | Metric | Target |
 | --- | --- | --- |
 | Integrity | Share of + claims with baseline + additionality note | 100% |
-| Relevance | Founders selecting ≥ 3 archetype goals | ≥ 80% |
+| Relevance | Founders selecting ≥ 3 material, company-appropriate goals | ≥ 80% |
 | Clarity | Users who can explain net = derived | ≥ 70% |
 | Timing fit | Users who can name metered vs modeled metrics | ≥ 70% |
 | Credibility | Climate VCs who would accept the share page | ≥ 4 of first 6 |
@@ -144,20 +185,21 @@ Primary buyer/champion: the climate founder. Primary credibility judge: the clim
 
 ---
 
-## 10. Risks
+## 13. Risks
 
 | Risk | Mitigation |
 | --- | --- |
 | Greenwashing via inflated + claims | Hard additionality/baseline gates before any claim ships |
+| Claim liability (public share page = legal claim) | Default disclaimers, "modeled" labeling, optional advisor review before publish; never imply net-positive without footprint |
 | Naive netting | Separate accounting bases; net labeled derived |
 | Rebound / Jevons | Track total consumption, not only per-unit efficiency |
 | Modeled-as-metered confusion | Uncertainty bands + freshness dates on modeled figures |
 | Founder time pressure | Intake + first ledger ≤ 15 min |
-| Climate Brick mismatch | Use as scaling lens only, not the whole product |
+| Over-reliance on Climate Brick | Keep it as an optional scaling reference, not the measurement engine |
 
 ---
 
-## 11. Milestones
+## 14. Milestones
 
 | Phase | Output |
 | --- | --- |
@@ -167,9 +209,11 @@ Primary buyer/champion: the climate founder. Primary credibility judge: the clim
 | M3 | Goal board + progress game |
 | M4 | Share page + first 6 founder / 2 VC tests |
 
+**Stage gate to Stage 2:** proceed only if ≥ 4 of 6 climate VCs accept the share page (G5) and ≥ 50% of pilot teams return weekly at 4 weeks. Until then, do not generalize to non-climate startups.
+
 ---
 
-## 12. Open Questions
+## 15. Open Questions
 
 1. Minimum credible Scope 3 coverage for a seed-stage climate startup?
 2. WattTime vs Electricity Maps as the Stage-1 default grid source?

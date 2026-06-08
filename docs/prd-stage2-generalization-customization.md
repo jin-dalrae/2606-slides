@@ -11,7 +11,7 @@ Owner: Rae Jin · Project: Social Lab · Date: June 15, 2026 · Status: Draft fo
 Stage 2 extends the proven climate-startup core in three directions:
 
 1. **Generalize** to all tech startups, where impact is mostly footprint and the positive side is optional.
-2. **Result customization** — the evaluation, goals, and share output adapt per Climate Brick archetype and per audience, instead of a single generic result.
+2. **Result customization** — the evaluation, goals, and share output adapt to the company's activity map, business model, stage, and audience, instead of a single generic result.
 3. **Meaningful follow-up** — every dashboard reading produces an owned next action at the right cadence, turning a dashboard into an operating loop.
 
 Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credible to climate founders and VCs.
@@ -21,7 +21,7 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 ## 2. Problem
 
 - The broad "every startup has a footprint" opportunity is large, but only credible once the strict climate-first core works.
-- A generic result under-serves a 7-archetype reality: a Gigascaling company and a Companion Software company need different rubrics, baselines, and cadences.
+- A generic result under-serves the actual operating reality: a compute-heavy AI company, a hardware-adjacent team, and an asset operator need different rubrics, baselines, and cadences.
 - A dashboard that only displays is inert. Without a follow-up loop, readings do not become reductions.
 
 ---
@@ -30,7 +30,7 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 
 ### Goals
 - G1. Onboard footprint-first (non-climate) tech startups without forcing a handprint claim.
-- G2. Tailor the evaluation rubric, goal set, and share page per archetype and per audience.
+- G2. Tailor the evaluation rubric, goal set, and share page per company profile and per audience.
 - G3. Convert every metric into an owned next action with the right cadence and a deadline.
 - G4. Preserve Stage-1 integrity guarantees (no naive netting, additionality gates, freshness labels).
 
@@ -56,7 +56,7 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 
 - R1.1 Footprint-first onboarding: handprint section is optional and collapsed by default.
 - R1.2 Expanded business-model taxonomy (SaaS, AI, marketplace, hardware-adjacent, services).
-- R1.3 Map non-climate models to the nearest Climate Brick logic for milestone/cadence defaults.
+- R1.3 Map non-climate models to profile logic for milestone/cadence defaults, with Climate Brick used only when it improves the scaling-readiness reference.
 - R1.4 Single-axis mode (impact integrity = footprint hygiene) when no positive claim exists.
 - Acceptance: a SaaS startup completes a useful footprint dashboard without entering any avoided-emissions claim.
 
@@ -64,17 +64,17 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 
 ## 6. Feature 2 — Result Customization Engine
 
-- R2.1 Per-archetype rubric weights: which dimensions and metrics matter most for each of the 7 bricks (+ generalized tech profiles).
-- R2.2 Per-archetype goal library: recommended goals keyed to archetype + stage + detected gaps.
-- R2.3 Per-archetype measurement cadence: e.g., compute-heavy AI startups default to real-time grid tracking; hardware startups default to quarterly procurement reviews.
+- R2.1 Per-profile rubric weights: which dimensions and metrics matter most for each activity pattern and generalized tech profile.
+- R2.2 Per-profile goal library: recommended goals keyed to material activities + stage + detected gaps.
+- R2.3 Per-profile measurement cadence: e.g., compute-heavy AI startups default to real-time grid tracking; hardware startups default to quarterly procurement reviews.
 - R2.4 Audience-specific share pages: VC, LP, customer, internal — each rendering the right metrics at the right confidence.
 - R2.5 Customization is configuration, not code: rubric/goal/cadence sets are data-driven and versioned.
-- Acceptance: two different archetypes produce visibly different rubrics, goals, and share pages from the same engine.
+- Acceptance: two different company profiles produce visibly different rubrics, goals, and share pages from the same engine.
 
 | Customization axis | Driven by | Example |
 | --- | --- | --- |
-| Rubric weights | Archetype | Gigascaling weights offtake + marginal-grid; Companion Software weights attribution |
-| Goal set | Archetype + stage + gaps | Green Deployment → asset additionality goals |
+| Rubric weights | Activity profile | Asset operators weight offtake + marginal-grid; software-enabled hardware weights attribution |
+| Goal set | Material activities + stage + gaps | Asset deployment → additionality goals; compute-heavy AI → grid-aware scheduling |
 | Cadence | Operating model | AI startup → real-time compute; hardware → quarterly procurement |
 | Share page | Audience | VC sees two-axis score; customer sees gated claims only |
 
@@ -105,6 +105,14 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 - R4.3 Region-aware grid sourcing (marginal + average) across providers.
 - R4.4 Verified emission-factor and baseline libraries (CRANE-style reference scenarios).
 - R4.5 Portfolio view for investors across multiple companies (read-only, consented).
+- R4.6 Data model extends Stage 1: add Workspace, Rule (follow-up), and Integration entities; Company gains a `profile_type` (climate vs footprint-only) that drives single- vs two-axis mode.
+
+### Business model evolution
+
+- Add a **footprint-only tier** priced for general tech startups (lower than the climate-startup two-sided tier, which carries the higher-value impact claim).
+- **Result customization and the follow-up engine are the upsell** from a flat footprint dashboard to a managed operating loop.
+- **Portfolio view** is the investor/accelerator seat — the highest-ACV motion, sold top-down.
+- Entry to Stage 2 is gated on the Stage 1 result (≥ 4 of 6 VCs accept the share page; ≥ 50% weekly return). Do not generalize before the climate-first core is validated.
 
 ---
 
@@ -124,7 +132,7 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 
 | Risk | Mitigation |
 | --- | --- |
-| Customization sprawl | Data-driven, versioned rubric sets; cap archetype configs |
+| Customization sprawl | Data-driven, versioned rubric sets; cap profile configs |
 | Follow-up nagging | Cadence-aware notifications; batch by owner |
 | Footprint-only greenwashing | Keep "no positive claim" honest; never imply net positive without handprint |
 | Integration fragility | Graceful manual fallback when billing/grid APIs fail |
@@ -137,7 +145,7 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 | Phase | Output |
 | --- | --- |
 | S2.0 | Footprint-first onboarding + single-axis mode |
-| S2.1 | Result customization engine (rubrics, goals, cadence by archetype) |
+| S2.1 | Result customization engine (rubrics, goals, cadence by profile) |
 | S2.2 | Audience-specific share pages |
 | S2.3 | Follow-up rule library + task routing |
 | S2.4 | Cloud billing integrations + portfolio view |
@@ -146,7 +154,7 @@ Stage 2 starts only after Stage 1 proves the rigorous two-sided model is credibl
 
 ## 12. Open Questions
 
-1. How many distinct archetype rubric sets are worth maintaining before diminishing returns?
+1. How many distinct profile rubric sets are worth maintaining before diminishing returns?
 2. Should follow-up rules be user-editable, or curated-only at first?
 3. Does a footprint-only startup ever get a "net" number, or only a footprint score?
 4. Is the investor portfolio view a Stage-2 feature or its own stage?

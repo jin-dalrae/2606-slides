@@ -829,7 +829,81 @@ function applyRemotePresentationState(message) {
   suppressBroadcast = false;
 }
 
-function initShaderBackground(canvas, theme = "dark") {
+function shaderFragmentMain(variant) {
+  if (variant === "waves") {
+    return `
+      void main(){
+        vec2 uv = (gl_FragCoord.xy - 0.5*uRes)/uRes.y;
+        float t = uTime*0.18;
+        vec2 m = (uMouse - 0.5*uRes)/uRes.y;
+        float md = exp(-2.2*length(uv-m));
+        vec3 col = ink;
+        for(int i=0;i<4;i++){
+          float fi = float(i);
+          float y = uv.y
+            + 0.18*sin(uv.x*2.2 + t + fi*1.7)
+            + 0.10*sin(uv.x*4.5 - t*1.3 + fi)
+            + 0.05*md;
+          float band = exp(-26.0*y*y);
+          vec3 c = mix(cyan, lime, fract(fi*0.37 + t*0.12));
+          col += c * band * 0.6;
+        }
+        col += lime * md * 0.22;
+        float vig = smoothstep(1.3, 0.15, length(uv));
+        col *= mix(VIGLOW, 1.0, vig);
+        col += (hash(gl_FragCoord.xy + uTime)-0.5)*GRAIN;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `;
+  }
+
+  if (variant === "plasma") {
+    return `
+      void main(){
+        vec2 uv = (gl_FragCoord.xy - 0.5*uRes)/uRes.y;
+        float t = uTime*0.25;
+        vec2 m = (uMouse - 0.5*uRes)/uRes.y;
+        float md = exp(-2.5*length(uv-m));
+        float v = 0.0;
+        v += sin(uv.x*3.0 + t);
+        v += sin((uv.y*3.0 + t)*1.2);
+        v += sin((uv.x+uv.y)*2.5 + t*0.8);
+        v += sin(length(uv*4.0 - m*2.0) - t*1.4 + md*3.0);
+        v *= 0.25;
+        vec3 col = ink;
+        col = mix(col, cyan, 0.5 + 0.5*sin(v*3.14159));
+        col = mix(col, lime, 0.5 + 0.5*cos(v*3.14159 + 1.5));
+        col = mix(ink, col, 0.62 + 0.2*md);
+        float vig = smoothstep(1.3, 0.2, length(uv));
+        col *= mix(VIGLOW, 1.0, vig);
+        col += (hash(gl_FragCoord.xy + uTime)-0.5)*GRAIN;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `;
+  }
+
+  return `
+    void main(){
+      vec2 uv = (gl_FragCoord.xy - 0.5*uRes)/uRes.y;
+      float t = uTime*0.07;
+      vec2 q = uv*1.3;
+      q += 0.32*vec2(fbm(q+t), fbm(q-t+5.2));
+      float n = fbm(q*1.6 + t);
+      vec2 m = (uMouse - 0.5*uRes)/uRes.y;
+      float md = exp(-2.5*length(uv-m));
+      n += 0.22*md;
+      vec3 col = ink;
+      col = mix(col, cyan*0.55, smoothstep(0.35, 0.75, n));
+      col = mix(col, lime*0.85, smoothstep(0.62, 0.92, n+0.08*md));
+      float vig = smoothstep(1.25, 0.2, length(uv));
+      col *= mix(VIGLOW, 1.0, vig);
+      col += (hash(gl_FragCoord.xy + uTime)-0.5)*GRAIN;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+}
+
+function initShaderBackground(canvas, theme = "dark", variant = "shader") {
   const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: false });
 
   if (!gl) {
@@ -857,6 +931,11 @@ function initShaderBackground(canvas, theme = "dark") {
   const frag = `
     precision highp float;
     uniform vec2 uRes; uniform float uTime; uniform vec2 uMouse;
+    #define INK ${palette.ink}
+    #define CYAN ${palette.cyan}
+    #define LIME ${palette.lime}
+    #define VIGLOW ${palette.vignetteLow}
+    #define GRAIN ${palette.grain}
     float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
     float noise(vec2 p){
       vec2 i=floor(p), f=fract(p);
@@ -865,26 +944,8 @@ function initShaderBackground(canvas, theme = "dark") {
       return mix(a,b,u.x)+(c-a)*u.y*(1.-u.x)+(d-b)*u.x*u.y;
     }
     float fbm(vec2 p){ float v=0., a=0.5; for(int i=0;i<5;i++){ v+=a*noise(p); p*=2.02; a*=0.5; } return v; }
-    void main(){
-      vec2 uv = (gl_FragCoord.xy - 0.5*uRes)/uRes.y;
-      float t = uTime*0.07;
-      vec2 q = uv*1.3;
-      q += 0.32*vec2(fbm(q+t), fbm(q-t+5.2));
-      float n = fbm(q*1.6 + t);
-      vec2 m = (uMouse - 0.5*uRes)/uRes.y;
-      float md = exp(-2.5*length(uv-m));
-      n += 0.22*md;
-      vec3 ink  = ${palette.ink};
-      vec3 cyan = ${palette.cyan};
-      vec3 lime = ${palette.lime};
-      vec3 col = ink;
-      col = mix(col, cyan*0.55, smoothstep(0.35, 0.75, n));
-      col = mix(col, lime*0.85, smoothstep(0.62, 0.92, n+0.08*md));
-      float vig = smoothstep(1.25, 0.2, length(uv));
-      col *= mix(${palette.vignetteLow}, 1.0, vig);
-      col += (hash(gl_FragCoord.xy + uTime)-0.5)*${palette.grain};
-      gl_FragColor = vec4(col, 1.0);
-    }
+    vec3 ink = INK; vec3 cyan = CYAN; vec3 lime = LIME;
+    ${shaderFragmentMain(variant)}
   `;
 
   function compile(type, src) {
@@ -965,7 +1026,7 @@ function restartShaderBackground() {
     cleanupShader();
   }
 
-  cleanupShader = initShaderBackground(canvas, currentTheme);
+  cleanupShader = initShaderBackground(canvas, currentTheme, currentBackground);
 }
 
 function sizeFullscreenSlide() {
@@ -1203,6 +1264,7 @@ function updateBackground(value) {
   if (deckRoot) {
     deckRoot.dataset.backgroundMode = currentBackground;
   }
+  restartShaderBackground();
   broadcastPresentationState();
 }
 
