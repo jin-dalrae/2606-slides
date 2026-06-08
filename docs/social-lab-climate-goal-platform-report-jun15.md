@@ -50,14 +50,14 @@ Carryover from prior Social Lab work remains valid: nature and the Earth should 
 
 The market is large and funded, though all figures are analyst-dependent and should be cited as ranges:
 
-- **Climate tech VC** drew roughly $40.5B in 2025 (up ~8% YoY), with ~$255B invested cumulatively since 2020 (Sightline/CTVC). HolonIQ tracks 20,000+ climate tech startups; SF alone captured ~16% of US climate VC dollars in 2024.
-- **Carbon and ESG software** is estimated at ~$11-24B in 2025 depending on the analyst, growing ~22-28% CAGR. Watershed's $1.8B valuation and ~€270M raised across carbon-accounting startups in 2024 are the clearest willingness-to-pay proxies; per-seat pricing is not public.
+- **Climate tech VC** drew roughly $40.5B in 2025 (up ~8% YoY), with ~$255B invested cumulatively since 2020 (Sightline/CTVC). CRANE's 6,300+ registered users and HolonIQ's global / regional climate-tech startup lists are useful demand and landscape proxies, not market-size estimates.
+- **Carbon accounting software** is estimated at roughly **$14.1B-$22.5B in 2025** by two analyst reports, both projecting ~22% CAGR. Watershed's $100M Series C at a $1.8B valuation is the cleanest willingness-to-pay proxy; per-seat pricing is not public.
 
 The timing driver is regulatory pull moving down-market:
 
 - **California SB 253** requires Scope 1-2 reporting from Aug 2026 and Scope 3 from 2027 for large CA-nexus companies, which forces them to collect emissions data from their entire supplier base, startups included.
-- **EU CSRD** was narrowed in the 2025 Omnibus but still binds the largest enterprises, who cascade Scope 3 requests onto vendors.
-- Honest caveats for a VC audience: the **US SEC climate rule is being rescinded** (do not cite as a tailwind), and although ~$90B of climate "dry powder" exists, most sits in infrastructure/PE-style funds, not early-stage VC.
+- **EU CSRD** was narrowed under the Omnibus process and explicitly aims to limit trickle-down onto smaller suppliers, so treat it as weak indirect pressure rather than a hard startup tailwind.
+- Honest caveats for a VC audience: the **US SEC climate rule is proposed for rescission** (do not cite as a tailwind), and although ~$90B of climate "dry powder" exists, most sits in infrastructure/PE-style funds, not early-stage VC.
 
 ---
 
@@ -364,13 +364,17 @@ https://www.electricitymaps.com/
 California over-crediting (Badgley et al., 2022):  
 https://onlinelibrary.wiley.com/doi/10.1111/gcb.15943
 
-Market sizing — climate VC, dry powder, software market:
+Market sizing — climate VC, software market, willingness to pay:
 
-https://www.ctvc.co/40-5bn-and-8-upturn-as-power-demand-drives-25-investment/ · https://www.ctvc.co/new-the-2026-climate-dry-powder-new-funds-report/ · https://www.holoniq.com/climatetech-unicorns · https://dealroom.co/guides/climate-tech
+https://www.ctvc.co/40-5bn-and-8-upturn-as-power-demand-drives-25-investment/ · https://www.grandviewresearch.com/industry-analysis/carbon-accounting-software-market-report · https://www.fortunebusinessinsights.com/carbon-accounting-software-market-107292 · https://www.globenewswire.com/news-release/2024/02/01/2821865/0/en/watershed-announces-100m-in-new-funding-as-corporate-climate-action-accelerates.html
 
-Regulation — California SB 253/261, EU CSRD Omnibus:
+Demand and landscape proxies:
 
-https://www.persefoni.com/blog/california-sb253-sb261 · https://www.coolset.com/academy/csrd-under-omnibus-updated-scope-timelines-and-what-companies-should-do-in-2026
+https://www.cranetool.org/about · https://www.holoniq.com/climate-tech
+
+Regulation — California SB 253, EU CSRD Omnibus, SEC rescission proposal:
+
+https://ww2.arb.ca.gov/sites/default/files/2026-03/SB%20253%20March%202026%20Workshop%20Slides%20Final.pdf · https://www.consilium.europa.eu/en/press/press-releases/2025/06/23/simplification-council-agrees-position-on-sustainability-reporting-and-due-diligence-requirements-to-boost-eu-competitiveness/ · https://www.sec.gov/files/33-11421-fact-sheet.pdf
 
 Competitors:
 

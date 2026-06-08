@@ -1349,8 +1349,8 @@ async function toggleFullscreen() {
   }
 
   if (!document.fullscreenElement) {
-    const deckRoot = slide.querySelector(".deck-root");
-    await deckRoot.requestFullscreen();
+    const fullscreenTarget = document.querySelector(".presentation-stage");
+    await fullscreenTarget.requestFullscreen();
     sizeFullscreenSlide();
     return;
   }

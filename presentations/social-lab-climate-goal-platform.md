@@ -55,11 +55,11 @@ Note: New direction. The MVP narrows to climate startups and a two-sided (positi
 | Signal | Figure |
 | --- | --- |
 | Climate tech VC, 2025 | $40.5B invested, +8% YoY; ~$255B since 2020 |
-| Climate startups | 20,000+ tracked globally; SF took 16% of US climate VC in 2024 |
-| Carbon / ESG software | ~$11-24B in 2025, ~22-28% CAGR (analyst range) |
-| Validation | Watershed $1.8B valuation; carbon-accounting raised ~€270M in 2024 |
+| Demand proxy | CRANE has 6,300+ registered users; HolonIQ publishes global/regional startup lists |
+| Carbon accounting software | ~$14.1-22.5B in 2025, ~22% CAGR (analyst range) |
+| Validation | Watershed raised $100M at a $1.8B valuation |
 
-<p class="slide-source">Sources: Sightline/CTVC; HolonIQ; Dealroom; multiple analyst firms (figures are estimates, ranges given)</p>
+<p class="slide-source">Sources: Sightline/CTVC; CRANE; HolonIQ; Grand View Research; Fortune Business Insights; Watershed</p>
 
 ---
 
@@ -74,15 +74,15 @@ Note: New direction. The MVP narrows to climate startups and a two-sided (positi
   </article>
   <article>
     <h3>EU CSRD</h3>
-    <p>Narrowed in 2025, but still binds the largest enterprises, who cascade Scope 3 requests onto vendors.</p>
+    <p>Narrowed by Omnibus and designed to limit supplier trickle-down. Treat as weak indirect pressure, not a hard startup mandate.</p>
   </article>
   <article>
     <h3>The honest caveat</h3>
-    <p>The US SEC climate rule is being rescinded. ~$90B climate "dry powder" exists, but most is infra/PE, not early-stage VC.</p>
+    <p>The US SEC climate rule is proposed for rescission. ~$90B climate "dry powder" exists, but most is infra/PE, not early-stage VC.</p>
   </article>
 </div>
 
-<p class="slide-source">Sources: CARB / SB 253; EU Omnibus; SEC; Sightline dry-powder report</p>
+<p class="slide-source">Sources: CARB / SB 253; EU Council Omnibus position; SEC rescission fact sheet; Sightline dry-powder report</p>
 
 ---
 
@@ -673,13 +673,17 @@ https://www.electricitymaps.com/
 California over-crediting (Badgley et al., 2022):  
 https://onlinelibrary.wiley.com/doi/10.1111/gcb.15943
 
-Market sizing — climate VC, dry powder:
+Market sizing — climate VC, software market, willingness to pay:
 
-https://www.ctvc.co/40-5bn-and-8-upturn-as-power-demand-drives-25-investment/ · https://www.ctvc.co/new-the-2026-climate-dry-powder-new-funds-report/
+https://www.ctvc.co/40-5bn-and-8-upturn-as-power-demand-drives-25-investment/ · https://www.grandviewresearch.com/industry-analysis/carbon-accounting-software-market-report · https://www.fortunebusinessinsights.com/carbon-accounting-software-market-107292 · https://www.globenewswire.com/news-release/2024/02/01/2821865/0/en/watershed-announces-100m-in-new-funding-as-corporate-climate-action-accelerates.html
 
-Regulation — California SB 253/261:
+Demand and landscape proxies:
 
-https://www.persefoni.com/blog/california-sb253-sb261
+https://www.cranetool.org/about · https://www.holoniq.com/climate-tech
+
+Regulation — California SB 253, EU CSRD Omnibus, SEC rescission proposal:
+
+https://ww2.arb.ca.gov/sites/default/files/2026-03/SB%20253%20March%202026%20Workshop%20Slides%20Final.pdf · https://www.consilium.europa.eu/en/press/press-releases/2025/06/23/simplification-council-agrees-position-on-sustainability-reporting-and-due-diligence-requirements-to-boost-eu-competitiveness/ · https://www.sec.gov/files/33-11421-fact-sheet.pdf
 
 Competitors:
 
