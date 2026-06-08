@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RJ Web Docs</title>
+    <link rel="icon" type="image/png" href="../assets/cadinal_logo.png">
+    <link rel="apple-touch-icon" href="../assets/cadinal_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap">
+    <link rel="stylesheet" href="../styles.css?v=20260608-refactor2">
+  </head>
+  <body>
+    <div class="app-shell docs-shell" data-sidebar-open="true">
+      <aside class="presentation-list" aria-label="Document list">
+        <div class="presentation-list__header">
+          <div class="sidebar-brand">
+            <button class="sidebar-home-link" id="docsHome" type="button">RJ Web Docs</button>
+            <div class="sidebar-nav-links">
+              <a class="sidebar-mode-link" href="../">Slides</a>
+            </div>
+          </div>
+          <button class="icon-button" id="closeSidebar" type="button" aria-label="Close document list" title="Close document list">
+            <span aria-hidden="true">‹</span>
+          </button>
+        </div>
+        <ol class="presentation-list__items" id="docList"></ol>
+        <div class="sidebar-tools">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">
+            <span class="theme-toggle__dot" aria-hidden="true"></span>
+            <span class="theme-toggle__label">Light</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="stage docs-stage">
+        <header class="presentation-header">
+          <div class="stage__controls">
+            <button class="icon-button sidebar-toggle" id="openSidebar" type="button" aria-label="Open document list" title="Open document list">
+              <span aria-hidden="true">☰</span>
+            </button>
+          </div>
+          <div class="presentation-header__title">
+            <p id="docMeta">Markdown viewer</p>
+            <h2 id="docTitle">RJ Web Docs</h2>
+          </div>
+          <nav class="profile-links" id="profileLinks" aria-label="Profile links"></nav>
+        </header>
+
+        <div class="docs-workspace">
+          <article class="doc-viewer" id="docViewer" aria-live="polite"></article>
+        </div>
+
+        <footer class="site-footer">All rights reserved by Rae Jin 2026</footer>
+      </main>
+    </div>
+
+    <script src="../site-data.js?v=20260608-refactor2"></script>
+    <script src="docs.js?v=20260608-refactor2"></script>
+  </body>
+</html>

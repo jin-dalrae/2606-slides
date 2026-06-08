@@ -1,38 +1,20 @@
+const siteData = window.RJ_SITE || {};
 const home = {
-  title: "Slides for 2026 Summer, MDes IxD CCA",
+  title: siteData.slidesTitle || "RJ Web Slides",
   date: "Home",
-  links: [
-    { label: "LinkedIn", url: "https://www.linkedin.com/in/dalraejin1/" },
-    { label: "GitHub", url: "https://github.com/jin-dalrae/" },
-    { label: "Portfolio", url: "https://raejin.web.app/" }
-  ]
+  links: siteData.profileLinks || []
 };
 
-const presentations = [
-  {
-    slug: "gtr-partners",
-    title: "GTR Partners",
-    date: "May 2026",
-    file: "presentations/gtr-startups-climate-awareness.md",
-    transition: "slide"
-  },
-  {
-    slug: "experience",
-    title: "Experience",
-    date: "June 4, 2026",
-    file: "presentations/experience-cosmos-research-plan.md",
-    transition: "slide"
-  },
-  {
-    slug: "cardinal-agentic-spending",
-    title: "Cardinal",
-    date: "June 11, 2026",
-    file: "presentations/cardinal-agentic-workplace-spending.md",
-    transition: "slide"
-  }
-];
+const projectMeta = siteData.projects || [];
+const presentations = (siteData.slides || []).map((item) => ({
+  ...item,
+  section: item.section || item.project || "Other",
+  tagline: item.tagline || projectMeta.find((project) => project.name === (item.section || item.project))?.tagline || ""
+}));
 
 presentations.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+const presentationSections = projectMeta.map((project) => project.name).filter((name) => name !== "Reference");
 
 const githubEditBase = "https://github.com/jin-dalrae/2606-slides/edit/master/";
 const storageKeys = {
@@ -80,6 +62,7 @@ const backgroundSelect = document.querySelector("#backgroundSelect");
 const fontSelect = document.querySelector("#fontSelect");
 const themeToggle = document.querySelector("#themeToggle");
 const homeLink = document.querySelector("#homeLink");
+const profileLinks = document.querySelector("#profileLinks");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
 const mobileMedia = window.matchMedia("(max-width: 760px)");
@@ -205,12 +188,12 @@ function renderAccountPanel() {
   }
 
   if (!apiAvailable) {
-    accountPanel.innerHTML = `
-      <p class="account-panel__label">Account</p>
-      <p class="account-panel__message">Backend not configured.</p>
-    `;
+    accountPanel.hidden = true;
+    accountPanel.innerHTML = "";
     return;
   }
+
+  accountPanel.hidden = false;
 
   if (currentUser) {
     accountPanel.innerHTML = `
@@ -394,6 +377,16 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
+function renderProfileLinks() {
+  if (!profileLinks) {
+    return;
+  }
+
+  profileLinks.innerHTML = home.links
+    .map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a>`)
+    .join("");
+}
+
 function markdownSlideTitles(markdown) {
   return markdown
     .split(/\n---+\n/g)
@@ -461,24 +454,6 @@ function firstSlideHeaderTitle(markdown) {
   return headings[0].text;
 }
 
-function firstSlidePreview(markdown) {
-  const firstSlide = markdown.split(/\n---+\n/g)[0];
-  const headings = [...firstSlide.matchAll(/^#{1,3}\s+(.+)$/gm)].map((match) => match[1].trim());
-  const body = firstSlide
-    .replace(/^#{1,3}\s+.+$/gm, "")
-    .replace(/<[^>]*>/g, "")
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .slice(0, 2)
-    .join(" ");
-
-  return {
-    title: headings[0] || "Untitled deck",
-    subtitle: headings[1] || body || "Open this deck"
-  };
-}
-
 async function preloadPresentationTitles() {
   await Promise.all(
     presentations.map(async (item) => {
@@ -497,7 +472,7 @@ async function preloadPresentationTitles() {
 }
 
 async function loadMarkdown(file) {
-  const response = await fetch(file);
+  const response = await fetch(file, { cache: "no-store" });
 
   if (!response.ok) {
     throw new Error(`Could not load ${file}`);
@@ -677,26 +652,41 @@ async function resetMarkdown() {
 function renderPresentationList() {
   presentationList.innerHTML = "";
 
-  presentations.forEach((item, index) => {
-    const li = document.createElement("li");
-    const button = document.createElement("button");
+  presentationSections.forEach((section) => {
+    const sectionItems = presentations
+      .map((item, index) => ({ item, index }))
+      .filter(({ item }) => (item.section || "Other") === section);
 
-    button.className = "presentation-list__item";
-    button.type = "button";
-    button.setAttribute("aria-current", currentView === "presentation" && index === currentPresentation ? "true" : "false");
-    button.innerHTML = `
-      <span class="presentation-list__date">${escapeHtml(item.date)}</span>
-      <span class="presentation-list__title">${escapeHtml(item.resolvedTitle || item.title)}</span>
-    `;
-    button.addEventListener("click", () => {
-      goToPresentation(index);
-      if (mobileMedia.matches) {
-        toggleSidebar(false);
-      }
+    if (!sectionItems.length) {
+      return;
+    }
+
+    const sectionLi = document.createElement("li");
+    sectionLi.className = "presentation-list__section";
+    sectionLi.textContent = section;
+    presentationList.append(sectionLi);
+
+    sectionItems.forEach(({ item, index }) => {
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+
+      button.className = "presentation-list__item";
+      button.type = "button";
+      button.setAttribute("aria-current", currentView === "presentation" && index === currentPresentation ? "true" : "false");
+      button.innerHTML = `
+        <span class="presentation-list__date">${escapeHtml(item.date)}</span>
+        <span class="presentation-list__title">${escapeHtml(item.sidebarTitle || item.resolvedTitle || item.title)}</span>
+      `;
+      button.addEventListener("click", () => {
+        goToPresentation(index);
+        if (mobileMedia.matches) {
+          toggleSidebar(false);
+        }
+      });
+
+      li.append(button);
+      presentationList.append(li);
     });
-
-    li.append(button);
-    presentationList.append(li);
   });
 }
 
@@ -721,6 +711,21 @@ function renderSlideList() {
   });
 }
 
+function syncActiveSlideListItem() {
+  window.requestAnimationFrame(() => {
+    const activeItem = slideList.querySelector('.slide-list__item[aria-current="true"]');
+
+    if (!activeItem) {
+      return;
+    }
+
+    activeItem.scrollIntoView({
+      block: "nearest",
+      inline: "nearest"
+    });
+  });
+}
+
 function updateSlideControls() {
   const totalSlides = currentSlideTitles.length;
   slideCounter.textContent = totalSlides ? `${currentSlide + 1} / ${totalSlides}` : "";
@@ -729,6 +734,7 @@ function updateSlideControls() {
   fullscreen.disabled = false;
   openSlideWindow.disabled = false;
   renderSlideList();
+  syncActiveSlideListItem();
   renderSpeakerNotes();
   broadcastPresentationState();
 }
@@ -1007,44 +1013,45 @@ async function renderHome() {
   slide.classList.add("slide--home");
   slide.innerHTML = `
     <div class="home-deck-grid" id="homeDeckGrid"></div>
-    <div class="home-links">
-      ${home.links.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a>`).join("")}
-    </div>
   `;
 
   renderPresentationList();
 
   const deckGrid = document.querySelector("#homeDeckGrid");
-  const cards = await Promise.all(
-    presentations.map(async (item, index) => {
-      try {
-        const markdown = await loadMarkdown(item.file);
-        return { item, index, preview: firstSlidePreview(markdown) };
-      } catch {
-        return {
-          item,
-          index,
-          preview: { title: item.title, subtitle: "Preview unavailable" }
-        };
-      }
-    })
-  );
+  const groups = presentationSections
+    .map((section) => ({
+      section,
+      items: presentations.map((item, index) => ({ item, index })).filter(({ item }) => item.section === section)
+    }))
+    .filter((group) => group.items.length);
 
-  deckGrid.innerHTML = cards
-    .map(
-      ({ item, index, preview }) => `
-        <button class="home-deck-card" type="button" data-presentation-index="${index}">
-          <span class="home-deck-card__thumb">
-            <em>${escapeHtml(preview.title)}</em>
-            <span>${escapeHtml(preview.subtitle)}</span>
-          </span>
-          <span class="home-deck-card__body">
-            <strong>${escapeHtml(item.title)}</strong>
-            <span class="home-deck-card__meta">${escapeHtml(item.date)}</span>
-          </span>
-        </button>
-      `
-    )
+  deckGrid.innerHTML = groups
+    .map(({ section, items }) => {
+      const tagline = items.find(({ item }) => item.tagline)?.item.tagline || "";
+
+      return `
+        <section class="home-project-section">
+          <div class="home-project-section__header">
+            <h3>${escapeHtml(section)}</h3>
+            ${tagline ? `<p>${escapeHtml(tagline)}</p>` : ""}
+          </div>
+          <div class="home-project-section__cards">
+            ${items
+              .map(
+                ({ item, index }) => `
+                  <button class="home-deck-card" type="button" data-presentation-index="${index}">
+                    <span class="home-deck-card__body">
+                      <strong>${escapeHtml(item.docTitle || item.sidebarTitle || item.title)}</strong>
+                      <span class="home-deck-card__meta">${escapeHtml(item.date)}</span>
+                    </span>
+                  </button>
+                `
+              )
+              .join("")}
+          </div>
+        </section>
+      `;
+    })
     .join("");
 
   deckGrid.querySelectorAll("[data-presentation-index]").forEach((card) => {
@@ -1086,9 +1093,6 @@ async function renderPresentation() {
   currentTransition = deckSettings.transition;
   currentBackground = deckSettings.background;
   currentFont = deckSettings.font;
-  if (!window.localStorage.getItem(presentationSettingsKey()) && deckSettings.theme !== currentTheme) {
-    applyTheme(deckSettings.theme);
-  }
   transitionSelect.value = currentTransition;
   backgroundSelect.value = currentBackground;
   fontSelect.value = currentFont;
@@ -1392,6 +1396,7 @@ async function initApp() {
   }
 
   syncSidebarForViewport();
+  renderProfileLinks();
   applyTheme(currentTheme);
   renderAccountPanel();
   await loadCurrentUser();
