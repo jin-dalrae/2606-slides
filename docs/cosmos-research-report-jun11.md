@@ -72,11 +72,11 @@ The big conclusion:
 | Lurking is meaningful behavior | Strong literature support | Preece/Nonnecke/Andrews, participation inequality literature | User interviews on Rae's target audience |
 | Feeds make structure hard to see | Moderate support | Feed fatigue and algorithmic fatigue literature; common platform critique | Flat feed vs Cosmos task comparison |
 | Voice-forward social VR creates pressure for some users | Moderate support | Social VR public comments; social anxiety discussions; social VR design pattern | Interviews with VRChat/social VR users |
-| Spatial layout can support sensemaking | Moderate theory support | Information foraging, spatial hypertext, visual sensemaking literature | Prototype comprehension test |
+| Spatial layout can support sensemaking | Moderate theory support, mixed prior art | Information foraging, spatial hypertext, visual sensemaking literature; argument-visualization tools as cautionary precedent | Prototype comprehension test vs. flat feed |
 | Headset text comfort is fragile | Strong support | VR UI and cybersickness literature; Quest/Vision Pro public comments | Reading comfort test on real devices |
 | Smart glasses are growing but not deep-reading devices | Strong market support | IDC, Counterpoint, Meta/Ray-Ban market signals | Concept testing for glanceable return flows |
 | AI summaries need source inspection | Strong technical/design support | Summarization factual consistency and AI trust research | Label trust test with source-trace task |
-| Mediator-first is the right strategy | Strategic inference | Reddit content scale, Discord fragmentation, platform cold-start logic | User preference and expert feedback |
+| Mediator-first is the right strategy | Strategic inference | Reddit content scale, Discord fragmentation, platform cold-start logic | User preference and expert feedback; content-rights model (Reddit API/AI restrictions) |
 
 ---
 
@@ -89,12 +89,14 @@ The deck is now deeper, but these research tasks should continue:
    - Social media fatigue and information overload
    - Information foraging and sensemaking
    - Spatial hypertext / spatial memory
+   - Argument visualization and structured-debate tools (why they struggle to scale)
    - VR reading and comfort
    - Trustworthy AI summaries and explainability
 
 2. **Competitive teardown**
    - Reddit thread experience
    - Discord forum/channel experience
+   - Argument-mapping / structured-debate tools (Kialo, Debategraph)
    - VRChat and VIVERSE spatial social experience
    - Vision Pro windowed social browsing
    - AI summary / answer engines
@@ -156,9 +158,9 @@ Target devices include:
 | --- | --- |
 | What do users want? | Whether people want better lurking, debate sensemaking, lower-pressure participation, or simply faster summaries |
 | What is offered in the market? | How Reddit, Discord, Threads, social VR, spatial OS tools, smart glasses, and AI summarizers divide the problem |
-| What should Cosmos aim for? | Browser, mediator, native platform, classroom tool, moderation tool, or research/synthesis layer |
+| What should Cosmos aim for? | Browser, mediator, or native platform — including whether to mediate existing discussions before hosting new ones |
 | What interaction points are worth testing? | Sphere browsing, labels, source inspection, missing voices, flat-feed comparison, device-mode differences |
-| Should Cosmos create new content or mediate current platforms? | Whether to aggregate existing discussions first or attempt a native community from the start |
+| What evidence do we need next? | Which comparative test (flat feed vs sphere) and which comprehension, comfort, and trust metrics prove spatial value |
 
 ---
 
@@ -211,6 +213,7 @@ Cosmos should treat lurking as a first-class behavior. The first success metric 
 | visionOS / Quest spatial apps | Spatial windows and immersive display | Often relocates 2D content instead of reshaping discussion |
 | Meta glasses / smart glasses | Ambient, lightweight access | Not enough space for deep discussion browsing alone |
 | AI summarizers | Fast synthesis | Can hide disagreement, source context, and minority voices |
+| Argument-mapping tools (Kialo, Debategraph) | Explicit debate structure | High authoring effort, visual complexity, thin adoption even in 2D |
 
 Implication:
 
@@ -742,14 +745,20 @@ Existing platforms already have the content and behavior Cosmos wants to study. 
 
 Design implications:
 
-- Cosmos should mediate existing discussions first.
-- The prototype can use public Reddit threads, permission-cleared Discord exports, class forums, or synthetic datasets.
-- Source linking and content rights must be handled from the beginning.
+- Cosmos should mediate existing discussions first, but cannot assume open access to any one platform's content.
+- As of late 2025, Reddit gates all API access behind pre-approval, prohibits AI use of its data without a license, and is litigating third parties (Reddit v. Anthropic, Reddit v. Perplexity). A product that imports and AI-processes Reddit threads sits squarely in that line of fire.
+- Therefore the prototype should lead with permission-cleared Discord exports, class forums, research datasets, or synthetic data; public platform threads only where rights clearly allow.
+- This also sharpens the strategy: do not make the business depend on one platform's content. Favor bring-your-own-content and permission-based sources.
+- Content rights are a build-stage gate, not a research-stage blocker: testing spatial sensemaking needs a real discussion, not a specific platform.
 
 Sources:
 
 - Reddit Q4/FY 2025 results  
   https://investor.redditinc.com/news-events/news-releases/news-details/2026/Reddit-Reports-Fourth-Quarter-and-Full-Year-2025-Results-Announces-1-Billion-Share-Repurchase-Program/default.aspx
+- Reddit Responsible Builder Policy / 2025 API pre-approval and AI-use restrictions  
+  https://replydaddy.com/blog/reddit-api-pre-approval-2025-personal-projects-crackdown
+- Reddit v. Perplexity — terms-of-access and AI data rights  
+  https://caldwelllaw.com/news/reddit-perplexity-ai-lawsuit-contract-data-rights/
 - Discord DSA active recipient disclosure  
   https://support.discord.com/hc/en-us/articles/12477677109143-Digital-Services-Act-Information-on-Average-Monthly-Active-Recipients-in-the-European-Union
 
@@ -776,6 +785,25 @@ Sources:
   https://www.frontiersin.org/journals/computer-science/articles/10.3389/fcomp.2024.1456098/full
 - Microsoft Research, uncertainty expression and user reliance  
   https://www.microsoft.com/en-us/research/publication/im-not-sure-but-examining-the-impact-of-large-language-models-uncertainty-expression-on-user-reliance-and-trust/
+
+### 13.9 Structured debate and argument visualization
+
+Core finding:
+
+Cosmos's core bet — that reorganizing discussion spatially improves understanding — has a direct precedent in computer-supported argument visualization (Kialo, Debategraph, and the broader CSAV literature). The track record is cautionary rather than encouraging: argument maps tend to grow visually complex, authoring them is costly, and adoption stays thin even in 2D. Reviews of public-deliberation tools document more failures than wins.
+
+Design implications:
+
+- Treat this as the closest competitor, not an afterthought. The obvious expert critique is "how is this different from Kialo, in 3D, with an added XR comfort cost?"
+- Cosmos's differentiation must be that it removes authoring burden: users read and inspect AI-clustered existing threads rather than hand-building maps.
+- This directly raises the bar on "Risk 1: spatial layout becomes decorative." Spatial structure has to return more attention than it costs — the exact place prior tools failed.
+
+Sources:
+
+- Understanding Failures and Potentials of Argumentation Tools for Public Deliberation (C&T)  
+  https://dl.acm.org/doi/10.1145/3461564.3461584
+- Charting the field: a review of argument visualization research  
+  https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2025.1672105/full
 
 ---
 
@@ -810,11 +838,12 @@ The research direction presentation should now be structured as:
    - Small conclusion: the sphere must improve understanding, not decorate a feed.
 
 6. **Market findings**
-   - Reddit has massive content supply.
+   - Reddit has massive content supply, but now gates access and litigates AI use of its data.
    - Discord has persistent communities but fragmented context.
+   - Argument-mapping tools already tried explicit structure and struggled with effort and adoption.
    - Social VR has space but high real-time pressure.
    - XR market signals support cross-device strategy.
-   - Small conclusion: Cosmos should mediate existing discussion first.
+   - Small conclusion: Cosmos should mediate existing discussion first — starting with permission-cleared and synthetic data.
 
 7. **AI and trust**
    - AI summaries are a competitor and a risk.

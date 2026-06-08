@@ -138,7 +138,7 @@ It should be whether users can understand:
 
 Research on social media fatigue connects overload, stress, comparison, privacy concerns, and compulsive use with fatigue.
 
-> "information overload on social media may trigger user fatigue"
+> Information overload was the strongest predictor of social media fatigue.
 
 <p class="slide-source">Source: Frontiers in Psychology, 2024<br><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1277846/full">frontiersin.org</a></p>
 
@@ -200,9 +200,9 @@ None fully solves quiet, spatial, source-checkable understanding of existing dis
 Reddit reports:
 
 <div class="metric-strip">
-  <article><strong>121M+</strong><span>daily active unique visitors</span></article>
+  <article><strong>121M+</strong><span>daily active uniques</span></article>
+  <article><strong>471M+</strong><span>weekly active uniques</span></article>
   <article><strong>100K+</strong><span>active communities</span></article>
-  <article><strong>Existing</strong><span>discussion supply</span></article>
 </div>
 
 <p class="slide-source">Source: Reddit Investor Relations, Feb 5 2026<br><a href="https://investor.redditinc.com/">investor.redditinc.com</a></p>
@@ -280,6 +280,24 @@ Cosmos should compete by preserving structure and evidence, not just compressing
 
 ---
 
+## Structure Has Been Tried Before
+
+<p class="slide-ref">Closest prior art</p>
+
+Argument-mapping tools like Kialo and Debategraph have spatialized debate for two decades.
+
+The research is cautionary:
+
+- Maps grow visually complex
+- Building them is real work
+- Adoption stays thin, even in 2D
+
+Cosmos inverts the model: read first, no manual mapping, AI clusters existing threads for users to inspect.
+
+<p class="slide-source">Source: Argument-visualization and public-deliberation tool studies<br><a href="https://dl.acm.org/doi/10.1145/3461564.3461584">dl.acm.org</a></p>
+
+---
+
 ## Competitive Map
 
 | Product | Strength | Gap Cosmos can test |
@@ -289,6 +307,7 @@ Cosmos should compete by preserving structure and evidence, not just compressing
 | VRChat | Spatial presence | Async low-pressure reading |
 | Spatial OS browsers | Immersive display | Discussion-native layout |
 | AI summaries | Fast synthesis | Source-checkable disagreement |
+| Argument maps | Explicit structure | Reading-first, no authoring |
 
 ---
 
@@ -331,16 +350,17 @@ That is too much before the spatial value is proven.
 
 ## Mediator First Is Testable
 
-Mediator-first means using existing discussions:
+Mediator-first means using discussions that already exist:
 
-- Public Reddit threads
 - Permission-cleared Discord exports
-- Class discussion boards
-- Product feedback
-- Research datasets
+- Class and community discussion boards
+- Research and product-feedback datasets
 - Synthetic test datasets
+- Public threads where rights allow
 
-The prototype can test spatial value without waiting for a new community.
+The prototype can test spatial value without building a new community.
+
+<p class="slide-closing">The research needs a real discussion, not a specific platform.</p>
 
 ---
 
@@ -352,6 +372,25 @@ The prototype can test spatial value without waiting for a new community.
 | 2 | Save paths and annotations | Users return to regions |
 | 3 | Draft replies and questions | Users want light contribution |
 | 4 | Native posting | Users want Cosmos-native community |
+
+---
+
+## Mediating Is Not Risk-Free Either
+
+<p class="slide-ref">Strategic honesty</p>
+
+Native-first risks an empty platform. Mediator-first risks content access.
+
+Reddit now gates all API access, bars AI use of its data without a license, and is litigating scrapers.
+
+| Stage | What it needs | Rights exposure |
+| --- | --- | --- |
+| Research now | Any real discussion dataset | Low: permission-cleared or synthetic data |
+| Product later | Source platforms at scale | High: licensing, ToS, platform dependence |
+
+<p class="slide-closing">Rights are a build-stage gate, not a research-stage blocker.</p>
+
+<p class="slide-source">Source: Reddit API/AI policy 2025; Reddit v. Anthropic; Reddit v. Perplexity<br><a href="https://caldwelllaw.com/news/reddit-perplexity-ai-lawsuit-contract-data-rights/">caldwelllaw.com</a></p>
 
 ---
 
@@ -390,6 +429,8 @@ It says the sphere must survive specific risks:
 ## Risk 1: Spatial Layout Becomes Decorative
 
 Spatial design is only useful if it reveals relationships.
+
+Structured-debate tools stumbled here: structure that looked rich but cost more attention than it returned.
 
 Cosmos must help users answer:
 
