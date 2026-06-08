@@ -85,8 +85,7 @@ Online community research found that people read silently for many reasons: they
 
 > "most lurkers are not selfish free-riders"
 
-Source: Preece, Nonnecke, Andrews  
-https://www.socs.uoguelph.ca/~nonnecke/research/CHB_Proof.pdf
+<p class="slide-source">Source: Preece, Nonnecke, Andrews<br><a href="https://www.socs.uoguelph.ca/~nonnecke/research/CHB_Proof.pdf">socs.uoguelph.ca</a></p>
 
 ---
 
@@ -141,8 +140,7 @@ Research on social media fatigue connects overload, stress, comparison, privacy 
 
 > "information overload on social media may trigger user fatigue"
 
-Source: Frontiers in Psychology, 2024  
-https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1277846/full
+<p class="slide-source">Source: Frontiers in Psychology, 2024<br><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1277846/full">frontiersin.org</a></p>
 
 ---
 
@@ -207,8 +205,7 @@ Reddit reports:
   <article><strong>Existing</strong><span>discussion supply</span></article>
 </div>
 
-Source: Reddit Investor Relations, Feb 5 2026  
-https://investor.redditinc.com/
+<p class="slide-source">Source: Reddit Investor Relations, Feb 5 2026<br><a href="https://investor.redditinc.com/">investor.redditinc.com</a></p>
 
 ---
 
@@ -448,8 +445,7 @@ IDC reports XR growth led by smart glasses, while traditional VR/MR headsets rem
 
 Cosmos should not be headset-only.
 
-Source: IDC XR market update  
-https://www.idc.com/promo/arvr/
+<p class="slide-source">Source: IDC XR market update<br><a href="https://www.idc.com/promo/arvr/">idc.com</a></p>
 
 ---
 
