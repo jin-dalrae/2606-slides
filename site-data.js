@@ -60,7 +60,7 @@
     {
       slug: "social-lab-climate-goal-platform",
       title: "Social Lab",
-      docTitle: "Climate goal platform",
+      docTitle: "+/- impact dashboard for climate startups",
       project: "Social Lab",
       date: "June 15, 2026",
       file: "presentations/social-lab-climate-goal-platform.md",
@@ -109,6 +109,22 @@
       project: "Social Lab",
       date: "June 15, 2026",
       file: "../presentations/social-lab-climate-goal-platform.md"
+    },
+    {
+      slug: "social-lab-prd-stage1",
+      title: "Climate Goal Platform PRD — Stage 1",
+      docTitle: "PRD Stage 1: climate startup +/- impact dashboard",
+      project: "Social Lab",
+      date: "June 15, 2026",
+      file: "prd-stage1-climate-impact-dashboard.md"
+    },
+    {
+      slug: "social-lab-prd-stage2",
+      title: "Climate Goal Platform PRD — Stage 2",
+      docTitle: "PRD Stage 2: generalization, customization, follow-up",
+      project: "Social Lab",
+      date: "June 15, 2026",
+      file: "prd-stage2-generalization-customization.md"
     },
     {
       slug: "slide-guide",

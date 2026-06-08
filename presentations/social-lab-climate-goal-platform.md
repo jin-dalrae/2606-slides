@@ -1,143 +1,165 @@
 # Climate Goal Platform
 
-## A Shared Dashboard For Startup Environmental Goals
+## A +/- Impact Dashboard For Climate Startups
 
-<p class="deck-subtitle">Gamifying environmental concern across startup teams</p>
+<p class="deck-subtitle">Net impact = handprint minus footprint, made operational and gamified</p>
 
 Social Lab  
 Presenter: Rae Jin  
 June 15, 2026
 
-Note: This deck frames a new Social Lab product direction: a platform/dashboard for startups to check, follow, manage, and share the environmental concerns and goals of their business.
+Note: New direction. The MVP narrows to climate startups and a two-sided (positive and negative) environmental impact dashboard with a gamified operating layer. The earlier "any startup / harm-reduction" version becomes the stretch tier. Two methodology questions drive this deck: (1) how to use the Climate Brick method properly, customize it, and produce a better evaluation; (2) what environmental impact can actually be addressed in a dashboard, and whether it can be checked at the right time.
 
 ---
 
-## The Starting Point
+## The New Direction
 
-### Startups need a practical environmental concern system
+### Rescoped since the last review
 
-Climate work often lives in scattered places:
+| Tier | Before | Now |
+| --- | --- | --- |
+| MVP | Any startup, harm-reduction "benign business" | Climate startup, +/- net impact dashboard, gamified |
+| Stretch | Climate startups as a sub-case | All tech startups, result customization, follow-up components |
+| Method gap | Climate Brick used as loose inspiration | Climate Brick used properly, customized, and made measurable |
 
-- Founder decks
-- Investor updates
-- Compliance documents
-- Spreadsheets
-- Sustainability claims
-- One-off advisor notes
-
-The opportunity is to turn those fragments into a live operating dashboard that teams actually return to.
+<p class="slide-closing">Start where impact is the whole thesis: climate startups. Then generalize.</p>
 
 ---
 
-## Starting References
+## Why Climate Startups First
 
-<p class="slide-ref">Project lineage</p>
+### Their valuation is an impact claim
 
-This direction starts from two earlier Social Lab frames:
+<div class="cards-3">
+  <article>
+    <h3>The + side is the pitch</h3>
+    <p>A climate startup's reason to exist is the emissions it helps avoid. That positive claim is rarely measured with the same rigor as revenue.</p>
+  </article>
+  <article>
+    <h3>The − side is ignored</h3>
+    <p>Even climate startups run on cloud, hardware, travel, and supply chains. Their own footprint is the part nobody puts on a dashboard.</p>
+  </article>
+  <article>
+    <h3>VCs need to verify both</h3>
+    <p>A climate-focused fund underwrites impact. It needs a defensible net number, not a slogan, before it writes a check or reports to LPs.</p>
+  </article>
+</div>
 
-| Previous frame | What carries forward |
+---
+
+## The Core Product
+
+### A net impact dashboard, not another carbon calculator
+
+<div class="cards-2">
+  <article>
+    <h3>Two-sided ledger</h3>
+    <p>Positive handprint (avoided and enabled emissions) and negative footprint (Scope 1, 2, 3) tracked side by side, never silently merged.</p>
+  </article>
+  <article>
+    <h3>Gamified operating layer</h3>
+    <p>Goal cards, owners, evidence points, and maturity levels turn the number into weekly team behavior, not an annual report.</p>
+  </article>
+</div>
+
+<p class="slide-closing">The wedge: make a climate startup's net impact as live, owned, and credible as its growth metrics.</p>
+
+---
+
+## The +/- Impact Model
+
+### Handprint minus footprint
+
+| Side | What it captures | Accounting basis |
+| --- | --- | --- |
+| − Footprint | The startup's own emissions: Scope 1 direct, Scope 2 energy, Scope 3 value chain | Inventory: what you actually emitted |
+| + Handprint | Emissions the solution helps others avoid versus a reference scenario | Comparative: what would have happened otherwise |
+| = Net | Context figure shown alongside, not instead of, the inventory | Derived, with uncertainty bands |
+
+<p class="slide-source">Frame: GHG Protocol, Estimating and Reporting the Comparative Emissions Impacts of Products; VTT / LUT Carbon Handprint Guide v2.0</p>
+
+---
+
+## The Cardinal Rule
+
+### Never net naively
+
+<div class="cards-3">
+  <article>
+    <h3>Different accounting bases</h3>
+    <p>Footprint is an inventory of real emissions. Avoided emissions are a counterfactual model. Subtracting one from the other double-counts.</p>
+  </article>
+  <article>
+    <h3>"Scope 4" is not a scope</h3>
+    <p>Avoided emissions sit outside the official Scope 1/2/3 inventory. They cannot offset the footprint or be used to claim neutrality.</p>
+  </article>
+  <article>
+    <h3>Show, don't merge</h3>
+    <p>The dashboard displays + and − separately, with the net as a clearly labeled derived figure carrying its uncertainty.</p>
+  </article>
+</div>
+
+<p class="slide-source">Source: GHG Protocol; Project Frame methodology, 2024</p>
+
+---
+
+## Positive Impact, Done Honestly
+
+### Avoided emissions only counts if it is additional
+
+| Test | Question the dashboard must answer |
 | --- | --- |
-| Reconnecting to nature | Technology should bridge people back to nature, not replace contact with it |
-| Reconnecting founders to nature | Startup culture treats nature and climate as external to growth |
+| Baseline | What reference scenario would have happened without this solution? |
+| Displacement | Did the clean output replace fossil output, or add to total supply? |
+| Additionality | Would this have happened anyway? If yes, the avoided figure is near zero. |
+| Marginal signal | Does it use the grid plant that actually ramps, not a flattering average? |
+| Rebound | Does cheaper or cleaner supply induce more total consumption? |
 
-The new product asks how those ideas can scale into a tool for everyday startup operations.
-
----
-
-## What We Keep
-
-### Nature is not just scenery
-
-The earlier Social Lab work argued that people can find meaning, validation, and connection through nature.
-
-For the startup context, that becomes a business principle:
-
-<p class="slide-closing">Nature and the Earth should be considered stakeholders in every business.</p>
+<p class="slide-source">Sources: WattTime, "You can't avoid emissions without additionality"; Project Frame, 2024</p>
 
 ---
 
-## What Changes
+## Why The Integrity Gate Matters
 
-### From individual reconnection to organizational practice
+### Inflated positive claims are the default failure mode
 
-| Earlier question | New product question |
-| --- | --- |
-| How might people reconnect to nature? | How might startup teams keep environmental concern visible? |
-| How do we remove friction from nature contact? | How do we remove friction from environmental action? |
-| How can technology bridge people to nature? | How can software turn concern into shared practice? |
+> In the absence of additionality, quantifying avoided emissions amounts to multiplying by zero.
 
----
+California's forest-offset program was over-credited by roughly 30 million tonnes of CO2e, about 29% of analyzed credits, worth around $410M, driven mostly by inflated baselines.
 
-## From Founder Reconnection To Platform
+<p class="slide-closing">A climate VC has seen this movie. The product earns trust by gating every + claim, not by maximizing it.</p>
 
-<p class="slide-ref">Product pivot</p>
-
-The earlier startup concept was an advisory and transition service:
-
-- Measure climate impact
-- Develop reduction strategy
-- Support ongoing management
-- Help climate startups become investment-ready
-- Offer nature-based founder workshops
-
-Climate Goal Platform turns the repeatable parts into a scalable dashboard.
+<p class="slide-source">Sources: WattTime; Badgley et al., Global Change Biology, 2022; CarbonPlan</p>
 
 ---
 
-## Product Direction
+## Methodology 1
 
-### Climate Goal Platform
+### Using Climate Brick properly, customizing it, and evaluating better
 
-A gamified dashboard for startups to:
+<p class="slide-ref">Methodology question 1</p>
 
-- Discover environmental concern areas
-- Choose stage-appropriate goals
-- Assign owners across the team
-- Track progress with evidence
-- Share credible updates with investors, customers, and partners
-- Build better operating habits before compliance pressure arrives
+Three moves:
 
-The platform version keeps the mission of reconnecting founders to nature, but lowers the cost of participation.
+1. Use the framework for what it is actually good at.
+2. Add the dimension it deliberately leaves out.
+3. Score on two axes instead of one.
 
 ---
 
-## The Product Pivot
-
-### Service logic becomes product logic
-
-| Earlier service idea | Platform translation |
-| --- | --- |
-| Climate impact measurement | Guided environmental profile |
-| Reduction strategy | Recommended goal cards |
-| Ongoing management support | Team dashboard and progress game |
-| Founder reflection workshop | Lightweight environmental concern prompts |
-| Investor-facing narrative | Evidence-backed public share page |
-
----
-
-## What Is Climate Brick?
+## What Climate Brick Actually Is
 
 <p class="slide-ref">Research baseline</p>
 
-The Climate Brick calls itself a "missing manual" for climate tech.
+A "missing manual" for scaling climate tech, launched April 2024 by EQT Foundation and Contrarian Ventures with ~50 European climate founders and investors.
 
-It provides seven sector-specific bricks that help climate tech companies understand scaling milestones, financing pathways, and success factors.
+| Attribute | Detail |
+| --- | --- |
+| Structure | Seven sector "bricks" organized by technological risk and capital intensity |
+| Per brick | A scaling roadmap, suggested capital stack, and three "critical unlocks" |
+| Evidence base | 100+ interviews, 3,000+ companies, 15,000+ data points |
 
-<p class="slide-source">Source: The Climate Brick<br><a href="https://www.climatebrick.com/">climatebrick.com</a></p>
-
----
-
-## Climate Brick In One Sentence
-
-### A playbook for scaling climate tech companies
-
-Climate Brick is most useful when a company is already climate-tech-oriented and needs to understand:
-
-- Which archetype it fits
-- What milestones matter
-- What capital stack may be needed
-- What unlocks investors expect
-- How similar companies scaled
+<p class="slide-source">Sources: climatebrick.com; EQT Foundation; CTVC #194</p>
 
 ---
 
@@ -147,672 +169,343 @@ Climate Brick is most useful when a company is already climate-tech-oriented and
 
 | Brick | Company pattern |
 | --- | --- |
-| Gigascaling | CAPEX-intensive large-scale plants |
-| Green Deployment | Operating or owning green assets |
-| Asset-as-a-Service | Enabling green assets through software/tech |
-| Product Disruption | Greener product value chains |
-| New Technology | Disruptive climate alternatives |
-| Moonshot | Novel, game-changing science |
+| Gigascaling | CAPEX-intensive large-scale plants (green steel, batteries, fuels) |
+| Green Deployment | Operating, deploying, or owning green assets (solar, wind, storage) |
+| Asset-as-a-Service | Enabling green assets through software or tech (EV charging) |
+| Product Disruption | Greener product value chains through design and engineering |
+| New Technology | Disruptive lower-carbon alternatives |
+| Moonshot | Novel, game-changing science (fusion, long-duration storage) |
 | Companion Software | Software enabled by hardware |
 
 ---
 
-## Who Climate Brick Serves
+## What "Critical Unlocks" Look Like
 
-<p class="slide-ref">Audience</p>
+### Three per brick, concrete and stage-specific
 
-| Audience | Climate Brick value |
+<div class="cards-2">
+  <article>
+    <h3>Gigascaling</h3>
+    <p>1. Clear roadmap to cost competitiveness. 2. Execute seamlessly and scale rapidly. 3. Committed take-or-pay offtakes.</p>
+  </article>
+  <article>
+    <h3>Green Deployment</h3>
+    <p>1. Scalable org to out-execute on operations and commercial traction. 2. Roadmap to profitable unit economics. 3. Ramp value, sales, and scale fast.</p>
+  </article>
+</div>
+
+<p class="slide-source">Source: climatebrick.com brick pages</p>
+
+---
+
+## What Climate Brick Measures
+
+### Five dimensions, all about scaling
+
+| Dimension | Question |
 | --- | --- |
-| Founders | Strategy, resource allocation, fundraising milestones |
-| Investors | Portfolio tracking, target comparison, investment committee input |
-| Ecosystem | Market scanning, policy insight, partnership decisions |
+| Commercial | Can it sell and reach profitable unit economics? |
+| Product & Offering | Is the offering ready and differentiated? |
+| Technology | Are technology milestones met? |
+| Value Chain | Are suppliers, offtakers, and partners secured? |
+| Execution | Can the team build and ramp? |
 
-<p class="slide-source">Source: The Climate Brick use cases<br><a href="https://www.climatebrick.com/">climatebrick.com</a></p>
-
----
-
-## Why It Matters
-
-### Climate tech scaling is not SaaS scaling
-
-McKinsey’s interview on Climate Brick describes climate tech as more complex than software because it involves more stakeholders: universities, suppliers, regulators, grant providers, debt providers, project funders, offtakers, and more.
-
-<p class="slide-source">Source: McKinsey, Creating a how-to guide for climate tech start-ups and scale-ups<br><a href="https://www.mckinsey.com/capabilities/sustainability/our-insights/creating-a-how-to-guide-for-climate-tech-start-ups-and-scale-ups">mckinsey.com</a></p>
+<p class="slide-closing">Every dimension asks: can this company scale and fundraise?</p>
 
 ---
 
-## What Climate Brick Serves Well
+## The Gap We Customize
+
+### Climate Brick has no impact-integrity axis
+
+Climate Brick assumes a company is climate-positive and asks how it scales. It does not measure how much impact the company actually creates, or whether that claim is credible.
+
+<div class="cards-2">
+  <article>
+    <h3>What it answers</h3>
+    <p>Is this a fundable, scalable climate company for its archetype?</p>
+  </article>
+  <article>
+    <h3>What it leaves out</h3>
+    <p>Is the net impact real, additional, and verifiable over time?</p>
+  </article>
+</div>
+
+<p class="slide-closing">That missing axis is exactly our product. We are complementary, not derivative.</p>
+
+---
+
+## The Two-Axis Evaluation
+
+### Scaling readiness x impact integrity
+
+| | Low scaling readiness | High scaling readiness |
+| --- | --- | --- |
+| High impact integrity | Real impact, unproven business: grant and patient capital | The fundable climate company a VC wants |
+| Low impact integrity | Weak on both: pass | Great scaler, soft impact claim: greenwashing risk |
+
+<p class="slide-closing">Climate Brick scores the columns. We add the rows. A climate VC needs both to underwrite.</p>
+
+---
+
+## Customizing The Method Per Brick
+
+### The archetype sets the denominator
+
+| Brick | Where impact integrity is won or lost |
+| --- | --- |
+| Gigascaling | Marginal grid displaced by the plant; embodied emissions of construction |
+| Green Deployment | Additionality of each asset; would it have been built anyway? |
+| Asset-as-a-Service | Real utilization vs. installed capacity; rebound in usage |
+| Product Disruption | Use-phase displacement vs. the incumbent product, not a strawman |
+| New Technology / Moonshot | Forward-looking estimate with wide bands; risk-adjusted, not headline |
+| Companion Software | Attribution: how much of the hardware's gain is the software's? |
+
+---
+
+## Better Evaluation, In One Line
+
+### Archetype-aware, additionality-gated, time-resolved
 
 <div class="cards-3">
   <article>
-    <h3>Archetype clarity</h3>
-    <p>It helps climate tech founders identify what kind of scaling journey they are on.</p>
+    <h3>Archetype-aware</h3>
+    <p>Use the brick to set the right milestones, capital stack, and impact baseline for this company type.</p>
   </article>
   <article>
-    <h3>Fundraising logic</h3>
-    <p>It connects company stage, milestones, and capital pathway.</p>
+    <h3>Additionality-gated</h3>
+    <p>No positive number passes without a baseline, displacement, and additionality check.</p>
   </article>
   <article>
-    <h3>Ecosystem language</h3>
-    <p>It gives founders and investors a shared vocabulary for climate scaling.</p>
+    <h3>Time-resolved</h3>
+    <p>Each metric carries a freshness and certainty label, because not all impact can be checked at the same cadence.</p>
   </article>
 </div>
 
 ---
 
-## What Climate Brick Does Not Fully Serve
+## Methodology 2
 
-### The everyday operating layer
+### What impact can be addressed, and can it be checked at the right time?
 
-Climate Brick is a manual and framework.
+<p class="slide-ref">Methodology question 2</p>
 
-It does not appear to be a daily dashboard where a non-climate startup can:
+The honest answer has two halves:
 
-- Track environmental concerns
-- Set shared environmental goals
-- Assign owners
-- Monitor progress
-- Share proof with stakeholders
-- Manage company-wide behavior change
+1. The negative side can largely be metered, some of it in real time.
+2. The positive side is mostly modeled, annual, and uncertain.
+
+A good dashboard never displays the two with equal confidence.
 
 ---
 
-## The Gap
+## The Impact Taxonomy
 
-### From scaling playbook to operating dashboard
+### What a climate startup can actually put on a dashboard
 
-| Climate Brick does | Our product can add |
+| Layer | Examples | Sign |
+| --- | --- | --- |
+| Scope 1 | Combustion, company vehicles, process emissions | − |
+| Scope 2 | Purchased electricity, heat, cloud energy | − |
+| Scope 3 | Cloud and AI compute, hardware, vendors, travel, logistics | − |
+| Use-phase (3.11) | Emissions from customers using the product | − or + |
+| Avoided / enabled | Emissions customers avoid vs. the reference product | + |
+| Financed (3.15) | Emissions tied to the company's own investments | − |
+
+---
+
+## Can It Be Checked At The Right Time?
+
+### A cadence matrix, not a single number
+
+| Cadence | What | How | Signal |
+| --- | --- | --- | --- |
+| Real-time | Cloud and software carbon | WattTime / Electricity Maps APIs + GSF SCI | Leading |
+| Monthly | Energy, travel, compute spend | Bills, billing APIs, expense data | Mixed |
+| Quarterly | Procurement, vendor policy, hardware | Operational review | Lagging |
+| Annual | Avoided emissions, full LCA, Scope 3 inventory | Modeled with uncertainty bands | Lagging, modeled |
+
+<p class="slide-source">Sources: WattTime; Electricity Maps; Green Software Foundation SCI</p>
+
+---
+
+## The Timing Honesty Principle
+
+### Metered now, modeled later, never confused
+
+<div class="cards-3">
+  <article>
+    <h3>Metered, real-time</h3>
+    <p>Operational footprint and grid intensity can be read continuously. Use the marginal grid signal for any decision or claim, not the average.</p>
+  </article>
+  <article>
+    <h3>Modeled, annual</h3>
+    <p>Avoided emissions and handprint are forward-looking models. They are only confirmable after customers actually adopt and use the product.</p>
+  </article>
+  <article>
+    <h3>Visual separation</h3>
+    <p>Metered values render solid. Modeled values render with uncertainty bands and a "last modeled" date. Never imply parity.</p>
+  </article>
+</div>
+
+---
+
+## Leading vs Lagging On The Dashboard
+
+### What predicts impact vs what confirms it
+
+| Leading (predicts) | Lagging (confirms) |
 | --- | --- |
-| Explains climate tech archetypes | Helps any startup set environmental goals |
-| Maps scaling milestones | Turns goals into owned tasks and metrics |
-| Supports fundraising logic | Supports daily operating decisions |
-| Serves climate tech companies | Serves environmentally aware startups broadly |
-| Works as a manual | Works as a live platform |
+| Clean MWh enabled this quarter | Annual reconciled avoided emissions |
+| Additionality status of deployments | Realized grid intensity at time of use |
+| Customer adoption and volume ramp | Metered operational energy use |
+| Marginal emissions of regions served | Verified customer footprint reductions |
+
+<p class="slide-closing">A startup steers on leading indicators and reports on lagging ones. The dashboard shows both.</p>
 
 ---
 
-## Opportunity Space
+## The Gamified Operating Layer
 
-### Environmental goals need to become team-visible
+### Cooperative, evidence-first, not a leaderboard
 
-For many startups, environmental concern is not absent.
-
-It is under-operationalized.
-
-Founders may care, but the work is not visible in the same way as product, revenue, hiring, or runway.
-
-<p class="slide-closing">The opportunity is to make environmental goals part of startup management.</p>
-
----
-
-## Direction Shift
-
-### Not only climate-tech startups
-
-Climate Brick is built for climate tech scale-up journeys.
-
-Our platform can scale the method to every startup:
-
-- SaaS companies
-- AI tools
-- Marketplaces
-- Consumer apps
-- Hardware-adjacent startups
-- Service businesses
-
-<p class="slide-closing">Every tech startup eventually needs a way to understand and manage its environmental harm.</p>
-
----
-
-## The Game Layer
-
-### Environmental concern should become visible behavior
-
-The platform should make environmental work feel like a shared operating game:
-
-| Game mechanic | Business purpose |
+| Mechanic | Business purpose |
 | --- | --- |
-| Goal cards | Turn vague concern into concrete choices |
-| Owner badges | Make accountability visible |
-| Evidence points | Reward proof, not slogans |
-| Team streaks | Keep lightweight weekly attention |
-| Level paths | Show maturity from basic awareness to credible practice |
-| Share status | Let external audiences see progress without overclaiming |
-
----
-
-## Why Gamify It?
-
-### Because environmental concern competes with urgent startup work
-
-Startups already use dashboards for revenue, product, hiring, and runway.
-
-Environmental concern loses because it is:
-
-- Abstract
-- Slow
-- Cross-functional
-- Hard to prioritize
-- Easy to postpone
-
-Gamification is not decoration here. It is a way to keep environmental work visible, social, and repeatable.
+| Goal cards | Turn the impact model into concrete owned actions |
+| Owner badges | Make accountability visible across the team |
+| Evidence points | Reward proof and additionality checks, not slogans |
+| Integrity gates | A + claim cannot level up without a baseline and attribution |
+| Maturity levels | Show movement from unmapped to verified-and-improving |
+| Share readiness | Let outsiders see progress without overclaiming |
 
 ---
 
 ## Gamification Tone
 
-### Cooperative, not competitive
-
-The earlier Social Lab work centered non-transactional, non-competitive validation.
-
-That matters here. The product should avoid a performative leaderboard.
+### Reward integrity, not vanity
 
 | Avoid | Use instead |
 | --- | --- |
-| Ranking startups as good or bad | Showing maturity and next steps |
-| Rewarding green claims | Rewarding evidence |
-| Turning climate into vanity points | Making responsible habits visible |
-| Shaming teams for low scores | Helping teams choose realistic actions |
-
----
-
-## What Standards Already Exist?
-
-<p class="slide-ref">Standards landscape</p>
-
-| Standard / practice | What it helps evaluate |
-| --- | --- |
-| GHG Protocol | Scope 1, 2, and 3 emissions inventory |
-| SBTi / SME route | Science-based emissions reduction targets |
-| SME Climate Hub | Small-business measuring, planning, and reporting tools |
-| ISO 14001 | Environmental management system |
-| ISO 14064 | GHG quantification, reporting, verification |
-| Green Software Foundation SCI | Carbon intensity of software |
-
----
-
-## Disclosure And Trust Frameworks
-
-<p class="slide-ref">External pressure</p>
-
-| Framework | What it signals |
-| --- | --- |
-| ISSB / IFRS S2 | Climate-related financial disclosure |
-| CSRD / ESRS E1 | EU sustainability and climate reporting |
-| CDP | Environmental disclosure across climate, forests, water, biodiversity, plastics |
-| B Lab Standards | Whole-company social, environmental, and governance impact |
-| SBTN | Science-based targets for nature |
-
-These are not all designed for early-stage startups, but they define what credible climate language looks like.
-
----
-
-## GHG Protocol Is The Baseline
-
-<p class="slide-ref">Carbon accounting</p>
-
-The GHG Protocol provides the common language for corporate emissions:
-
-- Scope 1: direct emissions
-- Scope 2: purchased energy
-- Scope 3: value-chain emissions
-
-For tech startups, Scope 3 is often the hard part: cloud infrastructure, vendors, hardware, travel, events, and customer use.
-
-<p class="slide-source">Source: GHG Protocol standards<br><a href="https://ghgprotocol.org/standards">ghgprotocol.org</a></p>
-
----
-
-## SBTi And SME Climate Hub
-
-<p class="slide-ref">Target setting</p>
-
-SBTi defines science-based target methods. SME Climate Hub gives smaller companies free tools to measure emissions, build action plans, and report progress.
-
-This is close to our product intent, but still leaves room for a startup-native operating dashboard.
-
-<p class="slide-source">Sources: SBTi; SME Climate Hub<br><a href="https://sciencebasedtargets.org/standards-and-guidance">sciencebasedtargets.org</a> / <a href="https://smeclimatehub.org/">smeclimatehub.org</a></p>
-
----
-
-## Tech Startup Specific Standard
-
-### Software Carbon Intensity
-
-The Green Software Foundation’s SCI standard measures the carbon emissions of software per functional unit: per user, transaction, API call, or other meaningful unit.
-
-This matters because many startups are not factories.
-
-Their environmental harm may live in compute, data transfer, AI inference, cloud region choices, and hardware lifecycle.
-
-<p class="slide-source">Source: Green Software Foundation SCI<br><a href="https://greensoftware.foundation/standards/sci/">greensoftware.foundation</a></p>
-
----
-
-## What A Startup Actually Needs
-
-### A translation layer
-
-The standards landscape is strong, but fragmented.
-
-Founders and teams need a product that translates:
-
-| Standard language | Startup operating language |
-| --- | --- |
-| Scope 1/2/3 | Where are our harms? |
-| Science-based target | What goal should we choose? |
-| Environmental management | Who owns the work? |
-| Disclosure | What can we share credibly? |
-| Software carbon intensity | How should engineering change? |
-
-<p class="slide-closing">The product should turn standard language into team behavior.</p>
-
----
-
-## What Is A Benign Business?
-
-<p class="slide-ref">Product frame</p>
-
-Not a perfect business.
-
-Not a greenwashed business.
-
-A benign business is one that:
-
-- Knows where it causes harm
-- Chooses appropriate goals
-- Assigns responsibility
-- Tracks evidence
-- Reduces harm over time
-- Communicates progress without overclaiming
-
-This frame matters because most startups cannot become impact companies overnight.
-
-They can still become less careless, more accountable, and more transparent.
-
----
-
-## Benign Business Evaluation
-
-### Five lenses
-
-| Lens | Question |
-| --- | --- |
-| Footprint | What emissions or resource use does the business create? |
-| Dependency | What environmental systems does the business rely on? |
-| Harm pathway | Where can the business make damage worse? |
-| Reduction leverage | Where can the team reduce harm fastest? |
-| Proof | What evidence would make the claim trustworthy? |
-
----
-
-## Benign Business Score
-
-<p class="slide-ref">Dashboard logic</p>
-
-The score should not say "good company" or "bad company."
-
-It should show maturity across five dimensions:
-
-| Dimension | Early signal |
-| --- | --- |
-| Awareness | The team can name its likely harms |
-| Ownership | Each goal has a responsible person |
-| Action | Goals have next steps and deadlines |
-| Evidence | Claims are backed by documents or metrics |
-| Sharing | Progress can be shown with uncertainty and dates |
-
----
-
-## Gamified Progress Model
-
-### From concern to habit
-
-| Level | Team behavior |
-| --- | --- |
-| Level 0: Unmapped | No shared view of environmental concerns |
-| Level 1: Aware | Concern areas selected and explained |
-| Level 2: Assigned | Owners and first actions added |
-| Level 3: Evidenced | Proof attached to each active goal |
-| Level 4: Shared | Progress page ready for outside review |
-| Level 5: Improved | Metrics show reduction or better practice over time |
-
----
-
-## How Climate Brick Helps
-
-### It gives structure to the evaluation
-
-Climate Brick can help classify the startup’s operating pattern, even when the startup is not climate tech:
-
-- Is it software-only?
-- Is it asset-heavy?
-- Does it depend on hardware?
-- Does it create product-chain impact?
-- Does it need offtakers, grants, or infrastructure finance?
-
-Then the platform can suggest goal categories that match the business model.
-
----
-
-## Climate Brick-Based Evaluation
-
-<p class="slide-ref">Method translation</p>
-
-| Climate Brick logic | Platform evaluation |
-| --- | --- |
-| Archetype | Startup operating model |
-| Milestones | Climate goal maturity |
-| Capital stack | Resource and accountability needs |
-| Critical unlocks | Highest-leverage climate actions |
-| Pioneer cases | Benchmark examples |
-
-<p class="slide-closing">The brick becomes a diagnostic layer, not the whole product.</p>
-
----
-
-## Environmental Harm Check
-
-### Example for a software startup
-
-| Area | What to check |
-| --- | --- |
-| Cloud compute | Usage, region, provider, carbon intensity |
-| AI / data | Training, inference, storage, unnecessary computation |
-| Devices | Employee hardware and replacement cycle |
-| Vendors | Key supplier policies and data centers |
-| Travel | Founder, sales, conference, and investor travel |
-| Customers | Does the product increase downstream resource use? |
-
----
-
-## Environmental Harm Check
-
-### Example for a consumer goods startup
-
-| Area | What to check |
-| --- | --- |
-| Materials | Inputs, sourcing, recycled content, toxicity |
-| Manufacturing | Energy use, waste, water, supplier practices |
-| Packaging | Weight, recyclability, reuse, shipping volume |
-| Logistics | Freight mode, warehouse energy, returns |
-| Product life | Durability, repair, resale, disposal |
-| Claims | Whether green claims can be proven |
-
----
-
-## Environmental Harm Check
-
-### Example for an AI startup
-
-| Area | What to check |
-| --- | --- |
-| Model usage | Training, fine-tuning, inference, unnecessary calls |
-| Cloud regions | Carbon intensity and renewable energy matching |
-| Data retention | Storage growth and deletion policy |
-| Hardware | GPU use, embodied emissions, procurement |
-| Customer effects | Does the product increase total compute demand? |
-| Governance | Who can approve expensive or high-energy experiments? |
-
----
-
-## Opportunity For Us
-
-### Startup-native environmental management
-
-Most frameworks answer:
-
-> What should credible climate work look like?
-
-Our product answers:
-
-> What should this startup do next Monday?
-
-That is the product gap: turn standards and Climate Brick logic into daily management.
-
----
-
-## Product Thesis
-
-### Environmental concern should be operational, not decorative
-
-The platform should help startups move from:
-
-| From | To |
-| --- | --- |
-| Sustainability statement | Goal system |
-| One-time carbon estimate | Ongoing dashboard |
-| Founder concern | Team accountability |
-| Investor slide | Shared proof |
-| Generic advice | Company-specific pathway |
-| Private worry | Shared progress game |
-
----
-
-## Target Users
-
-<p class="slide-ref">Early market</p>
-
-| User | Need |
-| --- | --- |
-| Seed-stage founder | Understand what environmental goals are relevant now |
-| Operations lead | Assign and track internal actions |
-| Investor / advisor | See credible progress, not vague claims |
-| Startup team | Know what the company is trying to improve |
-| Climate-conscious customer | Verify that claims are backed by action |
-
----
-
-## Core User Question
-
-### "What should our startup actually do?"
-
-The platform should answer:
-
-- What environmental concerns are relevant to our business?
-- Which goals are appropriate for our stage?
-- Who owns each goal?
-- What evidence proves progress?
-- What should we share externally?
-
----
-
-## Product Overview
-
-<div class="cards-4">
-  <article><h3>Assess</h3><p>Company intake maps business model, operations, supply chain, cloud/software footprint, and climate relevance.</p></article>
-  <article><h3>Plan</h3><p>The system recommends goal areas and milestones, informed by Climate Brick-style company archetypes.</p></article>
-  <article><h3>Play</h3><p>Teams earn progress through owned tasks, streaks, evidence, and maturity levels.</p></article>
-  <article><h3>Share</h3><p>Startups publish a lightweight progress page for investors, partners, or customers.</p></article>
-</div>
+| Ranking startups good or bad | Showing maturity and the next action |
+| Rewarding green claims | Rewarding evidence and additionality |
+| A single hero net number | A two-sided ledger with uncertainty |
+| Shaming low scores | Helping teams pick a realistic next move |
+
+<p class="slide-source">Carries forward Social Lab's non-competitive, non-transactional validation principle</p>
 
 ---
 
 ## Dashboard Modules
 
+### Built around the +/- ledger
+
 | Module | Purpose |
 | --- | --- |
-| Environmental profile | Business model, industry, stage, concern areas |
-| Goal board | Active goals, owners, deadlines, status |
-| Progress game | Levels, badges, streaks, evidence points |
-| Evidence vault | Documents, metrics, links, invoices, policies |
-| Milestone path | Suggested next actions by company type |
-| Share page | External progress view |
-| Advisor view | Investor or mentor feedback layer |
+| Impact ledger | + handprint and − footprint, side by side, with net as derived |
+| Integrity gates | Baseline, displacement, additionality, marginal-signal checks |
+| Freshness layer | Per-metric cadence and certainty: metered vs modeled |
+| Goal board | Owned actions, deadlines, evidence per goal |
+| Progress game | Levels, streaks, evidence points tied to integrity |
+| Climate Brick lens | Archetype, critical unlocks, scaling milestones |
+| Share page | Investor and LP-ready view with uncertainty intact |
 
 ---
 
-## Climate Brick As Input
+## Result Customization
 
-### Not copied, translated
+<p class="slide-ref">Stretch tier</p>
 
-Climate Brick can inform:
+### The output adapts to the company
 
-- Archetype matching
-- Scaling milestones
-- Funding expectations
-- Critical unlocks
-- Climate-tech vocabulary
+The dashboard's evaluation, goals, and narrative are tailored, not generic:
 
-Our product translates that logic into daily goal management and team behavior for startups.
+- Rubric weights shift by Climate Brick archetype.
+- Goal cards match business model and stage.
+- Measurement cadence is set per metric, not company-wide.
+- The share page renders the right metrics for the audience: VC, LP, customer, or team.
 
----
-
-## Example Flow
-
-### From company profile to climate action
-
-1. Founder enters company URL and business description.
-2. Platform identifies relevant concern areas.
-3. System suggests goals by stage and business type.
-4. Founder selects goals and assigns owners.
-5. Team earns progress by completing actions and adding evidence.
-6. External page summarizes commitments, proof, and next improvements.
+<p class="slide-closing">Same engine, archetype-specific result.</p>
 
 ---
 
-## Example Goal Areas
+## Meaningful Follow-Up
 
-<p class="slide-ref">Initial taxonomy</p>
+<p class="slide-ref">Stretch tier</p>
 
-| Goal area | Example startup action |
+### Every reading produces a next move
+
+A dashboard component is only useful if it hands the team an action.
+
+| Component | Follow-up it generates |
 | --- | --- |
-| Cloud and software footprint | Estimate hosting impact and reduce wasteful compute |
-| Procurement | Choose lower-impact vendors or materials |
-| Travel and events | Set travel policy and reporting norms |
-| Product lifecycle | Identify environmental impact of product use |
-| Packaging / logistics | Track materials, shipping, and waste |
-| Governance | Assign climate owner and review cadence |
+| High Scope 3 compute | Grid-aware scheduling task, owned by engineering |
+| Weak additionality | Baseline revision before the claim ships |
+| Stale modeled handprint | Annual re-model reminder with new adoption data |
+| Vendor gap | Procurement review with a decision deadline |
 
 ---
 
-## Example Challenges
+## From All Startups To Climate-First
 
-<p class="slide-ref">Gamification</p>
+### What changes when we narrow the MVP
 
-| Challenge | What it changes |
+| Earlier broad version | Climate-startup MVP |
 | --- | --- |
-| Map the harm | Team identifies top five concern areas |
-| Kill wasteful compute | Engineering reduces idle jobs or unnecessary inference |
-| Better vendor week | Operations reviews top vendors for environmental policies |
-| Travel reset | Team defines when remote meeting is preferred |
-| Proof sprint | Each goal gets one credible evidence item |
-| Share-ready month | Public page reaches minimum evidence completeness |
+| Mostly harm reduction | Two-sided net impact, handprint and footprint |
+| Generic goal cards | Archetype-specific, Climate-Brick-informed |
+| Concern made visible | Impact claim made verifiable |
+| Audience: any team | Audience: climate founders and their VCs |
+
+<p class="slide-closing">The broad "any tech startup" version is the stretch, once the rigorous core works.</p>
 
 ---
 
-## What Users See First
-
-### A simple environmental operating board
-
-The first screen should not feel like compliance software.
-
-It should show:
-
-- Current environmental profile
-- Top recommended goals
-- Open tasks
-- Team progress level
-- Evidence completeness
-- Share readiness
-- Next milestone
-
----
-
-## Shared Goal Page
-
-### A public proof layer
-
-Startups should be able to share a clear page with:
-
-- Goals selected
-- Why each goal matters
-- Current status
-- Evidence attached
-- Date updated
-- Next commitment
-
-<p class="slide-closing">This helps avoid vague sustainability claims.</p>
-
----
-
-## What Makes This Different
-
-| Existing tool type | Common focus | Our opening |
-| --- | --- | --- |
-| Climate Brick | Scaling playbook for climate tech | Daily goal dashboard for startups |
-| Carbon accounting | Emissions measurement | Action and team management |
-| ESG reporting | Compliance and disclosure | Early-stage operating habits |
-| Sustainability consultants | Expert-led projects | Lightweight self-serve progress |
-| Startup dashboards | Growth and finance | Environmental goals beside business goals |
-| Workplace gamification | Engagement and habit loops | Environmental concern as shared behavior |
-
----
-
-## Product Principles
-
-### Keep it practical
-
-1. Start with goals, not guilt.
-2. Make every claim evidence-backed.
-3. Let teams share progress without overclaiming.
-4. Use Climate Brick as a reference layer, not a brand dependency.
-5. Make the dashboard useful before full carbon precision.
-6. Gamify responsible action, not empty virtue signaling.
-
----
-
-## MVP
+## MVP Scope
 
 ### First usable version
 
 | Feature | MVP behavior |
 | --- | --- |
-| Company intake | URL + short description + stage |
-| Goal recommendation | 6-10 suggested goal areas |
+| Company intake | URL, archetype, stage, business model |
+| Impact ledger | Footprint estimate plus gated avoided-emissions estimate |
+| Integrity gates | Baseline, displacement, additionality prompts |
+| Freshness labels | Metered vs modeled, with a date per metric |
 | Goal board | Owner, status, deadline, evidence |
-| Progress system | Levels, streaks, evidence points |
-| Evidence upload | Link/file/reference per goal |
-| Share page | Public summary with selected goals |
-| Advisor notes | Comment field for mentor/investor |
+| Progress game | Levels, streaks, evidence points |
+| Share page | Two-sided view with uncertainty bands |
 
 ---
 
-## Research Questions
+## Stretch Scope
 
-<p class="slide-ref">Next study</p>
+### After the climate-startup core is credible
 
-1. Do startup teams understand their environmental concerns clearly enough to choose goals?
-2. Which gamified mechanics feel motivating vs. childish or performative?
-3. Do teams prefer a dashboard, checklist, advisor flow, or public page first?
-4. Which goals feel useful vs. performative?
-5. What evidence would make progress credible?
-6. Would investors or customers read the shared page?
-
----
-
-## User Testing Plan
-
-| Participant | What to test |
-| --- | --- |
-| 3 early-stage founders | Intake, goal relevance, dashboard clarity |
-| 3 startup team members | Whether game mechanics create shared participation |
-| 2 climate startup founders | Climate Brick translation and missing depth |
-| 2 investors/advisors | Credibility of shared progress |
-| 2 operators | Whether tasks and ownership feel manageable |
+<div class="cards-3">
+  <article>
+    <h3>All tech startups</h3>
+    <p>Generalize to SaaS, AI, marketplaces, and hardware-adjacent teams whose impact is mostly footprint.</p>
+  </article>
+  <article>
+    <h3>Result customization</h3>
+    <p>Deeper per-archetype rubrics and audience-specific share pages.</p>
+  </article>
+  <article>
+    <h3>Follow-up components</h3>
+    <p>Every metric wired to an owned next action with the right cadence.</p>
+  </article>
+</div>
 
 ---
 
-## Success Metrics
+## Competitive Position
 
-| Goal | Metric |
-| --- | --- |
-| Relevance | Founder selects at least 3 useful goals |
-| Clarity | User can explain why each goal matters |
-| Actionability | User can assign owner and next step |
-| Engagement | User wants to return weekly to update progress |
-| Credibility | Advisor trusts attached evidence |
-| Share value | User wants to publish or send progress page |
+| Tool type | Common focus | Our opening |
+| --- | --- | --- |
+| Climate Brick | Scaling and fundraising readiness | The impact-integrity axis it omits |
+| Carbon accounting | Footprint inventory | Adds the gated positive side and the net |
+| Avoided-emissions tools (CRANE) | One-off impact estimate | Makes it a live, owned, time-resolved dashboard |
+| ESG reporting | Compliance and disclosure | Early-stage operating habits |
+| Workplace gamification | Engagement loops | Environmental integrity as shared behavior |
 
 ---
 
@@ -820,73 +513,115 @@ Startups should be able to share a clear page with:
 
 | Risk | Response |
 | --- | --- |
-| Greenwashing | Require evidence and uncertainty language |
-| Too much complexity | Start with goal board before full accounting |
-| Climate Brick mismatch | Use it as inspiration, not direct dependency |
-| Founder time pressure | Make setup under 15 minutes |
-| Compliance confusion | State that this is operating guidance, not legal reporting |
-| Gamification feels shallow | Reward proof and behavior, not vanity points |
+| Greenwashing via inflated + claims | Hard additionality and baseline gates before any claim ships |
+| Naive netting | + and − shown on separate accounting bases, net labeled as derived |
+| Rebound and Jevons effects | Track total consumption, not only per-unit efficiency |
+| Modeled-as-metered confusion | Uncertainty bands and freshness dates on every modeled figure |
+| Climate Brick mismatch | Use it as the scaling lens, not the whole product |
+| Founder time pressure | Intake and first ledger under fifteen minutes |
 
 ---
 
-## Big Opportunity
+## Research Questions
 
-### Environmental concern can become startup operating infrastructure
+<p class="slide-ref">Next study</p>
 
-Climate Brick helps climate tech companies understand the road to scale.
+1. Can climate founders articulate a defensible baseline for their avoided-emissions claim?
+2. Does the two-sided ledger change how a team talks about its impact?
+3. Do integrity gates feel like rigor or like friction?
+4. Which metrics do founders expect in real time vs. annually?
+5. Would a climate VC trust the share page in diligence?
+6. Do the gamified mechanics drive weekly return without trivializing impact?
 
-Climate Goal Platform helps all kinds of startups turn environmental concern into managed, shared, evidence-backed goals.
+---
 
-<p class="slide-closing">The wedge is not another manual. It is a working dashboard that makes responsible behavior visible.</p>
+## User Testing Plan
+
+| Participant | What to test |
+| --- | --- |
+| 3 climate-startup founders | Intake, archetype fit, ledger clarity |
+| 2 climate VCs | Whether the two-axis score supports diligence |
+| 2 sustainability or impact analysts | Additionality gates and timing honesty |
+| 3 startup operators | Whether goals and ownership feel manageable |
+| 2 LPs or advisors | Credibility of the modeled positive side |
+
+---
+
+## Success Metrics
+
+| Goal | Metric |
+| --- | --- |
+| Integrity | Every + claim has a baseline and additionality note |
+| Relevance | Founder selects at least three archetype-appropriate goals |
+| Clarity | User can explain why net is shown as derived, not absolute |
+| Timing fit | User can say which metrics are metered vs modeled |
+| Credibility | A climate VC would accept the share page in diligence |
+| Engagement | Team returns weekly to update owned goals |
+
+---
+
+## Bottom Line
+
+### The product is the axis Climate Brick is missing
+
+Climate Brick tells a climate startup how to scale. Carbon accounting tells it what it emits. Neither makes the two-sided, additionality-gated, time-resolved net impact a live operating surface.
+
+<p class="slide-closing">A gamified +/- impact dashboard that a climate founder runs weekly and a climate VC trusts in diligence.</p>
 
 ---
 
 ## Next Step
 
-### Build a clickable dashboard prototype
+### Build a clickable two-sided dashboard
 
 Prototype screens:
 
-1. Company intake
-2. Environmental profile
-3. Recommended goals
-4. Goal board
-5. Progress game
-6. Evidence vault
-7. Public share page
+1. Archetype intake
+2. Impact ledger: footprint and gated handprint
+3. Integrity gates
+4. Freshness and cadence view
+5. Goal board and progress game
+6. VC-ready share page
 
-Then test whether founders can move from concern to action in one session.
+Then test whether a climate founder can defend their net number in one session.
 
 ---
 
 ## Source Trail
 
-Social Lab project direction updated:  
-/Users/rae/Documents/Social Lab_Project direction updated.pdf
-
-GTR - S.F. Startups and Climate awareness:  
-/Users/rae/Downloads/[SL1]GTR - S.F. Startups and  Climate awareness (May11, draft).pptx
-
 Climate Brick:  
-https://www.climatebrick.com/
+https://www.climatebrick.com/ — and brick pages, e.g. /bricks/green-deployment
 
-EQT Foundation overview:  
-https://eqtgroup.com/eqt-foundation/grants/the-climate-brick/
+EQT Foundation / Contrarian Ventures launch:  
+https://eqtgroup.com/eqt-foundation/grants/the-climate-brick/ · https://www.cventures.vc/initiatives/climate-brick/
 
-McKinsey interview:  
+McKinsey, how-to guide for climate tech start-ups and scale-ups:  
 https://www.mckinsey.com/capabilities/sustainability/our-insights/creating-a-how-to-guide-for-climate-tech-start-ups-and-scale-ups
 
-GHG Protocol standards:  
-https://ghgprotocol.org/standards
+GHG Protocol, comparative / avoided emissions:  
+https://ghgprotocol.org/estimating-and-reporting-avoided-emissions
 
-Science Based Targets initiative standards and guidance:  
-https://sciencebasedtargets.org/standards-and-guidance
+Project Frame methodology:  
+https://projectframe.how/methodology
 
-SME Climate Hub:  
-https://smeclimatehub.org/
+CRANE tool (Prime Coalition / WattTime):  
+https://www.primecoalition.org/programs/crane
 
-Green Software Foundation Software Carbon Intensity:  
+WattTime, additionality:  
+https://www.watttime.org/news/you-cant-avoid-emissions-without-additionality/
+
+VTT / LUT Carbon Handprint Guide v2.0:  
+https://publications.vtt.fi/julkaisut/muut/2021/Carbon_handprint_guide_2021.pdf
+
+Green Software Foundation SCI:  
 https://greensoftware.foundation/standards/sci/
 
-IFRS S2 Climate-related Disclosures:  
-https://www.ifrs.org/issued-standards/ifrs-sustainability-standards-navigator/ifrs-s2-climate-related-disclosures/
+Electricity Maps:  
+https://www.electricitymaps.com/
+
+California over-crediting (Badgley et al., 2022):  
+https://onlinelibrary.wiley.com/doi/10.1111/gcb.15943
+
+Source PDFs (local):  
+/Users/rae/Documents/Social Lab_Project direction updated.pdf  
+/Users/rae/Downloads/[SL1]GTR - S.F. Startups and  Climate awareness (May11, draft).pptx
