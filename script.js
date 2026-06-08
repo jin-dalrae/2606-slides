@@ -48,6 +48,7 @@ const presentationTitle = document.querySelector("#presentationTitle");
 const presentationDate = document.querySelector("#presentationDate");
 const slideList = document.querySelector("#slideList");
 const slide = document.querySelector("#slide");
+const presentationStage = document.querySelector(".presentation-stage");
 const slideCounter = document.querySelector("#slideCounter");
 const prevSlide = document.querySelector("#prevSlide");
 const nextSlide = document.querySelector("#nextSlide");
@@ -1349,8 +1350,7 @@ async function toggleFullscreen() {
   }
 
   if (!document.fullscreenElement) {
-    const fullscreenTarget = document.querySelector(".presentation-stage");
-    await fullscreenTarget.requestFullscreen();
+    await presentationStage.requestFullscreen();
     sizeFullscreenSlide();
     return;
   }
@@ -1414,6 +1414,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("fullscreenchange", () => {
+  presentationStage.classList.toggle("presentation-stage--fullscreen", document.fullscreenElement === presentationStage);
   sizeFullscreenSlide();
   if (deck) {
     window.requestAnimationFrame(() => deck.layout());
