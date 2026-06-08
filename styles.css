@@ -621,7 +621,7 @@ button {
 .slide-ref {
   position: absolute;
   top: 2rem;
-  right: 2.25rem;
+  right: 8rem;
   z-index: 3;
   margin: 0;
   width: 12rem;
@@ -633,6 +633,12 @@ button {
   letter-spacing: 0;
   line-height: 1.15;
   text-align: right;
+}
+
+body[data-display-mode="slide"] .slide-ref {
+  position: fixed;
+  top: 5rem;
+  right: 6.5rem;
 }
 
 .presentation-header {
