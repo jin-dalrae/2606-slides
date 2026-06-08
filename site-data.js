@@ -95,6 +95,22 @@
       file: "../presentations/cosmos-spatializing-asynchronous-community-jun11.md"
     },
     {
+      slug: "social-lab-climate-goal-report",
+      title: "Climate Goal Platform Report",
+      docTitle: "Climate goal platform report",
+      project: "Social Lab",
+      date: "June 15, 2026",
+      file: "social-lab-climate-goal-platform-report-jun15.md"
+    },
+    {
+      slug: "social-lab-climate-goal-deck",
+      title: "Climate Goal Platform Deck",
+      docTitle: "Climate goal platform deck",
+      project: "Social Lab",
+      date: "June 15, 2026",
+      file: "../presentations/social-lab-climate-goal-platform.md"
+    },
+    {
       slug: "slide-guide",
       title: "Slide Guide",
       docTitle: "Slide guide",
