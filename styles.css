@@ -1073,7 +1073,10 @@ body[data-display-mode="slide"] .slide-ref {
   display: block;
   align-self: start;
   aspect-ratio: 16 / 9;
-  width: min(100%, 1180px);
+  /* Also cap by available height so the settings controls below the slide
+     stay on-screen on wide-but-short (maximized) windows. Fullscreen and
+     slide-window modes override this rule, so they are unaffected. */
+  width: min(100%, 1180px, calc((100vh - 200px) * 16 / 9));
   min-height: auto;
   padding: 0;
   overflow: hidden;
