@@ -2,7 +2,7 @@
 
 ## Climate Startup +/- Impact Dashboard (MVP)
 
-Owner: Rae Jin · Project: Social Lab · Date: June 15, 2026 · Status: Draft for review
+Team: GTR (Rae, Gabriel, Tej) · Project: Social Lab · Date: June 15, 2026 · Status: Draft for review
 
 ---
 

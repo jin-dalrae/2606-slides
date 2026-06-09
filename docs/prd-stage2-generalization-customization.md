@@ -2,7 +2,7 @@
 
 ## Generalization, Result Customization, and Meaningful Follow-Up (Stretch)
 
-Owner: Rae Jin · Project: Social Lab · Date: June 15, 2026 · Status: Draft for review · Depends on: Stage 1 (Climate Startup +/- Impact Dashboard)
+Team: GTR (Rae, Gabriel, Tej) · Project: Social Lab · Date: June 15, 2026 · Status: Draft for review · Depends on: Stage 1 (Climate Startup +/- Impact Dashboard)
 
 ---
 

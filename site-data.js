@@ -59,8 +59,9 @@
     },
     {
       slug: "social-lab-climate-goal-platform",
-      title: "Social Lab",
-      docTitle: "+/- impact dashboard for climate startups",
+      title: "Team GTR",
+      docTitle: "Team GTR +/- impact dashboard",
+      sidebarTitle: "Team GTR climate platform",
       project: "Social Lab",
       date: "June 15, 2026",
       file: "presentations/social-lab-climate-goal-platform.md",
@@ -69,7 +70,7 @@
     {
       slug: "gtr-partners",
       title: "GTR Partners",
-      docTitle: "Climate awareness",
+      docTitle: "Team GTR climate awareness",
       project: "Social Lab",
       date: "May 2026",
       file: "presentations/gtr-startups-climate-awareness.md",
@@ -97,7 +98,7 @@
     {
       slug: "social-lab-climate-goal-report",
       title: "Climate Goal Platform Report",
-      docTitle: "Climate goal platform report",
+      docTitle: "Team GTR climate goal platform report",
       project: "Social Lab",
       date: "June 15, 2026",
       file: "social-lab-climate-goal-platform-report-jun15.md"
@@ -105,7 +106,7 @@
     {
       slug: "social-lab-prd-stage1",
       title: "Climate Goal Platform PRD — Stage 1",
-      docTitle: "PRD Stage 1: climate startup +/- impact dashboard",
+      docTitle: "Team GTR PRD Stage 1: climate startup +/- impact dashboard",
       project: "Social Lab",
       date: "June 15, 2026",
       file: "prd-stage1-climate-impact-dashboard.md"
@@ -113,7 +114,7 @@
     {
       slug: "social-lab-prd-stage2",
       title: "Climate Goal Platform PRD — Stage 2",
-      docTitle: "PRD Stage 2: generalization, customization, follow-up",
+      docTitle: "Team GTR PRD Stage 2: generalization, customization, follow-up",
       project: "Social Lab",
       date: "June 15, 2026",
       file: "prd-stage2-generalization-customization.md"

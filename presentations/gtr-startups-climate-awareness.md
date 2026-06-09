@@ -5,7 +5,7 @@
 <p class="deck-subtitle">Project Direction & Transition Service</p>
 
 May 2026  
-Presented by: Rae, Gabriel, Tej
+Team GTR: Rae, Gabriel, Tej
 
 ---
 

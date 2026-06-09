@@ -2,8 +2,8 @@
 
 ## A +/- Impact Dashboard For Climate Startups
 
-Prepared for: June 15, 2026  
-Presenter: Rae Jin  
+Prepared for: June 15, 2026<br>
+Team GTR: Rae, Gabriel, Tej<br>
 Project: Social Lab
 
 ---
@@ -113,7 +113,13 @@ Every startup is different, so the product does not begin by forcing the company
 | 4. Gate | Baseline, displacement, additionality, marginal signal, rebound | Prevents inflated positive claims |
 | 5. Monitor | Track each metric at its natural cadence | Separates live operational signals from annual modeled claims |
 
-The bar is **viable** to start in minutes and **reliable** enough for a climate VC.
+The bar is **viable** to start in minutes and **reliable** enough for a climate VC. The measurement ladder makes confidence explicit instead of hidden:
+
+| Tier | How | Confidence | Use when |
+| --- | --- | --- | --- |
+| T0 Proxy | Spend or industry averages | Low | First pass, finding materiality |
+| T1 Metered | Bills, cloud and grid APIs | High | Material footprint items |
+| T2 Modeled | Baseline and avoided emissions | Medium, with bands | The positive side and use-phase |
 
 ### What Climate Brick is, and where it fits
 
@@ -122,17 +128,7 @@ A "missing manual" for scaling climate tech, launched April 2024 by EQT Foundati
 - Seven sector "bricks," organized by **technological risk and capital intensity**, also differentiated by speed to scale, risk profile, capital sources, and sustainable impact.
 - Each brick provides a scaling roadmap, a suggested capital stack (equity, debt, grants, project finance) across funding rounds, and **three "critical unlocks"** — the three things to get right for that journey.
 
-The seven bricks are plotted on a technological-risk × capital-intensity map (Companion Software lowest-left, Moonshot upper-right), each with three critical unlocks (verbatim from the brick pages) and named example companies:
-
-| Brick | Pattern | Three critical unlocks | Examples |
-| --- | --- | --- | --- |
-| Gigascaling | CAPEX-intensive plants | cost-competitiveness roadmap; execute and scale fast; committed take-or-pay offtakes | green steel, batteries |
-| Green Deployment | Own/operate green assets | scalable org to out-execute; profitable unit economics; ramp sales and scale | Enpal, Ionity |
-| Asset-as-a-Service | Green assets as a service | prove PMF and customer value; path to profitable unit economics; ramp and secure offtake early | Dott, Einride |
-| Product Disruption | Greener value chains | show market and tech readiness; IP moats via patents; partnerships for reliable supply | Sunfire, Iceye |
-| New Technology | Disruptive alternatives | IP moats; cost-competitiveness vs incumbents; prove tech readiness and demand early | Climeworks, Paebbl |
-| Moonshot | Game-changing science | grants/public funding throughout; tech readiness, R&D, IP; lock in large off-takers | Marvel Fusion, IQM |
-| Companion Software | Software enabled by hardware | early MVP and tech edge; scalable low-cost model; rapid growth, high ARR, low churn | Tibber, Twaice |
+The seven bricks — Gigascaling, Green Deployment, Asset-as-a-Service, Product Disruption, New Technology, Moonshot, and Companion Software — are plotted on a technological-risk × capital-intensity map, each with three "critical unlocks" and a suggested capital stack. That detail is a useful reference shelf when sanity-checking a company's scaling story, but it is not how the dashboard measures impact.
 
 ### The gap we use it to see
 
@@ -145,16 +141,15 @@ Climate Brick's five dimensions — Commercial, Product & Offering, Technology, 
 | **High impact integrity** | Real impact, unproven business: grant / patient capital | The fundable climate company a VC wants |
 | **Low impact integrity** | Weak on both: pass | Great scaler, soft impact claim: greenwashing risk |
 
-Climate Brick can inform the columns. The dashboard scores the rows. A climate VC needs both to underwrite. Across company patterns, the integrity axis is won or lost in different places:
+Climate Brick can inform the columns. The dashboard scores the rows. A climate VC needs both to underwrite. The positive side tends to break in the same places, whatever the business:
 
-| Brick | Where impact integrity is won or lost |
+| Pattern | The question that exposes it |
 | --- | --- |
-| Gigascaling | Marginal grid displaced by the plant; embodied emissions of construction |
-| Green Deployment | Additionality of each asset; would it have been built anyway? |
-| Asset-as-a-Service | Real utilization vs. installed capacity; rebound in usage |
-| Product Disruption | Use-phase displacement vs. the incumbent product, not a strawman |
-| New Technology / Moonshot | Forward-looking estimate with wide bands; risk-adjusted, not headline |
-| Companion Software | Attribution: how much of the hardware's gain is the software's? |
+| Asset or plant | Would it have been built anyway? Which grid does it displace? |
+| Product vs incumbent | Is the baseline the real incumbent, or a strawman? |
+| Software or service | Real usage vs installed capacity? Does cheaper drive more use? |
+| Hardware-enabled software | How much of the gain is actually the software's? |
+| Frontier or early tech | Wide uncertainty bands, risk-adjusted, not a headline number |
 
 Better evaluation, in one line: **activity-aware, additionality-gated, time-resolved.**
 
@@ -380,6 +375,6 @@ Competitors:
 
 Watershed watershed.com · Sweep sweep.net (Scope-4 guide) · Persefoni persefoni.com · Greenly greenly.earth · Sylvera sylvera.com · BeZero bezerocarbon.com · CRANE cranetool.org · Project Frame projectframe.how
 
-Source PDFs (local):  
-/Users/rae/Documents/Social Lab_Project direction updated.pdf  
-/Users/rae/Downloads/[SL1]GTR - S.F. Startups and  Climate awareness (May11, draft).pptx
+Team source files:
+
+Social Lab_Project direction updated.pdf · [SL1]GTR - S.F. Startups and Climate awareness (May11, draft).pptx

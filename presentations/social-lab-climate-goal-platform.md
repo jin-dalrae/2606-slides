@@ -4,8 +4,8 @@
 
 <p class="deck-subtitle">Net impact = handprint minus footprint, made operational and gamified</p>
 
-Social Lab  
-Presenter: Rae Jin  
+Social Lab<br>
+Team GTR: Rae, Gabriel, Tej<br>
 June 15, 2026
 
 Note: New direction. The MVP narrows to climate startups and a two-sided (positive and negative) environmental impact dashboard with a gamified operating layer. The earlier "any startup / harm-reduction" version becomes the stretch tier. Two methodology questions drive this deck: (1) a viable, reliable method for a startup to monitor its own handprint and footprint, with Climate Brick only as a reference; (2) what environmental impact can actually be addressed in a dashboard, and whether it can be checked at the right time.
@@ -689,6 +689,6 @@ Competitors:
 
 Watershed watershed.com · Sweep sweep.net (Scope 4 guide) · Sylvera sylvera.com · BeZero bezerocarbon.com · CRANE cranetool.org
 
-Source PDFs (local):  
-/Users/rae/Documents/Social Lab_Project direction updated.pdf  
-/Users/rae/Downloads/[SL1]GTR - S.F. Startups and  Climate awareness (May11, draft).pptx
+Team source files:
+
+Social Lab_Project direction updated.pdf · [SL1]GTR - S.F. Startups and Climate awareness (May11, draft).pptx
