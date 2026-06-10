@@ -1396,6 +1396,31 @@ async function renderHome() {
   });
 }
 
+// Reveal's markdown plugin only pulls a slide's "Note:" into speaker notes when
+// the slide contains exactly one Note: block; with two or more it gives up and
+// the note text leaks onto the slide. Collapse any extra Note: blocks per slide
+// into the first one so notes always parse — regardless of where the markdown
+// came from (bundled file or a stale stored copy).
+function normalizeDeckNotes(markdown) {
+  let noteSeen = false;
+  return String(markdown)
+    .split("\n")
+    .map((line) => {
+      if (/^---\s*$/.test(line)) {
+        noteSeen = false;
+        return line;
+      }
+      if (/^Note:/.test(line)) {
+        if (noteSeen) {
+          return line.replace(/^Note:\s?/, "");
+        }
+        noteSeen = true;
+      }
+      return line;
+    })
+    .join("\n");
+}
+
 function renderDeckShell(markdown) {
   slide.classList.remove("slide--home");
   slide.innerHTML = `
@@ -1409,7 +1434,7 @@ function renderDeckShell(markdown) {
           data-separator-vertical="^--$"
           data-separator-notes="^Note:"
         >
-          <textarea data-template>${escapeHtml(markdown)}</textarea>
+          <textarea data-template>${escapeHtml(normalizeDeckNotes(markdown))}</textarea>
         </section>
       </div>
     </div>
