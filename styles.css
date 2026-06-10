@@ -703,7 +703,7 @@ button {
 }
 
 .reveal .slide-ref-pinned {
-  font-size: 0.62rem;
+  font-size: 1.24rem;
 }
 
 .slide-ref-pinned[hidden] {
@@ -954,11 +954,12 @@ body[data-display-mode="slide"] .slide-ref-pinned {
 /* Wide screens: once the slide grows large there's room to the right, so move
    the speaker notes beside the slide instead of below it (where they get pushed
    off-screen as the slide grows). Only kicks in when notes are actually shown. */
-@media (min-width: 1500px) {
+@media (min-width: 1400px) {
   .stage[data-view="presentation"] .presentation-stage:has(.speaker-notes:not([hidden])) {
-    --slide-w: min(62vw, 1180px, calc((100vh - 160px) * 16 / 9));
+    --slide-w: min(58vw, 1180px, calc((100vh - 150px) * 16 / 9));
+    width: 100%;
     display: grid;
-    grid-template-columns: var(--slide-w) minmax(320px, 1fr);
+    grid-template-columns: var(--slide-w) minmax(340px, 1fr);
     grid-template-areas:
       "settings settings"
       "slide notes"
@@ -1433,11 +1434,21 @@ body[data-display-mode="slide"] .slide-ref-pinned {
 }
 
 .reveal .slides section {
-  display: grid !important;
-  align-content: start;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
   color: var(--ink);
   min-height: 100%;
-  padding: 5.5rem 6.5rem;
+  padding: 4.5rem 6.5rem;
+}
+
+/* Keep the heading anchored near the top of the centered group: it gets a fixed
+   gap to the body, and the body block absorbs the rest of the space so a sparse
+   slide stays balanced instead of clumping all content at the very top. */
+.reveal .slides section > :is(.cards-2, .cards-3, .cards-4, .quote-grid,
+  .metric-strip, .slide-card-row, .steps-3, .media-split, .before-after, table) {
+  margin-top: 1.6rem;
 }
 
 .reveal h1,
@@ -1628,11 +1639,11 @@ body[data-display-mode="slide"] .slide-ref-pinned {
 .reveal .quote-grid h3,
 .reveal .metric-strip strong {
   display: block;
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.55rem;
   color: var(--primary);
-  font-size: clamp(2rem, 4.2vw, 4rem);
+  font-size: clamp(2rem, 3.1vw, 2.9rem);
   font-weight: 600;
-  line-height: 0.95;
+  line-height: 1;
 }
 
 .reveal .metric-strip span {
@@ -1640,7 +1651,8 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   color: var(--muted);
   font-variant-caps: all-small-caps;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.3rem;
+  letter-spacing: 0.01em;
 }
 
 .reveal .cards-2 ul,
@@ -1776,6 +1788,8 @@ body[data-display-mode="slide"] .slide-ref-pinned {
    instead of stacking vertically. The heading (and any other non-image child)
    spans the full width on its own row above the images. */
 .reveal .slides section:has(.slide-image + .slide-image) {
+  display: grid !important;
+  align-content: center;
   justify-items: center;
   gap: 1.4rem;
   grid-template-columns: 1fr 1fr;
