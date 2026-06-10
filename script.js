@@ -26,7 +26,7 @@ const defaultPresentationSettings = {
   transition: "slide",
   background: "shader",
   font: "lora",
-  theme: "dark"
+  theme: "light"
 };
 
 const fontOptions = {
@@ -80,7 +80,7 @@ let cleanupShader = null;
 let pendingSlideIndex = null;
 let slideWindow = null;
 let suppressBroadcast = false;
-let currentTheme = window.localStorage.getItem(storageKeys.theme) || "dark";
+let currentTheme = window.localStorage.getItem(storageKeys.theme) || "light";
 let currentTransition = defaultPresentationSettings.transition;
 let currentBackground = defaultPresentationSettings.background;
 let currentFont = defaultPresentationSettings.font;
@@ -1070,6 +1070,7 @@ async function renderHome() {
   currentView = "home";
   stage.dataset.view = "home";
   destroyDeck();
+  setActiveTheme(globalDefaultTheme());
   homeLink.setAttribute("aria-current", "page");
 
   presentationTitle.textContent = home.title;
@@ -1172,6 +1173,7 @@ async function renderPresentation() {
   currentTransition = deckSettings.transition;
   currentBackground = deckSettings.background;
   currentFont = deckSettings.font;
+  setActiveTheme(deckSettings.theme);
   transitionSelect.value = currentTransition;
   backgroundSelect.value = currentBackground;
   fontSelect.value = currentFont;
@@ -1297,15 +1299,26 @@ function updateFont(value) {
   broadcastPresentationState();
 }
 
-function applyTheme(theme) {
-  currentTheme = theme;
+// Set the visible theme (document attr + toggle label) WITHOUT persisting it as
+// the global default. Used when opening a deck (so a deck's own theme doesn't
+// overwrite the site default) and when returning home (restore the default).
+function setActiveTheme(theme) {
+  currentTheme = theme === "dark" ? "dark" : "light";
   document.documentElement.dataset.theme = currentTheme;
-  window.localStorage.setItem(storageKeys.theme, currentTheme);
   themeToggle.querySelector(".theme-toggle__label").textContent = currentTheme === "dark" ? "Light" : "Dark";
   themeToggle.setAttribute(
     "aria-label",
     currentTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"
   );
+}
+
+function globalDefaultTheme() {
+  return window.localStorage.getItem(storageKeys.theme) || defaultPresentationSettings.theme;
+}
+
+function applyTheme(theme) {
+  setActiveTheme(theme);
+  window.localStorage.setItem(storageKeys.theme, currentTheme);
   if (currentView === "presentation") {
     saveCurrentPresentationSettings();
   }
