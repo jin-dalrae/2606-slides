@@ -79,11 +79,11 @@ Note: You'll see all of this in AutoScape. We picked one kind of user, stayed ho
 
 ---
 
-<p class="slide-ref">The landscape · 1 of 2</p>
+<p class="slide-ref">Featured work</p>
 
-# My other projects
+# A few things I've built
 
-## A few examples
+## Different problems, same instinct
 
 <div class="cards-4">
   <article>
@@ -104,35 +104,64 @@ Note: You'll see all of this in AutoScape. We picked one kind of user, stayed ho
   </article>
 </div>
 
-Note: The projects look different but the idea is the same — take something complicated and make it easier to actually use. This slide thing is built on Cloudflare Workers. I've been using their stuff already. I'll show two quick ones, then the main example.
+Note: The projects look different, but the instinct is the same — take something complicated and make it easier to actually use, and make trust visible while doing it. I'll show three quick, then go deep on AutoScape.
 
 ---
 
-<p class="slide-ref">The landscape · 2 of 2</p>
+<p class="slide-ref">Featured work · Cosmos</p>
 
-# Two quick looks
+# Cosmos
+
+## Make a discussion something you can read, not scroll
 
 <div class="media-split">
   <div>
-    <h3>Cosmos</h3>
-    <p>Online discussions aren't flat lists. They have shape. So I built a 3D sphere you can explore. Solo project.</p>
+    <p>Most people in online communities read without ever posting. Feeds are great at volume but weak at structure — you can't see where a debate actually splits.</p>
+    <p><strong>The design call:</strong> design for readers first. Organize the discussions that already exist into regions you can navigate, and never show an AI label without the source posts behind it.</p>
   </div>
   <img src="assets/images/cosmos-sphere-browse.png" alt="Cosmos spatial discourse browser rendering a conversation as a 3D sphere">
 </div>
 
-Note: First one is Cosmos. Online discussions are a mess in a normal feed. I made a 3D space you can actually move through so you can see how the conversation connects. Did it solo for a hackathon.
+Note: Cosmos is a research direction for browsing discussions spatially. The insight that shaped it: most people read without posting, so the first job isn't getting people to post — it's making a discussion easier to understand than a flat feed. The hard rule was inspectability: every AI cluster or label has to point back to real posts, or people stop trusting it. Built solo at a hackathon.
 
 ---
 
+<p class="slide-ref">Featured work · CadinalPay</p>
+
+# CadinalPay
+
+## When an AI agent spends the company's money
+
+<div class="cards-2">
+  <article>
+    <h3>The story</h3>
+    <p>AI agents are moving from giving advice to taking action — soon they'll renew software and buy reports on their own. Approve every purchase and it's too slow; approve nothing and you risk rogue spending.</p>
+  </article>
+  <article>
+    <h3>The design call</h3>
+    <p>Put a human in the loop at the right moments, not every moment. The core screen is the interruption: a $720 report from a new vendor, where you approve once, whitelist the vendor, or lower the budget — and the system learns from the choice.</p>
+  </article>
+</div>
+
+Note: CadinalPay is a payment interface for the moment agents start spending company money. The whole tension is speed versus trust. My main design decision was the interruption moment: control shows up when the amount is high, the vendor is new, or the agent is unsure — not on every purchase. And the human's choice should teach the system, so approvals aren't just yes or no.
+
+---
+
+<p class="slide-ref">Featured work · PeriCare</p>
+
+# PeriCare
+
+## A private companion for perimenopause
+
 <div class="media-split">
   <div>
-    <h3>PeriCare</h3>
-    <p>A perimenopause app that maps two cycles. Private by default, fully on-device. I built almost all of it myself.</p>
+    <p>This started from a real problem my mom went through. The data is deeply personal, and the app maps two overlapping cycles to make sense of it.</p>
+    <p><strong>The design call:</strong> privacy as the starting constraint, not a feature added later. Everything runs on the phone, and no data ever leaves it. That one decision shaped the whole architecture.</p>
   </div>
   <img src="assets/images/pericare-hero.jpg" alt="PeriCare iOS app — a private on-device digital twin for perimenopause">
 </div>
 
-Note: Second is PeriCare. It's for perimenopause — real problem my mom went through. I made it private by default, everything runs on the phone. No data going anywhere. I built almost all of it alone. The actual biology and privacy needs decided how the whole thing was built. Okay, now the main one.
+Note: PeriCare is for perimenopause — a real problem my mom lived through. Because the data is so personal, I made privacy the constraint everything else had to fit, not a feature I bolted on. Everything runs on-device, nothing leaves the phone. The biology and the privacy need decided the architecture. I built almost all of it myself.
 
 ---
 
