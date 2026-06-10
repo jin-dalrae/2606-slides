@@ -947,10 +947,22 @@ function syncActiveSlideListItem() {
       return;
     }
 
-    activeItem.scrollIntoView({
-      block: "nearest",
-      inline: "nearest"
-    });
+    const container = slideList.closest(".slide-list");
+    if (!container) {
+      activeItem.scrollIntoView({ block: "nearest", inline: "nearest" });
+      return;
+    }
+
+    // Center the active slide within the area below the sticky header, so the
+    // slides ahead stay visible.
+    const header = container.querySelector(".slide-list__header");
+    const headerH = header ? header.offsetHeight : 0;
+    const itemRect = activeItem.getBoundingClientRect();
+    const contRect = container.getBoundingClientRect();
+    const itemCenter = itemRect.top - contRect.top + container.scrollTop + activeItem.offsetHeight / 2;
+    const target = itemCenter - headerH - (container.clientHeight - headerH) / 2;
+
+    container.scrollTop = Math.max(0, target);
   });
 }
 

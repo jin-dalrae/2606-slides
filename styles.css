@@ -1037,29 +1037,51 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   --slide-w: min(100%, 1180px, calc((100vh - 230px) * 16 / 9));
 }
 
-/* Wide screens: once the slide grows large there's room to the right, so move
-   the speaker notes beside the slide instead of below it (where they get pushed
-   off-screen as the slide grows). Only kicks in when notes are actually shown. */
-@media (min-width: 1400px) {
+/* Wider screens: put the speaker notes beside the slide instead of below it.
+   Kicks in at a modest width so it shows at 100% browser zoom, and only when
+   notes are actually shown. The notes column is a FIXED width, so closing the
+   slide list doesn't stretch it — the freed space becomes margin. Controls are
+   overlaid on the slide so they don't take a separate row. */
+@media (min-width: 1180px) {
   .stage[data-view="presentation"] .presentation-stage:has(.speaker-notes:not([hidden])) {
-    /* Keep the slide deliberately small so the speaker notes get a generous,
-       readable column on the right rather than the slide eating all the width. */
-    --slide-w: min(48vw, 980px, calc((100vh - 180px) * 16 / 9));
+    --slide-w: min(46vw, 760px, calc((100vh - 96px) * 16 / 9));
     width: 100%;
     display: grid;
-    grid-template-columns: var(--slide-w) minmax(380px, 1fr);
+    grid-template-columns: var(--slide-w) 21rem;
     grid-template-areas:
-      "settings settings"
       "slide notes"
       "editor notes";
     align-items: start;
-    justify-content: start;
-    column-gap: 28px;
+    justify-content: center;
+    column-gap: 22px;
+    position: relative;
   }
 
+  /* Controls overlaid on the slide's top edge instead of a separate row. */
   .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings {
-    grid-area: settings;
-    width: auto;
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: var(--slide-w);
+    justify-content: flex-end;
+    padding: 0;
+    z-index: 6;
+    pointer-events: none;
+  }
+
+  .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings__inner {
+    pointer-events: auto;
+    padding: 4px 6px;
+    border-radius: var(--radius);
+    background: color-mix(in oklch, var(--panel) 86%, transparent);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Hide the in-slide reference label in this mode so it doesn't sit under the
+     overlaid controls. */
+  .presentation-stage:has(.speaker-notes:not([hidden])) .slide-ref-pinned {
+    display: none;
   }
 
   .presentation-stage:has(.speaker-notes:not([hidden])) .slide {
@@ -1074,9 +1096,20 @@ body[data-display-mode="slide"] .slide-ref-pinned {
     grid-area: notes;
     width: auto;
     margin-top: 0;
-    max-height: calc((100vh - 160px));
+    max-height: calc(100vh - 90px);
     overflow-y: auto;
     align-self: stretch;
+  }
+
+  /* Smaller notes text in the side layout (~80%). */
+  .presentation-stage:has(.speaker-notes:not([hidden])) .speaker-notes__body {
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .presentation-stage:has(.speaker-notes:not([hidden])) .speaker-notes__header p,
+  .presentation-stage:has(.speaker-notes:not([hidden])) .speaker-notes__header span {
+    font-size: 0.74rem;
   }
 }
 
@@ -1248,6 +1281,9 @@ body[data-display-mode="slide"] .slide-ref-pinned {
 }
 
 .slide-list__header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1255,6 +1291,7 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   min-height: 56px;
   padding: 14px 12px;
   border-bottom: 1px solid var(--line);
+  background: var(--panel);
 }
 
 .slide-list__header span {
