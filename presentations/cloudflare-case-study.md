@@ -2,7 +2,7 @@
 
 ## Product Engineer · portfolio review
 
-<p class="deck-subtitle">Some of my work. One big example.</p>
+<p class="deck-subtitle">A few projects, then one I'll go deep on.</p>
 
 Rae Jin  
 June 9, 2026  
@@ -21,11 +21,11 @@ Note: Hi, I'm Rae. I design and build products. I'll show some other projects fi
 <div class="cards-2">
   <article>
     <h3>Math and sociology</h3>
-    <p>Math helped me understand systems. Sociology helped me remember the people in the systems.</p>
+    <p>Math taught me to model systems. Sociology taught me to never forget the people inside them.</p>
   </article>
   <article>
     <h3>8 years in banks</h3>
-    <p>I made AI tools for big banks in Korea. The work was hard. Mistakes cost a lot.</p>
+    <p>I built AI products for Korea's biggest banks. High-stakes, regulated, and unforgiving when you get it wrong.</p>
   </article>
 </div>
 
@@ -40,15 +40,15 @@ Note: My background isn't a straight line, and that's the point. I studied mathe
 <div class="cards-3">
   <article>
     <h3>Trust is everything</h3>
-    <p>In banks I learned the interface has to carry the weight of the model. If the user can't see why a number is there the whole thing falls apart.</p>
+    <p>The interface has to carry the weight of the model. If a user can't see why a number is there, the whole thing falls apart.</p>
   </article>
   <article>
-    <h3>One strong idea beats a bunch of half ones</h3>
-    <p>I did fifteen plus small projects. The ones that worked had one clear thing. Not lots of features thrown together.</p>
+    <h3>One strong idea beats ten half-built ones</h3>
+    <p>I've shipped fifteen-plus small projects. The ones that worked had a single clear idea, not a pile of features.</p>
   </article>
   <article>
     <h3>The hard part is the choices</h3>
-    <p>Two patents on turning financial data into images a model could read. The hard part wasn't the model. It was deciding what to keep and what to change.</p>
+    <p>Two patents on turning financial data into images a model could read. The model was never the hard part — deciding what to keep and what to cut was.</p>
   </article>
 </div>
 
@@ -63,19 +63,19 @@ Note: I don't collect wins. I look for hard problems and try to solve them in a 
 <div class="cards-3">
   <article>
     <h3>I build in code</h3>
-    <p>i don't just draw. i make real things with code. we talk about how it feels to use not just how it looks.</p>
+    <p>I don't just draw it. I build the real thing in code, and judge it by how it feels to use, not only how it looks.</p>
   </article>
   <article>
-    <h3>i choose what not to do</h3>
-    <p>i say no to some ideas. i pick one group of people to help first. it is better to do one thing well.</p>
+    <h3>I choose what not to do</h3>
+    <p>I say no to most ideas and pick one group to serve first. Doing one thing well beats doing five things halfway.</p>
   </article>
   <article>
-    <h3>things must fit together</h3>
-    <p>many small parts are easy. making them feel like one thing is hard. that is the important work.</p>
+    <h3>It has to feel like one thing</h3>
+    <p>Lots of small parts are easy. Making them feel like one product is the hard part — and the part that matters.</p>
   </article>
 </div>
 
-Note: you'll see this in autoscape. we chose one kind of user. we were honest about the costs. we made sure the picture turned into a plan a builder could use. the rest is details.
+Note: You'll see all of this in AutoScape. We picked one kind of user, stayed honest about the costs, and made sure the picture turned into a plan a builder could actually use. The rest is details.
 
 ---
 
@@ -88,19 +88,19 @@ Note: you'll see this in autoscape. we chose one kind of user. we were honest ab
 <div class="cards-4">
   <article>
     <h3>Cosmos</h3>
-    <p>A 3D way to look at talks online. Not a list. A space you move in. Made alone for a hackathon.</p>
+    <p>A 3D way to read online discussions. Not a feed — a space you move through. Built solo at a hackathon.</p>
   </article>
   <article>
     <h3>PeriCare</h3>
-    <p>A tool on the phone for women in perimenopause. It works on the phone only. No data leaves. I made most of it alone.</p>
+    <p>An on-device app for perimenopause. Everything runs on the phone, no data leaves it. Built mostly solo.</p>
   </article>
   <article>
     <h3>Cardinal</h3>
-    <p>A tool to watch AI agents that spend company money. Rules and spending in one view.</p>
+    <p>A dashboard for AI agents that spend company money. Rules and spend in one view.</p>
   </article>
   <article>
-    <h3>This tool</h3>
-    <p>The slides you see now. I made it with Cloudflare Workers. It is real. I use it.</p>
+    <h3>This deck</h3>
+    <p>The slides you're looking at. Built on Cloudflare Workers, and I actually use it.</p>
   </article>
 </div>
 
@@ -115,7 +115,7 @@ Note: The projects look different but the idea is the same — take something co
 <div class="media-split">
   <div>
     <h3>Cosmos</h3>
-    <p>Online talks are not flat lists. They have shape. I made a 3D ball you can look at. Made alone.</p>
+    <p>Online discussions aren't flat lists. They have shape. So I built a 3D sphere you can explore. Solo project.</p>
   </div>
   <img src="assets/images/cosmos-sphere-browse.png" alt="Cosmos spatial discourse browser rendering a conversation as a 3D sphere">
 </div>
@@ -127,7 +127,7 @@ Note: First one is Cosmos. Online discussions are a mess in a normal feed. I mad
 <div class="media-split">
   <div>
     <h3>PeriCare</h3>
-    <p>A phone tool for perimenopause. It shows two cycles. It runs only on the phone. Private. I made almost all of it alone.</p>
+    <p>A perimenopause app that maps two cycles. Private by default, fully on-device. I built almost all of it myself.</p>
   </div>
   <img src="assets/images/pericare-hero.jpg" alt="PeriCare iOS app — a private on-device digital twin for perimenopause">
 </div>
@@ -143,9 +143,9 @@ Note: Second is PeriCare. It's for perimenopause — real problem my mom went th
 ## One photo to a real plan
 
 <div class="metric-strip">
-  <article><strong>3 weeks</strong><span>Two people. I did the code and the data part.</span></article>
-  <article><strong>3rd place + award</strong><span>A hackathon with Qdrant, Freepik and DeepMind.</span></article>
-  <article><strong>Photo to builder</strong><span>See the yard. See the cost. See the plan. Talk to a person.</span></article>
+  <article><strong>3 weeks</strong><span>Team of two. I owned the full stack and the data pipeline.</span></article>
+  <article><strong>3rd place + award</strong><span>Sketch &amp; Search Hackathon — Qdrant, Freepik, DeepMind.</span></article>
+  <article><strong>Photo to builder</strong><span>See the yard, see the cost, get a plan, reach a contractor.</span></article>
 </div>
 
 Note: This is the main one — AutoScape. You upload one photo of your yard, choose a style, and it gives you pictures of what it could look like, plus a list of materials with real-ish prices, a top-down plan, and actual local contractors you can contact. We built the whole flow in three weeks as a team of two. I handled the code and the part that pulls the pricing data. It got third place and an award at the hackathon. It's not just making pretty AI pictures. It actually gets you to someone who can build the thing.
@@ -154,18 +154,18 @@ Note: This is the main one — AutoScape. You upload one photo of your yard, cho
 
 <p class="slide-ref">Deep dive · the problem</p>
 
-# The problem is you cannot see the yard before you pay
+# You pay before you can see your own yard
 
-## Big money with no picture
+## Big money, no real picture
 
 <div class="cards-2">
   <article>
-    <h3>You pay first</h3>
-    <p>People spend 5,000 to 50,000 dollars on a yard. They do this from drawings or words. They often pay 500 to 2,000 dollars just to see first ideas. The final cost is often 30 to 50 percent more than planned. Prices change with the season and the place.</p>
+    <h3>You commit first</h3>
+    <p>A yard runs $5,000 to $50,000, and you commit to it from drawings or a conversation. First concepts alone cost $500 to $2,000, and the final bill often lands 30 to 50 percent over plan.</p>
   </article>
   <article>
-    <h3>Pictures do not help enough</h3>
-    <p>My friend had this problem with his own yard. He looked at many pictures. He paid for talks with designers. The result was not what he thought. He still did not know what the yard would really look like. The problem is not a lack of pictures. The problem is you cannot see your own yard changed before you spend the money.</p>
+    <h3>Pictures don't close the gap</h3>
+    <p>My teammate lived this with his own backyard. Endless Pinterest boards, paid designer meetings, and he still couldn't picture the result. The gap isn't inspiration. It's seeing your actual yard changed before you spend.</p>
   </article>
 </div>
 
@@ -175,22 +175,22 @@ Note: The real problem isn't that people don't have ideas. It's that they have t
 
 <p class="slide-ref">Deep dive · the decision</p>
 
-# We picked one kind of person
+# We built for one kind of person
 
-## People who want to look, not people who want to buy right now
+## Explorers, not buyers in a hurry
 
 <div class="cards-2">
   <article>
-    <h3>People who look first</h3>
-    <p>They want many ideas fast. They want to see what is possible. We made it fast to upload a photo. We showed four styles with real example photos. No hard words. Easy to try.</p>
+    <h3>Explorers</h3>
+    <p>They want options, fast, to see what's even possible. So: upload a photo in seconds, four styles shown as real photos, no jargon to learn.</p>
   </article>
   <article>
-    <h3>People who want to buy now</h3>
-    <p>They want one exact plan with exact prices and exact plants. We could not do that in three weeks. We said this clearly. We did not pretend we could do everything.</p>
+    <h3>Deciders</h3>
+    <p>They want one exact plan with exact prices and plants. We couldn't do that in three weeks, so we said so instead of faking it.</p>
   </article>
 </div>
 
-<p class="slide-closing">Three weeks is short. It is better to help one group well than to help everyone a little.</p>
+<p class="slide-closing">Three weeks is short. Better to serve one group well than everyone a little.</p>
 
 Note: We had to pick who we were building for. Some people just want to explore options fast. Others want one final plan with exact prices right away. We went with the explorers. We were upfront that we weren't solving the exact-quote problem in three weeks. Same thing later with the costs — we were clear about what the numbers actually were.
 
@@ -222,9 +222,9 @@ Note: The thing that kills trust fast is when the AI picture changes your house 
 ## From photo to a person who can build
 
 <div class="steps-3">
-  <article><span class="steps-3__num">1</span><div><h3>See the new yard</h3><p>Upload a photo. Pick a style. See pictures that keep your house the same.</p></div></article>
-  <article><span class="steps-3__num">2</span><div><h3>See the cost</h3><p>Get a list of things to buy. The prices are real but not exact. We say this clearly.</p></div></article>
-  <article><span class="steps-3__num">3</span><div><h3>See the plan and the builder</h3><p>Get a top view plan. Get names of people near you who can do the work.</p></div></article>
+  <article><span class="steps-3__num">1</span><div><h3>See the new yard</h3><p>Upload a photo, pick a style, and see your house unchanged with a brand-new yard.</p></div></article>
+  <article><span class="steps-3__num">2</span><div><h3>See the cost</h3><p>Get an itemized material list with honest, directional prices — and we say they're directional.</p></div></article>
+  <article><span class="steps-3__num">3</span><div><h3>See the plan and the builder</h3><p>Get a top-down plan and local contractors who can actually build it.</p></div></article>
 </div>
 
 Note: We didn't stop at generating pictures. The flow goes all the way through costs, a usable plan, and actual local contractors. That's what makes it feel like a real product instead of another AI demo. The pieces connect. That's the part I'm most proud of.
@@ -233,7 +233,7 @@ Note: We didn't stop at generating pictures. The flow goes all the way through c
 
 <p class="slide-ref">Deep dive · see it</p>
 
-## Step 1 — very simple start
+## Step 1: a deliberately simple start
 
 <img class="slide-image" src="assets/images/autoscape/autoscape-07.png" alt="AutoScape upload step: drop a yard photo, choose location type and space size, three-step wizard">
 
@@ -257,7 +257,7 @@ Note: No jargon for the styles. We just show real photos of what each one looks 
 
 <p class="slide-ref">Deep dive · see it</p>
 
-## You must see your real yard
+## You have to see your real yard
 
 <img class="slide-image" src="assets/images/autoscape/autoscape-11.png" alt="AutoScape redesign result: in-app before/after slider with 2D plan and video tabs">
 
@@ -351,15 +351,15 @@ Note: The RAG pipeline wasn't a cool tech choice. It was the only way to make "c
 <div class="cards-3">
   <article>
     <h3>Better prices</h3>
-    <p>The prices are only a guide. A real version would need live prices from stores.</p>
+    <p>Prices are a guide today. A real version needs live supplier pricing, not asset metadata.</p>
   </article>
   <article>
-    <h3>Help the other group too</h3>
-    <p>We helped people who want to look. Later we can help people who want to buy right away with exact plans.</p>
+    <h3>Serve the deciders too</h3>
+    <p>We built for explorers. Next is the buyers who want an exact, ready-to-order plan.</p>
   </article>
   <article>
-    <h3>Find builders earlier</h3>
-    <p>We stopped before payment. Next time I would talk to builders from the first week.</p>
+    <h3>Bring in builders earlier</h3>
+    <p>We stopped before payment. Next time I'd line up contractors from week one.</p>
   </article>
 </div>
 
@@ -371,36 +371,11 @@ Note: We knew exactly what we weren't going to finish in three weeks. The cost n
 
 # The main lesson
 
-> Three weeks is short. But you can go far if you stay on one thing. The hard part was not one piece. It was making all the pieces feel like one thing.
+> Three weeks is short, but you can go far if you stay on one thing. The hard part wasn't any single piece. It was making all the pieces feel like one product.
 
-<p class="slide-closing">People do not care about the smart search or the picture rules. They care if they can go from a photo to a person who can build the yard. And they must trust every step.</p>
+<p class="slide-closing">People don't care about the retrieval pipeline or the prompt rules. They care whether a photo can become a person who'll build their yard — and whether they can trust every step.</p>
 
 Note: We went from a photo all the way to a builder you could call. The technical bits were interesting, but the hardest part was making the whole thing feel connected instead of separate demos. People don't care about the search or the prompting. They care whether they can go from a picture of their yard to someone who can actually build it, without losing trust along the way. That's the bar I hold everything to now.
-
----
-
-<p class="slide-ref">Close</p>
-
-# Why Cloudflare
-
-## This is the kind of work I like
-
-<div class="cards-3">
-  <article>
-    <h3>I take one idea to the end</h3>
-    <p>I start with a real problem. I finish with something a real person can use. In three weeks we went from a photo to a builder you can call.</p>
-  </article>
-  <article>
-    <h3>I say what I do and what I do not do</h3>
-    <p>We helped one group of people. We said we did not help the other group. We showed that the prices are only a guide. This is honest work.</p>
-  </article>
-  <article>
-    <h3>I already use your tools</h3>
-    <p>This slide tool runs on Cloudflare. The pictures and the data too. I am not new here. I want to do this kind of work with your team.</p>
-  </article>
-</div>
-
-Note: This is the kind of work I like — I take something from a real problem I see to something that actually works in the world. I try to be upfront about what we didn't solve yet. And I'm already shipping on Cloudflare Workers — this whole deck runs on it. I'd like to do more of this kind of thing on the team.
 
 ---
 
@@ -408,7 +383,7 @@ Note: This is the kind of work I like — I take something from a real problem I
 
 ## Rae Jin · Product Engineer
 
-dalrae.jin.work@gmail.com  
-raejin.web.app · github.com/jin-dalrae
+[dalrae.jin.work@gmail.com](mailto:dalrae.jin.work@gmail.com)  
+[raejin.web.app](https://raejin.web.app) · [github.com/jin-dalrae](https://github.com/jin-dalrae)
 
 Note: Thank you. Happy to go deep on anything — the scoping call, the fidelity constraint, the RAG as product work, the Explorers-versus-Deciders call, or what the next phase would actually require. What's on your mind?

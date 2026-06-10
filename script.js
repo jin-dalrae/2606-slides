@@ -706,6 +706,17 @@ async function loadDeckMarkdown(deckMeta) {
 
       return activeMarkdown;
     } catch (err) {
+      // API unreachable (e.g. static hosting / backend down) → fall back to the
+      // bundled markdown file so a public deck still renders.
+      try {
+        const fallback = await loadMarkdown(deckMeta.file);
+        if (fallback) {
+          baseMarkdown = fallback;
+          activeMarkdown = fallback;
+          hasUserMarkdown = false;
+          return activeMarkdown;
+        }
+      } catch {}
       baseMarkdown = "";
       activeMarkdown = "";
       hasUserMarkdown = false;
