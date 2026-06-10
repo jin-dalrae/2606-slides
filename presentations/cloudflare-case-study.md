@@ -116,8 +116,8 @@ Note: The projects look different, but the instinct is the same — take somethi
 
 <div class="media-split">
   <div>
-    <p>Most people in online communities read without ever posting. Feeds are great at volume but weak at structure — you can't see where a debate actually splits.</p>
-    <p><strong>The design call:</strong> design for readers first. Organize the discussions that already exist into regions you can navigate, and never show an AI label without the source posts behind it.</p>
+    <p>Most people in online communities read without ever posting. Feeds are great at volume, weak at structure — you can't see where a debate splits.</p>
+    <p><strong>The design call:</strong> design for readers first. Turn existing discussions into regions you can navigate, and never show an AI label without its source posts.</p>
   </div>
   <img src="assets/images/cosmos-sphere-browse.png" alt="Cosmos spatial discourse browser rendering a conversation as a 3D sphere">
 </div>
@@ -135,11 +135,11 @@ Note: Cosmos is a research direction for browsing discussions spatially. The ins
 <div class="cards-2">
   <article>
     <h3>The story</h3>
-    <p>AI agents are moving from giving advice to taking action — soon they'll renew software and buy reports on their own. Approve every purchase and it's too slow; approve nothing and you risk rogue spending.</p>
+    <p>Agents are moving from advice to action — soon they'll buy software and reports themselves. Approve everything and it's too slow; approve nothing and you risk rogue spending.</p>
   </article>
   <article>
     <h3>The design call</h3>
-    <p>Put a human in the loop at the right moments, not every moment. The core screen is the interruption: a $720 report from a new vendor, where you approve once, whitelist the vendor, or lower the budget — and the system learns from the choice.</p>
+    <p>A human in the loop at the right moments, not every moment. The core screen is the interruption — a $720 report, new vendor — where your choice also teaches the system.</p>
   </article>
 </div>
 
@@ -155,8 +155,8 @@ Note: CadinalPay is a payment interface for the moment agents start spending com
 
 <div class="media-split">
   <div>
-    <p>This started from a real problem my mom went through. The data is deeply personal, and the app maps two overlapping cycles to make sense of it.</p>
-    <p><strong>The design call:</strong> privacy as the starting constraint, not a feature added later. Everything runs on the phone, and no data ever leaves it. That one decision shaped the whole architecture.</p>
+    <p>Started from a real problem my mom went through. The data is deeply personal, and the app maps two overlapping cycles.</p>
+    <p><strong>The design call:</strong> privacy as the starting constraint, not a feature. Everything runs on the phone — that one decision shaped the whole architecture.</p>
   </div>
   <img src="assets/images/pericare-hero.jpg" alt="PeriCare iOS app — a private on-device digital twin for perimenopause">
 </div>
@@ -190,11 +190,11 @@ Note: This is the main one — AutoScape. You upload one photo of your yard, cho
 <div class="cards-2">
   <article>
     <h3>You commit first</h3>
-    <p>A yard runs $5,000 to $50,000, and you commit to it from drawings or a conversation. First concepts alone cost $500 to $2,000, and the final bill often lands 30 to 50 percent over plan.</p>
+    <p>A yard runs $5,000–$50,000, committed from drawings alone. First concepts cost $500–$2,000, and the final bill often lands 30–50% over plan.</p>
   </article>
   <article>
     <h3>Pictures don't close the gap</h3>
-    <p>My teammate lived this with his own backyard. Endless Pinterest boards, paid designer meetings, and he still couldn't picture the result. The gap isn't inspiration. It's seeing your actual yard changed before you spend.</p>
+    <p>My teammate lived this — endless Pinterest boards, paid designer meetings, still couldn't picture the result. The gap isn't inspiration. It's seeing <em>your</em> yard changed.</p>
   </article>
 </div>
 
@@ -356,16 +356,16 @@ Note: The last screen shows location-matched contractors with the 2D plan attach
 
 <div class="cards-3">
   <article>
-    <h3>RAG = the only honest proxy we had</h3>
-    <p>No landscaping price API exists. We indexed Freepik's real asset library (plants, materials, furniture) into Qdrant so costs came from actual product data with metadata, not hallucinated numbers.</p>
+    <h3>RAG = the only honest proxy</h3>
+    <p>No landscaping price API exists, so we indexed Freepik's real asset library into Qdrant. Costs come from product data, not hallucinated numbers.</p>
   </article>
   <article>
     <h3>Prompts = the fidelity constraint</h3>
-    <p>General image models will happily repaint the house or move the fence. We engineered hard to keep the photographed architecture intact and only transform vegetation and hardscape. Preprocessing for low light and bad angles was part of the same decision.</p>
+    <p>Image models love to repaint the house. We engineered hard to keep the architecture intact and change only the yard.</p>
   </article>
   <article>
-    <h3>Stack = what actually ships in three weeks</h3>
-    <p>React + Vite + Tailwind, image gen APIs, Qdrant + Freepik for retrieval, Firebase. Deliberately unsexy so the team of two could own the whole loop instead of fighting infrastructure.</p>
+    <h3>Stack = what ships in three weeks</h3>
+    <p>React, image-gen APIs, Qdrant + Freepik, Firebase. Deliberately boring so two people could own the whole loop.</p>
   </article>
 </div>
 

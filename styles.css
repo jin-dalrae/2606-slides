@@ -718,6 +718,15 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   right: 3rem;
 }
 
+/* In fullscreen / standalone slide mode the deck scales up to fill the screen,
+   but this label sits outside the scaled slide area, so a fixed rem stays tiny.
+   Size it relative to the viewport so it grows with the rest of the slide. */
+body[data-display-mode="slide"] .reveal .slide-ref-pinned,
+.presentation-stage:fullscreen .reveal .slide-ref-pinned,
+.presentation-stage--fullscreen .reveal .slide-ref-pinned {
+  font-size: 1.3vw;
+}
+
 .presentation-header {
   position: relative;
   display: grid;
@@ -1057,31 +1066,31 @@ body[data-display-mode="slide"] .slide-ref-pinned {
     column-gap: 22px;
   }
 
-  /* Controls sit above the slide, in the slide column — wrapping to two rows
-     and capped at the slide width instead of stretching across. */
+  /* Controls sit above the slide, in the slide column, in a single compact row.
+     The "Transition/Background/Font" labels are dropped here to save space — the
+     dropdown value alone is enough. */
   .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings {
     grid-area: settings;
-    width: min(var(--slide-w), 23rem);
+    width: var(--slide-w);
     justify-content: flex-start;
     padding: 0 0 8px;
   }
 
   .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings__inner {
-    flex-wrap: wrap;
-    gap: 6px 8px;
-    width: 100%;
+    flex-wrap: nowrap;
+    gap: 6px;
   }
 
-  /* Equal-width Transition / Background / Font controls so the two rows line up. */
+  .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings .select-control > span {
+    display: none;
+  }
+
   .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings .select-control {
-    flex: 1 1 calc(50% - 4px);
-    justify-content: space-between;
+    padding: 0 0.2rem 0 0.5rem;
   }
 
   .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings .select-control select {
-    max-width: none;
-    flex: 1;
-    text-align: right;
+    max-width: 7.5rem;
   }
 
   .presentation-stage:has(.speaker-notes:not([hidden])) .speaker-notes {
@@ -1234,24 +1243,28 @@ body[data-display-mode="slide"] .slide-ref-pinned {
 
 .speaker-notes__header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 8px;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 6px;
 }
 
 .speaker-notes__header p,
 .speaker-notes__header span {
   margin: 0;
-  color: var(--primary);
-  font-size: 0.92rem;
+  color: var(--dim);
+  font-size: 0.72rem;
   font-variant-caps: all-small-caps;
   font-weight: 600;
-  letter-spacing: 0;
+  letter-spacing: 0.04em;
 }
 
 .speaker-notes__header span {
+  color: var(--muted);
+}
+
+.speaker-notes__header span::before {
+  content: "·";
+  margin-right: 8px;
   color: var(--dim);
 }
 
