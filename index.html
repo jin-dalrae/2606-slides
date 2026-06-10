@@ -30,13 +30,6 @@
           </button>
         </div>
         <ol class="presentation-list__items" id="presentationList"></ol>
-        <div class="sidebar-tools">
-          <section class="account-panel" id="accountPanel" aria-label="Account"></section>
-          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">
-            <span class="theme-toggle__dot" aria-hidden="true"></span>
-            <span class="theme-toggle__label">Light</span>
-          </button>
-        </div>
       </aside>
 
       <main class="stage">
@@ -50,7 +43,17 @@
             <p id="presentationDate"></p>
             <h2 id="presentationTitle"></h2>
           </div>
-          <nav class="profile-links" id="profileLinks" aria-label="Profile links"></nav>
+          <div class="header-tools">
+            <nav class="profile-links" id="profileLinks" aria-label="Profile links"></nav>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">
+              <span class="theme-toggle__dot" aria-hidden="true"></span>
+              <span class="theme-toggle__label">Light</span>
+            </button>
+            <div class="account-menu" id="accountMenu">
+              <button class="account-menu__trigger" id="accountTrigger" type="button" aria-haspopup="true" aria-expanded="false">Account</button>
+              <section class="account-panel" id="accountPanel" aria-label="Account" hidden></section>
+            </div>
+          </div>
         </header>
 
         <div class="presentation-workspace">

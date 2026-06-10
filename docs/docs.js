@@ -26,6 +26,8 @@ const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
 const mobileMedia = window.matchMedia("(max-width: 760px)");
 const accountPanel = document.querySelector("#accountPanel");
+const accountMenu = document.querySelector("#accountMenu");
+const accountTrigger = document.querySelector("#accountTrigger");
 
 let currentDoc = 0;
 let currentView = "home";
@@ -242,12 +244,27 @@ async function apiRequest(path, options = {}) {
   return data;
 }
 
+function setAccountTriggerLabel() {
+  if (!accountTrigger) {
+    return;
+  }
+  accountTrigger.textContent = currentUser ? currentUser.username : "Account";
+}
+
+function setAccountMenuOpen(open) {
+  if (!accountPanel) {
+    return;
+  }
+  accountPanel.hidden = !open;
+  accountTrigger?.setAttribute("aria-expanded", String(Boolean(open)));
+}
+
 function renderAccountPanel() {
   if (!accountPanel) {
     return;
   }
 
-  accountPanel.hidden = false;
+  setAccountTriggerLabel();
 
   if (!apiAvailable) {
     accountPanel.innerHTML = `
@@ -324,6 +341,7 @@ async function submitAuth(event) {
     });
     currentUser = data.user;
     authStatus = "";
+    setAccountMenuOpen(false);
     // Refresh lists + current view now that we are authenticated
     renderDocList();
     const idx = currentView === "doc" ? currentDoc : -1;
@@ -634,6 +652,20 @@ document.addEventListener("keydown", (event) => {
 });
 
 themeToggle.addEventListener("click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
+accountTrigger?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  setAccountMenuOpen(accountPanel?.hidden);
+});
+document.addEventListener("click", (event) => {
+  if (accountMenu && !accountMenu.contains(event.target)) {
+    setAccountMenuOpen(false);
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    setAccountMenuOpen(false);
+  }
+});
 docsHome.addEventListener("click", renderDocsHome);
 openSidebar.addEventListener("click", () => toggleSidebar(true));
 closeSidebar.addEventListener("click", () => toggleSidebar(false));

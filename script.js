@@ -56,6 +56,8 @@ const fullscreen = document.querySelector("#fullscreen");
 const openSlideWindow = document.querySelector("#openSlideWindow");
 const editDeck = document.querySelector("#editDeck");
 const accountPanel = document.querySelector("#accountPanel");
+const accountMenu = document.querySelector("#accountMenu");
+const accountTrigger = document.querySelector("#accountTrigger");
 const markdownEditor = document.querySelector("#markdownEditor");
 const speakerNotes = document.querySelector("#speakerNotes");
 const transitionSelect = document.querySelector("#transitionSelect");
@@ -193,12 +195,27 @@ function currentDeckSlug() {
   return selectedPresentationSlug();
 }
 
+function setAccountTriggerLabel() {
+  if (!accountTrigger) {
+    return;
+  }
+  accountTrigger.textContent = currentUser ? currentUser.username : "Account";
+}
+
+function setAccountMenuOpen(open) {
+  if (!accountPanel) {
+    return;
+  }
+  accountPanel.hidden = !open;
+  accountTrigger?.setAttribute("aria-expanded", String(Boolean(open)));
+}
+
 function renderAccountPanel() {
   if (!accountPanel) {
     return;
   }
 
-  accountPanel.hidden = false;
+  setAccountTriggerLabel();
 
   if (!apiAvailable) {
     accountPanel.innerHTML = `
@@ -221,14 +238,36 @@ function renderAccountPanel() {
     return;
   }
 
-  // When not logged in, the main login form is in the large area.
-  // Sidebar shows a small note.
+  const isSignup = authMode === "signup";
   accountPanel.innerHTML = `
-    <p class="account-panel__label">Account</p>
-    <p style="font-size: 0.85rem; line-height: 1.3; color: var(--dim);">
-      Use the login form in the main area.
-    </p>
+    <form class="account-form" id="accountForm">
+      <p class="account-panel__label">${isSignup ? "Create account" : "Sign in"}</p>
+      <label>
+        <span>ID</span>
+        <input id="accountUsername" name="username" autocomplete="username" minlength="3" maxlength="32" ${authBusy ? "disabled" : ""}>
+      </label>
+      <label>
+        <span>PW</span>
+        <input id="accountPassword" name="password" type="password" autocomplete="${isSignup ? "new-password" : "current-password"}" minlength="8" ${authBusy ? "disabled" : ""}>
+      </label>
+      <div class="account-form__actions">
+        <button class="text-button account-panel__button" type="submit" ${authBusy ? "disabled" : ""}>${isSignup ? "Create" : "Sign in"}</button>
+        <button class="text-button account-panel__button" id="authModeToggle" type="button" ${authBusy ? "disabled" : ""}>${isSignup ? "Use login" : "Create"}</button>
+      </div>
+      <p class="account-panel__message" aria-live="polite">${escapeHtml(authStatus)}</p>
+    </form>
   `;
+
+  const form = accountPanel.querySelector("#accountForm");
+  if (form) form.addEventListener("submit", submitAuth);
+  const modeToggle = accountPanel.querySelector("#authModeToggle");
+  if (modeToggle) {
+    modeToggle.addEventListener("click", () => {
+      authMode = authMode === "signup" ? "signin" : "signup";
+      authStatus = "";
+      renderAccountPanel();
+    });
+  }
 }
 
 async function submitAuth(event) {
@@ -251,6 +290,7 @@ async function submitAuth(event) {
     editorStatus = "";
     renderProfileLinks();
     renderAccountPanel();
+    setAccountMenuOpen(false);
     // Now that we're authenticated, show the lists and load content
     renderPresentationList();
     if (currentView === "presentation") {
@@ -1615,7 +1655,22 @@ themeToggle.addEventListener("click", () => {
   applyTheme(currentTheme === "dark" ? "light" : "dark");
 });
 
+accountTrigger?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  setAccountMenuOpen(accountPanel?.hidden);
+});
+
+document.addEventListener("click", (event) => {
+  if (accountMenu && !accountMenu.contains(event.target)) {
+    setAccountMenuOpen(false);
+  }
+});
+
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    setAccountMenuOpen(false);
+  }
+
   if (currentView !== "presentation") {
     return;
   }
