@@ -674,10 +674,17 @@ button {
   margin-bottom: 0;
 }
 
+/* The authored per-slide .slide-ref lives inside each Reveal section (which is
+   vertically centered), so it is hidden and mirrored into .slide-ref-pinned,
+   which anchors to the slide frame and stays at the top. */
 .slide-ref {
+  display: none;
+}
+
+.slide-ref-pinned {
   position: absolute;
   top: 2rem;
-  right: 8rem;
+  right: 2.5rem;
   z-index: 3;
   margin: 0;
   width: auto;
@@ -695,10 +702,18 @@ button {
   white-space: nowrap;
 }
 
-body[data-display-mode="slide"] .slide-ref {
+.reveal .slide-ref-pinned {
+  font-size: 0.62rem;
+}
+
+.slide-ref-pinned[hidden] {
+  display: none;
+}
+
+body[data-display-mode="slide"] .slide-ref-pinned {
   position: fixed;
-  top: 5rem;
-  right: 6.5rem;
+  top: 3rem;
+  right: 3rem;
 }
 
 .presentation-header {
@@ -1252,7 +1267,7 @@ body[data-display-mode="slide"] .slide-ref {
   color: oklch(0.83 0.15 62);
 }
 
-.deck-root[data-background-mode="cloudflare"] .slide-ref {
+.deck-root[data-background-mode="cloudflare"] .slide-ref-pinned {
   color: oklch(0.74 0.15 58);
 }
 
@@ -1379,7 +1394,7 @@ body[data-display-mode="slide"] .slide-ref {
 
 .reveal .slides section {
   display: grid !important;
-  align-content: center;
+  align-content: start;
   color: var(--ink);
   min-height: 100%;
   padding: 5.5rem 6.5rem;
@@ -1713,9 +1728,31 @@ body[data-display-mode="slide"] .slide-ref {
   max-height: 65vh;
   margin: 1.2rem auto 0;
   object-fit: contain;
-  /* border removed per feedback — images no longer get a separate frame */
+  /* No frame: plain image, no border, no drop shadow. */
   border-radius: var(--radius);
-  box-shadow: 0 20px 60px oklch(0 0 0 / 0.28);
+}
+
+/* Multi-image slides: 2–3 images sit in a horizontal row beneath the heading
+   instead of stacking vertically. The heading (and any other non-image child)
+   spans the full width on its own row above the images. */
+.reveal .slides section:has(.slide-image + .slide-image) {
+  justify-items: center;
+  gap: 1.4rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.reveal .slides section:has(.slide-image + .slide-image + .slide-image) {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.reveal .slides section:has(.slide-image + .slide-image) > :not(.slide-image) {
+  grid-column: 1 / -1;
+}
+
+.reveal .slides section:has(.slide-image + .slide-image) .slide-image {
+  width: 100%;
+  max-height: 62vh;
+  margin: 0.4rem 0 0;
 }
 
 .reveal .media-split {
@@ -1730,9 +1767,8 @@ body[data-display-mode="slide"] .slide-ref {
   width: 100%;
   max-height: 65vh;
   object-fit: contain;
-  /* border removed per feedback — images no longer get a separate frame */
+  /* No frame: plain image, no border, no drop shadow. */
   border-radius: var(--radius);
-  box-shadow: 0 20px 60px oklch(0 0 0 / 0.28);
 }
 
 .reveal .before-after {
@@ -1750,10 +1786,9 @@ body[data-display-mode="slide"] .slide-ref {
   width: 100%;
   max-height: 65vh;
   object-fit: contain;
-  /* border removed per feedback — images no longer get a separate frame.
+  /* No frame: plain image, no border, no drop shadow.
      object-fit: contain instead of cover to avoid cropping tall/vertical images. */
   border-radius: var(--radius);
-  box-shadow: 0 20px 60px oklch(0 0 0 / 0.28);
 }
 
 .reveal .before-after figcaption {

@@ -748,7 +748,7 @@ async function rerenderActiveDeck(markdown, slideIndex = currentSlide) {
     hash: false,
     controls: false,
     progress: true,
-    center: true,
+    center: false,
     transition: currentTransition,
     keyboard: false,
     plugins: [RevealMarkdown, RevealNotes]
@@ -913,7 +913,25 @@ function updateSlideControls() {
   renderSlideList();
   syncActiveSlideListItem();
   renderSpeakerNotes();
+  updatePinnedSlideRef();
   broadcastPresentationState();
+}
+
+// Mirror the current slide's right-side reference label into a single element
+// pinned to the slide frame, so it stays at the top regardless of Reveal's
+// vertical centering of slide content.
+function updatePinnedSlideRef() {
+  const pinned = slide.querySelector(".slide-ref-pinned");
+  if (!pinned) {
+    return;
+  }
+
+  const activeSection = slide.querySelector(".slides section.present");
+  const sourceRef = activeSection?.querySelector(".slide-ref");
+  const label = sourceRef?.textContent?.trim() || "";
+
+  pinned.textContent = label;
+  pinned.hidden = !label;
 }
 
 function renderSpeakerNotes() {
@@ -1320,6 +1338,7 @@ function renderDeckShell(markdown) {
   slide.innerHTML = `
     <div class="reveal deck-root" data-background-mode="${currentBackground}">
       <canvas class="slide-shader" aria-hidden="true"></canvas>
+      <p class="slide-ref-pinned" aria-hidden="true" hidden></p>
       <div class="slides">
         <section
           data-markdown
@@ -1388,7 +1407,7 @@ async function renderPresentation() {
       hash: false,
       controls: false,
       progress: true,
-      center: true,
+      center: false,
       transition: currentTransition,
       keyboard: false,
       plugins: [RevealMarkdown, RevealNotes]
