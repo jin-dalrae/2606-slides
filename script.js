@@ -63,6 +63,7 @@ const speakerNotes = document.querySelector("#speakerNotes");
 const transitionSelect = document.querySelector("#transitionSelect");
 const backgroundSelect = document.querySelector("#backgroundSelect");
 const fontSelect = document.querySelector("#fontSelect");
+const versionSelect = document.querySelector("#versionSelect");
 const themeToggle = document.querySelector("#themeToggle");
 const homeLink = document.querySelector("#homeLink");
 if (homeLink) {
@@ -641,7 +642,10 @@ async function preloadPresentationTitles() {
 }
 
 async function loadMarkdown(file) {
-  const response = await fetch(file, { cache: "no-store" });
+  // Cache-bust so an edited deck always loads fresh (some browsers serve a
+  // stale copy even with cache:no-store).
+  const bust = `${file.includes("?") ? "&" : "?"}cb=${Date.now()}`;
+  const response = await fetch(`${file}${bust}`, { cache: "no-store" });
 
   if (!response.ok) {
     throw new Error(`Could not load ${file}`);
@@ -1471,10 +1475,22 @@ async function renderPresentation() {
   transitionSelect.disabled = false;
   backgroundSelect.disabled = false;
   fontSelect.disabled = false;
+  versionSelect.disabled = true; // disable until versions load
   renderPresentationList();
 
   try {
     const markdown = await loadDeckMarkdown(deckMeta);
+
+    // Fetch versions to populate the dropdown
+    try {
+      const versionsData = await apiRequest(`decks/${encodeURIComponent(deckMeta.slug || deckMeta.file)}/versions`);
+      populateVersionSelect(versionsData.versions || []);
+    } catch (e) {
+      // Ignore version fetch errors for unauthenticated or unavailable API
+      versionSelect.innerHTML = `<option value="latest">Latest</option>`;
+      versionSelect.disabled = true;
+    }
+
     currentSlideTitles = markdownSlideTitles(markdown);
     currentSlideNotes = markdownSlideNotes(markdown);
     deckMeta.resolvedTitle = firstSlideHeaderTitle(markdown) || deckMeta.title;
@@ -1681,6 +1697,44 @@ fullscreen.addEventListener("click", toggleFullscreen);
 transitionSelect.addEventListener("change", (event) => updateTransition(event.target.value));
 backgroundSelect.addEventListener("change", (event) => updateBackground(event.target.value));
 fontSelect.addEventListener("change", (event) => updateFont(event.target.value));
+versionSelect.addEventListener("change", (event) => loadSpecificVersion(event.target.value));
+
+function populateVersionSelect(versions) {
+  versionSelect.innerHTML = `<option value="latest">Latest</option>`;
+  for (const v of versions) {
+    const dateStr = new Date(v.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+    const label = v.user_id ? `Saved Edit - ${dateStr}` : `Base - ${dateStr}`;
+    versionSelect.innerHTML += `<option value="${escapeHtml(v.id)}">${escapeHtml(label)}</option>`;
+  }
+  versionSelect.value = "latest";
+  versionSelect.disabled = false;
+}
+
+async function loadSpecificVersion(versionId) {
+  if (currentView !== "presentation") return;
+  
+  const deckMeta = selectedPresentation();
+  const slug = deckMeta.slug || deckMeta.file;
+  
+  if (versionId === "latest") {
+    // Reload the latest active markdown
+    activeMarkdown = await loadDeckMarkdown(deckMeta);
+  } else {
+    try {
+      const data = await apiRequest(`decks/${encodeURIComponent(slug)}/versions/${encodeURIComponent(versionId)}`);
+      activeMarkdown = data.markdown;
+    } catch (e) {
+      editorStatus = "Could not load version: " + e.message;
+      renderMarkdownEditor();
+      return;
+    }
+  }
+
+  // Re-render
+  rerenderActiveDeck(activeMarkdown, currentSlide);
+  renderMarkdownEditor();
+}
+
 editDeck.addEventListener("click", () => {
   if (currentView !== "presentation") {
     return;

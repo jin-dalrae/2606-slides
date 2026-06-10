@@ -250,6 +250,13 @@ async function saveBaseDeck(env, slug, markdown) {
      VALUES (?, ?, ?)
      ON CONFLICT(slug) DO UPDATE SET markdown = excluded.markdown, updated_at = excluded.updated_at`
   ).bind(slug, markdown, updatedAt).run();
+
+  const versionId = randomId();
+  await env.DB.prepare(
+    `INSERT INTO deck_versions (id, slug, user_id, markdown, created_at, version_name)
+     VALUES (?, ?, NULL, ?, ?, ?)`
+  ).bind(versionId, slug, markdown, updatedAt, "Base Update").run();
+
   return { ok: true, updatedAt };
 }
 
@@ -296,7 +303,40 @@ async function saveDeck(request, env, slug) {
      DO UPDATE SET markdown = excluded.markdown, updated_at = excluded.updated_at`
   ).bind(user.id, slug, markdown, updatedAt).run();
 
+  const versionId = randomId();
+  await env.DB.prepare(
+    `INSERT INTO deck_versions (id, slug, user_id, markdown, created_at, version_name)
+     VALUES (?, ?, ?, ?, ?, ?)`
+  ).bind(versionId, slug, user.id, markdown, updatedAt, "User Edit").run();
+
   return json({ ok: true, updatedAt });
+}
+
+async function getDeckVersions(request, env, slug) {
+  const user = await currentUser(request, env);
+  if (!user) {
+    return unauthorized();
+  }
+
+  const { results } = await env.DB.prepare(
+    "SELECT id, created_at, version_name, user_id FROM deck_versions WHERE slug = ? AND (user_id IS NULL OR user_id = ?) ORDER BY created_at DESC"
+  ).bind(slug, user.id).all();
+
+  return json({ versions: results || [] });
+}
+
+async function getDeckVersion(request, env, slug, versionId) {
+  const user = await currentUser(request, env);
+  if (!user) {
+    return unauthorized();
+  }
+
+  const row = await env.DB.prepare(
+    "SELECT markdown FROM deck_versions WHERE slug = ? AND id = ? AND (user_id IS NULL OR user_id = ?)"
+  ).bind(slug, versionId, user.id).first();
+
+  if (!row) return notFound();
+  return json({ markdown: row.markdown });
 }
 
 async function resetDeck(request, env, slug) {
@@ -355,6 +395,18 @@ async function handleApi(request, env) {
         updated_at TEXT NOT NULL
       )`
     ).run();
+    await env.DB.prepare(
+      `CREATE TABLE IF NOT EXISTS deck_versions (
+        id TEXT PRIMARY KEY,
+        slug TEXT NOT NULL,
+        user_id TEXT,
+        markdown TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        version_name TEXT,
+        FOREIGN KEY (slug) REFERENCES decks(slug) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )`
+    ).run();
   }
 
   if (method === "POST" && path === "signup") {
@@ -380,6 +432,14 @@ async function handleApi(request, env) {
       return deck(request, env, slug);
     }
 
+    if (method === "GET" && parts[2] === "versions" && parts.length === 3) {
+      return getDeckVersions(request, env, slug);
+    }
+
+    if (method === "GET" && parts[2] === "versions" && parts[3]) {
+      return getDeckVersion(request, env, slug, parts[3]);
+    }
+
     if (method === "PUT" && parts[2] === "markdown") {
       return saveDeck(request, env, slug);
     }
@@ -400,12 +460,26 @@ async function handleApi(request, env) {
   // Anyone with the direct URL can read, but cannot edit (edits still require login + go through user_decks).
   if (parts[0] === "public" && parts[1] === "decks" && parts[2]) {
     const slug = parts[2];
-    if (method === "GET") {
+    if (method === "GET" && parts.length === 3) {
       const base = await getBaseDeck(env, slug);
       return json({
         markdown: base?.markdown || null,
         updatedAt: base?.updatedAt || null
       });
+    }
+
+    if (method === "GET" && parts[3] === "versions" && parts.length === 4) {
+      const { results } = await env.DB.prepare(
+        "SELECT id, created_at, version_name, user_id FROM deck_versions WHERE slug = ? AND user_id IS NULL ORDER BY created_at DESC"
+      ).bind(slug).all();
+      return json({ versions: results || [] });
+    }
+
+    if (method === "GET" && parts[3] === "versions" && parts[4]) {
+      const row = await env.DB.prepare(
+        "SELECT markdown FROM deck_versions WHERE slug = ? AND id = ? AND user_id IS NULL"
+      ).bind(slug, parts[4]).first();
+      return row ? json({ markdown: row.markdown }) : notFound();
     }
   }
 

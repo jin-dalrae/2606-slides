@@ -960,6 +960,10 @@ body[data-display-mode="slide"] .reveal .slide-ref-pinned,
   max-width: 9.4rem;
 }
 
+.select-control--version select {
+  max-width: 14rem;
+}
+
 .select-control:has(select:disabled) {
   opacity: 0.38;
 }
@@ -2392,6 +2396,10 @@ body[data-display-mode="slide"] .stage[data-view="presentation"] .slide {
 
   .select-control--font select {
     max-width: 7rem;
+  }
+
+  .select-control--version select {
+    max-width: 9rem;
   }
 
   .slide-list {
