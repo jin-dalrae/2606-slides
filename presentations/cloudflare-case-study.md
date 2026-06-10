@@ -52,9 +52,7 @@ Note: My background isn't a straight line, and that's the point. I studied mathe
   </article>
 </div>
 
-<p class="slide-closing">I don't collect wins. I look for hard problems and try to solve them in a clean way.</p>
-
-Note: this comes from doing the work. in banks i saw what happens when trust breaks. with the small projects i learned that one strong idea beats a bunch of half done ones. the patents showed me that the real work is deciding what to keep and what to throw away.
+Note: I don't collect wins. I look for hard problems and try to solve them in a clean way. This comes from doing the work. In banks I saw what happens when trust breaks. With the small projects I learned that one strong idea beats a bunch of half done ones. The patents showed me that the real work is deciding what to keep and what to throw away.
 
 ---
 
@@ -413,6 +411,4 @@ Note: This is the kind of work I like — I take something from a real problem I
 dalrae.jin.work@gmail.com  
 raejin.web.app · github.com/jin-dalrae
 
-Note: Thank you. Happy to go deep on the scoping call, the fidelity constraint, the RAG as product work, or what the next phase would actually require. What's on your mind?
-
-Note: Thank you. I'd love to dig into anything — the retrieval pipeline, the Explorers-versus-Deciders call, or how I'd have handled the pricing problem with more time. What's on your mind?
+Note: Thank you. Happy to go deep on anything — the scoping call, the fidelity constraint, the RAG as product work, the Explorers-versus-Deciders call, or what the next phase would actually require. What's on your mind?

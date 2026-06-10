@@ -951,6 +951,46 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   --slide-w: min(100%, 1180px, calc((100vh - 230px) * 16 / 9));
 }
 
+/* Wide screens: once the slide grows large there's room to the right, so move
+   the speaker notes beside the slide instead of below it (where they get pushed
+   off-screen as the slide grows). Only kicks in when notes are actually shown. */
+@media (min-width: 1500px) {
+  .stage[data-view="presentation"] .presentation-stage:has(.speaker-notes:not([hidden])) {
+    --slide-w: min(62vw, 1180px, calc((100vh - 160px) * 16 / 9));
+    display: grid;
+    grid-template-columns: var(--slide-w) minmax(320px, 1fr);
+    grid-template-areas:
+      "settings settings"
+      "slide notes"
+      "editor notes";
+    align-items: start;
+    justify-content: center;
+    column-gap: 28px;
+  }
+
+  .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings {
+    grid-area: settings;
+    width: auto;
+  }
+
+  .presentation-stage:has(.speaker-notes:not([hidden])) .slide {
+    grid-area: slide;
+  }
+
+  .presentation-stage:has(.speaker-notes:not([hidden])) .markdown-editor {
+    grid-area: editor;
+  }
+
+  .presentation-stage:has(.speaker-notes:not([hidden])) .speaker-notes {
+    grid-area: notes;
+    width: auto;
+    margin-top: 0;
+    max-height: calc((100vh - 160px));
+    overflow-y: auto;
+    align-self: stretch;
+  }
+}
+
 .presentation-settings {
   /* Sit above the slide (closer to the header) and align to the slide width,
      so the controls are easy to reach instead of floating below a tall slide. */
@@ -1443,7 +1483,7 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   margin-top: 1.1rem;
   color: var(--dim);
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
   font-weight: 600;
   line-height: 1.32;
 }
@@ -1574,8 +1614,8 @@ body[data-display-mode="slide"] .slide-ref-pinned {
 .reveal .metric-strip span,
 .reveal .slide-card-row p,
 .reveal .slide-card-row li {
-  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
-  line-height: 1.34;
+  font-size: clamp(1.32rem, 1.7vw, 1.6rem);
+  line-height: 1.4;
 }
 
 .reveal .quote-grid article,
@@ -1600,7 +1640,7 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   color: var(--muted);
   font-variant-caps: all-small-caps;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
 }
 
 .reveal .cards-2 ul,
