@@ -28,6 +28,9 @@
     }
   ];
 
+  // Each item can have `public: true`.
+  // When true, the content can be read by anyone who has the direct URL (e.g. #the-slug),
+  // without requiring login. Editing is still only possible for authenticated users.
   const slides = [
     {
       slug: "cosmos-spatializing-community",
@@ -39,8 +42,8 @@
       file: "presentations/cosmos-spatializing-asynchronous-community-jun11.md",
       transition: "slide",
       background: "shader",
-      font: "lora",
-      theme: "dark"
+      font: "poppins",
+      public: true
     },
     {
       slug: "experience",
@@ -50,7 +53,8 @@
       project: "Cosmos",
       date: "June 4, 2026",
       file: "presentations/experience-cosmos-research-plan.md",
-      transition: "slide"
+      transition: "slide",
+      public: true
     },
     {
       slug: "cardinal-agentic-spending",
@@ -59,7 +63,8 @@
       project: "Cadinalpay",
       date: "June 11, 2026",
       file: "presentations/cardinal-agentic-workplace-spending.md",
-      transition: "slide"
+      transition: "slide",
+      public: true
     },
     {
       slug: "social-lab-climate-goal-platform",
@@ -69,7 +74,8 @@
       project: "Social Lab",
       date: "June 15, 2026",
       file: "presentations/social-lab-climate-goal-platform.md",
-      transition: "slide"
+      transition: "slide",
+      public: true
     },
     {
       slug: "gtr-partners",
@@ -78,7 +84,8 @@
       project: "Social Lab",
       date: "May 2026",
       file: "presentations/gtr-startups-climate-awareness.md",
-      transition: "slide"
+      transition: "slide",
+      public: true
     },
     {
       slug: "cloudflare-case-study",
@@ -90,11 +97,11 @@
       file: "presentations/cloudflare-case-study.md",
       transition: "slide",
       background: "cloudflare",
-      font: "inter",
-      theme: "dark"
+      public: true
     }
   ];
 
+  // (see comment above on `public: true` for making specific documents readable by URL without login)
   const docs = [
     {
       slug: "cosmos-research-report",
@@ -102,7 +109,8 @@
       docTitle: "Research report",
       project: "Cosmos",
       date: "June 11, 2026",
-      file: "cosmos-research-report-jun11.md"
+      file: "cosmos-research-report-jun11.md",
+      public: true,
     },
     {
       slug: "cosmos-research-deck",
@@ -110,7 +118,8 @@
       docTitle: "Research direction deck",
       project: "Cosmos",
       date: "June 11, 2026",
-      file: "../presentations/cosmos-spatializing-asynchronous-community-jun11.md"
+      file: "../presentations/cosmos-spatializing-asynchronous-community-jun11.md",
+      public: true,
     },
     {
       slug: "social-lab-climate-goal-report",
@@ -118,7 +127,8 @@
       docTitle: "Team GTR climate goal platform report",
       project: "Social Lab",
       date: "June 15, 2026",
-      file: "social-lab-climate-goal-platform-report-jun15.md"
+      file: "social-lab-climate-goal-platform-report-jun15.md",
+      public: true,
     },
     {
       slug: "social-lab-prd-stage1",
@@ -126,7 +136,8 @@
       docTitle: "Team GTR PRD Stage 1: climate startup +/- impact dashboard",
       project: "Social Lab",
       date: "June 15, 2026",
-      file: "prd-stage1-climate-impact-dashboard.md"
+      file: "prd-stage1-climate-impact-dashboard.md",
+      public: true,
     },
     {
       slug: "social-lab-prd-stage2",
@@ -134,7 +145,8 @@
       docTitle: "Team GTR PRD Stage 2: generalization, customization, follow-up",
       project: "Social Lab",
       date: "June 15, 2026",
-      file: "prd-stage2-generalization-customization.md"
+      file: "prd-stage2-generalization-customization.md",
+      public: true,
     },
     {
       slug: "slide-guide",
@@ -142,7 +154,8 @@
       docTitle: "Slide guide",
       project: "Reference",
       date: "Reference",
-      file: "../SLIDE_GUIDE.md"
+      file: "../SLIDE_GUIDE.md",
+      public: true,
     },
     {
       slug: "implementation-plan",
@@ -150,7 +163,8 @@
       docTitle: "Implementation plan",
       project: "Reference",
       date: "Reference",
-      file: "../IMPLEMENTATION_PLAN.md"
+      file: "../IMPLEMENTATION_PLAN.md",
+      public: true,
     },
     {
       slug: "readme",
@@ -158,13 +172,14 @@
       docTitle: "README",
       project: "Reference",
       date: "Reference",
-      file: "../README.md"
+      file: "../README.md",
+      public: true,
     }
   ];
 
   window.RJ_SITE = {
-    slidesTitle: "RJ Web Slides",
-    docsTitle: "RJ Web Docs",
+    slidesTitle: "Web Slides",
+    docsTitle: "Web Docs",
     profileLinks,
     projects,
     slides,

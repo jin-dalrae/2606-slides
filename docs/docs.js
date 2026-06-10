@@ -14,15 +14,28 @@ const docMeta = document.querySelector("#docMeta");
 const docTitle = document.querySelector("#docTitle");
 const docViewer = document.querySelector("#docViewer");
 const docsHome = document.querySelector("#docsHome");
+if (docsHome) {
+  const label = docsHome.querySelector(".sidebar-home-link__label");
+  if (label) {
+    label.textContent = siteData.docsTitle || "Web Docs";
+  }
+}
 const profileLinks = document.querySelector("#profileLinks");
 const themeToggle = document.querySelector("#themeToggle");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
 const mobileMedia = window.matchMedia("(max-width: 760px)");
+const accountPanel = document.querySelector("#accountPanel");
 
 let currentDoc = 0;
 let currentView = "home";
 let currentTheme = window.localStorage.getItem(storageKey) || "dark";
+
+let currentUser = null;
+let authMode = "signin";
+let authStatus = "";
+let authBusy = false;
+let apiAvailable = true;
 
 function escapeHtml(value) {
   return String(value)
@@ -203,6 +216,179 @@ function markdownToHtml(markdown) {
   return html.join("\n");
 }
 
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`/api/${path}`, {
+    credentials: "include",
+    ...options,
+    headers: {
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(options.headers || {})
+    }
+  });
+
+  let data = {};
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
+
+  if (!response.ok) {
+    const error = new Error(data.error || "Request failed.");
+    error.status = response.status;
+    throw error;
+  }
+
+  return data;
+}
+
+function renderAccountPanel() {
+  if (!accountPanel) {
+    return;
+  }
+
+  accountPanel.hidden = false;
+
+  if (!apiAvailable) {
+    accountPanel.innerHTML = `
+      <p class="account-panel__label">Account</p>
+      <p style="font-size: 0.85rem; line-height: 1.3; color: var(--dim); margin-bottom: 8px;">
+        Sign in / create account requires the backend.
+      </p>
+      <p style="font-size: 0.85rem; line-height: 1.3; color: var(--dim);">
+        <strong>You are probably still on the old static server URL.</strong><br><br>
+        1. Look in the <strong>wrangler dev terminal</strong> — it prints the real URL (e.g. <code>http://localhost:8787</code>).<br>
+        2. Copy and open <strong>that URL</strong> in your browser.<br>
+        3. Make sure no old <code>python -m http.server</code> is still running on another port.<br>
+        4. Hard-refresh the page (Cmd/Ctrl + Shift + R).
+      </p>
+    `;
+    return;
+  }
+
+  if (currentUser) {
+    accountPanel.innerHTML = `
+      <p class="account-panel__label">Signed in</p>
+      <p class="account-panel__user">${escapeHtml(currentUser.username)}</p>
+      <button class="text-button account-panel__button" id="logoutButton" type="button">Sign out</button>
+    `;
+    const btn = accountPanel.querySelector("#logoutButton");
+    if (btn) btn.addEventListener("click", logout);
+    return;
+  }
+
+  const isSignup = authMode === "signup";
+  accountPanel.innerHTML = `
+    <form class="account-form" id="accountForm">
+      <p class="account-panel__label">${isSignup ? "Create account" : "Sign in"}</p>
+      <label>
+        <span>ID</span>
+        <input id="accountUsername" name="username" autocomplete="username" minlength="3" maxlength="32" ${authBusy ? "disabled" : ""}>
+      </label>
+      <label>
+        <span>PW</span>
+        <input id="accountPassword" name="password" type="password" autocomplete="${isSignup ? "new-password" : "current-password"}" minlength="8" ${authBusy ? "disabled" : ""}>
+      </label>
+      <div class="account-form__actions">
+        <button class="text-button account-panel__button" type="submit" ${authBusy ? "disabled" : ""}>${isSignup ? "Create" : "Sign in"}</button>
+        <button class="text-button account-panel__button" id="authModeToggle" type="button" ${authBusy ? "disabled" : ""}>${isSignup ? "Use login" : "Create"}</button>
+      </div>
+      <p class="account-panel__message" aria-live="polite">${escapeHtml(authStatus)}</p>
+    </form>
+  `;
+
+  const form = accountPanel.querySelector("#accountForm");
+  const toggle = accountPanel.querySelector("#authModeToggle");
+  if (form) form.addEventListener("submit", submitAuth);
+  if (toggle) toggle.addEventListener("click", () => {
+    authMode = isSignup ? "signin" : "signup";
+    authStatus = "";
+    renderAccountPanel();
+  });
+}
+
+async function submitAuth(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const username = String(form.get("username") || "").trim();
+  const password = String(form.get("password") || "");
+
+  authBusy = true;
+  authStatus = "";
+  renderAccountPanel();
+
+  try {
+    const data = await apiRequest(authMode === "signup" ? "signup" : "login", {
+      method: "POST",
+      body: JSON.stringify({ username, password })
+    });
+    currentUser = data.user;
+    authStatus = "";
+    // Refresh lists + current view now that we are authenticated
+    renderDocList();
+    const idx = currentView === "doc" ? currentDoc : -1;
+    if (idx >= 0) {
+      await loadDoc(idx);
+    } else {
+      renderDocsHome();
+    }
+  } catch (error) {
+    authStatus = error.message;
+  } finally {
+    authBusy = false;
+    renderAccountPanel();
+  }
+}
+
+async function logout() {
+  authBusy = true;
+  renderAccountPanel();
+
+  try {
+    await apiRequest("logout", { method: "POST" });
+  } catch {
+    // ignore
+  }
+
+  currentUser = null;
+  authBusy = false;
+  renderUnauthenticatedState();
+  renderAccountPanel();
+}
+
+async function loadCurrentUser() {
+  try {
+    const data = await apiRequest("me");
+    currentUser = data.user;
+    apiAvailable = true;
+  } catch {
+    currentUser = null;
+    apiAvailable = false;
+  }
+  renderAccountPanel();
+}
+
+function renderUnauthenticatedState() {
+  if (docList) docList.innerHTML = "";
+  docMeta.textContent = "Private";
+  docTitle.textContent = siteData.docsTitle || "Web Docs";
+  docViewer.classList.add("doc-viewer--home");
+  syncHomeUrl();
+
+  docViewer.innerHTML = `
+    <div class="home-deck-grid docs-home-grid" style="max-width: 520px; margin: 0 auto; text-align: center; padding-top: 40px;">
+      <div class="slide__error" style="background: transparent; border: 0; box-shadow: none; padding: 0;">
+        <p class="slide__eyebrow">Private</p>
+        <h2 class="slide__title" style="font-size: clamp(1.6rem, 4vw, 2.2rem);">Sign in to continue</h2>
+        <p class="slide__body" style="max-width: 36ch; margin: 0.75rem auto 0;">
+          Look at the very bottom of the <strong>left sidebar</strong> — there should be an "Account" box.<br>
+          <strong>Important:</strong> Open the exact URL printed by <code>npx wrangler dev</code> (usually <code>localhost:8787</code>), not the old python server port. Then refresh.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
 function docIndexFromSlug(slug) {
   if (!slug || slug === "home") {
     return -1;
@@ -210,6 +396,14 @@ function docIndexFromSlug(slug) {
 
   const index = docs.findIndex((item) => item.slug === slug);
   return index >= 0 ? index : 0;
+}
+
+function getDocBySlug(slug) {
+  return docs.find((d) => d.slug === slug);
+}
+
+function isPublicItem(item) {
+  return !!(item && item.public);
 }
 
 function currentSlug() {
@@ -264,7 +458,7 @@ function renderDocList() {
 function renderDocsHome() {
   currentView = "home";
   docMeta.textContent = "Markdown viewer";
-  docTitle.textContent = siteData.docsTitle || "RJ Web Docs";
+  docTitle.textContent = siteData.docsTitle || "Web Docs";
   docViewer.classList.add("doc-viewer--home");
   syncHomeUrl();
   renderDocList();
@@ -321,21 +515,80 @@ async function loadDoc(index = currentDoc) {
   docMeta.textContent = doc.date;
   docTitle.textContent = doc.title;
   docViewer.classList.remove("doc-viewer--home");
-  docViewer.innerHTML = `<p class="doc-viewer__status">Loading ${escapeHtml(doc.title)}...</p>`;
-  renderDocList();
   syncDocUrl(doc);
 
-  try {
-    const response = await fetch(doc.file, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`Could not load ${doc.file}`);
+  const publicItem = isPublicItem(doc);
+
+  // Logged in → use authenticated path (future-proof for any doc-specific features)
+  if (currentUser && apiAvailable) {
+    renderDocList();
+    docViewer.innerHTML = `<p class="doc-viewer__status">Loading ${escapeHtml(doc.title)}...</p>`;
+
+    try {
+      const data = await apiRequest(`decks/${encodeURIComponent(doc.slug)}`);
+      let markdown = data.baseMarkdown || data.markdown || "";
+
+      if (!markdown && doc.file) {
+        const response = await fetch(doc.file, { cache: "no-store" });
+        if (response.ok) {
+          markdown = await response.text();
+          try {
+            await apiRequest(`decks/${encodeURIComponent(doc.slug)}/base`, {
+              method: "PUT",
+              body: JSON.stringify({ markdown })
+            });
+          } catch {}
+        }
+      }
+
+      if (!markdown) throw new Error("Content not available in storage.");
+      docViewer.innerHTML = markdownToHtml(markdown);
+      document.querySelector(".docs-workspace")?.scrollTo({ top: 0 });
+      return;
+    } catch (error) {
+      docViewer.innerHTML = `<p class="doc-viewer__status">${escapeHtml(error.message)}</p>`;
+      return;
     }
-    const markdown = await response.text();
-    docViewer.innerHTML = markdownToHtml(markdown);
-    document.querySelector(".docs-workspace")?.scrollTo({ top: 0 });
-  } catch (error) {
-    docViewer.innerHTML = `<p class="doc-viewer__status">${escapeHtml(error.message)}</p>`;
   }
+
+  // Unauthenticated but this doc is public → load via public endpoint (read-only)
+  if (publicItem) {
+    try {
+      const res = await fetch(`/api/public/decks/${encodeURIComponent(doc.slug)}`);
+      if (!res.ok) throw new Error("Failed to load public document");
+      const data = await res.json();
+      const markdown = data.markdown || "";
+
+      if (!markdown && doc.file) {
+        try {
+          const fallbackRes = await fetch(doc.file, { cache: "no-store" });
+          if (fallbackRes.ok) {
+            // we can render the fallback, but cannot seed without login
+            const fb = await fallbackRes.text();
+            docViewer.innerHTML = markdownToHtml(fb);
+            document.querySelector(".docs-workspace")?.scrollTo({ top: 0 });
+            return;
+          }
+        } catch {}
+      }
+
+      if (!markdown) throw new Error("Public document content is not available.");
+      docViewer.innerHTML = markdownToHtml(markdown);
+      document.querySelector(".docs-workspace")?.scrollTo({ top: 0 });
+      return;
+    } catch (error) {
+      docViewer.innerHTML = `<p class="doc-viewer__status">${escapeHtml(error.message)}</p>`;
+      return;
+    }
+  }
+
+  // Private document + not logged in
+  docViewer.innerHTML = `
+    <div class="doc-viewer__status" style="padding: 2rem 1rem;">
+      <p><strong>Sign in to view this document.</strong></p>
+      <p>Use the account panel in the sidebar on the left.</p>
+    </div>
+  `;
 }
 
 function applyTheme(theme) {
@@ -350,6 +603,35 @@ function toggleSidebar(force) {
   const isOpen = force ?? appShell.dataset.sidebarOpen !== "true";
   appShell.dataset.sidebarOpen = String(isOpen);
 }
+
+function scrollDocByScreen(direction) {
+  const workspace = document.querySelector(".docs-workspace");
+  if (!workspace) {
+    return;
+  }
+  const step = Math.max(workspace.clientHeight - 80, 120);
+  workspace.scrollBy({ top: direction * step, behavior: "smooth" });
+}
+
+const docsPrev = document.querySelector("#docsPrev");
+const docsNext = document.querySelector("#docsNext");
+docsPrev?.addEventListener("click", () => scrollDocByScreen(-1));
+docsNext?.addEventListener("click", () => scrollDocByScreen(1));
+
+document.addEventListener("keydown", (event) => {
+  const editableTarget = event.target.closest?.("input, textarea, select, [contenteditable='true']");
+  if (editableTarget) {
+    return;
+  }
+
+  if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === " ") {
+    event.preventDefault();
+    scrollDocByScreen(1);
+  } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+    event.preventDefault();
+    scrollDocByScreen(-1);
+  }
+});
 
 themeToggle.addEventListener("click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
 docsHome.addEventListener("click", renderDocsHome);
@@ -366,9 +648,27 @@ window.addEventListener("hashchange", () => {
 
 applyTheme(currentTheme);
 renderProfileLinks();
-const initialDocIndex = docIndexFromSlug(currentSlug());
-if (initialDocIndex < 0) {
-  renderDocsHome();
-} else {
-  loadDoc(initialDocIndex);
-}
+renderAccountPanel();
+
+(async () => {
+  await loadCurrentUser();
+  renderAccountPanel();
+
+  const slug = currentSlug();
+  const initialDocIndex = docIndexFromSlug(slug);
+  const targetDoc = initialDocIndex >= 0 ? getDocBySlug(slug) : null;
+  const isPublicDoc = isPublicItem(targetDoc);
+
+  if (currentUser && apiAvailable) {
+    if (initialDocIndex < 0) {
+      renderDocsHome();
+    } else {
+      loadDoc(initialDocIndex);
+    }
+  } else if (isPublicDoc && initialDocIndex >= 0) {
+    // Direct link to a public document — load it read-only without showing the full list or sign-in wall
+    loadDoc(initialDocIndex);
+  } else {
+    renderUnauthenticatedState();
+  }
+})();

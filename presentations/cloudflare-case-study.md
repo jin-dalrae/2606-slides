@@ -1,27 +1,32 @@
 # Case Study for Cloudflare
 
-## Design Engineer · portfolio review
+## Product Engineer · portfolio review
 
-<p class="deck-subtitle">Selected work, and one deep dive</p>
+<p class="deck-subtitle">Some of my work. One big example.</p>
 
 Rae Jin  
 June 9, 2026  
 CCA MDes · Leadership by Design
 
-Note: Hi, I'm Rae. Thanks for the time. I design and build products — a designer who ships real code. In the next ~30 minutes I'll do three things: tell you quickly how I got here and how I work, give you a fast map of my taste across a few projects, then go deep on one — AutoScape — so you can see exactly how I take something from a single photo to a near-complete product in three weeks. Stop me anytime.
+Note: Hi, I'm Rae. I design and build products. I'll show some other projects first, then go deep on AutoScape. It's a web app that turns a single photo of your yard into landscape design concepts. Upload a photo, pick a style, and get generated visualizations with directional cost estimates. Built over 3 weeks for the Sketch and Search Hackathon (Qdrant, Freepik, Google DeepMind). Team of 2 — I handled full-stack development and the Freepik RAG pipeline. Won third place and the Nano Banana Award. It's not just generating pictures — it goes all the way to a builder you can actually contact. Stop me if you have questions.
 
 ---
 
 <p class="slide-ref">Introduction · 1 of 3</p>
 
-# I read systems, and I read people
+# I start with real problems
 
-## Two trainings, one instinct
+## My background
 
-<div class="metric-strip">
-  <article><strong>Math</strong><span>+ sociology · how systems &amp; people behave</span></article>
-  <article><strong>8 yrs</strong><span>AI for Korea's largest banks</span></article>
-  <article><strong>MDes</strong><span>interaction design · designer who codes</span></article>
+<div class="cards-2">
+  <article>
+    <h3>Math and sociology</h3>
+    <p>Math helped me understand systems. Sociology helped me remember the people in the systems.</p>
+  </article>
+  <article>
+    <h3>8 years in banks</h3>
+    <p>I made AI tools for big banks in Korea. The work was hard. Mistakes cost a lot.</p>
+  </article>
 </div>
 
 Note: My background isn't a straight line, and that's the point. I studied mathematics and sociology — one taught me to model systems, the other taught me to never forget the human inside the system. I spent eight years as a consultant building AI and data products for the biggest financial institutions in Korea — LLM rollouts, fraud models, recommendation engines — shipping into messy, high-stakes, regulated environments. Now I'm finishing an MDes in interaction design. So I show up as someone who can hold the backend logic and the front-end craft in the same head. That combination is the whole story of how I work.
@@ -30,110 +35,106 @@ Note: My background isn't a straight line, and that's the point. I studied mathe
 
 <p class="slide-ref">Introduction · 2 of 3</p>
 
-# Five things that built me
-
-## The throughline is shipping under constraint
+# What the work taught me
 
 <div class="cards-3">
   <article>
-    <h3>Bank-grade AI</h3>
-    <p>Led an LLM rollout across 43+ services; a PoC cut task time 77%. I learned to ship where mistakes are expensive.</p>
+    <h3>Trust is everything</h3>
+    <p>In banks I learned the interface has to carry the weight of the model. If the user can't see why a number is there the whole thing falls apart.</p>
   </article>
   <article>
-    <h3>0&rarr;1 reflex</h3>
-    <p>15+ hackathon products shipped — most polished, several award-winning. Speed without dropping craft.</p>
+    <h3>One strong idea beats a bunch of half ones</h3>
+    <p>I did fifteen plus small projects. The ones that worked had one clear thing. Not lots of features thrown together.</p>
   </article>
   <article>
-    <h3>Patents &amp; research</h3>
-    <p>Two patents and a first-author paper turning structured data into images a CNN can read. I go deep on hard problems.</p>
+    <h3>The hard part is the choices</h3>
+    <p>Two patents on turning financial data into images a model could read. The hard part wasn't the model. It was deciding what to keep and what to change.</p>
   </article>
 </div>
 
-<p class="slide-closing">Different rooms, same instinct: find the real problem, then make something coherent fast.</p>
+<p class="slide-closing">I don't collect wins. I look for hard problems and try to solve them in a clean way.</p>
 
-Note: Five milestones, but here are the three that matter. First, enterprise AI: I led an LLM adoption program across more than forty services for a national bank — that taught me to ship where errors cost money and trust. Second, the 0-to-1 reflex: I've shipped fifteen-plus products at hackathon speed, most of them polished, several award-winning. I don't trade craft for speed. Third, depth: I hold two patents and published research on representing structured financial data as images so a CNN can find patterns in it. The throughline across all of it is the same instinct — find the real problem, then build something coherent, fast.
+Note: this comes from doing the work. in banks i saw what happens when trust breaks. with the small projects i learned that one strong idea beats a bunch of half done ones. the patents showed me that the real work is deciding what to keep and what to throw away.
 
 ---
 
 <p class="slide-ref">Introduction · 3 of 3</p>
 
-# What it's like to work with me
-
-## I bring the structure and the standard
+# How I work
 
 <div class="cards-3">
   <article>
-    <h3>I design in code</h3>
-    <p>Figma to ship. I prototype in the real material — React, the actual interaction, the actual latency.</p>
+    <h3>I build in code</h3>
+    <p>i don't just draw. i make real things with code. we talk about how it feels to use not just how it looks.</p>
   </article>
   <article>
-    <h3>I make the cut</h3>
-    <p>Taste is mostly subtraction. I'll tell you what we're <em>not</em> building this sprint, and why.</p>
+    <h3>i choose what not to do</h3>
+    <p>i say no to some ideas. i pick one group of people to help first. it is better to do one thing well.</p>
   </article>
   <article>
-    <h3>I sweat coherence</h3>
-    <p>Ten good features that feel like one product beat twenty that feel like a menu.</p>
+    <h3>things must fit together</h3>
+    <p>many small parts are easy. making them feel like one thing is hard. that is the important work.</p>
   </article>
 </div>
 
-Note: So what's it actually like to work with me? Three things. One — I design in code. I'm most useful at the seam between design and engineering, prototyping in the real material so we're arguing about the actual interaction and the actual latency, not a static mock. Two — I make the cut. Taste, to me, is mostly subtraction; I'll always have an opinion on what we're deliberately not building yet. Three — I obsess over coherence. The hardest and most valuable thing is making many parts feel like one product. Keep those three in mind, because you'll see all of them in the deep dive.
+Note: you'll see this in autoscape. we chose one kind of user. we were honest about the costs. we made sure the picture turned into a plan a builder could use. the rest is details.
 
 ---
 
 <p class="slide-ref">The landscape · 1 of 2</p>
 
-# A quick map of my taste
+# My other projects
 
-## Range, but a consistent point of view
+## A few examples
 
 <div class="cards-4">
   <article>
-    <h3>Spatial</h3>
-    <p><strong>Cosmos</strong> — a 3D discourse browser for AR/VR. Three.js, solo, Anthropic hackathon.</p>
+    <h3>Cosmos</h3>
+    <p>A 3D way to look at talks online. Not a list. A space you move in. Made alone for a hackathon.</p>
   </article>
   <article>
-    <h3>Healthtech</h3>
-    <p><strong>PeriCare</strong> — an on-device digital twin for perimenopause. iOS, private by default.</p>
+    <h3>PeriCare</h3>
+    <p>A tool on the phone for women in perimenopause. It works on the phone only. No data leaves. I made most of it alone.</p>
   </article>
   <article>
-    <h3>Agentic</h3>
-    <p><strong>Cardinal</strong> — a control room for AI agents that spend company money.</p>
+    <h3>Cardinal</h3>
+    <p>A tool to watch AI agents that spend company money. Rules and spending in one view.</p>
   </article>
   <article>
-    <h3>Dev tools</h3>
-    <p><strong>This deck</strong> — a markdown slide engine I built on Cloudflare Workers.</p>
+    <h3>This tool</h3>
+    <p>The slides you see now. I made it with Cloudflare Workers. It is real. I use it.</p>
   </article>
 </div>
 
-Note: Here's the fast map. I work across spatial interfaces, healthtech, agentic systems, and developer tools — but with one consistent point of view: take a genuinely hard problem and make it feel calm and usable. Quick pointer on the last one — the deck you're looking at right now runs on a markdown slide engine I built and host on Cloudflare Workers. So I'm not just interviewing at Cloudflare; I already build on it. Let me show you two of these for thirty seconds each, then we go deep.
+Note: The projects look different but the idea is the same — take something complicated and make it easier to actually use. This slide thing is built on Cloudflare Workers. I've been using their stuff already. I'll show two quick ones, then the main example.
 
 ---
 
 <p class="slide-ref">The landscape · 2 of 2</p>
 
-# Taste, in two glances
+# Two quick looks
 
 <div class="media-split">
   <div>
     <h3>Cosmos</h3>
-    <p>Reddit is a feed; discourse is actually a shape. Cosmos browses conversation as a 3D sphere you move through — gaze-calibrated, five-agent pipeline, built solo.</p>
+    <p>Online talks are not flat lists. They have shape. I made a 3D ball you can look at. Made alone.</p>
   </div>
   <img src="assets/images/cosmos-sphere-browse.png" alt="Cosmos spatial discourse browser rendering a conversation as a 3D sphere">
 </div>
 
-Note: Two glances. Cosmos first. The premise: a feed flattens conversation into a list, but discourse actually has a shape — branches, clusters, tangents. So I built a browser that renders a discussion as a 3D sphere you move through, gaze-calibrated for a headset, behind a five-agent pipeline. Solo build. What I want you to take from this is the instinct to question the default container — "why is this a list?" — and then actually build the alternative, not just mock it.
+Note: First one is Cosmos. Online discussions are a mess in a normal feed. I made a 3D space you can actually move through so you can see how the conversation connects. Did it solo for a hackathon.
 
 ---
 
 <div class="media-split">
   <div>
     <h3>PeriCare</h3>
-    <p>A digital twin for perimenopause that models two real cycles — the hormonal one and the mood&ndash;sleep&ndash;symptom loop. On-device Apple Foundation Models, private by default, eight of nine phases shipped solo.</p>
+    <p>A phone tool for perimenopause. It shows two cycles. It runs only on the phone. Private. I made almost all of it alone.</p>
   </div>
   <img src="assets/images/pericare-hero.jpg" alt="PeriCare iOS app — a private on-device digital twin for perimenopause">
 </div>
 
-Note: Second glance — PeriCare. Perimenopause is under-served and intensely personal, so two design constraints drove everything: it had to model the real biology — not one cycle but two, the irregular hormonal cycle and the self-reinforcing mood-sleep-symptom loop — and it had to be private, so it runs on-device with Apple's Foundation Models, no data leaving the phone. I shipped eight of nine phases solo. The takeaway: I let the real constraints — biology and privacy — set the architecture, instead of bolting them on later. Okay — that's the map. Let me go deep on one.
+Note: Second is PeriCare. It's for perimenopause — real problem my mom went through. I made it private by default, everything runs on the phone. No data going anywhere. I built almost all of it alone. The actual biology and privacy needs decided how the whole thing was built. Okay, now the main one.
 
 ---
 
@@ -141,60 +142,65 @@ Note: Second glance — PeriCare. Perimenopause is under-served and intensely pe
 
 # AutoScape
 
-## AI landscape design from a single photo
+## One photo to a real plan
 
 <div class="metric-strip">
-  <article><strong>3 wks</strong><span>team of 2 · my role: full-stack + RAG</span></article>
-  <article><strong>3rd</strong><span>place + Nano Banana award</span></article>
-  <article><strong>1 photo</strong><span>&rarr; hired landscaper</span></article>
+  <article><strong>3 weeks</strong><span>Two people. I did the code and the data part.</span></article>
+  <article><strong>3rd place + award</strong><span>A hackathon with Qdrant, Freepik and DeepMind.</span></article>
+  <article><strong>Photo to builder</strong><span>See the yard. See the cost. See the plan. Talk to a person.</span></article>
 </div>
 
-Note: This is AutoScape. The one-line version, the way I'd open a case study: it turns a single photo of your yard into a buildable, costed landscape design — and we pushed it almost all the way to hiring a contractor. Three weeks, team of two; I owned full-stack development and the retrieval pipeline that powers cost estimation. It won third place and the Nano Banana award at the Qdrant–Freepik–DeepMind hackathon. Now I'll show you the problem, the key decisions, the product itself, and how it's built under the hood.
+Note: This is the main one — AutoScape. You upload one photo of your yard, choose a style, and it gives you pictures of what it could look like, plus a list of materials with real-ish prices, a top-down plan, and actual local contractors you can contact. We built the whole flow in three weeks as a team of two. I handled the code and the part that pulls the pricing data. It got third place and an award at the hackathon. It's not just making pretty AI pictures. It actually gets you to someone who can build the thing.
 
 ---
 
 <p class="slide-ref">Deep dive · the problem</p>
 
-# Landscaping is a trust problem
+# The problem is you cannot see the yard before you pay
 
-## You commit before you can see it
+## Big money with no picture
 
-<div class="metric-strip">
-  <article><strong>$5k&ndash;50k</strong><span>committed on a sketch</span></article>
-  <article><strong>$500&ndash;2k</strong><span>just for initial concepts</span></article>
-  <article><strong>30&ndash;50%</strong><span>typical budget overrun</span></article>
+<div class="cards-2">
+  <article>
+    <h3>You pay first</h3>
+    <p>People spend 5,000 to 50,000 dollars on a yard. They do this from drawings or words. They often pay 500 to 2,000 dollars just to see first ideas. The final cost is often 30 to 50 percent more than planned. Prices change with the season and the place.</p>
+  </article>
+  <article>
+    <h3>Pictures do not help enough</h3>
+    <p>My friend had this problem with his own yard. He looked at many pictures. He paid for talks with designers. The result was not what he thought. He still did not know what the yard would really look like. The problem is not a lack of pictures. The problem is you cannot see your own yard changed before you spend the money.</p>
+  </article>
 </div>
 
-Note: Here's the problem, and it's not really a landscaping problem — it's a visualization-trust problem. Homeowners commit five to fifty thousand dollars on a sketch or a verbal description, then discover the result doesn't match what was in their head. Just getting initial concepts from a designer costs five hundred to two thousand. And because pricing is opaque and seasonal, overruns of thirty to fifty percent are normal. My teammate lived all of this on his own backyard. The gap wasn't information — people have hundreds of Pinterest images. The gap was that they could never actually see the end result before paying.
+Note: The real problem isn't that people don't have ideas. It's that they have to spend serious money before they can see what their actual yard will look like. My teammate went through it with his backyard. He paid for designer meetings and still couldn't picture the end result. There are tons of Pinterest images out there, but none of them are his yard. The gap is visualization, not inspiration. So the tool needs to show your real place changed, be honest about the costs, and get you all the way to someone who can actually build it.
 
 ---
 
 <p class="slide-ref">Deep dive · the decision</p>
 
-# We picked one user on purpose
+# We picked one kind of person
 
-## Explorers, not deciders
+## People who want to look, not people who want to buy right now
 
 <div class="cards-2">
   <article>
-    <h3>Explorers — we built for them</h3>
-    <p>Want many options, fast. Optimized for quick generation, multiple styles, low friction.</p>
+    <h3>People who look first</h3>
+    <p>They want many ideas fast. They want to see what is possible. We made it fast to upload a photo. We showed four styles with real example photos. No hard words. Easy to try.</p>
   </article>
   <article>
-    <h3>Deciders — we scoped out</h3>
-    <p>Want one refined concept with exact costs. Itemized estimates and plant ID didn't fit three weeks.</p>
+    <h3>People who want to buy now</h3>
+    <p>They want one exact plan with exact prices and exact plants. We could not do that in three weeks. We said this clearly. We did not pretend we could do everything.</p>
   </article>
 </div>
 
-<p class="slide-closing">Three weeks forces honesty. We optimized hard for one user instead of half-serving two.</p>
+<p class="slide-closing">Three weeks is short. It is better to help one group well than to help everyone a little.</p>
 
-Note: First real decision, and this is the "I make the cut" thing in practice. There are two users hiding in this space. Explorers want lots of options fast to figure out what they even like. Deciders want one refined concept with exact, trustworthy costs. You cannot do both well in three weeks. So we explicitly built for Explorers — fast generation, multiple styles, low friction — and deliberately scoped out itemized estimates and plant identification. I'd rather delight one user than half-serve two, and I want to be able to say out loud which one we chose.
+Note: We had to pick who we were building for. Some people just want to explore options fast. Others want one final plan with exact prices right away. We went with the explorers. We were upfront that we weren't solving the exact-quote problem in three weeks. Same thing later with the costs — we were clear about what the numbers actually were.
 
 ---
 
 <p class="slide-ref">Deep dive · the insight</p>
 
-## The make-or-break detail: keep the house, change the yard
+## The constraint that saved the product: keep the house, change only the yard
 
 <div class="before-after">
   <figure>
@@ -207,188 +213,206 @@ Note: First real decision, and this is the "I make the cut" thing in practice. T
   </figure>
 </div>
 
-Note: Second decision — the technical insight that made or broke the product. The seductive failure mode with image generation is that it produces something gorgeous that is not your yard — different house color, the fence is gone, the lot is the wrong shape. The moment a user sees that, they stop trusting it and they leave. Look at this pair: same house, same garage, same porch, same driveway — only the yard transforms. That faithfulness is the whole game. So the entire generation approach was built around preserving the existing structure of the photo while transforming only the vegetation and hardscape. That one constraint — keep the house, change the yard — drove all the prompt engineering.
+Note: The thing that kills trust fast is when the AI picture changes your house or moves the fence. People look at it and know it's not their place. We made one strict rule: keep the house exactly as it is in the photo. Only change the yard stuff. That one decision drove everything — how we prompted the images, how we handled bad photos, even adding video walkthroughs so you could feel the scale. Without it, it's just a nice picture of some yard, not yours.
 
 ---
 
 <p class="slide-ref">Deep dive · the product</p>
 
-# One coherent flow
+# The full flow
 
-## Photo to hired landscaper
+## From photo to a person who can build
 
 <div class="steps-3">
-  <article><span class="steps-3__num">1</span><div><h3>See it</h3><p>Upload a photo, pick a style, generate a faithful redesign.</p></div></article>
-  <article><span class="steps-3__num">2</span><div><h3>Cost it</h3><p>Directional estimate and material list, retrieved from real asset pricing.</p></div></article>
-  <article><span class="steps-3__num">3</span><div><h3>Build it</h3><p>2D top-down plan, then matched to a local contractor.</p></div></article>
+  <article><span class="steps-3__num">1</span><div><h3>See the new yard</h3><p>Upload a photo. Pick a style. See pictures that keep your house the same.</p></div></article>
+  <article><span class="steps-3__num">2</span><div><h3>See the cost</h3><p>Get a list of things to buy. The prices are real but not exact. We say this clearly.</p></div></article>
+  <article><span class="steps-3__num">3</span><div><h3>See the plan and the builder</h3><p>Get a top view plan. Get names of people near you who can do the work.</p></div></article>
 </div>
 
-Note: The product is one flow with three acts: see it, cost it, build it. Upload a photo and get a faithful redesign; turn that into a directional cost estimate and material list; then hand off a 2D plan and a matched contractor. The work I'm proud of isn't any single screen — it's that these feel like one continuous experience instead of three bolted-together tools. Let me walk the screens.
+Note: We didn't stop at generating pictures. The flow goes all the way through costs, a usable plan, and actual local contractors. That's what makes it feel like a real product instead of another AI demo. The pieces connect. That's the part I'm most proud of.
 
 ---
 
 <p class="slide-ref">Deep dive · see it</p>
 
-## Step 1 — one photo, two inputs
+## Step 1 — very simple start
 
 <img class="slide-image" src="assets/images/autoscape/autoscape-07.png" alt="AutoScape upload step: drop a yard photo, choose location type and space size, three-step wizard">
 
-Note: Step one. We keep the input almost embarrassingly simple — drop one photo, and just two structured fields: location type and space size. A three-step wizard sets expectations up front. Notice we don't ask for anything a homeowner wouldn't know. The constraint here was friction: every extra field is a person who bounces before they ever see the magic, so the magic has to come first.
+<img class="slide-image" src="assets/images/autoscape/autoscape-01.png" alt="AutoScape hero / upload context">
+
+Note: The input is super simple on purpose. One photo, plus the kind of place and rough size. That's it. We show styles with actual example photos instead of words people don't use. Normal homeowners don't talk about 'cottage style' — they see a picture and know if they like it. We kept the questions to a minimum so people actually get to see the result before they bounce.
 
 ---
 
 <p class="slide-ref">Deep dive · see it</p>
 
-## Show, don't name
+## Show pictures, not words
 
 <img class="slide-image" src="assets/images/autoscape/autoscape-08.png" alt="AutoScape style picker: Modern, Traditional, and Regional style families shown as example photographs">
 
-Note: Style selection — and this is a small taste decision I like. Homeowners don't know landscape vocabulary; "xeriscape" means nothing to most people. So instead of naming styles, we show them — every style is a real example photo grouped into families like modern, traditional, and regional. You pick by recognition, not by jargon. Designing for what the user actually knows, rather than what the domain calls things.
+<img class="slide-image" src="assets/images/autoscape/autoscape-02.png" alt="Additional style examples from the flow">
+
+Note: No jargon for the styles. We just show real photos of what each one looks like. People don't use the landscape terms — they know what feels right when they see the picture. Same thinking as keeping the house the same: cut anything that makes it feel fake or generic.
 
 ---
 
 <p class="slide-ref">Deep dive · see it</p>
 
-## Explore it live, not as a static render
+## You must see your real yard
 
 <img class="slide-image" src="assets/images/autoscape/autoscape-11.png" alt="AutoScape redesign result: in-app before/after slider with 2D plan and video tabs">
 
-Note: And here's how that lands inside the product. It's not a single static render — it's an interactive before/after slider you drag, with tabs for a 2D plan and a video walkthrough. Letting people scrub between their real photo and the redesign is what makes the transformation feel trustworthy rather than like a stock image. We also generated short video walkthroughs so people could feel scale and depth a flat render can't convey. This is the moment the product earns the right to talk about money.
+<img class="slide-image" src="assets/images/autoscape/autoscape-03.png" alt="Additional result view">
+
+<img class="slide-image" src="assets/images/autoscape/autoscape-05.png" alt="More result states">
+
+Note: The before-and-after slider is key. A static picture is easy to dismiss as 'just some AI yard.' Dragging between your real photo and the new version makes it feel possible. We also added short videos so you can get a sense of the actual space and scale. Once that lands, people are ready to talk money.
 
 ---
 
 <p class="slide-ref">Deep dive · cost it</p>
 
-## A material list you can act on
+## Costing that feels usable instead of fake-precise
 
 <img class="slide-image" src="assets/images/autoscape/estimate.png" alt="AutoScape estimate: itemized material list with quantities, costs, and a buy link per item">
 
-Note: Now cost. From the design we generate an itemized material list — quantities, directional prices, and a real purchase link per line item, so the list is something you can actually act on, not just read. Under the hood every one of these rows comes out of a retrieval pipeline I built, which I'll explain in a second. The design job here was making estimation feel trustworthy without overclaiming.
+<img class="slide-image" src="assets/images/autoscape/autoscape-09.png" alt="Cost view context">
+
+Note: There is no real landscaping price API. We built a RAG pipeline over Freepik's asset library so the costs are pulled from actual product metadata rather than made up. The list is itemized, has quantities, directional prices, and per-item links. The design work was deciding what *not* to promise: clear disclaimers that these are directional, regional variation is real, and the numbers are a starting point for conversation with a contractor, not a quote. Honesty here is a product decision.
 
 ---
 
 <p class="slide-ref">Deep dive · cost it</p>
 
-## Honesty is a design decision
+## Honesty as interface, not disclaimer
 
 <img class="slide-image" src="assets/images/autoscape/pie-chart.png" alt="AutoScape cost distribution donut chart with a disclaimer that estimates are directional">
 
-Note: And this is the slide I'd actually spend time on in an interview. We did not have a real landscaping price API — no one does. So rather than fake precision, we made the honesty part of the interface: a clear cost breakdown, labeled directional, with an explicit note that numbers vary by region. Telling the user how much to trust the number is itself a design decision, and the right one when the data is a proxy. Overclaiming here would have destroyed the trust the redesign just earned.
+<img class="slide-image" src="assets/images/autoscape/autoscape-10.png" alt="Cost honesty states">
+
+Note: This is the part I would actually linger on in a real interview. When the data is a proxy (asset metadata, not live supplier pricing), the responsible design move is to make the uncertainty visible and usable. The pie chart and the line items carry the same message: these numbers are directional, they will move with region and season, talk to a human before you spend. We could have hidden the disclaimer in small text. We made it part of the experience so the trust earned in the visualization step wasn't immediately spent.
 
 ---
 
 <p class="slide-ref">Deep dive · build it</p>
 
-## A plan a landscaper can build from
+## The render has to become something buildable
 
 <img class="slide-image" src="assets/images/autoscape/plan-2d.png" alt="2D top-down architectural landscape plan generated by AutoScape">
 
-Note: Before we hand off to a human, we turn the pretty render into something a professional can actually install from — a 2D top-down architectural plan. This is the bridge between "I like this" and "someone can build this." It's also where the Explorer quietly becomes a Decider: the same design, now expressed as a buildable plan with placement and scale. Generating this from the concept was a real piece of work, not a screenshot filter.
+<img class="slide-image" src="assets/images/autoscape/autoscape-12.png" alt="Plan generation in context">
+
+Note: A beautiful image is not a handoff. We generate a proper 2D top-down architectural plan with placement and scale so a landscaper can actually use it for installation. This is the step that turns an Explorer (playing with options) into someone who can move toward a real decision. It is also where a lot of the technical work lives — converting the 3D-ish generative output into clean 2D documentation.
 
 ---
 
 <p class="slide-ref">Deep dive · build it</p>
 
-## Close the loop to a real person
+## The loop closes on a person you can call
 
 <img class="slide-image" src="assets/images/autoscape/autoscape-04.png" alt="AutoScape contractor matching: local landscape designers and contractors with ratings and contact">
 
-Note: And build. The flow ends where the real-world job begins — matched local contractors, with the 2D top-down plan a landscaper can actually install from. This is what "stopped just short of invoicing" means: we went photo, to faithful render, to costed material list, to plan, to a real person you can hire — and stopped only at payment and fulfillment, which needed partnerships we didn't have time to set up. The point is the loop closes onto an actual outcome.
+<img class="slide-image" src="assets/images/autoscape/autoscape-13.png" alt="Contractor view">
+
+<img class="slide-image" src="assets/images/autoscape/autoscape-14.png" alt="Final handoff states">
+
+Note: The last screen shows location-matched contractors with the 2D plan attached. This is the part that makes the whole thing feel like a product instead of a demo. We got the user from "I have an idea" to "here is a plan and three people who can build it." Stopping before payment and fulfillment was honest about what three weeks and two people could actually close. The rest is partnerships, not missing features.
 
 ---
 
 <p class="slide-ref">Deep dive · under the hood</p>
 
-# How it's actually built
+# The technical work existed to solve product problems
 
-## The RAG pipeline was the core
+## RAG for trust, prompting for fidelity, boring stack for speed
 
 <div class="cards-3">
   <article>
-    <h3>Retrieval = pricing</h3>
-    <p>Indexed Freepik's asset library into a Qdrant vector DB; semantic search returns visually similar items <em>with</em> price metadata.</p>
+    <h3>RAG = the only honest proxy we had</h3>
+    <p>No landscaping price API exists. We indexed Freepik's real asset library (plants, materials, furniture) into Qdrant so costs came from actual product data with metadata, not hallucinated numbers.</p>
   </article>
   <article>
-    <h3>Prompts = fidelity</h3>
-    <p>Engineered prompts to preserve photo structure while transforming greenery, with preprocessing for low light and hard angles.</p>
+    <h3>Prompts = the fidelity constraint</h3>
+    <p>General image models will happily repaint the house or move the fence. We engineered hard to keep the photographed architecture intact and only transform vegetation and hardscape. Preprocessing for low light and bad angles was part of the same decision.</p>
   </article>
   <article>
-    <h3>Stack = shippable</h3>
-    <p>React + Vite + Tailwind, generative image APIs, Qdrant, Freepik API, Firebase hosting.</p>
+    <h3>Stack = what actually ships in three weeks</h3>
+    <p>React + Vite + Tailwind, image gen APIs, Qdrant + Freepik for retrieval, Firebase. Deliberately unsexy so the team of two could own the whole loop instead of fighting infrastructure.</p>
   </article>
 </div>
 
-Note: Under the hood — and this is where the design-engineer part lives. The core technical contribution was the retrieval pipeline. There's no pricing API for landscaping, so I indexed Freepik's asset library — plants, materials, furniture — into a Qdrant vector database, and used semantic search to pull visually similar items that carry real price metadata. That's how a render becomes a costed material list. The second hard part was prompt engineering for fidelity — preserving the photo's structure while transforming the greenery, plus preprocessing for bad lighting and extreme angles. Stack was deliberately boring and shippable: React, Vite, Tailwind, image-gen APIs, Qdrant, Freepik, Firebase. I owned the full stack and that pipeline end to end.
+Note: The RAG pipeline wasn't a cool tech choice. It was the only way to make "cost" feel like it belonged in the same product as the visualization. The prompt constraints weren't an implementation detail — they were the product requirement that the output had to feel like the user's actual yard or the trust would collapse. I owned the full stack because in three weeks there was no one else to hand anything to. The boring stack was a feature.
 
 ---
 
 <p class="slide-ref">Reflections · 1 of 2</p>
 
-# What I'd do differently
-
-## Constraints I'd name in the room
+# What I would do next time
 
 <div class="cards-3">
   <article>
-    <h3>Directional ≠ truth</h3>
-    <p>The RAG estimate is a proxy. Next: a real supplier price feed before promising accuracy.</p>
+    <h3>Better prices</h3>
+    <p>The prices are only a guide. A real version would need live prices from stores.</p>
   </article>
   <article>
-    <h3>We served one user</h3>
-    <p>Deciders still can't get an exact quote. That's the next build, not a bug we hid.</p>
+    <h3>Help the other group too</h3>
+    <p>We helped people who want to look. Later we can help people who want to buy right away with exact plans.</p>
   </article>
   <article>
-    <h3>Stopped at payment</h3>
-    <p>Invoicing and fulfillment needed partnerships. I'd line those up before the next sprint, not after.</p>
+    <h3>Find builders earlier</h3>
+    <p>We stopped before payment. Next time I would talk to builders from the first week.</p>
   </article>
 </div>
 
-Note: What I'd do differently — and I think naming this honestly is part of being senior. Three things. The cost estimate is directional, a proxy off asset metadata; if this were a real product the next move is a genuine supplier price feed before I promise accuracy. We optimized for Explorers, which means Deciders still can't get an exact quote — that's a deliberate gap and the obvious next build, not something I'd paper over. And we stopped just short of invoicing because fulfillment needed partnerships; knowing that, I'd start lining those up at the beginning of the next phase, not the end. None of these are surprises — and that's the point.
+Note: We knew exactly what we weren't going to finish in three weeks. The cost numbers are only as good as the data we had. We optimized for people exploring, not the ones ready to sign a contract right away. And we stopped before the actual money moved because that needed real business relationships. None of this was a surprise — naming the gaps is part of doing it properly. The next round would start talking to suppliers and contractors from day one.
 
 ---
 
 <p class="slide-ref">Reflections · 2 of 2</p>
 
-# What I took away
+# The main lesson
 
-> You can go remarkably far in three weeks if you stay focused. The hardest part was never a single feature — it was making them feel like one product.
+> Three weeks is short. But you can go far if you stay on one thing. The hard part was not one piece. It was making all the pieces feel like one thing.
 
-<p class="slide-closing">Users don't care about the architecture. They care whether they can go from photo to hired landscaper without friction.</p>
+<p class="slide-closing">People do not care about the smart search or the picture rules. They care if they can go from a photo to a person who can build the yard. And they must trust every step.</p>
 
-Note: The big takeaway. We went from "generate a pretty picture" to a near-complete workflow — visualization, costing, material lists, 2D plans, contractor matching — in three weeks. And the hardest part, every time, was not building any one feature. It was coherence: making all of them feel like a single product instead of a pile of demos. Users never care about the architecture I just walked you through. They care about one thing: can I get from a photo to a hired landscaper without friction. That's the standard I hold everything to.
+Note: We went from a photo all the way to a builder you could call. The technical bits were interesting, but the hardest part was making the whole thing feel connected instead of separate demos. People don't care about the search or the prompting. They care whether they can go from a picture of their yard to someone who can actually build it, without losing trust along the way. That's the bar I hold everything to now.
 
 ---
 
 <p class="slide-ref">Close</p>
 
-# Why I'm here
+# Why Cloudflare
 
-## A designer who ships the real thing
+## This is the kind of work I like
 
 <div class="cards-3">
   <article>
-    <h3>Design in code</h3>
-    <p>I prototype and ship in the real material — exactly the Design Engineer seam.</p>
+    <h3>I take one idea to the end</h3>
+    <p>I start with a real problem. I finish with something a real person can use. In three weeks we went from a photo to a builder you can call.</p>
   </article>
   <article>
-    <h3>Judgment under constraint</h3>
-    <p>I'll choose the user, name the trade-off, and protect coherence.</p>
+    <h3>I say what I do and what I do not do</h3>
+    <p>We helped one group of people. We said we did not help the other group. We showed that the prices are only a guide. This is honest work.</p>
   </article>
   <article>
-    <h3>Already on your platform</h3>
-    <p>I build on Cloudflare Workers today. I'd love to do it on the team.</p>
+    <h3>I already use your tools</h3>
+    <p>This slide tool runs on Cloudflare. The pictures and the data too. I am not new here. I want to do this kind of work with your team.</p>
   </article>
 </div>
 
-Note: To close — why Cloudflare, why this role. A Design Engineer lives at the seam between design and code, and that's exactly where I'm most useful: I prototype and ship in the real material. I bring judgment under constraint — I'll choose the user, name the trade-off out loud, and fight to keep the product coherent. And I'm already building on your platform; this deck is running on Workers right now. I'd love to do that work with your team.
+Note: This is the kind of work I like — I take something from a real problem I see to something that actually works in the world. I try to be upfront about what we didn't solve yet. And I'm already shipping on Cloudflare Workers — this whole deck runs on it. I'd like to do more of this kind of thing on the team.
 
 ---
 
 # Thank you
 
-## Rae Jin · Design Engineer
+## Rae Jin · Product Engineer
 
 dalrae.jin.work@gmail.com  
 raejin.web.app · github.com/jin-dalrae
+
+Note: Thank you. Happy to go deep on the scoping call, the fidelity constraint, the RAG as product work, or what the next phase would actually require. What's on your mind?
 
 Note: Thank you. I'd love to dig into anything — the retrieval pipeline, the Explorers-versus-Deciders call, or how I'd have handled the pricing problem with more time. What's on your mind?

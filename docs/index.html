@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>RJ Web Docs</title>
+    <title>Web Docs</title>
     <link rel="icon" type="image/png" href="../assets/cadinal_logo.png">
     <link rel="apple-touch-icon" href="../assets/cadinal_logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="../styles.css?v=20260608-fullscreen1">
   </head>
   <body>
@@ -16,7 +16,10 @@
       <aside class="presentation-list" aria-label="Document list">
         <div class="presentation-list__header">
           <div class="sidebar-brand">
-            <button class="sidebar-home-link" id="docsHome" type="button">RJ Web Docs</button>
+            <button class="sidebar-home-link" id="docsHome" type="button">
+              <img src="../assets/cadinal_logo.png" class="sidebar-brand__logo" alt="" aria-hidden="true">
+              <span class="sidebar-home-link__label">Web Docs</span>
+            </button>
             <div class="sidebar-nav-links">
               <a class="sidebar-mode-link" href="../">Slides</a>
             </div>
@@ -27,6 +30,7 @@
         </div>
         <ol class="presentation-list__items" id="docList"></ol>
         <div class="sidebar-tools">
+          <section class="account-panel" id="accountPanel" aria-label="Account"></section>
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">
             <span class="theme-toggle__dot" aria-hidden="true"></span>
             <span class="theme-toggle__label">Light</span>
@@ -43,13 +47,21 @@
           </div>
           <div class="presentation-header__title">
             <p id="docMeta">Markdown viewer</p>
-            <h2 id="docTitle">RJ Web Docs</h2>
+            <h2 id="docTitle">Web Docs</h2>
           </div>
           <nav class="profile-links" id="profileLinks" aria-label="Profile links"></nav>
         </header>
 
         <div class="docs-workspace">
           <article class="doc-viewer" id="docViewer" aria-live="polite"></article>
+          <div class="docs-nav" aria-label="Scroll document">
+            <button class="icon-button docs-nav__btn" id="docsPrev" type="button" aria-label="Previous screen" title="Previous screen">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button class="icon-button docs-nav__btn" id="docsNext" type="button" aria-label="Next screen" title="Next screen">
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
         </div>
 
         <footer class="site-footer">All rights reserved by Rae Jin 2026</footer>

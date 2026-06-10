@@ -236,18 +236,37 @@ async function me(request, env) {
   return json({ user: user ? { id: user.id, username: user.username } : null });
 }
 
+async function getBaseDeck(env, slug) {
+  const row = await env.DB.prepare(
+    "SELECT markdown, updated_at FROM decks WHERE slug = ?"
+  ).bind(slug).first();
+  return row ? { markdown: row.markdown, updatedAt: row.updated_at } : null;
+}
+
+async function saveBaseDeck(env, slug, markdown) {
+  const updatedAt = nowIso();
+  await env.DB.prepare(
+    `INSERT INTO decks (slug, markdown, updated_at)
+     VALUES (?, ?, ?)
+     ON CONFLICT(slug) DO UPDATE SET markdown = excluded.markdown, updated_at = excluded.updated_at`
+  ).bind(slug, markdown, updatedAt).run();
+  return { ok: true, updatedAt };
+}
+
 async function deck(request, env, slug) {
   const user = await currentUser(request, env);
   if (!user) {
-    return json({ markdown: null, hasOverride: false });
+    return unauthorized();
   }
 
+  const base = await getBaseDeck(env, slug);
   const row = await env.DB.prepare(
     "SELECT markdown, updated_at FROM user_decks WHERE user_id = ? AND slug = ?"
   ).bind(user.id, slug).first();
 
   return json({
-    markdown: row?.markdown || null,
+    baseMarkdown: base?.markdown || null,
+    markdown: row?.markdown || base?.markdown || null,
     hasOverride: Boolean(row),
     updatedAt: row?.updated_at || null
   });
@@ -290,6 +309,25 @@ async function resetDeck(request, env, slug) {
   return json({ ok: true });
 }
 
+async function saveBaseDeckHandler(request, env, slug) {
+  const user = await currentUser(request, env);
+  if (!user) {
+    return unauthorized();
+  }
+
+  const body = await readJson(request);
+  const markdown = String(body?.markdown || "");
+  if (!markdown.trim()) {
+    return badRequest("Markdown cannot be empty.");
+  }
+
+  if (markdown.length > MAX_MARKDOWN_LENGTH) {
+    return badRequest("Markdown is too large.");
+  }
+
+  return json(await saveBaseDeck(env, slug, markdown));
+}
+
 async function handleApi(request, env) {
   const method = request.method.toUpperCase();
   const url = new URL(request.url);
@@ -298,6 +336,25 @@ async function handleApi(request, env) {
 
   if (!env.DB) {
     return json({ error: "D1 binding DB is not configured." }, 500);
+  }
+
+  // Ensure the decks table exists (for canonical markdown storage).
+  // In production run the migration for a clean schema:
+  //   npx wrangler d1 migrations apply rae-slides --remote
+  if (path.startsWith("decks") || path.startsWith("public/decks") || path === "signup" || path === "login" || path === "me" || path === "logout") {
+    // Ensure auth + content tables exist (run the official migrations for production cleanliness)
+    await env.DB.prepare(`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, password_salt TEXT NOT NULL, created_at TEXT NOT NULL)`).run();
+    await env.DB.prepare(`CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, expires_at TEXT NOT NULL, created_at TEXT NOT NULL, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`).run();
+    await env.DB.prepare(`CREATE INDEX IF NOT EXISTS sessions_user_id_index ON sessions(user_id)`).run();
+    await env.DB.prepare(`CREATE INDEX IF NOT EXISTS sessions_expires_at_index ON sessions(expires_at)`).run();
+    await env.DB.prepare(`CREATE TABLE IF NOT EXISTS user_decks (user_id TEXT NOT NULL, slug TEXT NOT NULL, markdown TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (user_id, slug), FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`).run();
+    await env.DB.prepare(
+      `CREATE TABLE IF NOT EXISTS decks (
+        slug TEXT PRIMARY KEY,
+        markdown TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )`
+    ).run();
   }
 
   if (method === "POST" && path === "signup") {
@@ -330,6 +387,26 @@ async function handleApi(request, env) {
     if (method === "DELETE" && parts[2] === "markdown") {
       return resetDeck(request, env, slug);
     }
+
+    // Base / canonical markdown (the source of truth, previously static .md files).
+    // Only accessible to authenticated users.
+    if (method === "PUT" && parts[2] === "base") {
+      return saveBaseDeckHandler(request, env, slug);
+    }
+  }
+
+  // Public read-only access for specific documents (no auth required).
+  // Used for items marked `public: true` in site-data.js.
+  // Anyone with the direct URL can read, but cannot edit (edits still require login + go through user_decks).
+  if (parts[0] === "public" && parts[1] === "decks" && parts[2]) {
+    const slug = parts[2];
+    if (method === "GET") {
+      const base = await getBaseDeck(env, slug);
+      return json({
+        markdown: base?.markdown || null,
+        updatedAt: base?.updatedAt || null
+      });
+    }
   }
 
   return notFound();
@@ -342,6 +419,18 @@ export default {
     if (url.pathname.startsWith("/api/")) {
       return handleApi(request, env);
     }
+
+    // .md protection temporarily disabled to support client-side fallback
+    // for public documents (during transition to DB-only storage).
+    // Public docs can fall back to their original .md files if not yet seeded in D1.
+    // Private content lists remain login-walled.
+    // Re-enable later once all public content is seeded:
+    // if (/\.md(\?|$)/.test(url.pathname)) {
+    //   const user = await currentUser(request, env);
+    //   if (!user) {
+    //     return json({ error: "Authentication required to access source files." }, 401);
+    //   }
+    // }
 
     return env.ASSETS.fetch(request);
   }

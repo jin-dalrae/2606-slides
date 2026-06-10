@@ -1,6 +1,6 @@
 const siteData = window.RJ_SITE || {};
 const home = {
-  title: siteData.slidesTitle || "RJ Web Slides",
+  title: siteData.slidesTitle || "Web Slides",
   date: "Home",
   links: siteData.profileLinks || []
 };
@@ -63,6 +63,12 @@ const backgroundSelect = document.querySelector("#backgroundSelect");
 const fontSelect = document.querySelector("#fontSelect");
 const themeToggle = document.querySelector("#themeToggle");
 const homeLink = document.querySelector("#homeLink");
+if (homeLink) {
+  const label = homeLink.querySelector(".sidebar-home-link__label");
+  if (label) {
+    label.textContent = siteData.slidesTitle || "Web Slides";
+  }
+}
 const profileLinks = document.querySelector("#profileLinks");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
@@ -100,6 +106,10 @@ function selectedPresentation() {
   return presentations[currentPresentation];
 }
 
+function isPublicItem(item) {
+  return !!(item && item.public);
+}
+
 function selectedPresentationSlug() {
   return selectedPresentation().slug || String(currentPresentation + 1);
 }
@@ -124,7 +134,7 @@ function readPresentationSettings(index = currentPresentation) {
     transition: saved.transition || item.transition || defaultPresentationSettings.transition,
     background: saved.background || item.background || defaultPresentationSettings.background,
     font: fontOptions[saved.font] ? saved.font : fontOptions[item.font] ? item.font : defaultPresentationSettings.font,
-    theme: saved.theme || item.theme || defaultPresentationSettings.theme
+    theme: saved.theme || globalDefaultTheme() || defaultPresentationSettings.theme
   };
 }
 
@@ -188,13 +198,17 @@ function renderAccountPanel() {
     return;
   }
 
+  accountPanel.hidden = false;
+
   if (!apiAvailable) {
-    accountPanel.hidden = true;
-    accountPanel.innerHTML = "";
+    accountPanel.innerHTML = `
+      <p class="account-panel__label">Account</p>
+      <p style="font-size: 0.85rem; line-height: 1.3; color: var(--dim);">
+        Backend needed for sign in. Use npx wrangler dev and the printed URL.
+      </p>
+    `;
     return;
   }
-
-  accountPanel.hidden = false;
 
   if (currentUser) {
     accountPanel.innerHTML = `
@@ -202,36 +216,19 @@ function renderAccountPanel() {
       <p class="account-panel__user">${escapeHtml(currentUser.username)}</p>
       <button class="text-button account-panel__button" id="logoutButton" type="button">Sign out</button>
     `;
-    accountPanel.querySelector("#logoutButton").addEventListener("click", logout);
+    const btn = accountPanel.querySelector("#logoutButton");
+    if (btn) btn.addEventListener("click", logout);
     return;
   }
 
-  const isSignup = authMode === "signup";
+  // When not logged in, the main login form is in the large area.
+  // Sidebar shows a small note.
   accountPanel.innerHTML = `
-    <form class="account-form" id="accountForm">
-      <p class="account-panel__label">${isSignup ? "Create account" : "Sign in"}</p>
-      <label>
-        <span>ID</span>
-        <input id="accountUsername" name="username" autocomplete="username" minlength="3" maxlength="32" ${authBusy ? "disabled" : ""}>
-      </label>
-      <label>
-        <span>PW</span>
-        <input id="accountPassword" name="password" type="password" autocomplete="${isSignup ? "new-password" : "current-password"}" minlength="8" ${authBusy ? "disabled" : ""}>
-      </label>
-      <div class="account-form__actions">
-        <button class="text-button account-panel__button" type="submit" ${authBusy ? "disabled" : ""}>${isSignup ? "Create" : "Sign in"}</button>
-        <button class="text-button account-panel__button" id="authModeToggle" type="button" ${authBusy ? "disabled" : ""}>${isSignup ? "Use login" : "Create"}</button>
-      </div>
-      <p class="account-panel__message" aria-live="polite">${escapeHtml(authStatus)}</p>
-    </form>
+    <p class="account-panel__label">Account</p>
+    <p style="font-size: 0.85rem; line-height: 1.3; color: var(--dim);">
+      Use the login form in the main area.
+    </p>
   `;
-
-  accountPanel.querySelector("#accountForm").addEventListener("submit", submitAuth);
-  accountPanel.querySelector("#authModeToggle").addEventListener("click", () => {
-    authMode = isSignup ? "signin" : "signup";
-    authStatus = "";
-    renderAccountPanel();
-  });
 }
 
 async function submitAuth(event) {
@@ -252,7 +249,16 @@ async function submitAuth(event) {
     currentUser = data.user;
     authStatus = "";
     editorStatus = "";
-    await reloadCurrentPresentationMarkdown();
+    renderProfileLinks();
+    renderAccountPanel();
+    // Now that we're authenticated, show the lists and load content
+    renderPresentationList();
+    if (currentView === "presentation") {
+      await reloadCurrentPresentationMarkdown();
+    } else {
+      renderHome();
+    }
+    preloadPresentationTitles();
   } catch (error) {
     authStatus = error.message;
   } finally {
@@ -279,9 +285,10 @@ async function logout() {
   hideMarkdownEditor();
   renderAccountPanel();
   updateEditButtonState();
-  if (currentView === "presentation") {
-    await reloadCurrentPresentationMarkdown();
-  }
+  renderProfileLinks();
+  renderPresentationList(); // keep the decks list visible
+  renderHome(); // show the home grid with your decks
+
 }
 
 async function loadCurrentUser() {
@@ -294,6 +301,109 @@ async function loadCurrentUser() {
     apiAvailable = false;
   }
   renderAccountPanel();
+}
+
+function renderUnauthenticatedState() {
+  // The decks list in the sidebar is always visible.
+  // The login form is now in the large main area.
+
+  currentView = "home";
+  stage.dataset.view = "home";
+  destroyDeck();
+  homeLink.removeAttribute("aria-current");
+
+  presentationTitle.textContent = "Sign in to edit";
+  presentationDate.textContent = "";
+  prevSlide.disabled = true;
+  nextSlide.disabled = true;
+  fullscreen.disabled = true;
+  openSlideWindow.disabled = true;
+  editDeck.disabled = true;
+  transitionSelect.disabled = true;
+  backgroundSelect.disabled = true;
+  fontSelect.disabled = true;
+
+  slide.classList.add("slide--home");
+  slide.innerHTML = `
+    <div style="max-width: 420px; margin: 40px auto; padding: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);">
+      <h2 style="margin: 0 0 12px; font-size: 1.4rem;">Sign in or create account</h2>
+      <form class="account-form" id="mainLoginForm">
+        <label>
+          <span>ID</span>
+          <input id="mainUsername" name="username" autocomplete="username" minlength="3" maxlength="32">
+        </label>
+        <label>
+          <span>PW</span>
+          <input id="mainPassword" name="password" type="password" autocomplete="current-password" minlength="8">
+        </label>
+        <div class="account-form__actions">
+          <button class="text-button" type="submit">Sign in</button>
+          <button class="text-button" id="mainCreateToggle" type="button">Create</button>
+        </div>
+        <p class="account-panel__message" id="mainLoginMessage" aria-live="polite"></p>
+      </form>
+    </div>
+  `;
+
+  const form = slide.querySelector("#mainLoginForm");
+  const toggle = slide.querySelector("#mainCreateToggle");
+  const message = slide.querySelector("#mainLoginMessage");
+
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const username = String(fd.get("username") || "").trim();
+      const password = String(fd.get("password") || "");
+      authBusy = true;
+      if (message) message.textContent = "";
+      try {
+        const data = await apiRequest("login", {
+          method: "POST",
+          body: JSON.stringify({ username, password })
+        });
+        currentUser = data.user;
+        renderProfileLinks();
+        renderAccountPanel();
+        renderHome();
+      } catch (err) {
+        if (message) message.textContent = err.message;
+      } finally {
+        authBusy = false;
+      }
+    });
+  }
+
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      // For create, we can reuse the sidebar logic or simple switch
+      // Simple: change the submit to signup
+      form.removeEventListener("submit", form.onsubmit); // rough
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const username = String(fd.get("username") || "").trim();
+        const password = String(fd.get("password") || "");
+        authBusy = true;
+        if (message) message.textContent = "";
+        try {
+          const data = await apiRequest("signup", {
+            method: "POST",
+            body: JSON.stringify({ username, password })
+          });
+          currentUser = data.user;
+          renderProfileLinks();
+          renderAccountPanel();
+          renderHome();
+        } catch (err) {
+          if (message) message.textContent = err.message;
+        } finally {
+          authBusy = false;
+        }
+      };
+      if (message) message.textContent = "Switched to create. Fill and submit.";
+    });
+  }
 }
 
 function isPresentationRoute() {
@@ -383,9 +493,18 @@ function renderProfileLinks() {
     return;
   }
 
-  profileLinks.innerHTML = home.links
-    .map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a>`)
-    .join("");
+  if (currentUser) {
+    profileLinks.innerHTML = `
+      <span class="header-user">${escapeHtml(currentUser.username)}</span>
+      <button id="headerLogout" class="text-button">Sign out</button>
+    `;
+    const btn = profileLinks.querySelector("#headerLogout");
+    if (btn) btn.addEventListener("click", logout);
+  } else {
+    profileLinks.innerHTML = home.links
+      .map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a>`)
+      .join("");
+  }
 }
 
 function markdownSlideTitles(markdown) {
@@ -456,14 +575,23 @@ function firstSlideHeaderTitle(markdown) {
 }
 
 async function preloadPresentationTitles() {
+  // Only resolve live titles from storage for authenticated users.
+  // Unauthenticated users see the titles already provided in site-data.js.
+  if (!currentUser || !apiAvailable) {
+    renderPresentationList();
+    return;
+  }
+
   await Promise.all(
     presentations.map(async (item) => {
       if (item.resolvedTitle) {
         return;
       }
       try {
-        const markdown = await loadMarkdown(item.file);
-        item.resolvedTitle = firstSlideHeaderTitle(markdown) || item.title;
+        const slug = item.slug || item.file;
+        const data = await apiRequest(`decks/${encodeURIComponent(slug)}`);
+        const md = data.baseMarkdown || data.markdown || "";
+        item.resolvedTitle = firstSlideHeaderTitle(md) || item.title;
       } catch {
         item.resolvedTitle = item.title;
       }
@@ -483,25 +611,73 @@ async function loadMarkdown(file) {
 }
 
 async function loadDeckMarkdown(deckMeta) {
-  baseMarkdown = await loadMarkdown(deckMeta.file);
-  activeMarkdown = baseMarkdown;
-  hasUserMarkdown = false;
+  const slug = deckMeta.slug || deckMeta.file;
+  const publicItem = isPublicItem(deckMeta);
 
-  if (!currentUser || !apiAvailable) {
-    return activeMarkdown;
-  }
+  // If logged in, always use the authenticated path (gets base + any personal overrides)
+  if (currentUser && apiAvailable) {
+    try {
+      const data = await apiRequest(`decks/${encodeURIComponent(slug)}`);
+      baseMarkdown = data.baseMarkdown || "";
+      activeMarkdown = data.markdown || baseMarkdown;
+      hasUserMarkdown = Boolean(data.hasOverride);
 
-  try {
-    const data = await apiRequest(`decks/${encodeURIComponent(deckMeta.slug || deckMeta.file)}`);
-    if (data.markdown) {
-      activeMarkdown = data.markdown;
-      hasUserMarkdown = true;
+      // Transition: auto-seed from static file if base is still empty
+      if (!baseMarkdown) {
+        try {
+          const fallback = await loadMarkdown(deckMeta.file);
+          baseMarkdown = fallback;
+          activeMarkdown = fallback;
+          await apiRequest(`decks/${encodeURIComponent(slug)}/base`, {
+            method: "PUT",
+            body: JSON.stringify({ markdown: fallback })
+          });
+        } catch (seedErr) {
+          throw new Error("No content in storage and static source unavailable.");
+        }
+      }
+
+      return activeMarkdown;
+    } catch (error) {
+      editorStatus = error.message;
+      // fall through — will throw below if not public
     }
-  } catch (error) {
-    editorStatus = error.message;
   }
 
-  return activeMarkdown;
+  // Unauthenticated + this item is marked public → allow read-only via public endpoint
+  if (publicItem) {
+    try {
+      const res = await fetch(`/api/public/decks/${encodeURIComponent(slug)}`);
+      if (!res.ok) throw new Error("Failed to load public content");
+      const data = await res.json();
+      baseMarkdown = data.markdown || "";
+      activeMarkdown = baseMarkdown;
+      hasUserMarkdown = false;
+
+      // Optional: if still empty and static file exists, seed it (will only work if the fetch to static succeeds server-side)
+      if (!baseMarkdown) {
+        try {
+          const fallback = await loadMarkdown(deckMeta.file);
+          baseMarkdown = fallback;
+          activeMarkdown = fallback;
+          // Note: unauthenticated users cannot seed via /base (that route requires login)
+        } catch {}
+      }
+
+      return activeMarkdown;
+    } catch (err) {
+      baseMarkdown = "";
+      activeMarkdown = "";
+      hasUserMarkdown = false;
+      throw new Error("This public document could not be loaded.");
+    }
+  }
+
+  // Private item and not logged in → require auth
+  baseMarkdown = "";
+  activeMarkdown = "";
+  hasUserMarkdown = false;
+  throw new Error("Sign in to view this presentation.");
 }
 
 function updateEditButtonState() {
@@ -1239,11 +1415,14 @@ async function renderPresentation() {
     currentSlideTitles = [];
     currentSlideNotes = [];
     slide.classList.remove("slide--home");
+
+    const isAuthError = /sign in/i.test(error.message || "");
     slide.innerHTML = `
       <div class="slide__error">
         <p class="slide__eyebrow">Deck unavailable</p>
-        <h2 class="slide__title">Could not load this presentation.</h2>
+        <h2 class="slide__title">${isAuthError ? "Sign in required" : "Could not load this presentation."}</h2>
         <p class="slide__body">${escapeHtml(error.message)}</p>
+        ${isAuthError ? `<p class="slide__body" style="margin-top: 0.5rem; font-size: 0.95em;">Use the account panel in the sidebar to sign in or create an account.</p>` : ""}
       </div>
     `;
     updateSlideControls();
@@ -1494,13 +1673,19 @@ async function initApp() {
   renderAccountPanel();
   await loadCurrentUser();
 
+  // Always render the list of decks and the home grid so you can see your decks
+  // without having to log in first. Private deck content will show a sign-in
+  // prompt in the main area; public ones load fully.
+  renderPresentationList();
   if (isPresentationRoute()) {
     const target = presentationTargetFromLocation();
     goToPresentation(target.presentationIndex, target.slideIndex);
   } else {
     renderHome();
   }
-  preloadPresentationTitles();
+  if (currentUser && apiAvailable) {
+    preloadPresentationTitles();
+  }
 }
 
 initApp();
