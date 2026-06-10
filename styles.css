@@ -1963,6 +1963,8 @@ body[data-display-mode="slide"] .reveal .slide-ref-pinned,
 
 .reveal .slides section:has(.slide-image + .slide-image) > :not(.slide-image) {
   grid-column: 1 / -1;
+  justify-self: start;
+  text-align: left;
 }
 
 .reveal .slides section:has(.slide-image + .slide-image) .slide-image {
