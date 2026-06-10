@@ -6,6 +6,7 @@
   --muted: oklch(0.84 0.022 105);
   --dim: oklch(0.7 0.04 245);
   --panel: oklch(0.3 0.04 255 / 0.78);
+  --panel-solid: oklch(0.29 0.04 255);
   --panel-soft: oklch(1 0 0 / 0.075);
   --line: oklch(1 0 0 / 0.18);
   --line-strong: oklch(1 0 0 / 0.3);
@@ -28,6 +29,7 @@
   --muted: oklch(0.43 0.035 250);
   --dim: oklch(0.56 0.04 245);
   --panel: oklch(0.985 0.006 245 / 0.78);
+  --panel-solid: oklch(0.985 0.006 245);
   --panel-soft: oklch(0.36 0.04 250 / 0.06);
   --line: oklch(0.28 0.035 250 / 0.16);
   --line-strong: oklch(0.26 0.04 250 / 0.28);
@@ -1053,17 +1055,27 @@ body[data-display-mode="slide"] .reveal .slide-ref-pinned,
    it — the freed space becomes margin. */
 @media (min-width: 1180px) {
   .stage[data-view="presentation"] .presentation-stage:has(.speaker-notes:not([hidden])) {
-    --slide-w: min(46vw, 760px, calc((100vh - 96px) * 16 / 9));
     width: 100%;
     display: grid;
-    grid-template-columns: var(--slide-w) 21rem;
+    /* Slide fills the space left of the fixed notes column — no centered side
+       margins, and it can't overflow left onto the slide list. */
+    grid-template-columns: minmax(0, 1fr) 21rem;
     grid-template-areas:
       "settings notes"
       "slide notes"
       "editor notes";
     align-items: start;
-    justify-content: center;
+    justify-content: stretch;
     column-gap: 22px;
+  }
+
+  /* The slide fills its column width, capped by available height so it never
+     runs taller than the viewport. */
+  .stage[data-view="presentation"] .presentation-stage:has(.speaker-notes:not([hidden])) .slide {
+    width: 100%;
+    max-width: calc((100vh - 150px) * 16 / 9);
+    margin: 0;
+    justify-self: start;
   }
 
   /* Controls sit above the slide, in the slide column, in a single compact row.
@@ -1071,7 +1083,7 @@ body[data-display-mode="slide"] .reveal .slide-ref-pinned,
      dropdown value alone is enough. */
   .presentation-stage:has(.speaker-notes:not([hidden])) .presentation-settings {
     grid-area: settings;
-    width: var(--slide-w);
+    width: 100%;
     justify-content: flex-start;
     padding: 0 0 8px;
   }
@@ -1312,7 +1324,7 @@ body[data-display-mode="slide"] .reveal .slide-ref-pinned,
   min-height: 56px;
   padding: 14px 12px;
   border-bottom: 1px solid var(--line);
-  background: var(--panel);
+  background: var(--panel-solid);
 }
 
 .slide-list__header span {
