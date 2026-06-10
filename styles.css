@@ -2186,10 +2186,13 @@ body[data-display-mode="slide"] .reveal .slide-ref-pinned,
 }
 
 /* Fullscreen = the slides only. Hide the control bar and speaker notes and let
-   the slide fill the whole viewport. */
+   the slide fill the whole viewport. display:block is !important so it overrides
+   the higher-specificity side-by-side notes grid (which would otherwise still
+   reserve the notes column and push the slide off-center). */
 .presentation-stage:fullscreen,
 .presentation-stage.presentation-stage--fullscreen {
-  display: block;
+  display: block !important;
+  grid-template-columns: none !important;
   width: 100vw;
   height: 100vh;
   padding: 0;
