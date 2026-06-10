@@ -988,6 +988,24 @@ body[data-display-mode="slide"] .slide-ref-pinned {
   padding-top: 18px;
 }
 
+/* Slide-list collapse: the ☰ reopen button only shows when the list is hidden. */
+.slide-list-reopen {
+  display: none;
+  margin-top: 2px;
+}
+
+.presentation-workspace[data-slidelist-open="false"] {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.presentation-workspace[data-slidelist-open="false"] .slide-list {
+  display: none;
+}
+
+.presentation-workspace[data-slidelist-open="false"] .slide-list-reopen {
+  display: inline-grid;
+}
+
 .stage[data-view="home"] .presentation-workspace {
   display: block;
   padding-top: 12px;
@@ -1024,16 +1042,18 @@ body[data-display-mode="slide"] .slide-ref-pinned {
    off-screen as the slide grows). Only kicks in when notes are actually shown. */
 @media (min-width: 1400px) {
   .stage[data-view="presentation"] .presentation-stage:has(.speaker-notes:not([hidden])) {
-    --slide-w: min(58vw, 1180px, calc((100vh - 150px) * 16 / 9));
+    /* Keep the slide deliberately small so the speaker notes get a generous,
+       readable column on the right rather than the slide eating all the width. */
+    --slide-w: min(48vw, 980px, calc((100vh - 180px) * 16 / 9));
     width: 100%;
     display: grid;
-    grid-template-columns: var(--slide-w) minmax(340px, 1fr);
+    grid-template-columns: var(--slide-w) minmax(380px, 1fr);
     grid-template-areas:
       "settings settings"
       "slide notes"
       "editor notes";
     align-items: start;
-    justify-content: center;
+    justify-content: start;
     column-gap: 28px;
   }
 

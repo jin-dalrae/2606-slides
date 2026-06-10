@@ -1650,6 +1650,16 @@ editDeck.addEventListener("click", () => {
 });
 openSidebar.addEventListener("click", () => toggleSidebar(true));
 closeSidebar.addEventListener("click", () => toggleSidebar(false));
+
+const presentationWorkspace = document.querySelector(".presentation-workspace");
+const hideSlideList = document.querySelector("#hideSlideList");
+const showSlideList = document.querySelector("#showSlideList");
+hideSlideList?.addEventListener("click", () => {
+  if (presentationWorkspace) presentationWorkspace.dataset.slidelistOpen = "false";
+});
+showSlideList?.addEventListener("click", () => {
+  if (presentationWorkspace) presentationWorkspace.dataset.slidelistOpen = "true";
+});
 homeLink.addEventListener("click", showHome);
 themeToggle.addEventListener("click", () => {
   applyTheme(currentTheme === "dark" ? "light" : "dark");
