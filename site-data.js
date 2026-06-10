@@ -19,6 +19,10 @@
       tagline: "Startup sustainability research"
     },
     {
+      name: "LbD",
+      tagline: "Leadership by Design case studies"
+    },
+    {
       name: "Reference",
       tagline: "Project documentation"
     }
@@ -75,6 +79,19 @@
       date: "May 2026",
       file: "presentations/gtr-startups-climate-awareness.md",
       transition: "slide"
+    },
+    {
+      slug: "cloudflare-case-study",
+      title: "Case Study for Cloudflare",
+      docTitle: "Case study for Cloudflare",
+      sidebarTitle: "Cloudflare case study",
+      project: "LbD",
+      date: "June 9, 2026",
+      file: "presentations/cloudflare-case-study.md",
+      transition: "slide",
+      background: "cloudflare",
+      font: "inter",
+      theme: "dark"
     }
   ];
 

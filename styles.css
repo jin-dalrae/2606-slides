@@ -1170,6 +1170,56 @@ body[data-display-mode="slide"] .slide-ref {
   background: oklch(0.38 0.018 255);
 }
 
+/* Cloudflare deck — warm orange identity + entrance motion */
+.deck-root[data-background-mode="cloudflare"] {
+  --primary: oklch(0.76 0.17 56);
+  --line: oklch(0.82 0.13 62 / 0.24);
+  background: oklch(0.13 0.04 48);
+}
+
+.deck-root[data-background-mode="cloudflare"]::after {
+  background:
+    radial-gradient(120% 78% at 50% 0%, oklch(0.78 0.18 56 / 0.18), transparent 62%),
+    linear-gradient(180deg, oklch(0.3 0.09 55 / 0.08), oklch(0.12 0.04 45 / 0.52));
+}
+
+.deck-root[data-background-mode="cloudflare"] .deck-subtitle {
+  color: oklch(0.83 0.15 62);
+}
+
+.deck-root[data-background-mode="cloudflare"] .slide-ref {
+  color: oklch(0.74 0.15 58);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .deck-root[data-background-mode="cloudflare"] .slides section.present > * {
+    animation: cf-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .deck-root[data-background-mode="cloudflare"] .slides section.present > *:nth-child(2) {
+    animation-delay: 0.07s;
+  }
+  .deck-root[data-background-mode="cloudflare"] .slides section.present > *:nth-child(3) {
+    animation-delay: 0.14s;
+  }
+  .deck-root[data-background-mode="cloudflare"] .slides section.present > *:nth-child(4) {
+    animation-delay: 0.21s;
+  }
+  .deck-root[data-background-mode="cloudflare"] .slides section.present > *:nth-child(n + 5) {
+    animation-delay: 0.28s;
+  }
+}
+
+@keyframes cf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .deck-root[data-background-mode="plain"] .slide-shader,
 .deck-root[data-background-mode="plain"]::after,
 .deck-root[data-background-mode="ivory"] .slide-shader,
@@ -1617,6 +1667,39 @@ body[data-display-mode="slide"] .slide-ref {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: 0 20px 60px oklch(0 0 0 / 0.28);
+}
+
+.reveal .before-after {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.3rem;
+}
+
+.reveal .before-after figure {
+  margin: 0;
+}
+
+.reveal .before-after img {
+  width: 100%;
+  max-height: 52vh;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px oklch(0 0 0 / 0.28);
+}
+
+.reveal .before-after figcaption {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-variant-caps: all-small-caps;
+  font-weight: 600;
+  font-size: clamp(0.85rem, 1.15vw, 1.1rem);
+  letter-spacing: 0.03em;
+}
+
+.reveal .before-after figcaption.after {
+  color: var(--primary);
 }
 
 .reveal .progress {

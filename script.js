@@ -911,8 +911,25 @@ function initShaderBackground(canvas, theme = "dark", variant = "shader") {
     return () => {};
   }
 
-  const palette =
-    theme === "light"
+  const cloudflare = variant === "cloudflare";
+
+  const palette = cloudflare
+    ? theme === "light"
+      ? {
+          ink: "vec3(0.995, 0.975, 0.955)",
+          cyan: "vec3(0.96, 0.51, 0.12)",
+          lime: "vec3(0.99, 0.78, 0.36)",
+          vignetteLow: "0.97",
+          grain: "0.01"
+        }
+      : {
+          ink: "vec3(0.10, 0.055, 0.025)",
+          cyan: "vec3(0.97, 0.51, 0.12)",
+          lime: "vec3(0.99, 0.74, 0.28)",
+          vignetteLow: "0.42",
+          grain: "0.04"
+        }
+    : theme === "light"
       ? {
           ink: "vec3(0.985, 0.955, 0.965)",
           cyan: "vec3(0.58, 0.28, 0.38)",
