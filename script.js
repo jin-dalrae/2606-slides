@@ -1481,9 +1481,14 @@ async function renderPresentation() {
   try {
     const markdown = await loadDeckMarkdown(deckMeta);
 
-    // Fetch versions to populate the dropdown
+    // Fetch versions to populate the dropdown. Use the public endpoint when not
+    // signed in so public decks still expose their version history.
     try {
-      const versionsData = await apiRequest(`decks/${encodeURIComponent(deckMeta.slug || deckMeta.file)}/versions`);
+      const versionSlug = encodeURIComponent(deckMeta.slug || deckMeta.file);
+      const versionsPath = userCanEdit()
+        ? `decks/${versionSlug}/versions`
+        : `public/decks/${versionSlug}/versions`;
+      const versionsData = await apiRequest(versionsPath);
       populateVersionSelect(versionsData.versions || []);
     } catch (e) {
       // Ignore version fetch errors for unauthenticated or unavailable API
@@ -1721,7 +1726,11 @@ async function loadSpecificVersion(versionId) {
     activeMarkdown = await loadDeckMarkdown(deckMeta);
   } else {
     try {
-      const data = await apiRequest(`decks/${encodeURIComponent(slug)}/versions/${encodeURIComponent(versionId)}`);
+      const verSlug = encodeURIComponent(slug);
+      const verPath = userCanEdit()
+        ? `decks/${verSlug}/versions/${encodeURIComponent(versionId)}`
+        : `public/decks/${verSlug}/versions/${encodeURIComponent(versionId)}`;
+      const data = await apiRequest(verPath);
       activeMarkdown = data.markdown;
     } catch (e) {
       editorStatus = "Could not load version: " + e.message;
