@@ -25,8 +25,7 @@ const storageKeys = {
 const defaultPresentationSettings = {
   transition: "slide",
   background: "shader",
-  font: "lora",
-  theme: "light"
+  font: "lora"
 };
 
 const fontOptions = {
@@ -136,8 +135,7 @@ function readPresentationSettings(index = currentPresentation) {
   return {
     transition: saved.transition || item.transition || defaultPresentationSettings.transition,
     background: saved.background || item.background || defaultPresentationSettings.background,
-    font: fontOptions[saved.font] ? saved.font : fontOptions[item.font] ? item.font : defaultPresentationSettings.font,
-    theme: saved.theme || globalDefaultTheme() || defaultPresentationSettings.theme
+    font: fontOptions[saved.font] ? saved.font : fontOptions[item.font] ? item.font : defaultPresentationSettings.font
   };
 }
 
@@ -147,8 +145,7 @@ function saveCurrentPresentationSettings() {
     JSON.stringify({
       transition: currentTransition,
       background: currentBackground,
-      font: currentFont,
-      theme: currentTheme
+      font: currentFont
     })
   );
 }
@@ -1335,7 +1332,6 @@ async function renderHome() {
   currentView = "home";
   stage.dataset.view = "home";
   destroyDeck();
-  setActiveTheme(globalDefaultTheme());
   homeLink.setAttribute("aria-current", "page");
 
   presentationTitle.textContent = home.title;
@@ -1466,7 +1462,6 @@ async function renderPresentation() {
   currentTransition = deckSettings.transition;
   currentBackground = deckSettings.background;
   currentFont = deckSettings.font;
-  setActiveTheme(deckSettings.theme);
   transitionSelect.value = currentTransition;
   backgroundSelect.value = currentBackground;
   fontSelect.value = currentFont;
@@ -1616,9 +1611,10 @@ function updateFont(value) {
   broadcastPresentationState();
 }
 
-// Set the visible theme (document attr + toggle label) WITHOUT persisting it as
-// the global default. Used when opening a deck (so a deck's own theme doesn't
-// overwrite the site default) and when returning home (restore the default).
+// The site theme belongs to the user (theme toggle), never to a deck: opening
+// a deck must not restyle the chrome. Deck appearance is governed by its
+// Background mode — theme-aware modes follow the site theme; identity modes
+// (cloudflare, ivory, gray) are fixed regardless of it.
 function setActiveTheme(theme) {
   currentTheme = theme === "dark" ? "dark" : "light";
   document.documentElement.dataset.theme = currentTheme;
@@ -1629,16 +1625,9 @@ function setActiveTheme(theme) {
   );
 }
 
-function globalDefaultTheme() {
-  return window.localStorage.getItem(storageKeys.theme) || defaultPresentationSettings.theme;
-}
-
 function applyTheme(theme) {
   setActiveTheme(theme);
   window.localStorage.setItem(storageKeys.theme, currentTheme);
-  if (currentView === "presentation") {
-    saveCurrentPresentationSettings();
-  }
   restartShaderBackground();
   broadcastPresentationState();
 }
