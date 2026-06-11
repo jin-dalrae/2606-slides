@@ -800,6 +800,10 @@ async function rerenderActiveDeck(markdown, slideIndex = currentSlide) {
     width: 1600,
     height: 900,
     margin: 0.02,
+    // Never auto-switch to Reveal's scroll view in narrow windows: it rewraps
+    // sections in .scroll-page divs, which silently breaks deck.slide() — and
+    // with it the slide list, hash routing, and presenter-window sync.
+    scrollActivationWidth: null,
     hash: false,
     controls: false,
     progress: true,
@@ -1430,8 +1434,10 @@ function renderDeckShell(markdown) {
   slide.innerHTML = `
     <div class="reveal deck-root" data-background-mode="${currentBackground}">
       <canvas class="slide-shader" aria-hidden="true"></canvas>
-      <p class="slide-ref-pinned" aria-hidden="true" hidden></p>
       <div class="slides">
+        <!-- Inside .slides so it shares Reveal's transform scale: sized in
+             canvas rems, it stays proportional at every slide size. -->
+        <p class="slide-ref-pinned" aria-hidden="true" hidden></p>
         <section
           data-markdown
           data-separator="^---$"
@@ -1513,6 +1519,10 @@ async function renderPresentation() {
       width: 1600,
       height: 900,
       margin: 0.02,
+      // Never auto-switch to Reveal's scroll view in narrow windows: it rewraps
+      // sections in .scroll-page divs, which silently breaks deck.slide() — and
+      // with it the slide list, hash routing, and presenter-window sync.
+      scrollActivationWidth: null,
       hash: false,
       controls: false,
       progress: true,
