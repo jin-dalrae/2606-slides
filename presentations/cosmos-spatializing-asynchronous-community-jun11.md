@@ -2,7 +2,7 @@
 
 ## Spatializing Asynchronous Community
 
-<p class="deck-subtitle">Research direction: spatial discussion browsing for existing online communities</p>
+<p class="deck-subtitle">Research direction: rebuilding offline community walls in VR</p>
 
 Presenter: Rae Jin  
 June 11, 2026
@@ -13,13 +13,15 @@ Note: This deck is written for presentation. The detailed research report, exper
 
 ## The Question
 
-### Can spatial browsing make internet discussion easier to understand?
+### Can Cosmos rebuild the community wall for VR?
 
-People already spend time reading online communities without posting.
+Offline communities already use spatial, asynchronous surfaces: poster walls, bulletin boards, sticky-note walls, and message walls.
 
-Cosmos asks whether that quiet behavior can become more useful, calmer, and more structured across desktop, AR, VR, and glasses.
+People read by walking, scanning, getting closer, noticing density, and returning to a remembered spot.
 
-<p class="slide-closing">This is not a new social VR room. It is a research direction for reading and browsing forums spatially.</p>
+Cosmos asks whether VR can rebuild that public wall pattern: persistent, spatial, low-pressure, and readable without requiring everyone to be live together.
+
+<p class="slide-closing">This is not a new social VR room. It is an offline spatial community pattern rebuilt as an async VR place.</p>
 
 ---
 
@@ -29,23 +31,53 @@ Cosmos asks whether that quiet behavior can become more useful, calmer, and more
 
 | Section | What it decides |
 | --- | --- |
-| 1. User behavior | Who Cosmos is really for |
-| 2. Market gap | What existing products do not solve |
-| 3. Product strategy | Why Cosmos should mediate before hosting |
-| 4. Interaction risks | What must be tested before building more |
-| 5. Research plan | What evidence I need next |
+| 1. Offline reference | What kind of community space Cosmos rebuilds |
+| 2. User behavior | Who Cosmos is really for |
+| 3. Market gap | What existing products do not solve |
+| 4. Product strategy | Why Cosmos should start wall-first |
+| 5. Interaction risks | What must be tested before building more |
+| 6. Research plan | What evidence I need next |
 
 ---
 
 ## One-Slide Answer
 
-### Cosmos should start as an inspectable mediator
+### Cosmos should start as a VR community wall
 
 The research points to one clear direction:
 
-Cosmos should organize existing discussions first, not ask people to join another platform.
+Cosmos should rebuild offline spatial async community before becoming a full social platform.
 
-Its first job is to help users see stances, tensions, missing voices, and source posts better than a flat feed.
+Do not start by recreating the cocktail party. Start by rebuilding the wall.
+
+Its first job is to help users leave, browse, compare, and return to community messages by place instead of by feed rank.
+
+---
+
+## The Offline Reference
+
+<div class="media-split">
+  <div>
+    <p>The reference is a traditional public message surface.</p>
+    <p>It is asynchronous, but spatial: people contribute at different times, then others read through density, placement, repetition, and material traces.</p>
+    <p>That is the community behavior Cosmos should rebuild in VR.</p>
+  </div>
+  <img src="offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.08.png" alt="A public wall covered with colorful handwritten notes">
+</div>
+
+<p class="slide-source">Source: user-provided offline spatial asynchronous community reference screenshots</p>
+
+---
+
+## What The Wall Already Does
+
+| Offline wall behavior | Cosmos translation |
+| --- | --- |
+| People leave notes over time | Async posts persist in place |
+| Density shows attention | Clusters reveal active regions |
+| Placement carries meaning | Spatial position becomes discourse structure |
+| Readers walk closer | Focus, zoom, and source inspection |
+| People return to spots | Saved paths and remembered regions |
 
 ---
 
@@ -54,12 +86,13 @@ Its first job is to help users see stances, tensions, missing voices, and source
 <p class="slide-ref">Research summary</p>
 
 1. Reading without posting is normal and often strategic.
-2. Feeds are good at volume, weak at structure.
-3. Social VR is spatial, but often too synchronous.
-4. XR reading comfort is fragile.
-5. Smart glasses suggest lightweight return, not dense browsing.
-6. AI summaries are useful but need source trails.
-7. Cosmos should mediate existing content before creating new content.
+2. Offline communities already use spatial async walls.
+3. Feeds are good at volume, weak at place memory.
+4. Spatial audio proves location helps attention, but live voice is hard to scale cleanly.
+5. Social VR is spatial, but often too synchronous and presence-heavy.
+6. XR reading comfort is fragile.
+7. AI summaries are useful but need source trails.
+8. Cosmos should prove the wall before becoming a platform.
 
 ---
 
@@ -176,6 +209,7 @@ Users may not need another place to talk.
 They may need a better way to:
 
 - Read first
+- Walk and scan
 - Orient
 - Compare positions
 - Judge whether to enter
@@ -254,6 +288,34 @@ Cosmos should borrow spatial memory without requiring live performance.
 
 ---
 
+## Dolby Proves Spatial Voice Matters
+
+<p class="slide-ref">New evidence</p>
+
+Paul Boustead's Dolby IO talk frames spatial audio as a solution to the cocktail party problem: real rooms have overlapping speech, laughter, and affirmations, but people use spatial release from masking to focus.
+
+This supports Cosmos's larger bet: when conversation gets dense, location can reduce cognitive load.
+
+<p class="slide-source">Source: Paul Boustead, Dolby IO, "Spatial Communications at Scale in Virtual Environments"</p>
+
+---
+
+## But Live Audio Is Not The Wedge
+
+<p class="slide-ref">Strategic implication</p>
+
+Dolby's scale work also shows the trap:
+
+- N-loudest selection cuts quiet speakers
+- N-closest can create one-way hearing bugs
+- Fixed hearing ranges pop voices in and out
+- Large attenuated ranges are best, but expensive
+- Dense rooms need server-side mixing, noise suppression, and exact voice leveling
+
+<p class="slide-closing">Cosmos should spatialize existing async discussion first, then treat live presence as an optional later layer.</p>
+
+---
+
 ## Spatial Operating Systems Have Windows
 
 <p class="slide-ref">Competitive gap</p>
@@ -262,7 +324,7 @@ Vision Pro and Quest can put browser windows in space.
 
 That does not automatically make discussion spatial.
 
-Cosmos should not place a Reddit feed on a sphere and call it done.
+Cosmos should not place a Reddit feed on a sphere or wall and call it done.
 
 <p class="slide-closing">The structure of the conversation has to become spatial.</p>
 
@@ -292,7 +354,7 @@ The research is cautionary:
 - Building them is real work
 - Adoption stays thin, even in 2D
 
-Cosmos inverts the model: read first, no manual mapping, AI clusters existing threads for users to inspect.
+Cosmos inverts the model: read first, no manual mapping, AI clusters wall content for users to inspect.
 
 <p class="slide-source">Source: Argument-visualization and public-deliberation tool studies<br><a href="https://dl.acm.org/doi/10.1145/3461564.3461584">dl.acm.org</a></p>
 
@@ -305,6 +367,7 @@ Cosmos inverts the model: read first, no manual mapping, AI clusters existing th
 | Reddit | Content scale | Debate structure |
 | Discord | Community continuity | Cross-channel sensemaking |
 | VRChat | Spatial presence | Async low-pressure reading |
+| Spatial voice systems | Natural live attention | Expensive synchronous delivery |
 | Spatial OS browsers | Immersive display | Discussion-native layout |
 | AI summaries | Fast synthesis | Source-checkable disagreement |
 | Argument maps | Explicit structure | Reading-first, no authoring |
@@ -319,6 +382,7 @@ Cosmos is strongest between:
 
 - Flat feeds that hide structure
 - Live rooms that demand presence
+- Spatial voice systems that require heavy real-time infrastructure
 - AI summaries that hide source trails
 
 <p class="slide-closing">The market gap is spatial async sensemaking.</p>
@@ -331,13 +395,13 @@ Cosmos is strongest between:
 
 The strategic question:
 
-Should Cosmos become a new place where people post, or a spatial layer over existing conversations?
+Should Cosmos become a full social platform, or first rebuild the offline community wall as a VR place?
 
 ---
 
-## Native Platform First Is Too Risky
+## Platform First Is Too Risky
 
-Native-first means solving four hard problems at once:
+Platform-first means solving four hard problems at once:
 
 1. Empty content
 2. New community norms
@@ -348,19 +412,20 @@ That is too much before the spatial value is proven.
 
 ---
 
-## Mediator First Is Testable
+## Wall First Is Testable
 
-Mediator-first means using discussions that already exist:
+Wall-first means rebuilding a familiar offline pattern with controlled content:
 
+- User-provided note-wall and bulletin-wall references
 - Permission-cleared Discord exports
 - Class and community discussion boards
+- Prompted sticky-note wall sessions
 - Research and product-feedback datasets
 - Synthetic test datasets
-- Public threads where rights allow
 
-The prototype can test spatial value without building a new community.
+The prototype can test spatial value without building a full social platform.
 
-<p class="slide-closing">The research needs a real discussion, not a specific platform.</p>
+<p class="slide-closing">The research needs a meaningful wall, not a specific platform.</p>
 
 ---
 
@@ -368,25 +433,25 @@ The prototype can test spatial value without building a new community.
 
 | Phase | Cosmos behavior | Evidence needed |
 | --- | --- | --- |
-| 1 | Import existing discussions | Users understand more than in a feed |
-| 2 | Save paths and annotations | Users return to regions |
-| 3 | Draft replies and questions | Users want light contribution |
-| 4 | Native posting | Users want Cosmos-native community |
+| 1 | Rebuild a VR wall with controlled notes | Users scan and orient better than in a feed |
+| 2 | Add saved paths and regions | Users return to remembered places |
+| 3 | Add lightweight note leaving | Users want async contribution |
+| 4 | Add native community or live presence | Users need Cosmos-native social behavior |
 
 ---
 
-## Mediating Is Not Risk-Free Either
+## Content Access Still Matters
 
 <p class="slide-ref">Strategic honesty</p>
 
-Native-first risks an empty platform. Mediator-first risks content access.
+Wall-first reduces platform cold start, but still needs content.
 
 Reddit now gates all API access, bars AI use of its data without a license, and is litigating scrapers.
 
 | Stage | What it needs | Rights exposure |
 | --- | --- | --- |
-| Research now | Any real discussion dataset | Low: permission-cleared or synthetic data |
-| Product later | Source platforms at scale | High: licensing, ToS, platform dependence |
+| Research now | Permission-cleared wall, class, or discussion dataset | Low: participant-created or synthetic data |
+| Product later | Source platforms or public communities at scale | High: licensing, ToS, platform dependence |
 
 <p class="slide-closing">Rights are a build-stage gate, not a research-stage blocker.</p>
 
@@ -398,12 +463,13 @@ Reddit now gates all API access, bars AI use of its data without a license, and 
 
 <p class="slide-ref">Section takeaway</p>
 
-Start as a mediator.
+Start as a VR community wall.
 
 If users trust the spatial layer, then Cosmos can add:
 
 - Saved paths
 - Annotations
+- Note leaving
 - Draft replies
 - Shared maps
 - Native posts
@@ -414,15 +480,16 @@ If users trust the spatial layer, then Cosmos can add:
 
 <p class="slide-ref">Research question 4</p>
 
-The research does not say "build the sphere."
+The research does not say "build a spatial surface for its own sake."
 
-It says the sphere must survive specific risks:
+It says the VR wall must survive specific risks:
 
 - Reading comfort
 - Cognitive load
 - AI trust
 - Device fit
 - Source inspection
+- Place memory
 
 ---
 
@@ -527,6 +594,20 @@ Every cluster, label, tension marker, and missing-voice prompt should answer:
 
 ---
 
+## Risk 5: Live Presence Takes Over
+
+<p class="slide-ref">Dolby IO implication</p>
+
+Spatial voice is valuable, but the hard part is not just rendering.
+
+It is deciding who each listener hears, at what distance, with what attenuation, suppression, leveling, and latency.
+
+Cosmos should not let live audio become the first proof of value.
+
+<p class="slide-closing">First prove the map. Add live presence only if users need it.</p>
+
+---
+
 ## Comfort And Trust Are Product Requirements
 
 <p class="slide-ref">Section takeaway</p>
@@ -540,6 +621,7 @@ It is validated only if users can:
 - Understand more
 - Inspect sources
 - Keep agency
+- Avoid live-room pressure unless they choose it
 
 ---
 
@@ -559,14 +641,15 @@ It should ask:
 
 ## Core Research Claim
 
-### Spatial organization should improve sensemaking
+### A VR wall should improve sensemaking
 
-Given the same discussion, users should be able to identify:
+Given the same set of notes, users should be able to identify:
 
 - 2-3 major stances
 - 1-2 tensions
 - A missing or underrepresented voice
 - The source posts behind a label
+- Where important regions were
 
 More comfortably than in a flat feed.
 
@@ -574,14 +657,14 @@ More comfortably than in a flat feed.
 
 ## Prototype Test 1
 
-### Flat feed vs sphere
+### Flat feed vs VR wall
 
 | Condition | User sees |
 | --- | --- |
 | A | Same posts in normal vertical feed |
-| B | Same posts in Cosmos sphere |
+| B | Same posts on a Cosmos VR wall |
 
-Task: explain the major positions in the conversation.
+Task: explain the major positions and point back to where they were.
 
 ---
 
@@ -684,7 +767,7 @@ The survey should measure behavior, not general interest:
 - Whether feeds feel exhausting
 - Whether voice feels demanding
 - Whether they want source-linked labels
-- Whether they prefer mediator-first or native-first
+- Whether a wall-first product feels more useful than another platform
 
 ---
 
@@ -693,11 +776,12 @@ The survey should measure behavior, not general interest:
 | Goal | Metric |
 | --- | --- |
 | Sensemaking | User identifies stances and tensions |
+| Place memory | User remembers where notes or regions were |
 | Low pressure | User says browsing does not require replying |
 | Trust | User traces labels to source posts |
 | Comfort | User reports low strain and can continue |
 | Return value | User saves or wants to revisit a path |
-| Strategy | User prefers mediator-first or explains why not |
+| Strategy | User prefers wall-first or explains why not |
 
 ---
 
@@ -706,7 +790,8 @@ The survey should measure behavior, not general interest:
 Cosmos should be questioned if:
 
 - Users understand the flat feed faster
-- The sphere feels decorative
+- The spatial wall feels decorative
+- The wall metaphor does not help orientation
 - Headset reading is too tiring
 - AI labels reduce trust
 - Users do not want saved paths
@@ -720,9 +805,10 @@ Cosmos becomes more credible if:
 
 - Users identify stances faster in Cosmos
 - Users describe it as calmer or more orienting
+- Users remember locations like an offline wall
 - Source inspection increases trust
 - Users want to return to saved paths
-- Experts agree mediator-first reduces risk
+- Experts agree wall-first reduces risk
 - Device roles become clear
 
 ---
@@ -733,8 +819,8 @@ Cosmos becomes more credible if:
 
 1. Launch survey.
 2. Recruit 6 user sessions.
-3. Prepare one real discussion dataset.
-4. Run flat-feed vs sphere test.
+3. Prepare one wall-style note dataset.
+4. Run flat-feed vs VR wall test.
 5. Contact expert candidates.
 6. Bring early patterns to June 15 class.
 
@@ -748,7 +834,7 @@ Cosmos becomes more credible if:
 | Survey v1 | Early behavior patterns |
 | Expert outreach | Candidate list and response status |
 | Competitive matrix | Product gaps with sources |
-| Prototype test readout | Flat feed vs sphere findings |
+| Prototype test readout | Flat feed vs VR wall findings |
 
 ---
 
@@ -760,17 +846,17 @@ The research does not prove Cosmos should become a platform.
 
 It proves the next test is worth running:
 
-Can spatial organization make existing internet discussion easier to understand, calmer to browse, and safer to inspect than a flat feed?
+Can a VR community wall make asynchronous community messages easier to understand, calmer to browse, and easier to return to than a flat feed?
 
 ---
 
 ## Final Position
 
-### Build the mediator, test the map
+### Build the wall, test the behavior
 
 Cosmos should move forward as:
 
-> A cross-device spatial browser that helps people understand existing internet discussions by turning stances, tensions, and missing voices into navigable regions.
+> A cross-device VR community wall that rebuilds offline asynchronous message surfaces with place memory, inspectable clusters, and low-pressure contribution.
 
 The next proof is behavioral, not aesthetic.
 
