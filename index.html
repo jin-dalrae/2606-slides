@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Merriweather:wght@300;400;700&family=Montserrat:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Source+Serif+4:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
-    <link rel="stylesheet" href="styles.css?v=20260611-system1">
+    <link rel="stylesheet" href="styles.css?v=20260612-mobile1">
   </head>
   <body>
     <div class="app-shell" data-sidebar-open="true">
@@ -150,10 +150,24 @@
       </main>
     </div>
 
+    <!-- Touch-first full-screen slide reader, engaged automatically on phones. -->
+    <div class="mobile-reader" id="mobileReader" aria-label="Slide reader" hidden>
+      <header class="mobile-reader__bar">
+        <button class="mobile-reader__back" id="readerBack" type="button" aria-label="Back to decks">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <span class="mobile-reader__title" id="readerTitle"></span>
+        <span class="mobile-reader__counter" id="readerCounter" aria-live="polite"></span>
+      </header>
+      <button class="mobile-reader__zone mobile-reader__zone--prev" id="readerPrev" type="button" aria-label="Previous slide" tabindex="-1"></button>
+      <button class="mobile-reader__zone mobile-reader__zone--next" id="readerNext" type="button" aria-label="Next slide" tabindex="-1"></button>
+      <p class="mobile-reader__hint" id="readerHint" aria-hidden="true">Swipe or tap left / right to move</p>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
-    <script src="site-data.js?v=20260611-system1"></script>
-    <script src="script.js?v=20260611-system1"></script>
+    <script src="site-data.js?v=20260612-mobile1"></script>
+    <script src="script.js?v=20260612-mobile1"></script>
   </body>
 </html>

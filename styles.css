@@ -2133,6 +2133,12 @@ button {
   height: 100%;
 }
 
+/* The mobile slide reader is hidden everywhere by default; the phone media
+   query below reveals it when the body opts in with data-mobile-reader="on". */
+.mobile-reader {
+  display: none;
+}
+
 body[data-display-mode="slide"] {
   overflow: hidden;
   background: oklch(0 0 0);
@@ -2326,5 +2332,154 @@ body[data-display-mode="slide"] .stage[data-view="presentation"] .slide {
 
   .slide__title {
     font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  /* ---- Mobile slide reader -------------------------------------------------
+     A full-screen, touch-first viewer. The deck fills the screen and all the
+     editor chrome is hidden; a transparent overlay supplies the back control,
+     a slide counter, and left/right tap zones. ---- */
+  body[data-mobile-reader="on"] {
+    overflow: hidden;
+  }
+
+  body[data-mobile-reader="on"] .presentation-header,
+  body[data-mobile-reader="on"] .presentation-list,
+  body[data-mobile-reader="on"] .slide-list,
+  body[data-mobile-reader="on"] .slide-list-reopen,
+  body[data-mobile-reader="on"] .presentation-settings,
+  body[data-mobile-reader="on"] .speaker-notes,
+  body[data-mobile-reader="on"] .markdown-editor,
+  body[data-mobile-reader="on"] .site-footer {
+    display: none !important;
+  }
+
+  body[data-mobile-reader="on"] .stage,
+  body[data-mobile-reader="on"] .presentation-workspace {
+    display: block;
+    padding: 0;
+    gap: 0;
+  }
+
+  body[data-mobile-reader="on"] .presentation-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: block !important;
+    grid-template-columns: none !important;
+    width: 100vw;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: oklch(0 0 0);
+  }
+
+  body[data-mobile-reader="on"] .slide,
+  body[data-mobile-reader="on"] .stage[data-view="presentation"] .slide {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  body[data-mobile-reader="on"] .deck-root {
+    width: 100%;
+    height: 100%;
+  }
+
+  body[data-mobile-reader="on"] .mobile-reader {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    /* Transparent by default so the slide shows through; the bar and tap zones
+       re-enable pointer events for the controls only. */
+    pointer-events: none;
+  }
+
+  .mobile-reader__bar {
+    pointer-events: auto;
+    position: absolute;
+    inset: 0 0 auto 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 56px;
+    padding: env(safe-area-inset-top) var(--space-3) 0;
+    color: #fff;
+    background: linear-gradient(to bottom, oklch(0 0 0 / 0.62), transparent);
+  }
+
+  .mobile-reader__back {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #fff;
+    background: oklch(1 0 0 / 0.16);
+    border-radius: 999px;
+  }
+
+  .mobile-reader__title {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-reader__counter {
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.85;
+  }
+
+  .mobile-reader__zone {
+    pointer-events: auto;
+    position: absolute;
+    top: 56px;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-reader__zone--prev {
+    left: 0;
+    width: 34%;
+  }
+
+  .mobile-reader__zone--next {
+    right: 0;
+    width: 66%;
+  }
+
+  .mobile-reader__hint {
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(env(safe-area-inset-bottom) + 18px);
+    margin: 0;
+    text-align: center;
+    font-size: var(--text-xs);
+    color: oklch(1 0 0 / 0.82);
+    text-shadow: 0 1px 4px oklch(0 0 0 / 0.65);
+    transition: opacity 500ms ease;
+  }
+
+  .mobile-reader__hint[data-faded="true"] {
+    opacity: 0;
   }
 }

@@ -74,6 +74,13 @@ if (homeLink) {
 const profileLinks = document.querySelector("#profileLinks");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
+const mobileReader = document.querySelector("#mobileReader");
+const readerBack = document.querySelector("#readerBack");
+const readerPrev = document.querySelector("#readerPrev");
+const readerNext = document.querySelector("#readerNext");
+const readerTitle = document.querySelector("#readerTitle");
+const readerCounter = document.querySelector("#readerCounter");
+const readerHint = document.querySelector("#readerHint");
 const mobileMedia = window.matchMedia("(max-width: 760px)");
 const displayMode = new URLSearchParams(window.location.search).get("display") === "slide";
 const presentationChannel = "BroadcastChannel" in window ? new BroadcastChannel("rae-slides-presentation") : null;
@@ -88,6 +95,8 @@ let cleanupShader = null;
 let pendingSlideIndex = null;
 let slideWindow = null;
 let suppressBroadcast = false;
+let mobileReaderActive = false;
+let readerHintTimer = null;
 let currentTheme = window.localStorage.getItem(storageKeys.theme) || "light";
 let currentTransition = defaultPresentationSettings.transition;
 let currentBackground = defaultPresentationSettings.background;
@@ -982,6 +991,7 @@ function updateSlideControls() {
   syncActiveSlideListItem();
   renderSpeakerNotes();
   updatePinnedSlideRef();
+  syncMobileReaderChrome();
   broadcastPresentationState();
 }
 
@@ -1331,6 +1341,7 @@ function destroyDeck() {
 async function renderHome() {
   currentView = "home";
   stage.dataset.view = "home";
+  exitMobileReader();
   destroyDeck();
   homeLink.setAttribute("aria-current", "page");
 
@@ -1544,6 +1555,7 @@ async function renderPresentation() {
     updateSlideControls();
     syncPresentationUrl(currentSlide);
     renderMarkdownEditor();
+    syncMobileReader();
   } catch (error) {
     currentSlideTitles = [];
     currentSlideNotes = [];
@@ -1680,6 +1692,66 @@ function syncSidebarForViewport() {
   toggleSidebar(!mobileMedia.matches);
 }
 
+// --- Mobile slide reader ---------------------------------------------------
+// A full-screen, touch-first viewer for phones. It reuses the live Reveal deck
+// for navigation and only swaps the chrome, so the slide list, hash routing,
+// and presenter-window sync keep working underneath.
+
+function mobileReaderEligible() {
+  return Boolean(mobileReader) && mobileMedia.matches && currentView === "presentation" && !displayMode && !editorOpen;
+}
+
+function syncMobileReaderChrome() {
+  if (!mobileReaderActive) {
+    return;
+  }
+  const total = currentSlideTitles.length;
+  readerCounter.textContent = total ? `${currentSlide + 1} / ${total}` : "";
+  readerTitle.textContent = selectedPresentation()?.resolvedTitle || presentationTitle.textContent || "";
+}
+
+function enterMobileReader() {
+  if (mobileReaderActive) {
+    return;
+  }
+  mobileReaderActive = true;
+  document.body.dataset.mobileReader = "on";
+  mobileReader.hidden = false;
+  if (readerHint) {
+    readerHint.dataset.faded = "false";
+    window.clearTimeout(readerHintTimer);
+    readerHintTimer = window.setTimeout(() => {
+      readerHint.dataset.faded = "true";
+    }, 2600);
+  }
+  syncMobileReaderChrome();
+  if (deck) {
+    window.requestAnimationFrame(() => deck.layout());
+  }
+}
+
+function exitMobileReader() {
+  if (!mobileReaderActive) {
+    return;
+  }
+  mobileReaderActive = false;
+  delete document.body.dataset.mobileReader;
+  mobileReader.hidden = true;
+  window.clearTimeout(readerHintTimer);
+  if (deck) {
+    window.requestAnimationFrame(() => deck.layout());
+  }
+}
+
+function syncMobileReader() {
+  if (mobileReaderEligible()) {
+    enterMobileReader();
+    syncMobileReaderChrome();
+  } else {
+    exitMobileReader();
+  }
+}
+
 async function toggleFullscreen() {
   if (currentView !== "presentation") {
     return;
@@ -1702,6 +1774,51 @@ transitionSelect.addEventListener("change", (event) => updateTransition(event.ta
 backgroundSelect.addEventListener("change", (event) => updateBackground(event.target.value));
 fontSelect.addEventListener("change", (event) => updateFont(event.target.value));
 versionSelect.addEventListener("change", (event) => loadSpecificVersion(event.target.value));
+
+if (mobileReader) {
+  // A swipe must not also fire the tap-zone click that follows it on touch.
+  let swipeHandled = false;
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  readerBack.addEventListener("click", () => {
+    exitMobileReader();
+    showHome();
+  });
+  readerPrev.addEventListener("click", () => {
+    if (!swipeHandled) {
+      goToPreviousSlide();
+    }
+  });
+  readerNext.addEventListener("click", () => {
+    if (!swipeHandled) {
+      goToNextSlide();
+    }
+  });
+
+  mobileReader.addEventListener("touchstart", (event) => {
+    const touch = event.changedTouches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    swipeHandled = false;
+  }, { passive: true });
+
+  mobileReader.addEventListener("touchend", (event) => {
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - touchStartX;
+    const dy = touch.clientY - touchStartY;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      swipeHandled = true;
+      if (dx < 0) {
+        goToNextSlide();
+      } else {
+        goToPreviousSlide();
+      }
+      // Release the guard after the synthetic click would have fired.
+      window.setTimeout(() => { swipeHandled = false; }, 400);
+    }
+  }, { passive: true });
+}
 
 function populateVersionSelect(versions) {
   versionSelect.innerHTML = `<option value="latest">Latest</option>`;
@@ -1831,7 +1948,10 @@ window.addEventListener("resize", () => {
   }
 });
 
-mobileMedia.addEventListener("change", syncSidebarForViewport);
+mobileMedia.addEventListener("change", () => {
+  syncSidebarForViewport();
+  syncMobileReader();
+});
 
 if (presentationChannel) {
   presentationChannel.addEventListener("message", (event) => applyRemotePresentationState(event.data));
