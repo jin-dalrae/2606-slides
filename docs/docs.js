@@ -424,6 +424,23 @@ function isPublicItem(item) {
   return !!(item && item.public);
 }
 
+function canViewDoc(item) {
+  return !!currentUser || isPublicItem(item);
+}
+
+async function loadStaticMarkdown(file) {
+  if (!file) {
+    return "";
+  }
+
+  try {
+    const response = await fetch(file, { cache: "no-store" });
+    return response.ok ? response.text() : "";
+  } catch {
+    return "";
+  }
+}
+
 function currentSlug() {
   return window.location.hash.replace(/^#\/?/, "");
 }
@@ -439,7 +456,9 @@ function syncHomeUrl() {
 function renderDocList() {
   docList.innerHTML = docSections
     .map((section) => {
-      const items = docs.map((item, index) => ({ item, index })).filter(({ item }) => item.section === section);
+      const items = docs
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => item.section === section && canViewDoc(item));
 
       if (!items.length) {
         return "";
@@ -484,7 +503,9 @@ function renderDocsHome() {
   const groups = docSections
     .map((section) => ({
       section,
-      items: docs.map((item, index) => ({ item, index })).filter(({ item }) => item.section === section)
+      items: docs
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => item.section === section && canViewDoc(item))
     }))
     .filter((group) => group.items.length);
 
@@ -547,9 +568,8 @@ async function loadDoc(index = currentDoc) {
       let markdown = data.baseMarkdown || data.markdown || "";
 
       if (!markdown && doc.file) {
-        const response = await fetch(doc.file, { cache: "no-store" });
-        if (response.ok) {
-          markdown = await response.text();
+        markdown = await loadStaticMarkdown(doc.file);
+        if (markdown) {
           try {
             await apiRequest(`decks/${encodeURIComponent(doc.slug)}/base`, {
               method: "PUT",
@@ -571,33 +591,30 @@ async function loadDoc(index = currentDoc) {
 
   // Unauthenticated but this doc is public → load via public endpoint (read-only)
   if (publicItem) {
+    docViewer.innerHTML = `<p class="doc-viewer__status">Loading ${escapeHtml(doc.title)}...</p>`;
+
     try {
       const res = await fetch(`/api/public/decks/${encodeURIComponent(doc.slug)}`);
-      if (!res.ok) throw new Error("Failed to load public document");
-      const data = await res.json();
-      const markdown = data.markdown || "";
-
-      if (!markdown && doc.file) {
-        try {
-          const fallbackRes = await fetch(doc.file, { cache: "no-store" });
-          if (fallbackRes.ok) {
-            // we can render the fallback, but cannot seed without login
-            const fb = await fallbackRes.text();
-            docViewer.innerHTML = markdownToHtml(fb);
-            document.querySelector(".docs-workspace")?.scrollTo({ top: 0 });
-            return;
-          }
-        } catch {}
+      if (res.ok) {
+        const data = await res.json();
+        const markdown = data.markdown || "";
+        if (markdown) {
+          docViewer.innerHTML = markdownToHtml(markdown);
+          document.querySelector(".docs-workspace")?.scrollTo({ top: 0 });
+          return;
+        }
       }
+    } catch {}
 
-      if (!markdown) throw new Error("Public document content is not available.");
-      docViewer.innerHTML = markdownToHtml(markdown);
+    const fallback = await loadStaticMarkdown(doc.file);
+    if (fallback) {
+      docViewer.innerHTML = markdownToHtml(fallback);
       document.querySelector(".docs-workspace")?.scrollTo({ top: 0 });
       return;
-    } catch (error) {
-      docViewer.innerHTML = `<p class="doc-viewer__status">${escapeHtml(error.message)}</p>`;
-      return;
     }
+
+    docViewer.innerHTML = `<p class="doc-viewer__status">Public document content is not available.</p>`;
+    return;
   }
 
   // Private document + not logged in
@@ -700,6 +717,8 @@ renderAccountPanel();
   } else if (isPublicDoc && initialDocIndex >= 0) {
     // Direct link to a public document — load it read-only without showing the full list or sign-in wall
     loadDoc(initialDocIndex);
+  } else if (docs.some(isPublicItem)) {
+    renderDocsHome();
   } else {
     renderUnauthenticatedState();
   }
