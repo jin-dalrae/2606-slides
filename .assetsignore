@@ -17,4 +17,8 @@ package-lock.json
 .wrangler
 .wrangler/**
 README.md
+seed.js
 seed-versions.js
+.seed.tmp.sql
+temp_seed.sql
+BUG_REPORT.md

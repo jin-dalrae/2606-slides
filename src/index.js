@@ -1,3 +1,8 @@
+import { PUBLIC_SLUGS, PUBLIC_FILES } from "./public-content.js";
+
+const PUBLIC_SLUG_SET = new Set(PUBLIC_SLUGS);
+const PUBLIC_FILE_SET = new Set(PUBLIC_FILES);
+
 const SESSION_COOKIE = "rae_slides_session";
 const SESSION_DAYS = 14;
 const PASSWORD_ITERATIONS = 120000;
@@ -296,18 +301,31 @@ async function saveDeck(request, env, slug) {
   }
 
   const updatedAt = nowIso();
-  await env.DB.prepare(
-    `INSERT INTO user_decks (user_id, slug, markdown, updated_at)
-     VALUES (?, ?, ?, ?)
-     ON CONFLICT(user_id, slug)
-     DO UPDATE SET markdown = excluded.markdown, updated_at = excluded.updated_at`
-  ).bind(user.id, slug, markdown, updatedAt).run();
-
   const versionId = randomId();
-  await env.DB.prepare(
-    `INSERT INTO deck_versions (id, slug, user_id, markdown, created_at, version_name)
-     VALUES (?, ?, ?, ?, ?, ?)`
-  ).bind(versionId, slug, user.id, markdown, updatedAt, "User Edit").run();
+
+  // Run the three writes as one atomic D1 batch (transaction):
+  //  1. Ensure a canonical `decks` row exists so the deck_versions FK
+  //     (slug -> decks.slug) holds even when the base hasn't been seeded yet.
+  //  2. Upsert the user's personal override.
+  //  3. Record a version snapshot.
+  // Previously these ran as separate statements, so a FK failure on the version
+  // insert returned a 500 *after* the override was already written — a partial,
+  // inconsistent save. Batching makes it all-or-nothing.
+  await env.DB.batch([
+    env.DB.prepare(
+      `INSERT OR IGNORE INTO decks (slug, markdown, updated_at) VALUES (?, '', ?)`
+    ).bind(slug, updatedAt),
+    env.DB.prepare(
+      `INSERT INTO user_decks (user_id, slug, markdown, updated_at)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(user_id, slug)
+       DO UPDATE SET markdown = excluded.markdown, updated_at = excluded.updated_at`
+    ).bind(user.id, slug, markdown, updatedAt),
+    env.DB.prepare(
+      `INSERT INTO deck_versions (id, slug, user_id, markdown, created_at, version_name)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    ).bind(versionId, slug, user.id, markdown, updatedAt, "User Edit")
+  ]);
 
   return json({ ok: true, updatedAt });
 }
@@ -460,6 +478,14 @@ async function handleApi(request, env) {
   // Anyone with the direct URL can read, but cannot edit (edits still require login + go through user_decks).
   if (parts[0] === "public" && parts[1] === "decks" && parts[2]) {
     const slug = parts[2];
+
+    // The public endpoint must only ever expose items explicitly marked
+    // `public: true`. Otherwise anyone could read a private deck's content by
+    // guessing its slug, bypassing the login wall.
+    if (!PUBLIC_SLUG_SET.has(slug)) {
+      return unauthorized();
+    }
+
     if (method === "GET" && parts.length === 3) {
       const base = await getBaseDeck(env, slug);
       return json({
@@ -494,17 +520,20 @@ export default {
       return handleApi(request, env);
     }
 
-    // .md protection temporarily disabled to support client-side fallback
-    // for public documents (during transition to DB-only storage).
-    // Public docs can fall back to their original .md files if not yet seeded in D1.
-    // Private content lists remain login-walled.
-    // Re-enable later once all public content is seeded:
-    // if (/\.md(\?|$)/.test(url.pathname)) {
-    //   const user = await currentUser(request, env);
-    //   if (!user) {
-    //     return json({ error: "Authentication required to access source files." }, 401);
-    //   }
-    // }
+    // Protect raw .md source files: only public sources are fetchable without a
+    // session. Public decks/docs are served from D1 via the API, so blocking the
+    // raw files for everyone else keeps private content (and any future private
+    // deck) behind the login wall while still letting public sources resolve and
+    // letting the signed-in owner read any source for the editor's auto-seed.
+    if (/\.md(\?|$)/.test(url.pathname)) {
+      const requestedFile = decodeURIComponent(url.pathname.replace(/^\/+/, ""));
+      if (!PUBLIC_FILE_SET.has(requestedFile)) {
+        const user = await currentUser(request, env);
+        if (!user) {
+          return json({ error: "Authentication required to access source files." }, 401);
+        }
+      }
+    }
 
     return env.ASSETS.fetch(request);
   }

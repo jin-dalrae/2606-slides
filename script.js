@@ -12,7 +12,17 @@ const presentations = (siteData.slides || []).map((item) => ({
   tagline: item.tagline || projectMeta.find((project) => project.name === (item.section || item.project))?.tagline || ""
 }));
 
-presentations.sort((a, b) => new Date(b.date) - new Date(a.date));
+// Sort newest-first, but keep it stable: unparseable dates (e.g. "May 2026",
+// "Reference") fall back to 0 instead of NaN, and ties preserve site-data order
+// so the deck order can't shift unpredictably as decks are added.
+const deckDateValue = (value) => {
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+};
+presentations.forEach((item, index) => {
+  item.order = index;
+});
+presentations.sort((a, b) => deckDateValue(b.date) - deckDateValue(a.date) || a.order - b.order);
 
 const presentationSections = projectMeta.map((project) => project.name).filter((name) => name !== "Reference");
 
@@ -462,7 +472,7 @@ function presentationIndexFromSlug(slug) {
   }
 
   const index = presentations.findIndex((item) => item.slug === slug.toLowerCase());
-  return index >= 0 ? index : 0;
+  return index; // -1 when not found, so callers can show a "deck not found" state
 }
 
 function presentationTargetFromLocation() {
@@ -1465,7 +1475,7 @@ async function renderPresentation() {
   transitionSelect.value = currentTransition;
   backgroundSelect.value = currentBackground;
   fontSelect.value = currentFont;
-  presentationTitle.textContent = deckMeta.title;
+  presentationTitle.textContent = deckMeta.docTitle || deckMeta.sidebarTitle || deckMeta.title;
   presentationDate.textContent = deckMeta.date;
   slideCounter.textContent = "Loading";
   slideList.innerHTML = "";
@@ -1500,7 +1510,11 @@ async function renderPresentation() {
     currentSlideTitles = markdownSlideTitles(markdown);
     currentSlideNotes = markdownSlideNotes(markdown);
     deckMeta.resolvedTitle = firstSlideHeaderTitle(markdown) || deckMeta.title;
-    presentationTitle.textContent = deckMeta.resolvedTitle;
+    // The header is the curated chrome label (e.g. "Research direction" vs
+    // "Research proposal") so two decks that open with the same H1/H2 don't show
+    // identical headers. The deck's own title slide still shows its real title.
+    presentationTitle.textContent =
+      deckMeta.docTitle || deckMeta.sidebarTitle || deckMeta.resolvedTitle || deckMeta.title;
     renderPresentationList();
     currentSlide = 0;
     renderDeckShell(markdown);
@@ -1641,9 +1655,53 @@ function showHome() {
 }
 
 function goToPresentation(index, slideIndex = 0) {
-  currentPresentation = Math.max(0, Math.min(index, presentations.length - 1));
+  // An unrecognized slug resolves to -1: show a clear "not found" state instead
+  // of silently loading the newest deck and rewriting the URL to it.
+  if (!Number.isInteger(index) || index < 0 || index >= presentations.length) {
+    renderPresentationNotFound();
+    return;
+  }
+  currentPresentation = index;
   pendingSlideIndex = Math.max(0, slideIndex);
   renderPresentation();
+}
+
+function renderPresentationNotFound() {
+  currentView = "presentation";
+  stage.dataset.view = "presentation";
+  destroyDeck();
+  hideMarkdownEditor();
+  homeLink.removeAttribute("aria-current");
+  currentSlideTitles = [];
+  currentSlideNotes = [];
+  slide.classList.remove("slide--home");
+
+  const requested = window.location.hash.replace(/^#\/?/, "").split("/").filter(Boolean)[0] || "";
+  presentationTitle.textContent = "Not found";
+  presentationDate.textContent = "";
+  slideCounter.textContent = "";
+  slideList.innerHTML = "";
+  slide.innerHTML = `
+    <div class="slide__error">
+      <p class="slide__eyebrow">Deck not found</p>
+      <h2 class="slide__title">No deck matches &ldquo;${escapeHtml(requested)}&rdquo;.</h2>
+      <p class="slide__body">This link may be out of date. Pick a deck from the list on the left, or return home.</p>
+      <p class="slide__body" style="margin-top: 0.75rem;"><button class="text-button" id="notFoundHome" type="button">Go to home</button></p>
+    </div>
+  `;
+  slide.querySelector("#notFoundHome")?.addEventListener("click", showHome);
+
+  prevSlide.disabled = true;
+  nextSlide.disabled = true;
+  fullscreen.disabled = true;
+  editDeck.disabled = true;
+  transitionSelect.disabled = true;
+  backgroundSelect.disabled = true;
+  fontSelect.disabled = true;
+  versionSelect.disabled = true;
+  // Note: we deliberately do NOT call syncPresentationUrl here, so the bad hash
+  // is left as-is rather than masqueraded as a valid deck.
+  renderPresentationList();
 }
 
 function goToSlide(index) {

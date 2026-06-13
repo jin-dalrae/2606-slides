@@ -413,7 +413,7 @@ function docIndexFromSlug(slug) {
   }
 
   const index = docs.findIndex((item) => item.slug === slug);
-  return index >= 0 ? index : 0;
+  return index; // -1 when not found; callers render the docs home instead of a wrong doc
 }
 
 function getDocBySlug(slug) {
