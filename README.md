@@ -9,7 +9,8 @@ A static presentation library for Rae Jin's 2026 Summer MDes IxD CCA work.
 - Per-deck slide outline with smart `H1: H2` titling for title slides.
 - Reveal.js engine, Markdown-authored decks.
 - Keyboard navigation (arrows, space) and fullscreen mode (F).
-- Speaker notes through Reveal `Note:` syntax.
+- Speaker notes through Reveal `Note:` syntax, with right, below, and hidden note layouts.
+- Markdown download and PDF export controls for each deck.
 - Theme toggle (dark / light) with palette-aware shader.
 - Animated WebGL shader background inside every slide frame.
 - Cardinal-inspired visual system: Lora typography, mint accents, translucent panels, compact chrome.
@@ -23,13 +24,12 @@ A static presentation library for Rae Jin's 2026 Summer MDes IxD CCA work.
 - Real-title resolution: the chrome always reflects what the deck actually says, not a placeholder label.
 - Animated shader background gives every deck atmosphere without a single hero image.
 - Markdown-first authoring — a new deck is a single `.md` file plus one line in `script.js`.
-- Zero-build static deploy, even with theme toggle, custom layouts, and live shader.
+- Zero-build static deploy, even with theme toggle, custom layouts, speaker notes, exports, and live shader.
 
 ## What We're Working On
 
 - A few more layout patterns: vertical 3-stack, comparison columns, full-bleed quote.
 - Slide thumbnails in the sidebar slide list.
-- Print / PDF export per deck.
 - Speaker view on a second display.
 - Polish on the orbital triad (connecting lines, subtle motion).
 - Mobile chrome pass — sidebar, header, and controls feel tight at narrow widths.
@@ -48,6 +48,13 @@ Open:
 ```txt
 http://localhost:8000
 ```
+
+## Export
+
+- `MD` downloads the active deck Markdown.
+- `PDF` opens a slide-only export window using Reveal's `print-pdf` mode.
+- For PDF export, use Chrome or Chromium and choose Save as PDF, Landscape, no margins, and background graphics enabled.
+- PDF export forces a white slide background and light deck colors, independent of the current app theme.
 
 ## Deck Format
 

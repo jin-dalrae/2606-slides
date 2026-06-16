@@ -35,8 +35,11 @@ const storageKeys = {
 const defaultPresentationSettings = {
   transition: "slide",
   background: "shader",
-  font: "lora"
+  font: "lora",
+  notesPosition: "right"
 };
+
+const notesPositionOptions = new Set(["right", "below", "hidden"]);
 
 const fontOptions = {
   lora: '"Lora", ui-serif, Georgia, serif',
@@ -64,6 +67,8 @@ const nextSlide = document.querySelector("#nextSlide");
 const fullscreen = document.querySelector("#fullscreen");
 const openSlideWindow = document.querySelector("#openSlideWindow");
 const editDeck = document.querySelector("#editDeck");
+const downloadMarkdown = document.querySelector("#downloadMarkdown");
+const downloadPdf = document.querySelector("#downloadPdf");
 const accountPanel = document.querySelector("#accountPanel");
 const accountMenu = document.querySelector("#accountMenu");
 const accountTrigger = document.querySelector("#accountTrigger");
@@ -85,7 +90,9 @@ const profileLinks = document.querySelector("#profileLinks");
 const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
 const mobileMedia = window.matchMedia("(max-width: 760px)");
-const displayMode = new URLSearchParams(window.location.search).get("display") === "slide";
+const urlSearchParams = new URLSearchParams(window.location.search);
+const displayMode = urlSearchParams.get("display") === "slide";
+const printPdfMode = urlSearchParams.has("print-pdf");
 const presentationChannel = "BroadcastChannel" in window ? new BroadcastChannel("rae-slides-presentation") : null;
 
 let currentView = "home";
@@ -98,10 +105,11 @@ let cleanupShader = null;
 let pendingSlideIndex = null;
 let slideWindow = null;
 let suppressBroadcast = false;
-let currentTheme = window.localStorage.getItem(storageKeys.theme) || "light";
+let currentTheme = printPdfMode ? "light" : window.localStorage.getItem(storageKeys.theme) || "light";
 let currentTransition = defaultPresentationSettings.transition;
 let currentBackground = defaultPresentationSettings.background;
 let currentFont = defaultPresentationSettings.font;
+let currentNotesPosition = defaultPresentationSettings.notesPosition;
 let currentUser = null;
 let authMode = "signin";
 let authStatus = "";
@@ -113,6 +121,7 @@ let editorBusy = false;
 let baseMarkdown = "";
 let activeMarkdown = "";
 let hasUserMarkdown = false;
+let printPdfRequested = false;
 
 function selectedPresentation() {
   return presentations[currentPresentation];
@@ -124,6 +133,27 @@ function isPublicItem(item) {
 
 function selectedPresentationSlug() {
   return selectedPresentation().slug || String(currentPresentation + 1);
+}
+
+function downloadFile(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function safeFilename(value, fallback = "presentation") {
+  const cleaned = String(value || fallback)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return cleaned || fallback;
 }
 
 function presentationSettingsKey(index = currentPresentation) {
@@ -145,7 +175,12 @@ function readPresentationSettings(index = currentPresentation) {
   return {
     transition: saved.transition || item.transition || defaultPresentationSettings.transition,
     background: saved.background || item.background || defaultPresentationSettings.background,
-    font: fontOptions[saved.font] ? saved.font : fontOptions[item.font] ? item.font : defaultPresentationSettings.font
+    font: fontOptions[saved.font] ? saved.font : fontOptions[item.font] ? item.font : defaultPresentationSettings.font,
+    notesPosition: notesPositionOptions.has(saved.notesPosition)
+      ? saved.notesPosition
+      : notesPositionOptions.has(item.notesPosition)
+        ? item.notesPosition
+        : defaultPresentationSettings.notesPosition
   };
 }
 
@@ -155,9 +190,39 @@ function saveCurrentPresentationSettings() {
     JSON.stringify({
       transition: currentTransition,
       background: currentBackground,
-      font: currentFont
+      font: currentFont,
+      notesPosition: currentNotesPosition
     })
   );
+}
+
+function applyNotesPosition() {
+  currentNotesPosition = notesPositionOptions.has(currentNotesPosition)
+    ? currentNotesPosition
+    : defaultPresentationSettings.notesPosition;
+  const notesPositionSelect = document.querySelector("#notesPositionSelect");
+  if (notesPositionSelect && notesPositionSelect.value !== currentNotesPosition) {
+    notesPositionSelect.value = currentNotesPosition;
+  }
+  if (presentationStage) {
+    presentationStage.dataset.notesMode = currentNotesPosition;
+  }
+  renderSpeakerNotes();
+  if (deck) {
+    window.requestAnimationFrame(() => deck.layout());
+  }
+}
+
+function loadRevealPdfStylesheet() {
+  if (!printPdfMode || document.querySelector("link[data-reveal-pdf]")) {
+    return;
+  }
+
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "https://cdn.jsdelivr.net/npm/reveal.js@5/dist/print/pdf.css";
+  link.dataset.revealPdf = "true";
+  document.head.append(link);
 }
 
 function applyCurrentDeckFont() {
@@ -367,6 +432,7 @@ function renderUnauthenticatedState() {
   fullscreen.disabled = true;
   openSlideWindow.disabled = true;
   editDeck.disabled = true;
+  updateExportButtonState();
   transitionSelect.disabled = true;
   backgroundSelect.disabled = true;
   fontSelect.disabled = true;
@@ -745,6 +811,7 @@ async function loadDeckMarkdown(deckMeta) {
 function updateEditButtonState() {
   if (currentView !== "presentation") {
     editDeck.disabled = true;
+    updateExportButtonState();
     return;
   }
 
@@ -752,6 +819,17 @@ function updateEditButtonState() {
   editDeck.textContent = editorOpen ? "Close edit" : "Edit";
   editDeck.title = userCanEdit() ? "Edit this deck on site" : "Sign in to edit this deck";
   editDeck.setAttribute("aria-label", editDeck.title);
+  updateExportButtonState();
+}
+
+function updateExportButtonState() {
+  const disabled = currentView !== "presentation" || !activeMarkdown;
+  if (downloadMarkdown) {
+    downloadMarkdown.disabled = disabled;
+  }
+  if (downloadPdf) {
+    downloadPdf.disabled = currentView !== "presentation" || !deck;
+  }
 }
 
 function hideMarkdownEditor() {
@@ -817,6 +895,8 @@ async function rerenderActiveDeck(markdown, slideIndex = currentSlide) {
     center: false,
     transition: currentTransition,
     keyboard: false,
+    pdfMaxPagesPerSlide: 1,
+    pdfSeparateFragments: false,
     plugins: [RevealMarkdown, RevealNotes]
   });
 
@@ -988,11 +1068,55 @@ function updateSlideControls() {
   nextSlide.disabled = currentSlide >= totalSlides - 1;
   fullscreen.disabled = false;
   openSlideWindow.disabled = false;
+  updateExportButtonState();
   renderSlideList();
   syncActiveSlideListItem();
   renderSpeakerNotes();
   updatePinnedSlideRef();
   broadcastPresentationState();
+  requestPdfPrintWhenReady();
+}
+
+function currentExportBaseName() {
+  const item = selectedPresentation();
+  return safeFilename(item.slug || item.sidebarTitle || item.resolvedTitle || item.title, "presentation");
+}
+
+function downloadCurrentMarkdown() {
+  if (currentView !== "presentation" || !activeMarkdown) {
+    return;
+  }
+
+  downloadFile(`${currentExportBaseName()}.md`, activeMarkdown, "text/markdown;charset=utf-8");
+}
+
+function printCurrentDeckToPdf() {
+  if (currentView !== "presentation" || !deck) {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("display", "slide");
+  url.searchParams.set("print-pdf", "");
+  url.hash = `${currentDeckSlug()}/1`;
+
+  const printWindow = window.open(url.toString(), "rae-slides-pdf", "popup=yes,width=1280,height=900");
+  if (!printWindow) {
+    window.alert("Allow pop-ups for this site, then try PDF again.");
+  }
+}
+
+function requestPdfPrintWhenReady() {
+  if (!printPdfMode || printPdfRequested || currentView !== "presentation" || !deck) {
+    return;
+  }
+
+  printPdfRequested = true;
+  document.body.dataset.printPdfMode = "true";
+  window.setTimeout(() => {
+    window.focus();
+    window.print();
+  }, 900);
 }
 
 // Mirror the current slide's right-side reference label into a single element
@@ -1024,11 +1148,27 @@ function renderSpeakerNotes() {
   speakerNotes.hidden = false;
   speakerNotes.innerHTML = `
     <div class="speaker-notes__header">
-      <p>Speaker notes</p>
-      <span>Slide ${currentSlide + 1}</span>
+      <div class="speaker-notes__title">
+        <p>Speaker notes</p>
+        <span>Slide ${currentSlide + 1}</span>
+      </div>
+      <label class="select-control select-control--notes" for="notesPositionSelect">
+        <span>Notes</span>
+        <select id="notesPositionSelect">
+          <option value="right">Right</option>
+          <option value="below">Below</option>
+          <option value="hidden">Hidden</option>
+        </select>
+      </label>
     </div>
-    <div class="speaker-notes__body">${speakerNoteHtml(currentSlideNotes[currentSlide])}</div>
+    ${currentNotesPosition === "hidden" ? "" : `<div class="speaker-notes__body">${speakerNoteHtml(currentSlideNotes[currentSlide])}</div>`}
   `;
+
+  const notesPositionSelect = speakerNotes.querySelector("#notesPositionSelect");
+  if (notesPositionSelect) {
+    notesPositionSelect.value = currentNotesPosition;
+    notesPositionSelect.addEventListener("change", (event) => updateNotesPosition(event.target.value));
+  }
 }
 
 function broadcastPresentationState() {
@@ -1353,6 +1493,7 @@ async function renderHome() {
   fullscreen.disabled = true;
   openSlideWindow.disabled = true;
   editDeck.disabled = true;
+  updateExportButtonState();
   transitionSelect.disabled = true;
   backgroundSelect.disabled = true;
   fontSelect.disabled = true;
@@ -1466,15 +1607,19 @@ async function renderPresentation() {
   destroyDeck();
   hideMarkdownEditor();
   homeLink.removeAttribute("aria-current");
+  activeMarkdown = "";
+  updateExportButtonState();
 
   const deckMeta = selectedPresentation();
   const deckSettings = readPresentationSettings();
   currentTransition = deckSettings.transition;
-  currentBackground = deckSettings.background;
+  currentBackground = printPdfMode ? "plain" : deckSettings.background;
   currentFont = deckSettings.font;
+  currentNotesPosition = deckSettings.notesPosition;
   transitionSelect.value = currentTransition;
   backgroundSelect.value = currentBackground;
   fontSelect.value = currentFont;
+  applyNotesPosition();
   presentationTitle.textContent = deckMeta.docTitle || deckMeta.sidebarTitle || deckMeta.title;
   presentationDate.textContent = deckMeta.date;
   slideCounter.textContent = "Loading";
@@ -1538,6 +1683,8 @@ async function renderPresentation() {
       center: false,
       transition: currentTransition,
       keyboard: false,
+      pdfMaxPagesPerSlide: 1,
+      pdfSeparateFragments: false,
       plugins: [RevealMarkdown, RevealNotes]
     });
 
@@ -1561,6 +1708,7 @@ async function renderPresentation() {
   } catch (error) {
     currentSlideTitles = [];
     currentSlideNotes = [];
+    activeMarkdown = "";
     slide.classList.remove("slide--home");
 
     const isAuthError = /sign in/i.test(error.message || "");
@@ -1574,6 +1722,8 @@ async function renderPresentation() {
     `;
     updateSlideControls();
     fullscreen.disabled = true;
+    openSlideWindow.disabled = true;
+    updateExportButtonState();
     updateEditButtonState();
   }
 }
@@ -1625,6 +1775,12 @@ function updateFont(value) {
   broadcastPresentationState();
 }
 
+function updateNotesPosition(value) {
+  currentNotesPosition = notesPositionOptions.has(value) ? value : defaultPresentationSettings.notesPosition;
+  saveCurrentPresentationSettings();
+  applyNotesPosition();
+}
+
 // The site theme belongs to the user (theme toggle), never to a deck: opening
 // a deck must not restyle the chrome. Deck appearance is governed by its
 // Background mode — theme-aware modes follow the site theme; identity modes
@@ -1641,9 +1797,13 @@ function setActiveTheme(theme) {
 
 function applyTheme(theme) {
   setActiveTheme(theme);
-  window.localStorage.setItem(storageKeys.theme, currentTheme);
+  if (!printPdfMode) {
+    window.localStorage.setItem(storageKeys.theme, currentTheme);
+  }
   restartShaderBackground();
-  broadcastPresentationState();
+  if (!printPdfMode) {
+    broadcastPresentationState();
+  }
 }
 
 function showHome() {
@@ -1674,6 +1834,7 @@ function renderPresentationNotFound() {
   homeLink.removeAttribute("aria-current");
   currentSlideTitles = [];
   currentSlideNotes = [];
+  activeMarkdown = "";
   slide.classList.remove("slide--home");
 
   const requested = window.location.hash.replace(/^#\/?/, "").split("/").filter(Boolean)[0] || "";
@@ -1694,7 +1855,9 @@ function renderPresentationNotFound() {
   prevSlide.disabled = true;
   nextSlide.disabled = true;
   fullscreen.disabled = true;
+  openSlideWindow.disabled = true;
   editDeck.disabled = true;
+  updateExportButtonState();
   transitionSelect.disabled = true;
   backgroundSelect.disabled = true;
   fontSelect.disabled = true;
@@ -1756,6 +1919,8 @@ prevSlide.addEventListener("click", goToPreviousSlide);
 nextSlide.addEventListener("click", goToNextSlide);
 openSlideWindow.addEventListener("click", openConnectedSlideWindow);
 fullscreen.addEventListener("click", toggleFullscreen);
+downloadMarkdown.addEventListener("click", downloadCurrentMarkdown);
+downloadPdf.addEventListener("click", printCurrentDeckToPdf);
 transitionSelect.addEventListener("change", (event) => updateTransition(event.target.value));
 backgroundSelect.addEventListener("change", (event) => updateBackground(event.target.value));
 fontSelect.addEventListener("change", (event) => updateFont(event.target.value));
@@ -1917,6 +2082,10 @@ window.addEventListener("hashchange", () => {
 async function initApp() {
   if (displayMode) {
     document.body.dataset.displayMode = "slide";
+  }
+  if (printPdfMode) {
+    document.body.dataset.printPdfMode = "true";
+    loadRevealPdfStylesheet();
   }
 
   syncSidebarForViewport();
