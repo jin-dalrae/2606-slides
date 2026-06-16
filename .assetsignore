@@ -2,6 +2,12 @@
 .git/**
 .gitignore
 .assetsignore
+.DS_Store
+**/.DS_Store
+.env
+.env.*
+.gstack
+.gstack/**
 node_modules
 node_modules/**
 .claude
