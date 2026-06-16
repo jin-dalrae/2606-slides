@@ -32,9 +32,11 @@ const storageKeys = {
   presentationSettings: "rae-slides-presentation-settings"
 };
 
+const defaultTheme = "light";
+
 const defaultPresentationSettings = {
   transition: "slide",
-  background: "shader",
+  background: "ivory",
   font: "lora",
   notesPosition: "right"
 };
@@ -105,7 +107,7 @@ let cleanupShader = null;
 let pendingSlideIndex = null;
 let slideWindow = null;
 let suppressBroadcast = false;
-let currentTheme = printPdfMode ? "light" : window.localStorage.getItem(storageKeys.theme) || "light";
+let currentTheme = printPdfMode ? defaultTheme : window.localStorage.getItem(storageKeys.theme) || defaultTheme;
 let currentTransition = defaultPresentationSettings.transition;
 let currentBackground = defaultPresentationSettings.background;
 let currentFont = defaultPresentationSettings.font;
