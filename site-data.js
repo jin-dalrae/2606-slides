@@ -41,7 +41,6 @@
       date: "June 11, 2026",
       file: "presentations/cosmos-spatializing-asynchronous-community-jun11.md",
       transition: "slide",
-      background: "ivory",
       font: "poppins",
       public: true
     },

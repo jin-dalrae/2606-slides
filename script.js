@@ -36,10 +36,17 @@ const defaultTheme = "light";
 
 const defaultPresentationSettings = {
   transition: "slide",
-  background: "ivory",
   font: "lora",
   notesPosition: "right"
 };
+
+function defaultBackgroundForTheme(theme = currentTheme) {
+  return theme === "dark" ? "shader" : "ivory";
+}
+
+function isThemeDefaultBackground(value) {
+  return value === "ivory" || value === "shader";
+}
 
 const notesPositionOptions = new Set(["right", "below", "hidden"]);
 
@@ -109,7 +116,7 @@ let slideWindow = null;
 let suppressBroadcast = false;
 let currentTheme = printPdfMode ? defaultTheme : window.localStorage.getItem(storageKeys.theme) || defaultTheme;
 let currentTransition = defaultPresentationSettings.transition;
-let currentBackground = defaultPresentationSettings.background;
+let currentBackground = defaultBackgroundForTheme(currentTheme);
 let currentFont = defaultPresentationSettings.font;
 let currentNotesPosition = defaultPresentationSettings.notesPosition;
 let currentUser = null;
@@ -174,9 +181,16 @@ function readPresentationSettings(index = currentPresentation) {
     saved = {};
   }
 
+  const savedBackground = saved.background || "";
+  const itemBackground = item.background || "";
+
   return {
     transition: saved.transition || item.transition || defaultPresentationSettings.transition,
-    background: saved.background || item.background || defaultPresentationSettings.background,
+    background: savedBackground && !isThemeDefaultBackground(savedBackground)
+      ? savedBackground
+      : itemBackground && !isThemeDefaultBackground(itemBackground)
+        ? itemBackground
+        : defaultBackgroundForTheme(),
     font: fontOptions[saved.font] ? saved.font : fontOptions[item.font] ? item.font : defaultPresentationSettings.font,
     notesPosition: notesPositionOptions.has(saved.notesPosition)
       ? saved.notesPosition
@@ -1798,7 +1812,16 @@ function setActiveTheme(theme) {
 }
 
 function applyTheme(theme) {
+  const previousDefaultBackground = defaultBackgroundForTheme(currentTheme);
   setActiveTheme(theme);
+  if (currentBackground === previousDefaultBackground) {
+    currentBackground = defaultBackgroundForTheme(currentTheme);
+    backgroundSelect.value = currentBackground;
+    const deckRoot = slide.querySelector(".deck-root");
+    if (deckRoot) {
+      deckRoot.dataset.backgroundMode = currentBackground;
+    }
+  }
   if (!printPdfMode) {
     window.localStorage.setItem(storageKeys.theme, currentTheme);
   }
