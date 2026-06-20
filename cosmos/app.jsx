@@ -120,6 +120,99 @@ function App() {
             <span className="thesis-number">01</span>
             <p><strong>Working thesis</strong> Cosmos is not another social feed or a live voice room. It is a VR reconstruction of an offline asynchronous community wall.</p>
           </div>
+
+          <div className="intro-report">
+            <div className="intro-abstract">
+              <p className="mini-label">What this research is</p>
+              <h2>The project began with a broad question: could spatial computing make online discourse easier to understand?</h2>
+              <div>
+                <p>The first concept treated Cosmos as a spatial discourse browser and an alternative to headset doomscrolling. The direction was plausible, but under-evidenced. It did not explain why discussions needed to be spatial, which behavior the product should preserve, or what would distinguish it from social VR, a 3D feed, or an AI summary.</p>
+                <p>A deeper audit identified the stronger reference model: offline bulletin boards, poster walls, sticky-note surfaces, and public message walls. These environments already support asynchronous participation through placement, density, movement, and return. Cosmos turns that established behavior into a researchable cross-device system.</p>
+              </div>
+            </div>
+
+            <div className="research-shift" aria-label="How the Cosmos research direction changed">
+              <article>
+                <span>Initial frame</span>
+                <h3>Spatial discourse browser</h3>
+                <p>A broad alternative to feeds and headset doomscrolling.</p>
+              </article>
+              <div className="shift-axis"><i /><b>Research audit</b><i /></div>
+              <article className="shift-result">
+                <span>Current frame</span>
+                <h3>VR community wall</h3>
+                <p>A testable reconstruction of offline asynchronous participation.</p>
+              </article>
+            </div>
+
+            <div className="wall-reference-heading">
+              <div><p className="mini-label">Primary reference model</p><h2>Before the feed,<br /><em>there was the wall.</em></h2></div>
+              <p>Physical message walls reveal discussion as a surface. People scan from a distance, move closer, notice clusters, compare adjacent notes, and return to remembered locations. Contribution remains optional; the community trace stays public.</p>
+            </div>
+            <figure className="wall-reference-grid">
+              <div className="wall-image wall-image-wide"><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.40.57.png" alt="A person reading a dense public poster wall" /></div>
+              <div className="wall-image"><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.08.png" alt="A long public wall covered in accumulated handwritten notes" /></div>
+              <div className="wall-image"><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.13.png" alt="A quieter community wall with pinned house-shaped notes" /></div>
+              <figcaption><span>Fig. 01–03</span><p>Three physical patterns—dense poster field, accumulated public memorial, and curated note wall—show how placement, layering, material difference, and density become community signals.</p></figcaption>
+            </figure>
+
+            <div className="definition-block">
+              <div className="definition-title"><p className="mini-label">Product definition</p><h2>Wall first.<br /><em>Platform later.</em></h2></div>
+              <div className="definition-columns">
+                <article><span>Cosmos is</span><ul><li>A persistent spatial message surface</li><li>A read-first form of participation</li><li>A place for source-linked sensemaking</li><li>A cross-device research prototype</li></ul></article>
+                <article><span>Cosmos is not</span><ul><li>A headset-only social world</li><li>A new community platform on day one</li><li>A 2D feed arranged decoratively in 3D</li><li>A live spatial voice room</li></ul></article>
+              </div>
+            </div>
+
+            <div className="hypothesis-block">
+              <p className="mini-label">Core hypothesis</p>
+              <blockquote>Can spatial form help people understand and remember an asynchronous discussion more comfortably than a flat feed?</blockquote>
+              <p>The product claim is not that VR is more immersive. It is that position, proximity, density, and movement may provide usable orientation cues while preserving the low pressure of reading without posting.</p>
+            </div>
+
+            <div className="intro-questions">
+              <div><p className="mini-label">Research questions</p><h2>Seven questions keep the concept accountable.</h2></div>
+              <ol>
+                <li><span>01</span><p><b>User need</b> Do people want low-pressure understanding, place memory, or simply faster summaries?</p></li>
+                <li><span>02</span><p><b>Offline behavior</b> Which wall qualities matter: density, layering, proximity, materiality, or publicness?</p></li>
+                <li><span>03</span><p><b>Market gap</b> What remains unsolved by Reddit, Discord, social VR, spatial OS tools, and AI?</p></li>
+                <li><span>04</span><p><b>Product form</b> Should Cosmos become a wall, a browser, or eventually a native platform?</p></li>
+                <li><span>05</span><p><b>Presence</b> Does spatial voice add orientation later, or recreate pressure and distraction?</p></li>
+                <li><span>06</span><p><b>Interaction</b> Which actions—browsing, labels, source inspection, saved paths—create measurable value?</p></li>
+                <li><span>07</span><p><b>Evidence</b> What result would prove that the wall is better than a flat-feed baseline?</p></li>
+              </ol>
+            </div>
+
+            <div className="evidence-matrix-wrap">
+              <div className="matrix-heading"><p className="mini-label">Evidence audit</p><h2>Promising is not the same as proven.</h2><p>The report separates literature-backed claims from strategic inference and names the primary research still required.</p></div>
+              <div className="evidence-matrix" role="table" aria-label="Cosmos evidence strength matrix">
+                <div className="matrix-row matrix-header" role="row"><span>Claim</span><span>Strength</span><span>What remains to test</span></div>
+                <div className="matrix-row" role="row"><b>Offline async community already has spatial form</b><span className="strength strong"><i /> Strong</span><p>Translate wall behaviors into VR through observation and prototype testing.</p></div>
+                <div className="matrix-row" role="row"><b>Quiet reading is meaningful participation</b><span className="strength strong"><i /> Strong</span><p>Interview the target audience about non-posting behavior and social permission.</p></div>
+                <div className="matrix-row" role="row"><b>Feeds make discussion structure hard to see</b><span className="strength moderate"><i /> Moderate</span><p>Compare comprehension and stance recall against a controlled flat feed.</p></div>
+                <div className="matrix-row" role="row"><b>Spatial layout can support sensemaking</b><span className="strength moderate"><i /> Moderate</span><p>Measure cluster interpretation, source recall, and note-location memory.</p></div>
+                <div className="matrix-row" role="row"><b>AI labels must remain inspectable</b><span className="strength strong"><i /> Strong</span><p>Test source tracing, correction, and trust when a label is wrong.</p></div>
+                <div className="matrix-row" role="row"><b>Wall-first is the right product strategy</b><span className="strength inference"><i /> Inference</span><p>Validate preference, return intent, and content-rights constraints.</p></div>
+              </div>
+            </div>
+
+            <div className="device-modes">
+              <div><p className="mini-label">System scope</p><h2>One wall,<br />four depths of attention.</h2></div>
+              <div className="device-mode-grid">
+                <article><span>01</span><h3>Desktop</h3><p>Broad access and the usability baseline.</p></article>
+                <article><span>02</span><h3>Quest / MR</h3><p>Immersive browsing and comfort testing.</p></article>
+                <article><span>03</span><h3>Vision Pro</h3><p>Spatial reading, gaze, and focus behavior.</p></article>
+                <article><span>04</span><h3>Glasses</h3><p>Glanceable labels, paths, and resurfacing.</p></article>
+              </div>
+            </div>
+
+            <div className="intro-conclusion">
+              <span>Research position</span>
+              <h2>Cosmos is not validated yet.<br /><em>It is now researchable.</em></h2>
+              <p>The next step is a controlled comparison between a flat feed and a VR community wall, measured through comprehension, comfort, trust, source inspection, and place memory.</p>
+              <div><a href="/cosmos/secondary/">Review the evidence <span>→</span></a><a href="/cosmos/primary/">See the study plan <span>→</span></a></div>
+            </div>
+          </div>
         </section>}
 
         {activeChapter === "secondary" && <section className="report-section secondary" id="secondary">
