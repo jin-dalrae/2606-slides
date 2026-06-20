@@ -98,7 +98,7 @@ function ChapterLabel({ number, children }) {
 function TranscriptAppendix() {
   const [transcript, setTranscript] = useState("Loading transcript…");
   useEffect(() => {
-    fetch("/cosmos/primary/interview-kevin/transcript.txt")
+    fetch("/cosmos/primary/interview-kris/transcript.txt")
       .then(response => response.ok ? response.text() : Promise.reject(new Error("Transcript unavailable")))
       .then(setTranscript)
       .catch(() => setTranscript("The transcript could not be loaded."));
@@ -109,7 +109,7 @@ function TranscriptAppendix() {
 function App() {
   const [lens, setLens] = useState("reader");
   const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications") ? "spatial-audio" : "overview";
-  const primaryPage = window.location.pathname.includes("/primary/interview-kevin") ? "interview-kevin" : "overview";
+  const primaryPage = window.location.pathname.includes("/primary/interview-kris") ? "interview-kris" : "overview";
   const activeChapter = window.location.pathname.includes("/secondary")
     ? "secondary"
     : window.location.pathname.includes("/primary")
@@ -591,18 +591,18 @@ function App() {
           </div>
         </section>}
 
-        {activeChapter === "primary" && primaryPage === "interview-kevin" && <section className="report-section interview-report" id="interview-kevin">
+        {activeChapter === "primary" && primaryPage === "interview-kris" && <section className="report-section interview-report" id="interview-kris">
           <ChapterLabel number="03.1">Primary research / Interview 01</ChapterLabel>
           <article className="report-document interview-document">
             <header className="report-page-intro interview-intro">
               <p className="eyebrow">Semi-structured interview + think-aloud walkthrough</p>
-              <h1>Kevin<br /><span>Software engineer at Meta</span></h1>
-              <p>Kevin discussed his forum and headset habits, then explored the browser-based Cosmos prototype while thinking aloud. The session surfaced a central tension: the spatial field was interesting, but text density, unclear input behavior, and headset friction could erase its advantage over a phone.</p>
+              <h1>Kris<br /><span>Software engineer at BigTech</span></h1>
+              <p>Kris discussed his forum and headset habits, then explored the browser-based Cosmos prototype while thinking aloud. The session surfaced a central tension: the spatial field was interesting, but text density, unclear input behavior, and headset friction could erase its advantage over a phone.</p>
             </header>
 
             <table className="report-table interview-meta">
               <tbody>
-                <tr><th>Participant</th><td>Kevin</td><th>Role context</th><td>Software engineer at Meta; not on the Quest team</td></tr>
+                <tr><th>Participant</th><td>Kris</td><th>Role context</th><td>Software engineer at BigTech; not on the Quest team</td></tr>
                 <tr><th>Format</th><td>Semi-structured interview</td><th>Activity</th><td>Think-aloud walkthrough of the web prototype</td></tr>
                 <tr><th>Relevant behavior</th><td>≈20 minutes of Reddit daily</td><th>Device context</th><td>Owns a Quest 3; limited regular headset use</td></tr>
                 <tr><th>Evidence status</th><td colSpan="3">One exploratory interview. Directional evidence, not validation.</td></tr>
@@ -611,29 +611,29 @@ function App() {
 
             <nav className="report-contents" aria-label="Interview report contents">
               <p>In this report</p>
-              <a href="#kevin-summary"><span>0</span>Interview summary</a>
-              <a href="#kevin-method"><span>1</span>Method and limits</a>
-              <a href="#kevin-context"><span>2</span>Behavioral context</a>
-              <a href="#kevin-walkthrough"><span>3</span>Prototype walkthrough</a>
-              <a href="#kevin-findings"><span>4</span>Key findings</a>
-              <a href="#kevin-decisions"><span>5</span>Design decisions</a>
-              <a href="#kevin-next"><span>6</span>Next research</a>
-              <a href="#kevin-transcript"><span>A</span>Full transcript</a>
+              <a href="#kris-summary"><span>0</span>Interview summary</a>
+              <a href="#kris-method"><span>1</span>Method and limits</a>
+              <a href="#kris-context"><span>2</span>Behavioral context</a>
+              <a href="#kris-walkthrough"><span>3</span>Prototype walkthrough</a>
+              <a href="#kris-findings"><span>4</span>Key findings</a>
+              <a href="#kris-decisions"><span>5</span>Design decisions</a>
+              <a href="#kris-next"><span>6</span>Next research</a>
+              <a href="#kris-transcript"><span>A</span>Full transcript</a>
             </nav>
 
-            <section className="report-chapter" id="kevin-summary">
+            <section className="report-chapter" id="kris-summary">
               <span className="report-number">0</span>
               <h2>Interview summary</h2>
-              <p className="report-lead">Kevin could imagine value in a spatial information environment, particularly for monitoring several sources at once, but he did not see “doomscrolling in VR” as sufficient reason to put on a headset.</p>
+              <p className="report-lead">Kris could imagine value in a spatial information environment, particularly for monitoring several sources at once, but he did not see “doomscrolling in VR” as sufficient reason to put on a headset.</p>
               <p>His first evaluation criterion was convenience. A phone is immediate, portable, and already optimized for casual browsing. A headset requires startup time, physical commitment, and a private setting. Cosmos therefore needs a headset-specific advantage that cannot be reduced to reproducing an existing mobile feed.</p>
-              <p>During the walkthrough, Kevin understood the spherical field and tried to infer meaning from card color, position, and content. He described the environment as “pretty cool,” but also “a bit chaotic.” The strongest usability issue was not navigation alone; it was the amount of text competing for attention across the entire field.</p>
+              <p>During the walkthrough, Kris understood the spherical field and tried to infer meaning from card color, position, and content. He described the environment as “pretty cool,” but also “a bit chaotic.” The strongest usability issue was not navigation alone; it was the amount of text competing for attention across the entire field.</p>
               <aside className="report-note"><b>Primary interpretation</b><p>The next prototype should stop treating content volume as evidence of spatial richness. It needs to establish a readable hierarchy: brief peripheral summaries, one clear focal item, non-color category cues, and explicit spatial controls.</p></aside>
             </section>
 
-            <section className="report-chapter" id="kevin-method">
+            <section className="report-chapter" id="kris-method">
               <span className="report-number">1</span>
               <h2>Method and limitations</h2>
-              <p>The session combined an interview about forum use and headset expectations with an open-ended think-aloud walkthrough. Kevin viewed the web version of Cosmos, moved through the spherical post field, inspected cards, tested display controls, attempted gaze and facial-gesture interactions, and tried to create a post.</p>
+              <p>The session combined an interview about forum use and headset expectations with an open-ended think-aloud walkthrough. Kris viewed the web version of Cosmos, moved through the spherical post field, inspected cards, tested display controls, attempted gaze and facial-gesture interactions, and tried to create a post.</p>
               <h3>What the interview can support</h3>
               <ul>
                 <li>Early hypotheses about convenience, information density, input expectations, and prototype comprehension.</li>
@@ -644,19 +644,19 @@ function App() {
               <ul>
                 <li>Claims about in-headset comfort or embodied navigation; the prototype was tested on the web.</li>
                 <li>Claims about broad user preference; this is one participant.</li>
-                <li>Claims about Meta’s product strategy. Kevin explicitly declined to discuss confidential work and does not work directly on the Quest team.</li>
+                <li>Claims about BigTech’s product strategy. Kris explicitly declined to discuss confidential work and does not work directly on the Quest team.</li>
                 <li>Reliable evaluation of several controls because gaze, card sizing, content listing, and posting were partially broken.</li>
               </ul>
-              <aside className="report-note report-note-yellow"><b>Disclosure boundary</b><p>Kevin’s employer provides relevant professional context but should not be presented as endorsement, insider validation, or expert testimony about Meta hardware strategy.</p></aside>
+              <aside className="report-note report-note-yellow"><b>Disclosure boundary</b><p>Kris’s employer provides relevant professional context but should not be presented as endorsement, insider validation, or expert testimony about BigTech hardware strategy.</p></aside>
             </section>
 
-            <section className="report-chapter" id="kevin-context">
+            <section className="report-chapter" id="kris-context">
               <span className="report-number">2</span>
               <h2>Behavioral context</h2>
               <table className="report-table">
                 <thead><tr><th>Topic</th><th>Reported behavior</th><th>Research relevance</th></tr></thead>
                 <tbody>
-                  <tr><td>Forum use</td><td>Approximately 20 minutes of Reddit per day; occasional Instagram and Facebook</td><td>Kevin is familiar with feed-based community browsing but not a heavy multi-platform forum user.</td></tr>
+                  <tr><td>Forum use</td><td>Approximately 20 minutes of Reddit per day; occasional Instagram and Facebook</td><td>Kris is familiar with feed-based community browsing but not a heavy multi-platform forum user.</td></tr>
                   <tr><td>Infinite scroll</td><td>Can spend longer than intended because there are always more posts to catch up on</td><td>Supports the feed-control problem, but not necessarily a demand for VR browsing.</td></tr>
                   <tr><td>Self-regulation</td><td>Attempts to limit usage and sometimes describes the behavior as addictive</td><td>Cosmos should not use immersion to intensify the same attention loop.</td></tr>
                   <tr><td>Headset use</td><td>Owns Quest 3 but does not use headsets often</td><td>Startup effort and limited routine use are adoption constraints.</td></tr>
@@ -664,16 +664,16 @@ function App() {
                 </tbody>
               </table>
               <blockquote className="report-quote">“If I want to doom scroll, isn’t it a lot easier to take out my phone and open the app, compared to turning on my headset?”</blockquote>
-              <p>Kevin identified one situational convenience advantage: browsing while lying down without holding a phone above the face. More significantly, he imagined a spatial workspace with Reddit, X, Threads, market information, and news visible simultaneously. This suggests that cross-source monitoring may be a stronger spatial use case than a single immersive feed.</p>
+              <p>Kris identified one situational convenience advantage: browsing while lying down without holding a phone above the face. More significantly, he imagined a spatial workspace with Reddit, X, Threads, market information, and news visible simultaneously. This suggests that cross-source monitoring may be a stronger spatial use case than a single immersive feed.</p>
             </section>
 
-            <section className="report-chapter" id="kevin-walkthrough">
+            <section className="report-chapter" id="kris-walkthrough">
               <span className="report-number">3</span>
               <h2>Prototype walkthrough</h2>
-              <p>Kevin first noticed that the interface wrapped content around him as a spherical field. He then inspected individual cards, inferred possible relationships between color and topic, tested display controls, and attempted gaze, facial-gesture, drag, and posting interactions.</p>
+              <p>Kris first noticed that the interface wrapped content around him as a spherical field. He then inspected individual cards, inferred possible relationships between color and topic, tested display controls, and attempted gaze, facial-gesture, drag, and posting interactions.</p>
               <figure className="interview-prototype-figure">
                 <div className="prototype-annotation">
-                  <img src="/assets/images/cosmos-sphere-browse.png" alt="The Cosmos spatial discussion prototype tested during Kevin's interview" />
+                  <img src="/assets/images/cosmos-sphere-browse.png" alt="The Cosmos spatial discussion prototype tested during Kris's interview" />
                   <span className="annotation-marker marker-1">1</span>
                   <span className="annotation-marker marker-2">2</span>
                   <span className="annotation-marker marker-3">3</span>
@@ -691,27 +691,27 @@ function App() {
               <p>The sequence shows that the conceptual model was legible enough to invite exploration, but interaction failures prevented reliable evaluation of several features. These failures are findings about prototype readiness, not evidence that gaze or gesture interaction is inherently unsuitable.</p>
             </section>
 
-            <section className="report-chapter" id="kevin-findings">
+            <section className="report-chapter" id="kris-findings">
               <span className="report-number">4</span>
               <h2>Key findings</h2>
               <div className="report-table-scroll"><table className="report-table report-table-wide interview-findings-table">
                 <thead><tr><th>Finding</th><th>Observed evidence</th><th>Interpretation</th><th>Priority</th></tr></thead>
                 <tbody>
-                  <tr><td>Headset convenience is a threshold</td><td>Kevin compared headset startup and physical commitment against taking out a phone.</td><td>Cosmos needs a spatially specific job, not feature parity with mobile browsing.</td><td><span className="priority strategic">Strategic</span></td></tr>
+                  <tr><td>Headset convenience is a threshold</td><td>Kris compared headset startup and physical commitment against taking out a phone.</td><td>Cosmos needs a spatially specific job, not feature parity with mobile browsing.</td><td><span className="priority strategic">Strategic</span></td></tr>
                   <tr><td>Text density is overwhelming</td><td>“One of the biggest limitations is how many words there are on the screen.”</td><td>Use progressive disclosure and reduce peripheral cards to concise summaries.</td><td><span className="priority critical">Critical</span></td></tr>
-                  <tr><td>Color alone is insufficient</td><td>Kevin inferred categories, then noted that colors looked similar and could fail for color-blind users.</td><td>Combine color with labels, icons, position, shape, or pattern.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Color alone is insufficient</td><td>Kris inferred categories, then noted that colors looked similar and could fail for color-blind users.</td><td>Combine color with labels, icons, position, shape, or pattern.</td><td><span className="priority critical">Critical</span></td></tr>
                   <tr><td>Gaze lacked control and confirmation</td><td>The focal movement did not consistently match his target and sometimes traveled too far.</td><td>Increase target tolerance, stabilize selection, and show dwell/confirmation state.</td><td><span className="priority critical">Critical</span></td></tr>
-                  <tr><td>Gestures need visible consequences</td><td>Nod and shake produced no response Kevin could identify.</td><td>Teach the gesture, preview its action, and provide immediate feedback.</td><td><span className="priority next">Next</span></td></tr>
+                  <tr><td>Gestures need visible consequences</td><td>Nod and shake produced no response Kris could identify.</td><td>Teach the gesture, preview its action, and provide immediate feedback.</td><td><span className="priority next">Next</span></td></tr>
                   <tr><td>Spatial windows should be placeable</td><td>“I wish I could move the windows around a bit and fix them somewhere.”</td><td>Add move, pin, and restore-position controls.</td><td><span className="priority next">Next</span></td></tr>
-                  <tr><td>Images may improve scanning</td><td>Kevin supported representative images or media from the original post.</td><td>Test restrained image previews without increasing visual noise.</td><td><span className="priority test">Test</span></td></tr>
-                  <tr><td>Voice is not a universal preference</td><td>Kevin preferred typing because speech recognition can be inaccurate.</td><td>Support keyboard and hand input; keep voice optional.</td><td><span className="priority later">Later</span></td></tr>
+                  <tr><td>Images may improve scanning</td><td>Kris supported representative images or media from the original post.</td><td>Test restrained image previews without increasing visual noise.</td><td><span className="priority test">Test</span></td></tr>
+                  <tr><td>Voice is not a universal preference</td><td>Kris preferred typing because speech recognition can be inaccurate.</td><td>Support keyboard and hand input; keep voice optional.</td><td><span className="priority later">Later</span></td></tr>
                   <tr><td>Timeline layers lacked discoverability</td><td>The time-layer behavior was only understood after Rae explained the gesture.</td><td>Expose time as a visible control with instructions and state.</td><td><span className="priority next">Next</span></td></tr>
-                  <tr><td>Adoption depends on polish</td><td>Kevin’s willingness remained conditional on bugs, usability, and information density.</td><td>Do not use concept appeal as a proxy for product willingness.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Adoption depends on polish</td><td>Kris’s willingness remained conditional on bugs, usability, and information density.</td><td>Do not use concept appeal as a proxy for product willingness.</td><td><span className="priority critical">Critical</span></td></tr>
                 </tbody>
               </table></div>
             </section>
 
-            <section className="report-chapter" id="kevin-decisions">
+            <section className="report-chapter" id="kris-decisions">
               <span className="report-number">5</span>
               <h2>Design decisions for the next prototype</h2>
               <h3>Fix before the next evaluative test</h3>
@@ -734,7 +734,7 @@ function App() {
               <p>Voice-first search, facial gestures as primary controls, and a complete native posting system should remain secondary until basic reading and navigation are reliable.</p>
             </section>
 
-            <section className="report-chapter" id="kevin-next">
+            <section className="report-chapter" id="kris-next">
               <span className="report-number">6</span>
               <h2>Next research</h2>
               <p>This interview produces hypotheses for comparison, not final requirements. The next study should test the revised information hierarchy with participants who vary in forum use, headset familiarity, color vision, and preference for voice or gesture input.</p>
@@ -750,7 +750,7 @@ function App() {
               <aside className="report-note"><b>Decision rule</b><p>If the revised spatial interface remains more overwhelming or less convenient than the flat baseline, the project should reduce spatial complexity rather than add more interaction modes.</p></aside>
             </section>
 
-            <section className="report-chapter" id="kevin-transcript">
+            <section className="report-chapter" id="kris-transcript">
               <span className="report-number">A</span>
               <h2>Full transcript</h2>
               <p>The transcript is lightly edited for punctuation and obvious speech-to-text errors. Content, sequence, uncertainty, prototype failures, and confidentiality boundaries are preserved.</p>

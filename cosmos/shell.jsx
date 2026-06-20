@@ -13,7 +13,7 @@ export const secondaryReports = [
 
 export const primaryReports = [
   ["overview", "3.0", "Overview", "/cosmos/primary/"],
-  ["interview-kevin", "3.1", "Interview 01 · Kevin", "/cosmos/primary/interview-kevin/"],
+  ["interview-kris", "3.1", "Interview 01 · Kris", "/cosmos/primary/interview-kris/"],
 ];
 
 const reportChildren = {

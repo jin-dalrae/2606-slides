@@ -13,7 +13,7 @@
   ];
   var primaryReports = [
     ["overview", "3.0", "Overview", "/cosmos/primary/"],
-    ["interview-kevin", "3.1", "Interview 01 \xB7 Kevin", "/cosmos/primary/interview-kevin/"]
+    ["interview-kris", "3.1", "Interview 01 \xB7 Kris", "/cosmos/primary/interview-kris/"]
   ];
   var reportChildren = {
     secondary: secondaryReports,
