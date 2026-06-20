@@ -467,9 +467,10 @@ function App() {
               <a href="#secondary-market"><span>5</span>Market landscape</a>
               <a href="#secondary-xr"><span>6</span>XR reading and devices</a>
               <a href="#secondary-memorypods"><span>7</span>MemoryPods and asynchronous XR communication</a>
-              <a href="#secondary-ai"><span>8</span>AI and source trust</a>
-              <a href="#secondary-synthesis"><span>9</span>Synthesis</a>
-              <a href="#secondary-gaps"><span>10</span>Evidence gaps</a>
+              <a href="#secondary-tsi"><span>8</span>Socially late, virtually present</a>
+              <a href="#secondary-ai"><span>9</span>AI and source trust</a>
+              <a href="#secondary-synthesis"><span>10</span>Synthesis</a>
+              <a href="#secondary-gaps"><span>11</span>Evidence gaps</a>
             </nav>
 
             <section className="report-chapter" id="secondary-method">
@@ -493,6 +494,7 @@ function App() {
                 <tr><td>Feed and algorithm fatigue</td><td>Provide orientation rather than another ranking system.</td><td>Moderate support</td><td>Compare task performance against a flat feed.</td></tr>
                 <tr><td>Spatial communications</td><td>Use spatial attention cues; defer live voice.</td><td>Strong adjacent technical support</td><td>Test async spatial browsing before co-presence.</td></tr>
                 <tr><td>Asynchronous XR records</td><td>Store spatial, visual, and audio context as revisit-able events.</td><td>Strong adjacent research support</td><td>Test whether annotations and summaries improve recall and navigation.</td></tr>
+                <tr><td>Asynchronous social presence</td><td>Transform late interactions into embodied, seemingly synchronous encounters.</td><td>Strong adjacent research support</td><td>Test whether avatars, gaze, and proxemics make delayed communication feel present.</td></tr>
                 <tr><td>XR reading comfort</td><td>Reading comfort is a product requirement.</td><td>Strong support</td><td>Test typography and navigation on real devices.</td></tr>
                 <tr><td>Device landscape</td><td>Cosmos must be cross-device.</td><td>Strong market support</td><td>Match tasks to desktop, headset, and glasses modes.</td></tr>
                 <tr><td>AI summarization</td><td>Every generated label needs a source trail.</td><td>Strong technical support</td><td>Run source-trace and correction tasks.</td></tr>
@@ -590,8 +592,37 @@ function App() {
               <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Cosmos should preserve spatial context, let readers jump through time and space, and use summaries as a front door to replay, not as a replacement for the original record.</p></aside>
             </section>
 
-            <section className="report-chapter" id="secondary-ai">
+            <section className="report-chapter" id="secondary-tsi">
               <span className="report-number">8</span>
+              <h2>Socially Late, Virtually Present makes delayed interaction feel synchronous</h2>
+              <p>This Stanford VHIL paper studies how Virtual Reality can transform asynchronous social interactions into something that feels socially present. Instead of presenting a late interaction as a flat replay, the system records movement, voice, and nonverbal behavior, then renders that data as an embodied avatar for another participant later in time.</p>
+              <p>The key idea is Transformed Social Interaction: break the normal temporal and spatial constraints of communication so a recorded person can appear as a lifelike social actor to a late participant. The result is not literal synchronicity, but an illusion of it strong enough to change behavior.</p>
+              <div className="report-table-scroll">
+                <table className="report-table">
+                  <thead><tr><th>Observed dimension</th><th>What the study looked for</th><th>Cosmos implication</th></tr></thead>
+                  <tbody>
+                    <tr><td>Social presence</td><td>Whether users feel they are with another intelligent being in the same room.</td><td>Embodiment can make delayed community input feel more real than a plain replay.</td></tr>
+                    <tr><td>Nonverbal dynamics</td><td>Proxemics, head movement, gaze, and turn-taking cues.</td><td>Space and body language can carry meaning even when people are not live together.</td></tr>
+                    <tr><td>Communication fluency</td><td>Whether the interaction feels natural and comfortable versus obviously delayed.</td><td>Late participation in Cosmos could feel less disconnected if it preserves nonverbal context.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>The study reports enhanced co-presence, an illusion of synchronicity, and behavioral adaptation. Users treated the recorded avatar more like a real social partner than a standard 2D video replay. That matters for Cosmos because it suggests a future mode where late replies, peer feedback, or expert review could be embodied rather than reduced to text alone.</p>
+              <div className="report-table-scroll">
+                <table className="report-table">
+                  <thead><tr><th>Application</th><th>Possible Cosmos read-through</th></tr></thead>
+                  <tbody>
+                    <tr><td>Education and training</td><td>A student could revisit lessons or feedback as a responsive virtual presence.</td></tr>
+                    <tr><td>Remote workspace collaboration</td><td>Late comments or reviews could be left in a shared virtual project space with more presence than email.</td></tr>
+                    <tr><td>Support groups and healthcare</td><td>Persistent, empathetic spaces could preserve authenticity without real-time scheduling.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside className="report-note"><b>Implication for Cosmos</b><p>Cosmos should not assume that asynchronous always means flat. If the project later supports replies, mentorship, or expert feedback, TSI suggests a path toward embodied late interaction rather than simple video playback.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="secondary-ai">
+              <span className="report-number">9</span>
               <h2>AI can organize the wall only if its structure remains inspectable</h2>
               <p>AI-generated summaries and labels can reduce the cost of navigating a large discussion, but they can also compress disagreement, omit minority voices, or present an inferred cluster as if it were an objective fact.</p>
               <p>Cosmos should treat AI structure as a navigational layer rather than a replacement for source material. Every label, cluster, tension, and missing-voice claim should link back to the posts that produced it. Users should be able to inspect, correct, or dismiss the generated structure.</p>
@@ -599,7 +630,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-synthesis">
-              <span className="report-number">9</span>
+              <span className="report-number">10</span>
               <h2>Cross-study synthesis</h2>
               <p>No single evidence cluster validates Cosmos. Together, they define a coherent prototype and narrow what should be tested first.</p>
               <table className="report-table">
@@ -611,6 +642,7 @@ function App() {
                   <tr><td>Live spatial voice is technically and socially expensive.</td><td>Keep audio optional and outside the initial validation scope.</td></tr>
                   <tr><td>XR reading comfort is fragile.</td><td>Use stable cards, generous spacing, predictable focus, and low motion.</td></tr>
                   <tr><td>Spatial replay systems can improve navigation through past events.</td><td>Explore annotations, summaries, and event containers for dense XR archives.</td></tr>
+                  <tr><td>Embodied late interaction can preserve social presence.</td><td>Consider avatars, gaze, and proxemics for future reply or review modes.</td></tr>
                   <tr><td>AI synthesis can hide source context.</td><td>Make generated structure inspectable and reversible.</td></tr>
                   <tr><td>A new platform creates a cold-start problem.</td><td>Begin with controlled or permission-cleared datasets.</td></tr>
                 </tbody>
@@ -619,7 +651,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-gaps">
-              <span className="report-number">10</span>
+              <span className="report-number">11</span>
               <h2>Evidence gaps</h2>
               <p>The secondary research establishes a defensible direction, but the central product claim remains untested. The next phase must answer:</p>
               <ul>
@@ -630,6 +662,7 @@ function App() {
                 <li>Whether quiet readers feel less pressure in a wall or more visible in an immersive space.</li>
                 <li>Whether the value persists on desktop, where spatial depth is reduced.</li>
                 <li>Whether a MemoryPods-style replay and annotation model would help Cosmos users revisit old discussions more effectively.</li>
+                <li>Whether a transformed-avatar replay would make late comments feel more socially present than text or video.</li>
               </ul>
               <p>These are primary-research questions. The next report defines the comparative study, interview plan, survey, and decision criteria.</p>
               <div className="report-next-links"><a href="/cosmos/primary/">Continue to primary research <span>→</span></a><a href="/cosmos/secondary/spatial-communications/">Read spatial communications analysis <span>→</span></a></div>
