@@ -1,0 +1,116 @@
+Interview 02 — Yves
+Researcher: Rae
+Interviewee: Yves, 3D Artist
+Method: Semi-structured interview and Cosmos concept walkthrough
+
+SECTION 1: SOCIAL MEDIA HABITS AND SCREEN TIME
+
+Rae: Let me ask you some questions. Do you usually scroll through or commit to online community forums like Reddit?
+
+Yves: I mostly use my laptop when I’m checking information on Reddit. But if I’m outside, I’ll use my cell phone to scroll and find the specific information I need.
+
+Rae: How much time do you spend on Reddit just checking things?
+
+Yves: When it comes to things like STEM OPT, I usually want to check other people's timelines for issuance. If I am really into searching, I can spend more than an hour. When I'm on my laptop, the time usually exceeds an hour because it’s for specific, personal research.
+
+Rae: What about other platforms like X or Threads?
+
+Yves: When it comes to Instagram Threads, it’s just for killing time. It feels like forever—more than two or three hours. When I go to bed, if I don’t have anything to watch on Netflix because there aren't many good TV shows recently, I usually go onto Instagram. If I scroll past a really fun feed from a Korean community, I'll check it, and it leads me into a whole bunch of threads. Mostly, that lasts more than two or three hours.
+
+Rae: So, you look at Reddit for specific reasons, but Instagram is really just for fun to kill time?
+
+Yves: Yeah, Reddit is for specific reasons. Also, if I don't understand a cultural difference regarding my Indian or American friends, I go to Reddit because I can see a lot of responses from Americans. For that specific reason, I check people's responses there. But for killing time, I use Instagram.
+
+SECTION 2: VR AND AR EXPERIENCES
+
+Rae: What about XR? Do you use a VR headset or AR glasses?
+
+Yves: I haven't used them in my daily life. But when I was preparing my VR hypothesis, I purchased a light version of the Meta Quest headset—the cheapest version. When I was developing a VR application, I could only use it for 20 or 30 minutes per session because it gave me motion sickness. I feel like I am very prone to motion sickness, so I don't prefer using VR headsets.
+
+I also used Spectacles, the Snapchat AR glasses, at a hackathon just for fun. I had a chance to wear them because the Snapchat team gave them out to participants. But they were quite heavy compared to Meta's glasses.
+
+I also tried a single lens from another startup that had AR projection on it. I saw it at an exhibition during the MIT Reality Hack. I was able to see through the lens, and there was a graphic projection, but it wasn't good for me because it was a single lens.
+
+Rae: So, you have used Meta VR and AR products, but it was mostly for testing? Did you do any gaming or browsing inside?
+
+Yves: When I had the Meta VR glasses, I was developing a VR game using Unity. I used the haptic controllers with the VR, and it also gave me motion sickness. After the application development finished, I didn't use it anymore.
+
+Rae: Was it Quest 2 or Quest 3?
+
+Yves: It was the recent one, but the cheapest version, Quest 3S. I also used my little brother's VR four years ago. I played a game like Beat Saber.
+
+Rae: Do you remember the version from four years ago? Was it a Meta Quest 2?
+
+Yves: It was not Meta. Maybe an HTC Vive. My brother was really into VR gaming at the time, so he had the full setup with sensor pods and a haptic vest.
+
+SECTION 3: IMMERSIVE READING AND CONTENT CREATION
+
+Rae: Thank you for sharing those two experiences: reading for fun and your VR background. What if we combine them? Can you imagine reading for fun inside a VR headset?
+
+Yves: I can imagine it, but I would probably only read articles or text while lying in bed wearing the VR goggles. Even though I tighten the headset to fit my head, I still feel some motion sickness. Also, my nose bridge is quite low, so VR goggles usually don't fit my face well. On top of that, I usually wear makeup and I don't want the VR goggles to get contaminated. I would only try immersive reading after cleansing my face, lying in bed where nothing moves.
+
+I also tried Apple Vision Pro. It is ten times better than the Meta glasses. But all of them are quite heavy on my nose.
+
+Rae: You told me about how uncomfortable it is. Reading and doomscrolling are supposed to be comfortable activities, but using a VR headset is very uncomfortable for you.
+
+Yves: Exactly. If I’m wearing makeup, I don't want to wear it. And it's heavy, so it just doesn't feel good.
+
+Rae: I am working on a project called Cosmos. I think I saw that you noticed it on my Instagram story. I am trying to invent a way to doomscroll inside VR.
+
+Yves: What is doomscrolling, by the way? I hadn't heard that term.
+
+Rae: Doomscrolling is about spending hours caught up in scrolling through threads. I brought a prototype of the Cosmos interface for you to try. You can feel free to drag and scroll.
+
+Yves: I'm used to using two fingers for scrolling, but this feels a bit weird. It doesn't move up vertically. Instead, I see random notes changing into other notes, or moving backward and forward. What about trying another type of interaction? It feels like I'm in a note-taking universe.
+
+Rae: What I'm thinking is getting away from vertical scrolling. In vertical scrolling, you get information only in a linear way. But in a VR headset, we can use a whole 3D universe.
+
+Yves: I love that idea! It's like I'm in a Harry Potter classroom and notes are just flying around in the air.
+
+Rae: The way I structure this is that related notes are clustered together. The AI decides where to put the notes based on similarity. The most recent notes are in the forefront, and older notes are in the back.
+
+Yves: Wow, it's like spatial note-taking. I love this idea. If I could use a wand to call a note, it would add a super fun gaming element.
+
+SECTION 4: VOICE INPUT AND ENVIRONMENTAL IMMERSION
+
+Rae: We can also try it with eye-gaze tracking. Should I enable it?
+
+Yves: Yes, of course.
+
+Rae: Try looking around the Cosmos with your gaze right now. Is it following your head or your eyes?
+
+Yves: I think it's following my head. But it's quite fun. If I were to lie on the bed, I would have to turn my head, but I like the concept.
+
+Rae: What about writing notes with your voice?
+
+Yves: I prefer it. A lot of people are using voice note-taking now. Software engineers do it, and I see mothers or grandmothers doing it at cafes via voice memos.
+
+Rae: Imagine yourself looking into these threads in the Cosmos world, and you want to write something. How would it feel to post something with your voice?
+
+Yves: Maybe it would feel like I’m murmuring to myself. If I can't see anyone, I might feel awkward talking to nothing. But if there were some kind of animal, an object, or a mirror—like a “mirror, mirror on the wall” concept—it would be easier to speak to it.
+
+Think about actors acting in front of a green screen; they have difficulty drawing emotion out without context. Talking to a blank screen is like that. If there is an object or character to assist me, it would help.
+
+Rae: Having something or someone listening to you helps get your feelings out.
+
+Yves: Exactly. You can look at interviews with the actor who played Gandalf, Ian McKellen, talking about the difficulties of green-screen acting. People want to vent or express emotion when they write. If it's just a blank screen, it feels like a green screen.
+
+If there was a character you could talk to—like Snow White's mirror—it could help turn your spoken words into a post. If there is an interviewer who listens well and smiles, it makes me speak fluently and feel free to say anything. Practicing or talking entirely by myself doesn't help.
+
+Rae: Other platforms use video or audio for asynchronous messages, like TikTok or Instagram Reels. But I am focusing on reading. What if a support character asks you to tell them about your experience, you talk to them, and they draft the post for you?
+
+Yves: I think that is a very good assistant idea. It’s like how prominent figures like Barack Obama or Elon Musk have their own biographers.
+
+One thing that pops out to me about the 3D space: even though you say these notes are in a threaded space, they don't feel entirely 3D until I rotate them. If you imagine yourself inside a sphere, the notes should be clustered 360 degrees around you. Some should be angled at 270 degrees, not just facing perfectly forward. In animation and art class, we learn things should be asymmetrical and organic. Right now, all the notes are aligned like an Excel file. To make it aesthetic or artistic, it should be a bit more random, like that Harry Potter scene.
+
+Rae: Was there any other feedback?
+
+Yves: In art classes, whether 2D or 3D, we always start with world-building. If it's a Matrix-style world, there could be falling green code in the background. If it's a retrospective of your life, it could have a different background. What if an image-generation agent dynamically creates a background theme or environment based on the content of the notes you are reading? If I’m reading a note about being exhausted, it could adapt, or show a peaceful lake if I want to relax. It would fully immerse me in the atmosphere of the text.
+
+Rae: You are giving me so much inspiration!
+
+Yves: My pleasure! Also, when I am lying in bed, I usually turn on ASMR videos on YouTube to fully immerse myself in a mood and heal. What if the Cosmos web space plays adaptive soundscapes or ASMR based on the notes you are reading, your mood, or an algorithm?
+
+In 3D programs like Unreal Engine, we use HDRIs to prototype 360-degree spaces instantly. If you import an HDRI background that matches the content mood, it would change the whole environment.
+
+Rae: That is an awesome idea. Thank you so much!

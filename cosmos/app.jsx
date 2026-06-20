@@ -257,8 +257,8 @@ function App() {
   const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications") ? "spatial-audio" : "overview";
   const primaryPage = window.location.pathname.includes("/primary/interview-kris")
     ? "interview-kris"
-    : window.location.pathname.includes("/primary/interview-yeoul")
-      ? "interview-yeoul"
+    : window.location.pathname.includes("/primary/interview-yves")
+      ? "interview-yves"
       : window.location.pathname.includes("/primary/interview-johnny")
         ? "interview-johnny"
       : window.location.pathname.includes("/primary/expert-questionnaire")
@@ -914,18 +914,18 @@ function App() {
           </article>
         </section>}
 
-        {activeChapter === "primary" && primaryPage === "interview-yeoul" && <section className="report-section interview-report" id="interview-yeoul">
+        {activeChapter === "primary" && primaryPage === "interview-yves" && <section className="report-section interview-report" id="interview-yves">
           <ChapterLabel number="03.2">Primary research / Interview 02</ChapterLabel>
           <article className="report-document interview-document">
             <header className="report-page-intro interview-intro">
               <p className="eyebrow">Semi-structured interview + concept walkthrough</p>
-              <h1>Yeoul<br /><span>3D artist</span></h1>
-              <p>Yeoul discussed purposeful and passive social-media use, her experience developing for VR, and the physical constraints that limit headset sessions. During the Cosmos walkthrough, she responded strongly to the spatial-note concept while challenging the prototype to become more volumetric, organic, and emotionally contextual.</p>
+              <h1>Yves<br /><span>3D artist</span></h1>
+              <p>Yves discussed purposeful and passive social-media use, her experience developing for VR, and the physical constraints that limit headset sessions. During the Cosmos walkthrough, she responded strongly to the spatial-note concept while challenging the prototype to become more volumetric, organic, and emotionally contextual.</p>
             </header>
 
             <table className="report-table interview-meta">
               <tbody>
-                <tr><th>Participant</th><td>Yeoul</td><th>Practice</th><td>3D art; prior Unity VR development</td></tr>
+                <tr><th>Participant</th><td>Yves</td><th>Practice</th><td>3D art; prior Unity VR development</td></tr>
                 <tr><th>Format</th><td>Semi-structured interview</td><th>Activity</th><td>Concept and prototype walkthrough</td></tr>
                 <tr><th>Relevant hardware</th><td>Quest 3S, HTC Vive, Spectacles, Vision Pro</td><th>Session constraint</th><td>Reports motion sickness after 20–30 minutes</td></tr>
                 <tr><th>Evidence status</th><td colSpan="3">One exploratory interview. Directional evidence, not validation.</td></tr>
@@ -934,30 +934,30 @@ function App() {
 
             <nav className="report-contents" aria-label="Interview report contents">
               <p>In this report</p>
-              <a href="#yeoul-summary"><span>0</span>Interview summary</a>
-              <a href="#yeoul-method"><span>1</span>Method and limits</a>
-              <a href="#yeoul-media"><span>2</span>Media behavior</a>
-              <a href="#yeoul-xr"><span>3</span>XR constraints</a>
-              <a href="#yeoul-space"><span>4</span>Spatial interpretation</a>
-              <a href="#yeoul-voice"><span>5</span>Voice and context</a>
-              <a href="#yeoul-findings"><span>6</span>Key findings</a>
-              <a href="#yeoul-decisions"><span>7</span>Design decisions</a>
-              <a href="#yeoul-transcript"><span>A</span>Full transcript</a>
+              <a href="#yves-summary"><span>0</span>Interview summary</a>
+              <a href="#yves-method"><span>1</span>Method and limits</a>
+              <a href="#yves-media"><span>2</span>Media behavior</a>
+              <a href="#yves-xr"><span>3</span>XR constraints</a>
+              <a href="#yves-space"><span>4</span>Spatial interpretation</a>
+              <a href="#yves-voice"><span>5</span>Voice and context</a>
+              <a href="#yves-findings"><span>6</span>Key findings</a>
+              <a href="#yves-decisions"><span>7</span>Design decisions</a>
+              <a href="#yves-transcript"><span>A</span>Full transcript</a>
             </nav>
 
-            <section className="report-chapter" id="yeoul-summary">
+            <section className="report-chapter" id="yves-summary">
               <span className="report-number">0</span>
               <h2>Interview summary</h2>
-              <p className="report-lead">Yeoul found the idea of a non-linear “note-taking universe” compelling, but her feedback makes long headset browsing a questionable baseline. For her, comfort, facial fit, motion sickness, and contamination from makeup are immediate barriers.</p>
+              <p className="report-lead">Yves found the idea of a non-linear “note-taking universe” compelling, but her feedback makes long headset browsing a questionable baseline. For her, comfort, facial fit, motion sickness, and contamination from makeup are immediate barriers.</p>
               <p>Her media habits also separate two different jobs. Reddit is a purposeful research tool used for immigration timelines and cultural context, sometimes for more than an hour on a laptop. Instagram and Threads are passive, bedtime entertainment that can continue for two or three hours. Cosmos should not assume those modes should become one immersive behavior.</p>
-              <p>As a 3D artist, Yeoul expected more than flat cards distributed in depth. She described the current arrangement as aligned “like an Excel file” and proposed a more asymmetrical, 360-degree composition. She also introduced a different interaction metaphor: calling a note with a wand rather than scrolling through a disguised feed.</p>
+              <p>As a 3D artist, Yves expected more than flat cards distributed in depth. She described the current arrangement as aligned “like an Excel file” and proposed a more asymmetrical, 360-degree composition. She also introduced a different interaction metaphor: calling a note with a wand rather than scrolling through a disguised feed.</p>
               <aside className="report-note"><b>Primary interpretation</b><p>The next prototype should test spatial composition and retrieval without increasing motion. Immersive atmosphere may support orientation or mood, but it should remain a controlled research variable—not become decorative complexity by default.</p></aside>
             </section>
 
-            <section className="report-chapter" id="yeoul-method">
+            <section className="report-chapter" id="yves-method">
               <span className="report-number">1</span>
               <h2>Method and limitations</h2>
-              <p>The session combined questions about social-media behavior, VR/AR experience, and physical comfort with a walkthrough of the Cosmos concept and interface. Yeoul described her expectations for navigation, voice contribution, spatial composition, world-building, and adaptive sound and environment.</p>
+              <p>The session combined questions about social-media behavior, VR/AR experience, and physical comfort with a walkthrough of the Cosmos concept and interface. Yves described her expectations for navigation, voice contribution, spatial composition, world-building, and adaptive sound and environment.</p>
               <h3>What the interview can support</h3>
               <ul>
                 <li>Identification of physical and contextual barriers to sustained headset reading.</li>
@@ -973,7 +973,7 @@ function App() {
               </ul>
             </section>
 
-            <section className="report-chapter" id="yeoul-media">
+            <section className="report-chapter" id="yves-media">
               <span className="report-number">2</span>
               <h2>Two browsing modes: inquiry and escape</h2>
               <table className="report-table">
@@ -987,10 +987,10 @@ function App() {
               <blockquote className="report-quote">“Reddit is for specific reasons… But for killing time, I use Instagram.”</blockquote>
             </section>
 
-            <section className="report-chapter" id="yeoul-xr">
+            <section className="report-chapter" id="yves-xr">
               <span className="report-number">3</span>
               <h2>Physical comfort limits the reading session</h2>
-              <p>Yeoul used Quest 3S while developing a Unity application and could tolerate sessions of approximately 20–30 minutes before motion sickness. She had also tried HTC Vive, Spectacles, a single-lens AR prototype, and Apple Vision Pro. Vision Pro produced a better experience than the Quest hardware she referenced, but still placed uncomfortable weight on her nose.</p>
+              <p>Yves used Quest 3S while developing a Unity application and could tolerate sessions of approximately 20–30 minutes before motion sickness. She had also tried HTC Vive, Spectacles, a single-lens AR prototype, and Apple Vision Pro. Vision Pro produced a better experience than the Quest hardware she referenced, but still placed uncomfortable weight on her nose.</p>
               <p>Her constraints extend beyond motion sickness. Headsets do not fit her nose bridge well, make contact with makeup, and feel inappropriate for spontaneous use. She could imagine immersive reading only after cleansing her face, lying still in bed, and minimizing movement.</p>
               <table className="report-table">
                 <thead><tr><th>Constraint</th><th>Reported effect</th><th>Design consequence</th></tr></thead>
@@ -1004,10 +1004,10 @@ function App() {
               <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Do not optimize for hours of immersive scrolling. Test short sessions, stationary navigation, and desktop continuity. Comfort should be measured as a primary outcome.</p></aside>
             </section>
 
-            <section className="report-chapter" id="yeoul-space">
+            <section className="report-chapter" id="yves-space">
               <span className="report-number">4</span>
               <h2>A 3D field must feel spatial, not merely displaced</h2>
-              <p>Yeoul initially found two-finger navigation unfamiliar because the notes moved backward and forward instead of vertically. Once Rae explained the non-linear intention, she described the environment as a “note-taking universe” and compared it to a Harry Potter classroom with notes moving through the air.</p>
+              <p>Yves initially found two-finger navigation unfamiliar because the notes moved backward and forward instead of vertically. Once Rae explained the non-linear intention, she described the environment as a “note-taking universe” and compared it to a Harry Potter classroom with notes moving through the air.</p>
               <p>Her positive response came with a compositional critique. Cards remained front-facing and regularly aligned, so the environment did not feel fully three-dimensional. She expected cards to occupy a 360-degree field, vary in orientation, and form asymmetrical but intentional clusters.</p>
               <div className="spatial-composition-comparison" aria-label="Comparison between aligned spatial cards and an organic spatial field">
                 <div><span>Current reading</span><div className="aligned-field"><i /><i /><i /><i /><i /><i /></div><p>Parallel cards distributed in depth still read as a spreadsheet.</p></div>
@@ -1015,13 +1015,13 @@ function App() {
                 <div><span>Proposed test</span><div className="organic-field"><i /><i /><i /><i /><i /><i /></div><p>Asymmetrical orientation and clustered depth may improve volumetric legibility.</p></div>
               </div>
               <h3>Interaction metaphor</h3>
-              <p>Yeoul proposed using a wand-like gesture to call a note. This is useful as a testable retrieval metaphor: point toward a region, summon one item into focus, and return it to its remembered location. The gaming reference should not determine the aesthetic, but it may clarify how a spatial field replaces scrolling.</p>
+              <p>Yves proposed using a wand-like gesture to call a note. This is useful as a testable retrieval metaphor: point toward a region, summon one item into focus, and return it to its remembered location. The gaming reference should not determine the aesthetic, but it may clarify how a spatial field replaces scrolling.</p>
             </section>
 
-            <section className="report-chapter" id="yeoul-voice">
+            <section className="report-chapter" id="yves-voice">
               <span className="report-number">5</span>
               <h2>Voice input needs a social object</h2>
-              <p>Unlike Kris, Yeoul preferred voice note-taking and saw it used by software engineers and older adults. However, she anticipated that speaking toward empty space would feel awkward. Her comparison was green-screen acting: expression becomes difficult without a person, object, or environmental context to address.</p>
+              <p>Unlike Kris, Yves preferred voice note-taking and saw it used by software engineers and older adults. However, she anticipated that speaking toward empty space would feel awkward. Her comparison was green-screen acting: expression becomes difficult without a person, object, or environmental context to address.</p>
               <p>She proposed an animal, mirror, or assistant character that listens and converts speech into a draft post. The relevant hypothesis is not that Cosmos needs a mascot. It is that an addressable object may make asynchronous voice composition feel more intentional and may help a user externalize emotion.</p>
               <table className="report-table">
                 <thead><tr><th>Condition</th><th>Expected experience</th><th>Test</th></tr></thead>
@@ -1034,7 +1034,7 @@ function App() {
               <aside className="report-note"><b>Risk</b><p>A character that drafts posts may shape tone, disclosure, or opinion. The system must show the transcription and draft, preserve user control, and avoid implying human understanding.</p></aside>
             </section>
 
-            <section className="report-chapter" id="yeoul-findings">
+            <section className="report-chapter" id="yves-findings">
               <span className="report-number">6</span>
               <h2>Key findings</h2>
               <div className="report-table-scroll"><table className="report-table report-table-wide interview-findings-table">
@@ -1051,7 +1051,7 @@ function App() {
               </table></div>
             </section>
 
-            <section className="report-chapter" id="yeoul-decisions">
+            <section className="report-chapter" id="yves-decisions">
               <span className="report-number">7</span>
               <h2>Design decisions and next research</h2>
               <h3>Fix or constrain before the next headset study</h3>
@@ -1075,11 +1075,11 @@ function App() {
               <aside className="report-note"><b>Scope boundary</b><p>Dynamic generated environments and adaptive ASMR are later hypotheses. They should not enter the next prototype until the wall is readable, navigable, and comfortable in a neutral environment.</p></aside>
             </section>
 
-            <section className="report-chapter" id="yeoul-transcript">
+            <section className="report-chapter" id="yves-transcript">
               <span className="report-number">A</span>
               <h2>Full transcript</h2>
               <p>The transcript is lightly edited for punctuation and obvious speech-to-text errors. The sequence and substantive responses are preserved.</p>
-              <TranscriptAppendix src="/cosmos/primary/interview-yeoul/transcript.txt" />
+              <TranscriptAppendix src="/cosmos/primary/interview-yves/transcript.txt" />
             </section>
           </article>
         </section>}
