@@ -64,6 +64,19 @@ const phases = [
   },
 ];
 
+const speakerStrategies = [
+  { number: "01", name: "N-loudest", verdict: "Breaks presence", body: "Forwarding only the loudest speakers causes quiet voices to cut out unnaturally. A technique that works for meetings becomes perceptually wrong in a spatial room." },
+  { number: "02", name: "N-closest", verdict: "Creates asymmetry", body: "Proximity feels intuitive until two users have different subscription sets: one person can hear the other while the conversation remains one-way." },
+  { number: "03", name: "Fixed range", verdict: "Predictable, abrupt", body: "A hard hearing boundary controls load, but voices appear and disappear at the edge. Dense rooms can sound empty even when people are visibly present." },
+  { number: "04", name: "Large attenuated range", verdict: "Natural, expensive", body: "A wide range lets voices decay toward silence and best matches physical hearing. It also increases the number of streams or mixes the system must deliver." },
+];
+
+const deliveryArchitectures = [
+  { label: "Peer-to-peer", load: "Client", risk: "IP exposure + upstream bandwidth", note: "Every participant sends audio directly to every listener. Simple in theory; insecure and inefficient at room scale." },
+  { label: "Forwarding proxy", load: "Network", risk: "Stream fan-out", note: "A server hides client addresses and routes individual streams, but each listener may still receive dozens of concurrent voices." },
+  { label: "Server-side mixing", load: "Server", risk: "Per-listener compute", note: "The server creates a custom spatial scene for each listener. Complex, but the strongest fit for dense constrained environments." },
+];
+
 function Progress() {
   const [progress, setProgress] = useState(0);
   useEffect(() => {
@@ -84,6 +97,7 @@ function ChapterLabel({ number, children }) {
 
 function App() {
   const [lens, setLens] = useState("reader");
+  const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications") ? "spatial-audio" : "overview";
   const activeChapter = window.location.pathname.includes("/secondary")
     ? "secondary"
     : window.location.pathname.includes("/primary")
@@ -95,7 +109,7 @@ function App() {
     <div id="top">
       <Progress />
       <CosmosHeader />
-      <CosmosSidebar active={activeChapter} />
+      <CosmosSidebar active={activeChapter} subActive={activeChapter === "secondary" ? secondaryPage : undefined} />
 
       <main>
         {activeChapter === "intro" && <section className="hero" id="intro">
@@ -121,101 +135,153 @@ function App() {
             <p><strong>Working thesis</strong> Cosmos is not another social feed or a live voice room. It is a VR reconstruction of an offline asynchronous community wall.</p>
           </div>
 
-          <div className="intro-report">
-            <div className="intro-abstract">
-              <p className="mini-label">What this research is</p>
-              <h2>The project began with a broad question: could spatial computing make online discourse easier to understand?</h2>
-              <div>
-                <p>The first concept treated Cosmos as a spatial discourse browser and an alternative to headset doomscrolling. The direction was plausible, but under-evidenced. It did not explain why discussions needed to be spatial, which behavior the product should preserve, or what would distinguish it from social VR, a 3D feed, or an AI summary.</p>
-                <p>A deeper audit identified the stronger reference model: offline bulletin boards, poster walls, sticky-note surfaces, and public message walls. These environments already support asynchronous participation through placement, density, movement, and return. Cosmos turns that established behavior into a researchable cross-device system.</p>
-              </div>
-            </div>
+          <article className="report-document">
+            <nav className="report-contents" aria-label="Introduction contents">
+              <p>In this report</p>
+              <a href="#summary"><span>0</span>Executive summary</a>
+              <a href="#audit"><span>1</span>Research audit</a>
+              <a href="#direction"><span>2</span>Research direction</a>
+              <a href="#questions"><span>3</span>Research questions</a>
+              <a href="#strategy"><span>4</span>Wall-first strategy</a>
+              <a href="#evidence"><span>5</span>Evidence matrix</a>
+              <a href="#next"><span>6</span>Research still needed</a>
+            </nav>
 
-            <div className="research-shift" aria-label="How the Cosmos research direction changed">
-              <article>
-                <span>Initial frame</span>
-                <h3>Spatial discourse browser</h3>
-                <p>A broad alternative to feeds and headset doomscrolling.</p>
-              </article>
-              <div className="shift-axis"><i /><b>Research audit</b><i /></div>
-              <article className="shift-result">
-                <span>Current frame</span>
-                <h3>VR community wall</h3>
-                <p>A testable reconstruction of offline asynchronous participation.</p>
-              </article>
-            </div>
+            <section className="report-chapter" id="summary">
+              <span className="report-number">0</span>
+              <h2>Executive summary</h2>
+              <p className="report-lead">Cosmos is a research project about whether asynchronous online community can become easier to understand when discussion is organized as a place rather than a feed.</p>
+              <p>The project was initially framed as a spatial discourse browser and an alternative to headset doomscrolling. That framing identified a broad problem but did not sufficiently explain why spatial interaction was necessary, which existing behavior the product should preserve, or how Cosmos differed from social VR, an AI summary, or a conventional feed placed in 3D.</p>
+              <p>The research direction changed after examining offline bulletin boards, poster walls, sticky-note walls, and other public message surfaces. These environments already support asynchronous community. Messages accumulate over time; people read by moving, scanning, and approaching; position and density become signals; and participation remains possible without requiring immediate speech or posting.</p>
+              <p>The resulting proposal is narrower: Cosmos should begin as a VR reconstruction of an offline asynchronous community wall. Existing discussions may provide seed material, but the product metaphor is the wall—not the feed and not the live room.</p>
+              <aside className="report-note"><b>Current conclusion</b><p>Cosmos is not validated yet, but it is now researchable. A comparative study can test whether a VR community wall improves comprehension, reading comfort, source inspection, and place memory relative to a flat feed.</p></aside>
+            </section>
 
-            <div className="wall-reference-heading">
-              <div><p className="mini-label">Primary reference model</p><h2>Before the feed,<br /><em>there was the wall.</em></h2></div>
-              <p>Physical message walls reveal discussion as a surface. People scan from a distance, move closer, notice clusters, compare adjacent notes, and return to remembered locations. Contribution remains optional; the community trace stays public.</p>
-            </div>
-            <figure className="wall-reference-grid">
-              <div className="wall-image wall-image-wide"><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.40.57.png" alt="A person reading a dense public poster wall" /></div>
-              <div className="wall-image"><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.08.png" alt="A long public wall covered in accumulated handwritten notes" /></div>
-              <div className="wall-image"><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.13.png" alt="A quieter community wall with pinned house-shaped notes" /></div>
-              <figcaption><span>Fig. 01–03</span><p>Three physical patterns—dense poster field, accumulated public memorial, and curated note wall—show how placement, layering, material difference, and density become community signals.</p></figcaption>
-            </figure>
+            <section className="report-chapter" id="audit">
+              <span className="report-number">1</span>
+              <h2>Research audit</h2>
+              <h3>Is the direction correct?</h3>
+              <p>Yes, but the reason changed. The earlier concept assumed that feeds were unpleasant and that spatial browsing might provide an alternative. The updated direction begins with a more specific precedent: offline communities already use spatial surfaces for low-pressure asynchronous participation.</p>
+              <p>This changes the design question. Cosmos is no longer asking how to make a feed immersive. It asks which useful properties of a physical community wall can survive translation into VR, mixed reality, and desktop interaction.</p>
+              <h3>What was missing from the earlier concept?</h3>
+              <ul>
+                <li>Evidence that reading without posting is a meaningful form of participation rather than inactivity.</li>
+                <li>A clear reason to use bulletin boards, poster walls, and note walls as the primary design reference.</li>
+                <li>A testable account of how spatial layout supports comprehension rather than decoration.</li>
+                <li>A boundary between asynchronous spatial browsing and voice-forward social VR.</li>
+                <li>A market argument explaining what Reddit, Discord, VRChat, spatial windows, and AI summaries do not solve.</li>
+                <li>A strategy for testing the wall before attempting to build a new community platform.</li>
+                <li>Measures that could invalidate the concept if the spatial wall does not outperform a flat-feed baseline.</li>
+              </ul>
+            </section>
 
-            <div className="definition-block">
-              <div className="definition-title"><p className="mini-label">Product definition</p><h2>Wall first.<br /><em>Platform later.</em></h2></div>
-              <div className="definition-columns">
-                <article><span>Cosmos is</span><ul><li>A persistent spatial message surface</li><li>A read-first form of participation</li><li>A place for source-linked sensemaking</li><li>A cross-device research prototype</li></ul></article>
-                <article><span>Cosmos is not</span><ul><li>A headset-only social world</li><li>A new community platform on day one</li><li>A 2D feed arranged decoratively in 3D</li><li>A live spatial voice room</li></ul></article>
-              </div>
-            </div>
+            <section className="report-chapter" id="direction">
+              <span className="report-number">2</span>
+              <h2>Research direction</h2>
+              <p>Cosmos should be researched as a VR reconstruction of offline asynchronous community walls: bulletin boards, poster walls, sticky-note walls, and public message surfaces. It is not a headset-only social world, a new community platform on day one, or a live spatial voice room.</p>
+              <blockquote className="report-quote">Offline communities already use spatial surfaces for asynchronous participation. Cosmos tests whether VR can rebuild that wall-like behavior while preserving low pressure, source inspection, and place memory.</blockquote>
+              <h3>What the wall contributes</h3>
+              <p>A physical wall exposes the shape of participation without requiring a ranking algorithm. Density shows where attention has accumulated. Proximity suggests relationship. Layering records time and contestation. Material differences help readers distinguish voices. Movement lets people alternate between scanning the whole and reading a particular message closely.</p>
+              <figure className="report-figure">
+                <div><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.40.57.png" alt="A person reading a dense public poster wall" /><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.08.png" alt="A public wall covered in accumulated handwritten notes" /><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.13.png" alt="A community wall with pinned house-shaped notes" /></div>
+                <figcaption><span>Figure 1</span> Offline walls are asynchronous, spatial, persistent, public, and readable without contribution. The prototype should test which of these properties remain useful in a digital environment.</figcaption>
+              </figure>
+              <h3>Core hypothesis</h3>
+              <p>The primary hypothesis is not that immersion is inherently better. It is that position, distance, density, and movement may provide usable orientation cues for a complex discussion.</p>
+              <aside className="report-note report-note-yellow"><b>Comparative question</b><p>Can people understand and remember an asynchronous discussion more comfortably in a VR community wall than in a flat feed?</p></aside>
+              <h3>Device scope</h3>
+              <table className="report-table">
+                <thead><tr><th>Device mode</th><th>Role in the research</th></tr></thead>
+                <tbody>
+                  <tr><td>Desktop</td><td>Broad access, baseline usability, and the flat-feed comparison condition.</td></tr>
+                  <tr><td>Quest 3 / mixed reality</td><td>Immersive spatial browsing, embodied navigation, and reading-comfort testing.</td></tr>
+                  <tr><td>Vision Pro</td><td>Spatial reading, gaze and focus behavior, and window/card layout.</td></tr>
+                  <tr><td>Smart-glasses direction</td><td>Glanceable labels, saved paths, alerts, and lightweight resurfacing—not deep reading.</td></tr>
+                </tbody>
+              </table>
+            </section>
 
-            <div className="hypothesis-block">
-              <p className="mini-label">Core hypothesis</p>
-              <blockquote>Can spatial form help people understand and remember an asynchronous discussion more comfortably than a flat feed?</blockquote>
-              <p>The product claim is not that VR is more immersive. It is that position, proximity, density, and movement may provide usable orientation cues while preserving the low pressure of reading without posting.</p>
-            </div>
+            <section className="report-chapter" id="questions">
+              <span className="report-number">3</span>
+              <h2>Research questions</h2>
+              <table className="report-table report-table-questions">
+                <thead><tr><th>Research question</th><th>What the study needs to learn</th></tr></thead>
+                <tbody>
+                  <tr><td>What do users want?</td><td>Whether the need is low-pressure reading, debate sensemaking, place memory, wall-like contribution, or simply faster summaries.</td></tr>
+                  <tr><td>What should Cosmos preserve from offline walls?</td><td>Which qualities matter: density, layering, proximity, handwriting and materiality, return paths, publicness, or social permission.</td></tr>
+                  <tr><td>What is already offered in the market?</td><td>How forums, chat platforms, social VR, spatial operating systems, smart glasses, and AI summarizers divide the problem.</td></tr>
+                  <tr><td>What should Cosmos become?</td><td>Whether it should remain a wall/browser or eventually justify a native community platform.</td></tr>
+                  <tr><td>What role should live audio have?</td><td>Whether spatial voice belongs only as optional later co-presence after asynchronous browsing proves valuable.</td></tr>
+                  <tr><td>Which interactions are worth testing?</td><td>Wall browsing, labels, source inspection, missing-voice surfacing, saved paths, and cross-device continuity.</td></tr>
+                  <tr><td>What evidence would validate the concept?</td><td>A measurable improvement in comprehension, comfort, trust, or place memory against a controlled flat-feed baseline.</td></tr>
+                </tbody>
+              </table>
+            </section>
 
-            <div className="intro-questions">
-              <div><p className="mini-label">Research questions</p><h2>Seven questions keep the concept accountable.</h2></div>
+            <section className="report-chapter" id="strategy">
+              <span className="report-number">4</span>
+              <h2>Current recommendation: wall first, platform later</h2>
+              <p>Cosmos should begin with a controlled, permission-cleared message wall using participant-created notes, class or community discussions, research comments, or synthetic datasets. The first release does not need to host a complete native community.</p>
+              <p>This sequence isolates the project’s distinctive claim. Hosting posts is not novel; the relevant question is whether a spatial public surface creates comprehension, orientation, and return value that existing feeds do not.</p>
               <ol>
-                <li><span>01</span><p><b>User need</b> Do people want low-pressure understanding, place memory, or simply faster summaries?</p></li>
-                <li><span>02</span><p><b>Offline behavior</b> Which wall qualities matter: density, layering, proximity, materiality, or publicness?</p></li>
-                <li><span>03</span><p><b>Market gap</b> What remains unsolved by Reddit, Discord, social VR, spatial OS tools, and AI?</p></li>
-                <li><span>04</span><p><b>Product form</b> Should Cosmos become a wall, a browser, or eventually a native platform?</p></li>
-                <li><span>05</span><p><b>Presence</b> Does spatial voice add orientation later, or recreate pressure and distraction?</p></li>
-                <li><span>06</span><p><b>Interaction</b> Which actions—browsing, labels, source inspection, saved paths—create measurable value?</p></li>
-                <li><span>07</span><p><b>Evidence</b> What result would prove that the wall is better than a flat-feed baseline?</p></li>
+                <li><b>Control the initial content.</b> Avoid a platform cold start and make the comparison reproducible.</li>
+                <li><b>Prove wall browsing.</b> Test density, clustering, source inspection, and place memory before adding social layers.</li>
+                <li><b>Add personal continuity.</b> Introduce saved paths, annotations, collected regions, and return-to-place behavior.</li>
+                <li><b>Add light contribution.</b> Let people leave notes, ask questions, and identify missing voices without requiring live presence.</li>
+                <li><b>Consider native community or spatial voice later.</b> Add infrastructure only when the wall provides a demonstrated reason to return.</li>
               </ol>
-            </div>
+              <table className="report-table">
+                <thead><tr><th>Phase</th><th>Strategy</th><th>Goal</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>Controlled VR message wall</td><td>Test comprehension, comfort, trust, and place memory.</td></tr>
+                  <tr><td>2</td><td>Personal actions</td><td>Support saving, annotating, comparing, and returning.</td></tr>
+                  <tr><td>3</td><td>Light wall contribution</td><td>Test participation without live-room pressure.</td></tr>
+                  <tr><td>4</td><td>Native community or engineered voice</td><td>Proceed only if earlier phases establish sustained value.</td></tr>
+                </tbody>
+              </table>
+            </section>
 
-            <div className="evidence-matrix-wrap">
-              <div className="matrix-heading"><p className="mini-label">Evidence audit</p><h2>Promising is not the same as proven.</h2><p>The report separates literature-backed claims from strategic inference and names the primary research still required.</p></div>
-              <div className="evidence-matrix" role="table" aria-label="Cosmos evidence strength matrix">
-                <div className="matrix-row matrix-header" role="row"><span>Claim</span><span>Strength</span><span>What remains to test</span></div>
-                <div className="matrix-row" role="row"><b>Offline async community already has spatial form</b><span className="strength strong"><i /> Strong</span><p>Translate wall behaviors into VR through observation and prototype testing.</p></div>
-                <div className="matrix-row" role="row"><b>Quiet reading is meaningful participation</b><span className="strength strong"><i /> Strong</span><p>Interview the target audience about non-posting behavior and social permission.</p></div>
-                <div className="matrix-row" role="row"><b>Feeds make discussion structure hard to see</b><span className="strength moderate"><i /> Moderate</span><p>Compare comprehension and stance recall against a controlled flat feed.</p></div>
-                <div className="matrix-row" role="row"><b>Spatial layout can support sensemaking</b><span className="strength moderate"><i /> Moderate</span><p>Measure cluster interpretation, source recall, and note-location memory.</p></div>
-                <div className="matrix-row" role="row"><b>AI labels must remain inspectable</b><span className="strength strong"><i /> Strong</span><p>Test source tracing, correction, and trust when a label is wrong.</p></div>
-                <div className="matrix-row" role="row"><b>Wall-first is the right product strategy</b><span className="strength inference"><i /> Inference</span><p>Validate preference, return intent, and content-rights constraints.</p></div>
-              </div>
-            </div>
+            <section className="report-chapter" id="evidence">
+              <span className="report-number">5</span>
+              <h2>Evidence matrix</h2>
+              <p>The current evidence supports a research program, not a product conclusion. Each claim below remains linked to a specific primary-research requirement.</p>
+              <div className="report-table-scroll"><table className="report-table report-table-wide">
+                <thead><tr><th>Claim</th><th>Current strength</th><th>Current basis</th><th>What still needs testing</th></tr></thead>
+                <tbody>
+                  <tr><td>Offline async community already has spatial form</td><td>Strong design-reference support</td><td>Poster walls, bulletin boards, and public note walls</td><td>Field observation and prototype translation</td></tr>
+                  <tr><td>Reading without posting is meaningful behavior</td><td>Strong literature support</td><td>Lurking and participation-inequality research</td><td>Interviews with the target audience</td></tr>
+                  <tr><td>Feeds make structure difficult to see</td><td>Moderate support</td><td>Feed fatigue and information-overload research</td><td>Flat feed versus Cosmos task comparison</td></tr>
+                  <tr><td>Voice-forward social VR can create pressure</td><td>Moderate support</td><td>Social VR research and public user discourse</td><td>Interviews with social VR users</td></tr>
+                  <tr><td>Spatial layout may support sensemaking</td><td>Moderate theory support</td><td>Spatial hypertext, information foraging, and visual sensemaking</td><td>Comprehension and place-memory testing</td></tr>
+                  <tr><td>Headset text comfort is fragile</td><td>Strong support</td><td>VR interface, reading, and cybersickness research</td><td>Testing on real devices</td></tr>
+                  <tr><td>AI summaries need source inspection</td><td>Strong technical support</td><td>Summarization consistency and AI-trust research</td><td>Source-trace and correction tasks</td></tr>
+                  <tr><td>Wall-first is the right strategy</td><td>Strategic inference</td><td>Reference model, platform cold-start logic, and content rights</td><td>User preference, return intent, and expert review</td></tr>
+                </tbody>
+              </table></div>
+            </section>
 
-            <div className="device-modes">
-              <div><p className="mini-label">System scope</p><h2>One wall,<br />four depths of attention.</h2></div>
-              <div className="device-mode-grid">
-                <article><span>01</span><h3>Desktop</h3><p>Broad access and the usability baseline.</p></article>
-                <article><span>02</span><h3>Quest / MR</h3><p>Immersive browsing and comfort testing.</p></article>
-                <article><span>03</span><h3>Vision Pro</h3><p>Spatial reading, gaze, and focus behavior.</p></article>
-                <article><span>04</span><h3>Glasses</h3><p>Glanceable labels, paths, and resurfacing.</p></article>
-              </div>
-            </div>
-
-            <div className="intro-conclusion">
-              <span>Research position</span>
-              <h2>Cosmos is not validated yet.<br /><em>It is now researchable.</em></h2>
-              <p>The next step is a controlled comparison between a flat feed and a VR community wall, measured through comprehension, comfort, trust, source inspection, and place memory.</p>
-              <div><a href="/cosmos/secondary/">Review the evidence <span>→</span></a><a href="/cosmos/primary/">See the study plan <span>→</span></a></div>
-            </div>
-          </div>
+            <section className="report-chapter" id="next">
+              <span className="report-number">6</span>
+              <h2>Research still needed</h2>
+              <h3>Literature review</h3>
+              <p>Expand the review of non-public participation, offline message walls, social media fatigue, information foraging, spatial memory, VR reading comfort, spatial communications, and trustworthy AI summaries.</p>
+              <h3>Competitive analysis</h3>
+              <p>Compare Reddit, Discord, argument-mapping tools, VRChat, VIVERSE, Vision Pro browsing, AI answer engines, and research-synthesis tools using the same criteria: orientation, pressure, source visibility, comfort, and return behavior.</p>
+              <h3>Primary research</h3>
+              <ul>
+                <li>Six comparative user tests using the same discussion in a flat feed and VR wall.</li>
+                <li>Three to five expert interviews across XR, online community, moderation, and spatial communication.</li>
+                <li>A survey of 30–50 early respondents, followed by interviews with quiet readers and XR users.</li>
+                <li>Two or three observations of physical community walls or recreated note-wall sessions.</li>
+                <li>An optional later test of ambient co-presence or spatial audio after asynchronous wall browsing works.</li>
+              </ul>
+              <aside className="report-note"><b>Decision rule</b><p>If spatial layout does not improve comprehension, comfort, trust, or place memory relative to a flat feed, Cosmos should not add more immersive or social complexity.</p></aside>
+              <div className="report-next-links"><a href="/cosmos/secondary/">Continue to secondary research <span>→</span></a><a href="/cosmos/primary/">Review the primary study plan <span>→</span></a></div>
+            </section>
+          </article>
         </section>}
 
-        {activeChapter === "secondary" && <section className="report-section secondary" id="secondary">
+        {activeChapter === "secondary" && secondaryPage === "overview" && <section className="report-section secondary" id="secondary">
           <ChapterLabel number="02">Secondary research</ChapterLabel>
           <div className="section-heading">
             <h2>The feed is optimized for momentum.<br /><em>The wall is optimized for orientation.</em></h2>
@@ -250,6 +316,103 @@ function App() {
               <p className="highlight"><span>Cosmos</span><b>Read-first, spatial, source-linked</b></p>
             </div>
           </div>
+        </section>}
+
+        {activeChapter === "secondary" && secondaryPage === "spatial-audio" && <section className="report-section spatial-audio" id="spatial-audio">
+          <ChapterLabel number="02.1">Secondary research / Video analysis</ChapterLabel>
+          <div className="spatial-audio-hero">
+            <div>
+              <p className="eyebrow">Paul Boustead · Dolby IO</p>
+              <h1>Spatial communications<br />at scale.</h1>
+              <p>This presentation explains why spatial sound can make dense online conversation more intelligible—and why delivering it convincingly is a systems problem, not an audio effect.</p>
+              <a className="source-link" href="https://www.youtube.com/watch?v=aTzbpX9J134" target="_blank" rel="noreferrer">Watch the source video <span>↗</span></a>
+            </div>
+            <div className="video-frame">
+              <iframe src="https://www.youtube-nocookie.com/embed/aTzbpX9J134" title="Spatial Communications at Scale in Virtual Environments by Paul Boustead" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+            </div>
+          </div>
+
+          <div className="audio-thesis">
+            <span>Finding</span>
+            <h2>Borrow the cognitive principle.<br /><em>Do not start with the live-room product.</em></h2>
+            <p>Spatial release from masking supports Cosmos’s premise that location can help people direct attention. Dolby’s deployment history also exposes the cost: natural spatial communication depends on speaker-selection logic, per-listener mixing, disciplined capture, and low-latency rendering. That is a different first product from an asynchronous community wall.</p>
+          </div>
+
+          <div className="cocktail-section">
+            <div className="cocktail-copy">
+              <p className="mini-label">The cocktail party problem</p>
+              <h2>The brain separates a room.<br />Conferencing collapses it.</h2>
+              <p>Physical conversations contain overlap, laughter, and short affirmations. Traditional conferencing flattens those voices into a linear mix, removing the direction, distance, phase, and level differences the brain normally uses to focus.</p>
+              <a href="https://www.youtube.com/watch?v=aTzbpX9J134&t=116" target="_blank" rel="noreferrer">01:56–05:06 in the video ↗</a>
+            </div>
+            <div className="masking-diagram" aria-label="Diagram comparing a flat audio mix to spatial release from masking">
+              <div className="flat-mix"><span>Flat mix</span><div><i>A</i><i>B</i><i>C</i><i>D</i></div><b>One crowded channel</b></div>
+              <div className="diagram-arrow">→</div>
+              <div className="spatial-mix"><span>Spatial scene</span><div className="listener"><i>L</i></div><i className="voice v1">A</i><i className="voice v2">B</i><i className="voice v3">C</i><i className="voice v4">D</i><b>Direction + distance</b></div>
+            </div>
+          </div>
+
+          <div className="scale-history">
+            <div><p className="mini-label">Proven at scale</p><h2>Dolby treated spatial voice as infrastructure.</h2></div>
+            <article><strong>2007</strong><h3>Dolby Axon</h3><p>A spatial voice server and client system designed for massively multiplayer environments.</p></article>
+            <article><strong>5,000</strong><h3>Players per world</h3><p>The target capacity for one continuous virtual environment.</p></article>
+            <article><strong>≈2M</strong><h3>Peak concurrent users</h3><p>Reported for <em>ZT Online</em> across parallel shards in China.</p></article>
+          </div>
+
+          <div className="strategy-section">
+            <div className="strategy-heading"><p className="mini-label">Speaker selection</p><h2>Who gets heard is an architectural decision.</h2><p>At scale, a system cannot forward every voice to every listener. Each optimization changes the social reality of the room.</p></div>
+            <div className="strategy-grid">
+              {speakerStrategies.map(strategy => <article key={strategy.number}><div><span>{strategy.number}</span><i>{strategy.verdict}</i></div><h3>{strategy.name}</h3><p>{strategy.body}</p></article>)}
+            </div>
+          </div>
+
+          <div className="architecture-section">
+            <div className="architecture-heading"><p className="mini-label">Delivery architecture</p><h2>Natural hearing shifts work into the server.</h2></div>
+            <div className="architecture-table" role="table" aria-label="Spatial audio delivery architecture comparison">
+              <div className="architecture-row architecture-header" role="row"><span>Model</span><span>Primary load</span><span>Failure mode</span><span>Assessment</span></div>
+              {deliveryArchitectures.map(item => <div className="architecture-row" role="row" key={item.label}><b>{item.label}</b><span>{item.load}</span><i>{item.risk}</i><p>{item.note}</p></div>)}
+            </div>
+          </div>
+
+          <div className="mixing-system">
+            <p className="mini-label">Preferred dense-room architecture</p>
+            <h2>A custom scene for every listener.</h2>
+            <div className="mix-flow" aria-label="Server-side spatial mixing flow">
+              <div className="mix-sources"><span>Participant streams</span><div><i>A</i><i>B</i><i>C</i><i>D</i></div></div>
+              <b>→</b>
+              <div className="mix-server"><span>Server</span><strong>Per-listener<br />spatial mix</strong><small>position · distance · level</small></div>
+              <b>→</b>
+              <div className="mix-codec"><span>Transport</span><strong>Multi-channel<br />spatial codec</strong></div>
+              <b>→</b>
+              <div className="mix-client"><span>Client</span><strong>Instant head<br />rotation</strong><i>↻</i></div>
+            </div>
+            <p className="mix-note">Dolby avoids sending a separate HRTF-rendered stereo stream for every source. A multi-channel spatial codec preserves enough scene structure for immediate, low-latency head rotation on the client.</p>
+          </div>
+
+          <div className="audio-chain-section">
+            <div><p className="mini-label">Audio chain</p><h2>Immersion depends on what happens before the mix.</h2><p>Spatial placement cannot rescue inconsistent or contaminated inputs. Each stage protects intelligibility and the credibility of distance.</p></div>
+            <ol className="audio-chain">
+              <li><span>01</span><div><b>Noise + echo suppression</b><p>Remove continuous room noise before it accumulates across participants.</p></div></li>
+              <li><span>02</span><div><b>Voice activity detection</b><p>Preserve real silence between talk bursts instead of transmitting ambient beds.</p></div></li>
+              <li><span>03</span><div><b>Voice leveling</b><p>Normalize capture levels so distance attenuation remains perceptually meaningful.</p></div></li>
+              <li><span>04</span><div><b>Spatial mixing</b><p>Calculate the listener-specific balance from position, range, and scene rules.</p></div></li>
+              <li><span>05</span><div><b>Client rendering</b><p>Respond immediately to head movement without waiting for a network round trip.</p></div></li>
+            </ol>
+            <div className="music-exception"><span>Exception</span><p><b>Music needs a different chain.</b> Voice-oriented gates and suppression can destroy live performance. Entertainment rooms require specialized capture and leveling.</p></div>
+          </div>
+
+          <div className="cosmos-implication">
+            <span>Implication for Cosmos</span>
+            <h2>Space is valuable before voice enters the room.</h2>
+            <div className="implication-grid">
+              <article><b>Use now</b><p>Apply location, distance, density, and attention cues to asynchronous message browsing.</p></article>
+              <article><b>Test later</b><p>Evaluate ambient co-presence or spatial audio only after the wall improves comprehension and return behavior.</p></article>
+              <article><b>Avoid by default</b><p>Do not make live conversation the entry requirement for reading or participating in Cosmos.</p></article>
+            </div>
+            <p className="implication-close">The video strengthens the spatial premise and narrows the product scope at the same time.</p>
+          </div>
+
+          <footer className="video-source-note"><span>Source</span><p>Paul Boustead, “Spatial Communications at Scale in Virtual Environments,” Dolby IO. Timestamps and technical claims link to the source presentation.</p><a href="https://www.youtube.com/watch?v=aTzbpX9J134" target="_blank" rel="noreferrer">YouTube ↗</a></footer>
         </section>}
 
         {activeChapter === "primary" && <section className="report-section primary" id="primary">

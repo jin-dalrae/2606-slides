@@ -6,6 +6,11 @@ export const cosmosPages = [
   ["design", "05", "Design system", "/cosmos/design-system/"],
 ];
 
+export const secondaryReports = [
+  ["overview", "2.0", "Overview", "/cosmos/secondary/"],
+  ["spatial-audio", "2.1", "Spatial communications", "/cosmos/secondary/spatial-communications/"],
+];
+
 export function CosmosMark() {
   return <span className="wordmark-mark"><i /><i /><i /></span>;
 }
@@ -19,14 +24,19 @@ export function CosmosHeader({ meta = "Research report · 2026" }) {
       </a>
       <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open}>Menu</button>
       <nav className={open ? "top-nav is-open" : "top-nav"} aria-label="Cosmos navigation">
-        {cosmosPages.map(([id, number, label, path]) => <a key={id} href={path} onClick={() => setOpen(false)}>{label}</a>)}
+        {cosmosPages.map(([id, number, label, path]) => (
+          <React.Fragment key={id}>
+            <a href={path} onClick={() => setOpen(false)}>{label}</a>
+            {id === "secondary" && <a className="top-nav-child" href={secondaryReports[1][3]} onClick={() => setOpen(false)}>↳ Spatial communications</a>}
+          </React.Fragment>
+        ))}
       </nav>
       <p className="header-meta">{meta}</p>
     </header>
   );
 }
 
-export function CosmosSidebar({ active }) {
+export function CosmosSidebar({ active, subActive }) {
   return (
     <aside className="chapter-rail" aria-label="Cosmos reports">
       <div className="rail-intro">
@@ -37,9 +47,18 @@ export function CosmosSidebar({ active }) {
       <nav>
         <p>Index</p>
         {cosmosPages.map(([id, number, label, path]) => (
-          <a className={active === id ? "active" : ""} key={id} href={path}>
-            <span>{number}</span><b>{label}</b><i>→</i>
-          </a>
+          <React.Fragment key={id}>
+            <a className={active === id ? "active" : ""} href={path}>
+              <span>{number}</span><b>{label}</b><i>→</i>
+            </a>
+            {id === "secondary" && active === "secondary" && <div className="rail-subnav">
+              {secondaryReports.map(([subId, subNumber, subLabel, subPath]) => (
+                <a className={subActive === subId ? "active" : ""} key={subId} href={subPath}>
+                  <span>{subNumber}</span><b>{subLabel}</b><i>↗</i>
+                </a>
+              ))}
+            </div>}
+          </React.Fragment>
         ))}
       </nav>
       <div className="rail-status"><i /> Cosmos archive <span>2026</span></div>
