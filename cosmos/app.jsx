@@ -1,10 +1,10 @@
 const { useEffect, useState } = React;
 
 const chapters = [
-  ["intro", "01", "Introduction"],
-  ["secondary", "02", "Secondary research"],
-  ["primary", "03", "Primary research"],
-  ["making", "04", "Making Cosmos"],
+  ["intro", "01", "Introduction", "/cosmos/"],
+  ["secondary", "02", "Secondary research", "/cosmos/secondary/"],
+  ["primary", "03", "Primary research", "/cosmos/primary/"],
+  ["making", "04", "Making Cosmos", "/cosmos/making/"],
 ];
 
 const evidence = [
@@ -89,13 +89,13 @@ function Header() {
     <>
       <Progress />
       <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="Cosmos home">
+        <a className="wordmark" href="/cosmos/" aria-label="Cosmos home">
           <span className="wordmark-mark"><i /><i /><i /></span>
           COSMOS
         </a>
         <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open}>Menu</button>
         <nav className={open ? "top-nav is-open" : "top-nav"} aria-label="Main navigation">
-          {chapters.map(([id, n, label]) => <a key={id} href={`#${id}`} onClick={() => setOpen(false)}>{label}</a>)}
+          {chapters.map(([id, n, label, path]) => <a key={id} href={path} onClick={() => setOpen(false)}>{label}</a>)}
         </nav>
         <p className="header-meta">Research report <span>•</span> 2026</p>
       </header>
@@ -109,18 +109,13 @@ function ChapterLabel({ number, children }) {
 
 function App() {
   const [lens, setLens] = useState("reader");
-  const [activeChapter, setActiveChapter] = useState("intro");
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && setActiveChapter(entry.target.id)),
-      { rootMargin: "-25% 0px -60%", threshold: 0 }
-    );
-    chapters.forEach(([id]) => {
-      const section = document.getElementById(id);
-      if (section) observer.observe(section);
-    });
-    return () => observer.disconnect();
-  }, []);
+  const activeChapter = window.location.pathname.includes("/secondary")
+    ? "secondary"
+    : window.location.pathname.includes("/primary")
+      ? "primary"
+      : window.location.pathname.includes("/making")
+        ? "making"
+        : "intro";
   return (
     <div id="top">
       <Header />
@@ -133,20 +128,21 @@ function App() {
         </div>
         <nav>
           <p>Index</p>
-          {chapters.map(([id, n, label]) => <a className={activeChapter === id ? "active" : ""} key={id} href={`#${id}`}><span>{n}</span><b>{label}</b><i>→</i></a>)}
+          {chapters.map(([id, n, label, path]) => <a className={activeChapter === id ? "active" : ""} key={id} href={path}><span>{n}</span><b>{label}</b><i>→</i></a>)}
+          <a href="/cosmos/design-system/"><span>05</span><b>Design system</b><i>→</i></a>
         </nav>
         <div className="rail-status"><i /> Reading mode <span>2026</span></div>
       </aside>
 
       <main>
-        <section className="hero" id="intro">
+        {activeChapter === "intro" && <section className="hero" id="intro">
           <div className="hero-kicker"><span>Independent research</span><span>June 2026</span></div>
           <div className="hero-grid">
             <div className="hero-copy">
               <p className="eyebrow">Spatializing asynchronous community</p>
               <h1>A community wall<br />you can <em>walk into.</em></h1>
               <p className="hero-summary">Cosmos investigates whether VR can make online discussions easier to understand by rebuilding a familiar offline behavior: reading a public wall.</p>
-              <a className="text-link" href="#secondary">Read the findings <span>↓</span></a>
+              <a className="text-link" href="/cosmos/secondary/">Read the findings <span>→</span></a>
             </div>
             <div className="hero-orbit" aria-hidden="true">
               <div className="orbit orbit-one" />
@@ -161,9 +157,9 @@ function App() {
             <span className="thesis-number">01</span>
             <p><strong>Working thesis</strong> Cosmos is not another social feed or a live voice room. It is a VR reconstruction of an offline asynchronous community wall.</p>
           </div>
-        </section>
+        </section>}
 
-        <section className="report-section secondary" id="secondary">
+        {activeChapter === "secondary" && <section className="report-section secondary" id="secondary">
           <ChapterLabel number="02">Secondary research</ChapterLabel>
           <div className="section-heading">
             <h2>The feed is optimized for momentum.<br /><em>The wall is optimized for orientation.</em></h2>
@@ -182,7 +178,7 @@ function App() {
           </div>
 
           <figure className="prototype-figure">
-            <div className="figure-image"><img src="../assets/images/cosmos-sphere-browse.png" alt="Early Cosmos prototype showing messages arranged in a spatial field" /></div>
+            <div className="figure-image"><img src="/assets/images/cosmos-sphere-browse.png" alt="Early Cosmos prototype showing messages arranged in a spatial field" /></div>
             <figcaption><span>Fig. 01</span><p>An early spatial browsing prototype. Messages become places; distance, density, and adjacency become part of how people read.</p></figcaption>
           </figure>
 
@@ -198,9 +194,9 @@ function App() {
               <p className="highlight"><span>Cosmos</span><b>Read-first, spatial, source-linked</b></p>
             </div>
           </div>
-        </section>
+        </section>}
 
-        <section className="report-section primary" id="primary">
+        {activeChapter === "primary" && <section className="report-section primary" id="primary">
           <ChapterLabel number="03">Primary research</ChapterLabel>
           <div className="section-heading split-heading">
             <h2>Turn the concept into<br /><em>a falsifiable study.</em></h2>
@@ -234,9 +230,9 @@ function App() {
               <li><span>04</span><p>When should AI organize a conversation—and when should it stay out?</p></li>
             </ol>
           </div>
-        </section>
+        </section>}
 
-        <section className="report-section making" id="making">
+        {activeChapter === "making" && <section className="report-section making" id="making">
           <ChapterLabel number="04">Making Cosmos</ChapterLabel>
           <div className="section-heading">
             <h2>Prove the wall first.<br /><em>Earn the platform later.</em></h2>
@@ -257,7 +253,7 @@ function App() {
             <p>Cosmos is not validated yet, but it is now researchable.</p>
             <footer>The next study can test whether a VR community wall helps people understand and remember asynchronous messages without adding live-room pressure.</footer>
           </blockquote>
-        </section>
+        </section>}
       </main>
 
       <footer className="site-footer">
