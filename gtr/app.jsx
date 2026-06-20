@@ -160,12 +160,15 @@ function IntroPage() {
           <p className="report-lead">Climate Goal Platform is a product direction for making a startup's environmental impact a live, owned, and credible operating surface rather than an annual slide.</p>
           <p>The report narrows the MVP to climate startups and a two-sided +/- net impact dashboard. The positive side is handprint, meaning avoided or enabled emissions. The negative side is footprint, meaning Scope 1, 2, and 3 emissions. The early broad framing becomes the stretch tier, not the starting point.</p>
           <p>The reason the product exists is also the reason it is narrow: for climate startups, impact is not an extra claim. It is the investment thesis itself. That makes them the right wedge, because the buyer already cares about the claim and already needs to defend it.</p>
+          <p>The report's tone is deliberate: it does not promise a magical new climate system. It argues for a practical operating surface that can be measured, checked, and used week to week without flattening the accounting logic.</p>
           <aside className="report-note"><b>What the archive shows</b><p>The docs, PRDs, and slides all point toward the same shape: a climate-first product, a separate accounting for + and -, and a weekly operating loop that makes the number useful to founders and investors.</p></aside>
         </section>
 
         <section className="report-chapter" id="pivot">
           <span className="report-number">1</span>
           <h2>The rescoped direction</h2>
+          <p>The earlier Social Lab direction was a hands-on advisory and transition service: measure a startup's climate impact, build a reduction strategy, support ongoing management, and run nature-based founder workshops, with Climate Brick embedded in an AI Capital Navigator. That model is valuable, but it does not scale past one-to-one engagements.</p>
+          <p>The new direction turns the repeatable core into a product, and sequences it: climate startups first, because that is where the two-sided model is non-negotiable, the integrity bar is highest, and a paying, sophisticated buyer already exists. Broad tech startups come later.</p>
           <div className="report-table-scroll">
             <table className="report-table report-table-wide">
               <thead>
@@ -185,6 +188,7 @@ function IntroPage() {
           <span className="report-number">2</span>
           <h2>Market and timing</h2>
           <p className="report-lead">The timing driver is not hype. It is reporting pressure moving down-market.</p>
+          <p>The report treats the market as large and funded, but it keeps the numbers in ranges and the regulatory timing honest. The point is not that regulation forces the purchase now. The point is that the wedge is credible, the buyer already exists, and the direction of travel favors a more defensible impact surface.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Signal</th><th>What the report says</th></tr></thead>
@@ -212,6 +216,7 @@ function IntroPage() {
           <span className="report-number">3</span>
           <h2>The +/- model</h2>
           <p className="report-lead">The report presents net impact as two ledgers and one derived figure.</p>
+          <p>Footprint is an inventory of real emissions. Handprint is a comparative model of what would have happened otherwise. Net is a context number shown alongside, not instead of, the two ledgers. The report is explicit that these accounting bases should never be merged into one silent total.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Side</th><th>What it captures</th><th>Accounting basis</th></tr></thead>
@@ -228,6 +233,7 @@ function IntroPage() {
         <section className="report-chapter" id="questions">
           <span className="report-number">4</span>
           <h2>Research questions</h2>
+          <p>The report keeps the research questions narrow on purpose. It wants to know what can be measured, when it can be measured, and whether the result is useful enough to become a repeated operating habit.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Question</th><th>Why it matters</th></tr></thead>
@@ -235,6 +241,7 @@ function IntroPage() {
                 <tr><td>What viable, reliable method lets a startup monitor its own handprint and footprint?</td><td>The report wants an activity-based method that can be measured in tiers and tracked on a cadence.</td></tr>
                 <tr><td>What impact can actually be addressed in the dashboard, and can it be checked at the right time?</td><td>Footprint can be metered more directly than handprint, which is usually a later model with uncertainty.</td></tr>
                 <tr><td>Can a climate startup read the dashboard weekly without greenwashing?</td><td>The product is meant to become a team habit, not a compliance artifact.</td></tr>
+                <tr><td>Can generated structure stay inspectable?</td><td>AI labels and clusters need to stay source-linked and reversible.</td></tr>
               </tbody>
             </table>
           </div>
@@ -259,6 +266,7 @@ function IntroPage() {
           <span className="report-number">6</span>
           <h2>Decision rule</h2>
           <p>If a reader can understand why GTR changed shape by reading the report, PRDs, and decks in this archive, the site is doing its job. The content should feel like a documented design decision, not a brand page.</p>
+          <p>That means the introduction should read like a report summary, and the research section should read like a report body. The archive should not feel like a portfolio or a marketing site.</p>
           <div className="report-next-links">
             <a href="/gtr/docs/">Open the docs <span>→</span></a>
             <a href="/gtr/slides/">Open the slides <span>→</span></a>
@@ -388,6 +396,7 @@ function ResearchReportPage() {
         <section className="report-chapter" id="research-market">
           <span className="report-number">2</span>
           <h2>Why climate startups first</h2>
+          <p>The report says the market is large, funded, and pressured from below. Climate tech VC, carbon accounting software, and regulatory pull all point in the same direction, but the report refuses to overstate certainty. It keeps the argument at the level of a credible wedge rather than a guaranteed market pull.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Reason</th><th>Report logic</th></tr></thead>
@@ -405,6 +414,7 @@ function ResearchReportPage() {
           <span className="report-number">3</span>
           <h2>The +/- impact model</h2>
           <p className="report-lead">Net impact is presented as two ledgers and a clearly labeled derived figure.</p>
+          <p>The report's accounting logic is strict. Footprint is the inventory of actual emissions. Handprint is the comparative estimate of avoided or enabled emissions. Net is only a context number. This separation exists so the dashboard can stay honest even when the model is useful.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Side</th><th>What it captures</th><th>Accounting basis</th></tr></thead>
@@ -432,12 +442,14 @@ function ResearchReportPage() {
             </table>
           </div>
           <p>Why the gate matters: in the absence of additionality, quantifying avoided emissions amounts to multiplying by zero. The report treats inflated positive claims as the default failure mode, not an edge case.</p>
+          <aside className="report-note report-note-yellow"><b>Integrity gate</b><p>The product should ask for baseline, displacement, additionality, marginal signal, and rebound before the positive side is shown as meaningful.</p></aside>
         </section>
 
         <section className="report-chapter" id="research-product">
           <span className="report-number">5</span>
           <h2>Product overview</h2>
           <p>The product is a weekly operating surface. A founder enters the company, the system estimates footprint and proposed handprint, integrity gates prompt for baseline and additionality, the team chooses goals, and the company publishes a share page with uncertainty intact.</p>
+          <p>The report describes the implementation as a sequence: map the actual company activity, rank what matters, measure by tier, gate the positive claim, then monitor on the cadence each metric deserves. The point is to make the method viable enough to start and reliable enough for a climate VC.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Flow step</th><th>What happens</th></tr></thead>
@@ -473,6 +485,8 @@ function ResearchReportPage() {
             <li>Whether the share page is credible in diligence.</li>
             <li>Whether the weekly operating loop actually sticks.</li>
             <li>Whether the positive side can be kept honest as the product expands.</li>
+            <li>Whether the cross-device promise stays coherent when the product moves from desktop to headset to lighter wearables.</li>
+            <li>Whether AI-assisted labels and clusters remain source-linked and reversible in practice.</li>
           </ul>
         </section>
       </div>
