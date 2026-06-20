@@ -106,6 +106,152 @@ function TranscriptAppendix({ src }) {
   return <details className="transcript-appendix"><summary><span>Appendix A</span><b>Read the full interview transcript</b><i>+</i></summary><pre>{transcript}</pre></details>;
 }
 
+const expertQuestions = [
+  {
+    id: "limitations",
+    section: "01",
+    label: "Expert background and context",
+    question: "In your professional opinion, what are currently the biggest hardware or software limitations preventing long-form text consumption, such as reading forums or articles, in VR?",
+  },
+  {
+    id: "fatigue",
+    section: "02",
+    label: "Reading experience and ergonomics",
+    question: "When users read text in a 3D environment, what are the primary causes of visual fatigue or discomfort, and how can developers mitigate them?",
+  },
+  {
+    id: "typography",
+    section: "02",
+    label: "Reading experience and ergonomics",
+    question: "What are the ideal typographical considerations, including font scale, contrast, viewing distance, and background environment, for reading text-heavy content in VR?",
+  },
+  {
+    id: "ergonomics",
+    section: "02",
+    label: "Reading experience and ergonomics",
+    question: "How do physical ergonomics, including posture, sitting versus standing, and head movement, affect a user's willingness to stay inside a productivity or reading application for an extended period?",
+  },
+  {
+    id: "impressions",
+    section: "03",
+    label: "Prototype evaluation and interaction design",
+    question: "After reviewing the prototype, what are your initial impressions of its visual comfort and spatial hierarchy?",
+  },
+  {
+    id: "periphery",
+    section: "03",
+    label: "Prototype evaluation and interaction design",
+    question: "What expectations would an immersive user have when looking around or exploring the periphery of a text-centric application like this?",
+  },
+  {
+    id: "input",
+    section: "03",
+    label: "Prototype evaluation and interaction design",
+    question: "Which input modalities, such as hand tracking, controllers, or eye tracking, would feel most natural for navigating and organizing text forums in this space? Why?",
+  },
+  {
+    id: "use_cases",
+    section: "03",
+    label: "Prototype evaluation and interaction design",
+    question: "In which physical environments or use cases do you foresee people adopting a spatial forum reader?",
+  },
+  {
+    id: "references",
+    section: "04",
+    label: "Industry benchmarks and final thoughts",
+    question: "Are there existing applications, research papers, or design frameworks concerning text legibility or data visualization in VR that you recommend reviewing?",
+  },
+  {
+    id: "additional",
+    section: "04",
+    label: "Industry benchmarks and final thoughts",
+    question: "Please share any additional feedback, structural recommendations, or ideas for improving user comfort in this concept.",
+  },
+];
+
+function ExpertQuestionnaire() {
+  const storageKey = "cosmos-expert-questionnaire-v1";
+  const empty = { participant: "", role: "", hours: "", experience: "", reviewed: false, ...Object.fromEntries(expertQuestions.map(item => [item.id, ""])) };
+  const [answers, setAnswers] = useState(() => {
+    try { return { ...empty, ...JSON.parse(localStorage.getItem(storageKey) || "{}") }; } catch { return empty; }
+  });
+  const [message, setMessage] = useState("");
+  useEffect(() => { localStorage.setItem(storageKey, JSON.stringify(answers)); }, [answers]);
+  const update = (key, value) => setAnswers(current => ({ ...current, [key]: value }));
+  const answered = expertQuestions.filter(item => answers[item.id].trim()).length;
+  const responseText = () => [
+    "COSMOS REMOTE EXPERT QUESTIONNAIRE",
+    `Participant code: ${answers.participant || "Not provided"}`,
+    `Role / discipline: ${answers.role || "Not provided"}`,
+    `Spatial computing hours per week: ${answers.hours || "Not provided"}`,
+    `Experience level: ${answers.experience || "Not provided"}`,
+    `Prototype reviewed: ${answers.reviewed ? "Yes" : "No"}`,
+    "",
+    ...expertQuestions.flatMap((item, index) => [`${index + 1}. ${item.question}`, answers[item.id] || "No response", ""]),
+  ].join("\n");
+  const copyResponses = async () => {
+    await navigator.clipboard.writeText(responseText());
+    setMessage("Responses copied");
+    setTimeout(() => setMessage(""), 1600);
+  };
+  const downloadResponses = () => {
+    const blob = new Blob([responseText()], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `cosmos-expert-response-${answers.participant || "anonymous"}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setMessage("Response file downloaded");
+  };
+  const reset = () => {
+    if (!window.confirm("Clear every saved response on this device?")) return;
+    setAnswers(empty);
+    localStorage.removeItem(storageKey);
+    setMessage("Responses cleared");
+  };
+  let lastSection = "";
+  return <section className="report-section questionnaire-page" id="expert-questionnaire">
+    <ChapterLabel number="03.4">Primary research / Remote method</ChapterLabel>
+    <div className="questionnaire-shell">
+      <header className="questionnaire-intro">
+        <p className="eyebrow">Remote expert questionnaire</p>
+        <h1>Reading and navigating text in spatial computing</h1>
+        <p>This questionnaire collects professional, actionable feedback from UX, UI, XR, and spatial-computing practitioners. Experienced VR users are also welcome to respond.</p>
+        <div><span>Estimated time · 15–20 minutes</span><span>10 written questions</span><span>Responses remain on this device</span></div>
+      </header>
+
+      <aside className="questionnaire-privacy"><b>Response handling</b><p>This page does not transmit answers to a server. Progress is stored only in this browser. When finished, copy or download the response and return it directly to the researcher.</p></aside>
+
+      <div className="questionnaire-progress"><div><i style={{ width: `${answered / expertQuestions.length * 100}%` }} /></div><span>{answered} of {expertQuestions.length} written questions answered</span></div>
+
+      <form className="expert-form" onSubmit={event => event.preventDefault()}>
+        <section className="form-section">
+          <header><span>01</span><div><h2>Expert background and context</h2><p>Optional identifiers help the researcher interpret your response without requiring personal information.</p></div></header>
+          <div className="form-field-grid">
+            <label><span>Participant code or initials <i>Optional</i></span><input value={answers.participant} onChange={event => update("participant", event.target.value)} placeholder="Example: XR-04" /></label>
+            <label><span>Role or discipline <i>Optional</i></span><input value={answers.role} onChange={event => update("role", event.target.value)} placeholder="Example: XR interaction designer" /></label>
+            <label><span>Spatial computing hours per week</span><input type="number" min="0" step="0.5" value={answers.hours} onChange={event => update("hours", event.target.value)} placeholder="0" /></label>
+            <label><span>Experience level</span><select value={answers.experience} onChange={event => update("experience", event.target.value)}><option value="">Select one</option><option>Experienced user</option><option>Student / researcher</option><option>Practitioner, 1–3 years</option><option>Practitioner, 4–7 years</option><option>Practitioner, 8+ years</option></select></label>
+          </div>
+        </section>
+
+        {expertQuestions.map((item, index) => {
+          const showHeading = item.section !== "01" && item.section !== lastSection;
+          lastSection = item.section;
+          return <React.Fragment key={item.id}>
+            {showHeading && <section className="form-section-heading"><span>{item.section}</span><div><h2>{item.label}</h2>{item.section === "03" && <p>Review the early-stage prototype before answering this section.</p>}</div></section>}
+            {item.id === "impressions" && <div className="prototype-review-box"><div><b>Cosmos early prototype</b><p>Open the prototype in a separate tab. Explore its layout, movement, controls, and text presentation before continuing.</p><a href="https://cosmosweb.web.app/web/" target="_blank" rel="noreferrer">Open prototype ↗</a></div><label><input type="checkbox" checked={answers.reviewed} onChange={event => update("reviewed", event.target.checked)} /><span>I reviewed the prototype</span></label></div>}
+            <label className="question-field"><span className="question-number">{String(index + 1).padStart(2, "0")}</span><b>{item.question}</b><textarea rows="6" value={answers[item.id]} onChange={event => update(item.id, event.target.value)} placeholder="Write your response here…" /></label>
+          </React.Fragment>;
+        })}
+
+        <footer className="questionnaire-actions"><div><b>{answered === expertQuestions.length ? "Questionnaire complete" : "Your progress is saved locally"}</b><span aria-live="polite">{message}</span></div><button type="button" className="form-button text" onClick={reset}>Clear</button><button type="button" className="form-button secondary" onClick={copyResponses}>Copy responses</button><button type="button" className="form-button primary" onClick={downloadResponses}>Download .txt</button></footer>
+      </form>
+    </div>
+  </section>;
+}
+
 function App() {
   const [lens, setLens] = useState("reader");
   const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications") ? "spatial-audio" : "overview";
@@ -113,7 +259,11 @@ function App() {
     ? "interview-kris"
     : window.location.pathname.includes("/primary/interview-yeoul")
       ? "interview-yeoul"
-      : "overview";
+      : window.location.pathname.includes("/primary/interview-johnny")
+        ? "interview-johnny"
+      : window.location.pathname.includes("/primary/expert-questionnaire")
+        ? "expert-questionnaire"
+        : "overview";
   const activeChapter = window.location.pathname.includes("/secondary")
     ? "secondary"
     : window.location.pathname.includes("/primary")
@@ -128,6 +278,7 @@ function App() {
       <CosmosSidebar active={activeChapter} subActive={activeChapter === "secondary" ? secondaryPage : activeChapter === "primary" ? primaryPage : undefined} />
 
       <main>
+        {activeChapter === "primary" && primaryPage === "expert-questionnaire" && <ExpertQuestionnaire />}
         {activeChapter === "intro" && <section className="hero" id="intro">
           <div className="hero-kicker"><span>Independent research</span><span>June 2026</span></div>
           <div className="hero-grid">
@@ -929,6 +1080,148 @@ function App() {
               <h2>Full transcript</h2>
               <p>The transcript is lightly edited for punctuation and obvious speech-to-text errors. The sequence and substantive responses are preserved.</p>
               <TranscriptAppendix src="/cosmos/primary/interview-yeoul/transcript.txt" />
+            </section>
+          </article>
+        </section>}
+
+        {activeChapter === "primary" && primaryPage === "interview-johnny" && <section className="report-section interview-report" id="interview-johnny">
+          <ChapterLabel number="03.3">Primary research / Interview 03</ChapterLabel>
+          <article className="report-document interview-document">
+            <header className="report-page-intro interview-intro">
+              <p className="eyebrow">Semi-structured interview + prototype walkthrough</p>
+              <h1>Johnny<br /><span>Graphic designer</span></h1>
+              <p>Johnny brought the perspective of a frequent screen reader with no VR experience and little interest in adopting a headset. His walkthrough identified source transparency, contextual focus, contrast, and topic control as more important than immersion itself.</p>
+            </header>
+
+            <table className="report-table interview-meta">
+              <tbody>
+                <tr><th>Participant</th><td>Johnny</td><th>Practice</th><td>Graphic design</td></tr>
+                <tr><th>Format</th><td>Semi-structured interview</td><th>Activity</th><td>Prototype walkthrough with think-aloud feedback</td></tr>
+                <tr><th>Relevant behavior</th><td>Reddit for answers; Instagram and local news for ongoing reading</td><th>XR experience</th><td>No prior VR or AR use</td></tr>
+                <tr><th>Evidence status</th><td colSpan="3">Exploratory interview with recording interruptions and ambiguous cross-talk.</td></tr>
+              </tbody>
+            </table>
+
+            <nav className="report-contents" aria-label="Interview report contents">
+              <p>In this report</p>
+              <a href="#johnny-summary"><span>0</span>Interview summary</a>
+              <a href="#johnny-method"><span>1</span>Method and limits</a>
+              <a href="#johnny-media"><span>2</span>Reading and source habits</a>
+              <a href="#johnny-vr"><span>3</span>VR disposition</a>
+              <a href="#johnny-walkthrough"><span>4</span>Prototype walkthrough</a>
+              <a href="#johnny-findings"><span>5</span>Key findings</a>
+              <a href="#johnny-decisions"><span>6</span>Design decisions</a>
+              <a href="#johnny-transcript"><span>A</span>Full transcript</a>
+            </nav>
+
+            <section className="report-chapter" id="johnny-summary">
+              <span className="report-number">0</span>
+              <h2>Interview summary</h2>
+              <p className="report-lead">Johnny did not see immersion as an inherent improvement. He valued the prototype when it helped him focus on one item while preserving awareness that other material remained nearby.</p>
+              <p>His existing information behavior is purposeful. He opens Reddit when he has a question or wants to compare other people’s responses. On Instagram, he values posts that link to an original article because the source lets him investigate and decide for himself. He also described a prior work routine that alternated local news and email for approximately 20 minutes before starting the day.</p>
+              <p>During the walkthrough, Johnny responded positively when the interface visually reduced the surrounding field. He described this as being “here now instead of being everywhere.” At the same time, he immediately asked where the posts came from and reacted differently after learning that the dataset was AI-generated.</p>
+              <aside className="report-note"><b>Primary interpretation</b><p>Cosmos should make focus and provenance first-class. A spatial field is useful only if it helps a reader narrow attention without losing context and verify where every post, summary, and inferred assumption came from.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="johnny-method">
+              <span className="report-number">1</span>
+              <h2>Method and limitations</h2>
+              <p>The session combined questions about social-media and news habits with a walkthrough of the Cosmos prototype. Johnny inspected posts, attempted clicking and scrolling, reacted to a focus treatment, read generated “hidden assumptions,” and asked about source material and topic selection.</p>
+              <p>The recording includes unrelated room announcements, eating, and ambiguous speaker transitions. The transcript is preserved, but unclear fragments are not treated as findings.</p>
+              <h3>Interpretive limits</h3>
+              <ul>
+                <li>Johnny has no prior VR or AR experience, so his comments describe expectations and concerns rather than in-headset behavior.</li>
+                <li>Several interactions failed or required explanation, limiting evaluation of the controls.</li>
+                <li>The prototype used synthetic community content, which changed the participant’s trust evaluation.</li>
+                <li>Positive comments such as “cool” do not establish adoption intent.</li>
+              </ul>
+            </section>
+
+            <section className="report-chapter" id="johnny-media">
+              <span className="report-number">2</span>
+              <h2>Reading begins with a question and ends at the source</h2>
+              <table className="report-table">
+                <thead><tr><th>Behavior</th><th>Context</th><th>Relevance to Cosmos</th></tr></thead>
+                <tbody>
+                  <tr><td>Reddit as answer-seeking</td><td>Visits when he has an idea, question, or wants other perspectives</td><td>Spatial browsing should support directed inquiry, not only passive discovery.</td></tr>
+                  <tr><td>Instagram as a path to articles</td><td>Values posts that expose an original article and its sources</td><td>Every imported or summarized item needs visible provenance.</td></tr>
+                  <tr><td>Local news routine</td><td>Previously alternated news and email before starting work</td><td>Cosmos may fit bounded information-review routines better than endless use.</td></tr>
+                  <tr><td>Screen time</td><td>Previously estimated at least four hours daily, split across desktop and phone</td><td>High screen use does not imply interest in additional immersive screen time.</td></tr>
+                </tbody>
+              </table>
+              <blockquote className="report-quote">“I love being able to know where the article is, where their sources are, so I can check them, read about it, and figure out for myself.”</blockquote>
+            </section>
+
+            <section className="report-chapter" id="johnny-vr">
+              <span className="report-number">3</span>
+              <h2>VR introduces a re-entry cost</h2>
+              <p>Johnny had never used a VR headset or AR glasses and expressed no existing interest. His concern was not only visual realism. A phone can be put down immediately, returning attention to the physical environment. He expected a headset to require an adjustment period for the eyes and brain when entering or leaving the virtual environment.</p>
+              <p>He also described virtual experience as potentially passive because the surrounding landscape is hidden. This is a useful counterpoint to the project’s immersive premise: blocking the physical world may reduce agency or environmental awareness rather than increase focus.</p>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Include non-VR participants in future research. Test passthrough, rapid exit, environmental awareness, and transition comfort rather than evaluating only experienced headset users.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="johnny-walkthrough">
+              <span className="report-number">4</span>
+              <h2>Focus worked when context remained visible</h2>
+              <p>Johnny first identified a basic contrast issue: “white on white is hard to read.” He then reacted strongly to a state that emphasized the current item while leaving the surrounding field visible. The background communicated that more information existed; the foreground communicated where attention belonged.</p>
+              <div className="focus-context-diagram" aria-label="Diagram showing contextual focus in a spatial field">
+                <div className="context-cards"><i /><i /><i /><i /><i /><i /></div>
+                <article><span>Current post</span><b>Focused content remains readable</b><p>Context is present, but visually subordinate.</p></article>
+              </div>
+              <blockquote className="report-quote">“I want to still see what’s going on back there, but I want to be here… This tells me there’s other things, but this also tells me where I should be now.”</blockquote>
+              <h3>Source and model transparency</h3>
+              <p>After reading several cards and generated assumptions, Johnny asked whether the posts came from Reddit and where their sources were. Learning that the Richmond community dataset was synthetic changed the meaning of the content. This makes source status part of the interface, not metadata for a later detail screen.</p>
+              <h3>Unexpected attention target</h3>
+              <p>Johnny spent time interpreting the AI-generated hidden assumptions even though Rae said they were not the intended focus. The element’s wording and placement gave it more visual authority than the research intended. Generated analysis must be labeled and subordinated to the original post.</p>
+              <h3>Topic control</h3>
+              <p>Johnny expected to type a topic or define interests, such as records or bread. A large spatial field without a stated query or boundary can appear arbitrary. Topic control may provide the entry point that makes a wall purposeful.</p>
+            </section>
+
+            <section className="report-chapter" id="johnny-findings">
+              <span className="report-number">5</span>
+              <h2>Key findings</h2>
+              <div className="report-table-scroll"><table className="report-table report-table-wide interview-findings-table">
+                <thead><tr><th>Finding</th><th>Evidence</th><th>Interpretation</th><th>Priority</th></tr></thead>
+                <tbody>
+                  <tr><td>Provenance is part of comprehension</td><td>Asked where posts and sources came from; valued article links on Instagram</td><td>Expose source, content status, author, and transformation history.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Contextual focus reduced overload</td><td>Preferred seeing one item clearly while retaining the background field</td><td>Use focus plus context instead of hiding everything or presenting equal emphasis.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Contrast failed immediately</td><td>“White on white is hard to read.”</td><td>Define minimum contrast for cards, controls, and focus states.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Generated assumptions drew unintended authority</td><td>Read and debated assumptions that were not the intended feature</td><td>Visually separate AI inference from participant content.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Spatial content needs a query or boundary</td><td>Expected to enter topics and interests</td><td>Start from a chosen question, community, or collection.</td><td><span className="priority next">Next</span></td></tr>
+                  <tr><td>VR transition and occlusion are adoption barriers</td><td>Preferred “real life” and expected adjustment when exiting immersion</td><td>Test passthrough, immediate exit, and desktop access.</td><td><span className="priority strategic">Strategic</span></td></tr>
+                  <tr><td>Interaction reliability remains unresolved</td><td>Clicking and scrolling failed or required explanation</td><td>Repair task-critical input before another evaluative session.</td><td><span className="priority critical">Critical</span></td></tr>
+                </tbody>
+              </table></div>
+            </section>
+
+            <section className="report-chapter" id="johnny-decisions">
+              <span className="report-number">6</span>
+              <h2>Design decisions and next research</h2>
+              <h3>Required changes</h3>
+              <ol>
+                <li><b>Add provenance to every content object.</b> Distinguish imported, participant-authored, synthetic, summarized, and inferred material.</li>
+                <li><b>Formalize focus plus context.</b> Keep peripheral structure visible while reducing its contrast, scale, and text detail.</li>
+                <li><b>Meet contrast requirements.</b> Eliminate white-on-white states and verify legibility across backgrounds.</li>
+                <li><b>Demote AI interpretation.</b> Hidden assumptions must never look more authoritative than their source.</li>
+                <li><b>Provide topic entry.</b> Let users begin from a question, interest, community, or bounded dataset.</li>
+              </ol>
+              <h3>Follow-up comparisons</h3>
+              <table className="report-table">
+                <thead><tr><th>Question</th><th>Comparison</th><th>Measure</th></tr></thead>
+                <tbody>
+                  <tr><td>How much context should remain?</td><td>Full field vs. dimmed field vs. isolated card</td><td>Recall, orientation, overload, return accuracy</td></tr>
+                  <tr><td>How should provenance appear?</td><td>Compact badge vs. visible source trail</td><td>Trust, source lookup success, comprehension</td></tr>
+                  <tr><td>Does AI labeling distort authority?</td><td>Original-only vs. source-linked inference</td><td>Claim attribution and confidence calibration</td></tr>
+                  <tr><td>What reduces re-entry concern?</td><td>Immersive background vs. passthrough</td><td>Comfort, environmental awareness, exit time</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section className="report-chapter" id="johnny-transcript">
+              <span className="report-number">A</span>
+              <h2>Full transcript</h2>
+              <p>The source recording contains room announcements, interruptions, and ambiguous speaker transitions. The transcript is lightly edited for readability, and unclear fragments are retained rather than converted into findings.</p>
+              <TranscriptAppendix src="/cosmos/primary/interview-johnny/transcript.txt" />
             </section>
           </article>
         </section>}

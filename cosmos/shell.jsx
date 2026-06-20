@@ -15,6 +15,8 @@ export const primaryReports = [
   ["overview", "3.0", "Overview", "/cosmos/primary/"],
   ["interview-kris", "3.1", "Interview 01 · Kris", "/cosmos/primary/interview-kris/"],
   ["interview-yeoul", "3.2", "Interview 02 · Yeoul", "/cosmos/primary/interview-yeoul/"],
+  ["interview-johnny", "3.3", "Interview 03 · Johnny", "/cosmos/primary/interview-johnny/"],
+  ["expert-questionnaire", "3.4", "Remote expert questionnaire", "/cosmos/primary/expert-questionnaire/"],
 ];
 
 const reportChildren = {

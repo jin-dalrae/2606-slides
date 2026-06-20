@@ -1,0 +1,145 @@
+Interview 03 — Johnny
+Researcher: Rae
+Interviewee: Johnny, Graphic Designer
+Method: Semi-structured interview and prototype walkthrough
+Transcript note: The source contains room announcements, interruptions, and ambiguous speaker transitions.
+
+[Recording begins during an informal interruption about eating and chewing.]
+
+Rae: How much time do you spend reading Reddit, Threads, or X?
+
+Johnny: I don't do X because I care about the world and I don't like the owner of X. But I do spend time on Reddit. Reddit for me is more when I'm looking for an answer to something, or I want to hear what other people have to say. I don't just get on Reddit and look for stuff; I get on Reddit when I have an idea.
+
+Rae: What about social media? Is that something, too? Like Instagram?
+
+Johnny: Yeah, I'm on Instagram a lot. I wouldn't say I use it for too much reading, but what I like about it is sometimes when there is something I want to read or know more about, the post will put a link to an article. I love that. I love being able to know where the article is, where their sources are, so I can check them, read about it, and figure out for myself.
+
+[Room announcement: “Five more minutes, people.”]
+
+Johnny: Another thing I like to look at is local news, like SF Standard.
+
+Rae: On your phone?
+
+Johnny: Yeah, on my phone, or when I used to work. The first thing I would do in the morning was log into my computer at my desk. Then I would spend 20 minutes checking out the news, reading emails, checking out the news, reading more emails, answering emails, reading the news. Then I'd start my day.
+
+Rae: How long do you spend in one day?
+
+Johnny: As a student now, not so much. But before, I would say I was doing at least four hours a day. At least.
+
+Rae: How many hours on your phone, and how many hours on your desktop?
+
+Johnny: One to two on desktop, and three to four on the phone.
+
+Rae: Do you feel comfortable when you are scrolling on your phone? Do you exercise?
+
+Johnny: No, I don't exercise. But I do other things. When I go for a walk, I don't like to look at my phone.
+
+Rae: Do you have any experience with VR headsets or AR glasses?
+
+Johnny: No. None. No, not at all. Not once.
+
+Rae: Even just simple VR stuff?
+
+Johnny: Never.
+
+Rae: You are not so interested.
+
+Johnny: Not really interested in it. Turn around. You see that? Beautiful. That's real life. I like real life.
+
+Rae: Because you don't think it's real inside? What about mobile phones? It is also not real life.
+
+Johnny: No, it's not. But when I'm on my phone and I get too entrapped in it, I just throw it down and I go back into my world. VR might take a while to adjust, I would assume. It's like when I take my glasses off. I can't see very well for a minute or two until my eyes adjust. I still can't see because I have to wear glasses, but I can see better. My eyes have to adjust. Same with my brain.
+
+Rae: Okay.
+
+Johnny: I do like video games, though.
+
+Rae: You have never used a VR headset or AR glasses, and you are worried you might confuse reality.
+
+Johnny: I believe in virtue reality instead of virtual. Virtue, really. I believe in good virtues. I believe in a real reality, and I think it's okay to use screens.
+
+[Ambiguous cross-talk during setup and tracking.]
+
+Johnny: It makes you passive. The landscape is hidden.
+
+[Room announcement about a break and restarting at 1:10.]
+
+Johnny: Can I give you some design feedback? White on white is hard to read.
+
+Rae: Sorry.
+
+Johnny: It's okay.
+
+Rae: Can you go into the application then?
+
+[Cross-talk and interface setup.]
+
+Johnny: Oh, yeah, I like that. I like that better.
+
+Rae: The reason why I did that is because I want to concentrate on all this.
+
+Johnny: Sure. I want to still see what's going on back there, but I want to be here. It's like being here now instead of being everywhere. It's so hard to be everywhere, and that's what screens do. They give you too much information all at once. This is great. This tells me there's other things, but this also tells me where I should be now, and where to put my blinders.
+
+Rae: What do you want to do inside?
+
+Johnny: “I just got stolen from my neighbor's porch last night. Oh, no. Anti-vo solution? Volunteer infrastructure improvements, lighting, community presence, neighbors, stolen lockbox indicates inadequate neighborhood oversight. I say more of a community.” I can't click on it. I can't click on it. Is it replay? What was the name of your app?
+
+[The app name is unclear in the recording.]
+
+Johnny: Why is it not scrolling?
+
+Rae: Let's try this.
+
+Johnny: So you just go here and click on either of them?
+
+Rae: Yes, and also look around.
+
+Johnny: “Fog and Grind offers quality espresso and local sourdough products at premium prices, making it a worthwhile but expensive option. Sourdough style.” I went there on opening day. The espresso was really solid, and they have these amazing sourdough croissants from a local bakery. A bit pricey, but worth it. “Hidden assumptions: Quality justifies premium pricing. Local sourcing of inputs adds value. New establishments can compete with established...” Okay.
+
+Rae: Those are not really the center of the focus. They're just assumptions.
+
+Johnny: Oh, yeah.
+
+Rae: I want you to be quick. It's about showing forum posts in 3D space.
+
+Johnny: For this, I would put my glasses on, and they would be everywhere? Like Minority Report? Do you know Minority Report?
+
+Rae: I know that movie, but isn't everything just here and there's all the information?
+
+Johnny: Yeah.
+
+[Cross-talk about the movie reference.]
+
+Rae: It's about Reddit. It's like Reddit.
+
+Johnny: Is this all from Reddit?
+
+Rae: No.
+
+Johnny: Where are all these sources? They're all generated? They're not real?
+
+Rae: I told AI to generate the community forum for Richmond people.
+
+Johnny: This one's cool.
+
+Rae: Really?
+
+Johnny: These are the assumptions: “Connected community gardens are protective.”
+
+Rae: Those are not the features that I'm focusing on.
+
+Johnny: What are the features you want me to focus on?
+
+Rae: It's about everything around. Posts are around you. You can focus on one post, but you can also scroll left and right. It's about a new social media.
+
+Johnny: Nice. It's cool. You will be the next Mark Zuckerberg.
+
+Rae: No, I'll be the first Rae. I will try. Give me a job.
+
+Johnny: Sure. I'll tell jokes all day. I'll be the comedian.
+
+[Joking cross-talk.]
+
+Johnny: This is cool. I like it. Could you maybe type in topics, or is it just what you pick? You like bread? You like records? Maybe it's all interests, and then all the interests are in the background for one person. I like records.
+
+Rae: Not now. Maybe. Let's go.
