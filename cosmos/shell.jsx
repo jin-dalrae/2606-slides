@@ -11,6 +11,16 @@ export const secondaryReports = [
   ["spatial-audio", "2.1", "Spatial communications", "/cosmos/secondary/spatial-communications/"],
 ];
 
+export const primaryReports = [
+  ["overview", "3.0", "Overview", "/cosmos/primary/"],
+  ["interview-kevin", "3.1", "Interview 01 · Kevin", "/cosmos/primary/interview-kevin/"],
+];
+
+const reportChildren = {
+  secondary: secondaryReports,
+  primary: primaryReports,
+};
+
 export function CosmosMark() {
   return <span className="wordmark-mark"><i /><i /><i /></span>;
 }
@@ -27,7 +37,7 @@ export function CosmosHeader({ meta = "Research report · 2026" }) {
         {cosmosPages.map(([id, number, label, path]) => (
           <React.Fragment key={id}>
             <a href={path} onClick={() => setOpen(false)}>{label}</a>
-            {id === "secondary" && <a className="top-nav-child" href={secondaryReports[1][3]} onClick={() => setOpen(false)}>↳ Spatial communications</a>}
+            {reportChildren[id]?.slice(1).map(([subId, subNumber, subLabel, subPath]) => <a className="top-nav-child" key={subId} href={subPath} onClick={() => setOpen(false)}>↳ {subLabel}</a>)}
           </React.Fragment>
         ))}
       </nav>
@@ -51,8 +61,8 @@ export function CosmosSidebar({ active, subActive }) {
             <a className={active === id ? "active" : ""} href={path}>
               <span>{number}</span><b>{label}</b><i>→</i>
             </a>
-            {id === "secondary" && active === "secondary" && <div className="rail-subnav">
-              {secondaryReports.map(([subId, subNumber, subLabel, subPath]) => (
+            {reportChildren[id] && active === id && <div className="rail-subnav">
+              {reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => (
                 <a className={subActive === subId ? "active" : ""} key={subId} href={subPath}>
                   <span>{subNumber}</span><b>{subLabel}</b><i>↗</i>
                 </a>

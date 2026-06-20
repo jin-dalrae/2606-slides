@@ -1,0 +1,188 @@
+Interview 01 — Kevin
+Interviewer: Rae
+Participant: Kevin, Software Engineer at Meta (not on the Quest team)
+Method: Semi-structured interview and think-aloud walkthrough of the Cosmos web prototype
+
+Rae: Great. Hi, I’m Rae, and I’m doing my project, which is about designing an experience. It’s for one of our classes at CCA, and it’s interaction design. I want to design a place which is in VR—a virtual place where you can browse some discussions like Reddit. Do you use Reddit?
+
+Kevin: Yes, I do.
+
+Rae: How much time do you spend on Reddit each day?
+
+Kevin: Maybe around 20 minutes.
+
+Rae: What about other forums, like X, Threads, or other types of forums?
+
+Kevin: Not too much, actually. It’s mostly Reddit, maybe sometimes Instagram.
+
+Rae: What about Facebook?
+
+Kevin: Just a little bit as well. I would not say I spend too much time on Facebook. Maybe also around a few minutes a day maximum.
+
+Rae: When you are browsing that kind of platform—digital browsing—do you think about that type of browsing vertically in the feed? Sometimes it’s infinite browsing, right? Infinite scroll.
+
+Kevin: Yes.
+
+Rae: Do you feel comfortable with that?
+
+Kevin: You can get carried away by it, because it can be infinite. You feel like you can just keep going and going and going. When that happens, I might spend more time than I wish I wanted to on social media websites.
+
+Rae: So you feel like you are going to spend more time on social media with the vertical scroll?
+
+Kevin: Yes, because there are many posts that I want to catch up on.
+
+Rae: Do you think you are doomscrolling right now, like when you get onto Instagram or something?
+
+Kevin: Sometimes, yes. I try to limit myself to control it, but even then, sometimes I can get a bit addicted too.
+
+Rae: There are a lot of VR headsets and Meta glasses, like Ray-Ban glasses. I have been using the Meta Quest headset for a long time, since more than five years ago. I don’t really spend a lot of time inside because I don’t play many games. They provide office space where you can see your own monitor, work, and make a virtual working space with others.
+
+Kevin: Yes.
+
+Rae: I thought about what limits the Meta Quest. Even though I paid a lot to buy my own Quest 3, I don’t really use it. I thought one reason was that I could not read inside, like reading Reddit. It could be books, but I am not a big book-reading person. I’m more of a forum person where there is a community. There are a lot of interesting posts on Reddit or X. I thought maybe I can make an application which supports doomscrolling in the Quest.
+
+Kevin: Oh, yeah. Interesting.
+
+Rae: Thank you for listening to this explanation. Can you give me your own opinion and think out loud? If there was an app where you could doomscroll in the Meta Quest or on Ray-Bans, what would you think?
+
+Kevin: That sounds cool. I guess the first thing I think of is whether it would be convenient to do it, because it would compete with the apps that you could use on your phone. For example, if I want to doomscroll, isn’t it a lot easier to take out my phone and open the app, compared to turning on my headset, letting it warm up, load up, and then putting it on just to doomscroll? That’s the first thing I would think of: how convenient would it be?
+
+Rae: So it’s less convenient than the phone, right?
+
+Kevin: Right. I would not imagine taking my headset around in public, like on public transportation or something.
+
+Rae: What if it’s not public transportation? You’re at your house and sitting on your couch. It’s easy to just put on your headset. Can you imagine doomscrolling inside your VR headset?
+
+Kevin: I suppose it would be a cool experience. I can see that, for example, if I’m lying down and facing the ceiling, it’ll be a lot more convenient because I don’t have to hold my phone up while lying down. Sometimes when you do that, you drop your phone right on your face. That would solve that problem. I’ll no longer have to worry about that because the headset is attached to my face.
+
+Rae: What do you think about the interface? There are a lot of ways to look at it. Even just looking at a browser, like a mobile interface, you can see that in your headset, or you can make another type of interface inside your environment.
+
+Kevin: What do you mean by making an interface?
+
+Rae: Have you ever imagined, not really about just vertical scrolling, but inside your headset you actually have all this space around you? If you are doomscrolling Reddit but seeing this space, can you imagine a different way of browsing?
+
+Kevin: You’re saying that maybe I can imagine myself in the headset having Reddit to doomscroll, and then I have other apps beside it to look at as well?
+
+Rae: If you imagine it that way, do you want to do it?
+
+Kevin: I think it’ll be cool if I use multiple apps, like X, Threads, and Reddit open at the same time. It’ll be convenient because I can have them all open, and I can see them if I want to stay on top of things. For example, if I trade stocks and I want to know the latest updates and the latest news, you can have multiple screens open to keep track of things down to the very latest second. I can see that being a very good use case.
+
+Rae: Let me share with you my current web version of the space. Is it okay because you work at Meta? Have you ever heard about this kind of new interface being talked about in your company? Is it okay to question this? If not, please tell me.
+
+Kevin: I think it’s fine. If we were trying to make a deal that involves a contract of some sort, then it might be hard, but this is fine.
+
+Rae: Have you ever seen or heard about that kind of new interface in VR that they are thinking about over there?
+
+Kevin: Yes, they do, and that is definitely something I cannot talk about. That is not because I don’t want to tell you; it’s because of the business contract.
+
+Rae: Of course. Sorry.
+
+Kevin: I’ll tell you what I can. Don’t worry about the boundaries.
+
+Rae: I felt I had to ask that kind of question because it came up naturally.
+
+Kevin: Right, because you’re asking me and I work at Meta, so it could definitely be a gray area here. But this interview is because you are my friend who I met on the weekend. I’m happy to help you with your project, too. I’m happy to do this interview with you.
+
+Rae: Thank you. This is not the VR version; this is the web version. Can you try this? You can do anything with it.
+
+Kevin: You’re just going to watch me?
+
+Rae: I want to hear your thoughts out loud. Please think out loud.
+
+Kevin: That’s what I see when I open it. On the main screen, if I move around a bit, I kind of lose everything around me in a sphere shape. It’s a dimensional screen where, if I move, everything wraps around it. That part is pretty cool.
+
+Looking at the actual content now, it’s cool because the posts are like cards, and each card has a main concept focus in the very middle. It shows you a lot more information about the post. For example, this one here is about open-source contributors, it looks like, and it has a lot of information—it has upvotes, some tags, the poster, as well as the actual body text. If I go to a new post, it’s pretty similar. It’s like SF news as well.
+
+I assume that since there are different colors, they suggest different topics or themes. If I try to see a pattern, this one about an eviction notice is dark blue, and this one about a community garden is also dark blue. Maybe housing or local news is the dark blue color. I see “frequent” is one of the tags here. This other one is “witness suspicious behavior in the garden,” so this post is about news inside SF. It’s probably negative news that makes the reader think something bad or sketchy is happening.
+
+Whereas if I come to the green one, it says “majority of women-led startups will fail within two years due to hype cycles.” That one is more like a prediction of what’s going to happen in the future, and also focused on the SF Bay Area. I think the color represents the topic of the post.
+
+That’s pretty cool because if I want to browse for more fearful topics, I can look for the blue ones, like the eviction notice or theft. I think it’s pretty neat. Thinking about seeing all these posts on the screen now, it can be a bit chaotic. Maybe I would get used to this.
+
+Rae: Is there anything else you want to look at in particular? What if you try some buttons?
+
+Kevin: Sure. If I increase the card size... wait, the card size decreases.
+
+Rae: Sorry, I think something is wrong.
+
+Kevin: It’s okay, I get the idea. This button should change the size of the cards, yes?
+
+Rae: Yes, it does.
+
+Kevin: The articles layout makes the current article you’re looking at smaller. What about the “Gaze” button? “Cosmos can read by gaze.” It looks at what my eye is looking at. To test this properly, I should take off my sunglasses. Are we okay with that?
+
+Rae: Sure, let’s try.
+
+Kevin: Let me switch to my regular glasses, otherwise I cannot see quite well. Let me read what this does up here: “All tracking, face gestures, recent nods.” I’ll try those two in a bit—nods, shakes, and expressions. I see my face is here. I’ll hide it; I don’t want to see myself.
+
+I’m trying to look at this post, but it’s not moving there. Maybe it takes some work. I feel like it’s not going to the one I’m looking at. If I shake my head, what happens? Some people would like to use their hands to do that, right? Does this do anything? It might be tracking actual face nods. Let’s see what it looks like. Something’s wrong. I’ll turn it back on. I want to look at this one. Can I go there? No. It’s a bit tricky. It goes a bit too far, further than intended. I’m also not sure what the nodding does; I don’t see any reaction to it, like for “yes” or “no” or “stop.”
+
+What about face expressions? Let’s try “drag.” What is drag tracking like? It’s not that different. Interesting.
+
+Rae: What do you think about this kind of interface? It’s always open, and you are turning and opening it right here.
+
+Kevin: I wish I could move the windows around a bit and fix them somewhere. But it’s cool; that’s a lot of open windows. What’s this box? Did I break the app?
+
+Rae: No, there should have been a list of the contents there, but I think I broke the app earlier.
+
+Kevin: I see, something you can fix. Lastly, the “New Post” feature is probably one of the most important features. Can I post, or do I need permission?
+
+Rae: Let’s try.
+
+Kevin: “What’s on my mind?” I’ll write something random. Post? Author is anonymous, but could be someone else. It’s not clicking. Three, two, one, click.
+
+Rae: I’m sorry. There was a time it was working, but I made this back in February.
+
+Kevin: No problem.
+
+Rae: I will stop sharing. I have a few more questions. Should we keep it open, or should I stop?
+
+Kevin: I think we can keep it open.
+
+Rae: Imagine you are seeing this space in your headset. What will help you the most to read and doomscroll inside?
+
+Kevin: I think it must support hand gestures. I assume if I were using this with my headset and not a laptop, I wouldn’t be scrolling with a mouse. I’ll be scrolling with my hand or something and have controls on them. To go to my right, I would swipe like this. That’s how I imagine myself using it. Of course, I’m not sure since I don’t actually use headsets too much, so it’s just my imagination. Maybe if I were using it a lot more, I might eventually adapt to just using hand gestures.
+
+Rae: What about at your workplace? Is it possible for you to borrow a headset whenever you want to use one?
+
+Kevin: We could, but there’s a process to do that. My job doesn’t directly work on that team, so we don’t usually use them.
+
+Rae: From the features already developed inside Cosmos right now, what do you like or dislike?
+
+Kevin: I think one limitation is the colors. If someone were colorblind, it might be hard because different themes might just look like different shades of white and black. Even right now, though I’m not colorblind, the colors can still seem very similar. The lighter one is neutral, and compared to the others, they look pretty similar. They are a bit different because they are side-by-side, but it’s not very obvious.
+
+Rae: So you mean it would be better if similar sentiments or topics were gathered together, and the colors were improved to be more distinct?
+
+Kevin: Right, that’s one thing. Next, I think one of the biggest limitations is how many words there are on the screen right now. It can be a bit overwhelming. Too many words. Some simplification can help a lot. Instead of having so much text everywhere, just show a summary for each one, and then for the main one you select, show more information.
+
+Rae: There is a headline here, so maybe it should be more summarized?
+
+Kevin: Yeah, maybe just include a portion of the headline.
+
+Rae: Do you think if you got a free headset from somewhere and could just use it in your free time, would you use Cosmos to look around Reddit, or would you still use your phone?
+
+Kevin: I would consider it. It depends on what the product is at that point. I can see myself using it, but it depends on how nice it is to use overall—if the features are built out well without bugs, and if it is not so overwhelming to look at with text all over the place.
+
+Rae: What about having some images floating around?
+
+Kevin: That can help. Some visuals or representative images. If there’s a way to include images from the post, show that too.
+
+Rae: What about using your voice? Right now, on other platforms, you use a keyboard for searching, replying, or writing posts. Would you use voice for that process?
+
+Kevin: I personally do not really use voice features.
+
+Rae: Why don’t you use voice?
+
+Kevin: I usually just prefer to type because I feel like with voice, if it does not capture what I say properly, then it will not show the right results. Maybe sometimes I could use it, but I would not say I use it very often.
+
+Rae: Do you have anything more you want to tell me? I think it’s almost done.
+
+Kevin: I think that’s pretty cool. You mentioned something about limitations earlier?
+
+Rae: The timeline layers. There is a feature where, if you scroll here, it shows you the posts. It has layers, with older posts in the background and newer, recent ones in the front. With tracking, you can change the layers. Having the time layer arranged from front to back was one of my design considerations.
+
+Kevin: I see. Interesting, that’s pretty cool. Is there an instruction to do that? I don’t see anything.
+
+Rae: If you use two fingers to your right, it does the same thing. It’s a vertical split. What if you hold down on a post?
+
+Kevin: Oh, it changes? Thank you.

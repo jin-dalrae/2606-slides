@@ -95,9 +95,21 @@ function ChapterLabel({ number, children }) {
   return <div className="chapter-label"><span>{number}</span><p>{children}</p></div>;
 }
 
+function TranscriptAppendix() {
+  const [transcript, setTranscript] = useState("Loading transcript…");
+  useEffect(() => {
+    fetch("/cosmos/primary/interview-kevin/transcript.txt")
+      .then(response => response.ok ? response.text() : Promise.reject(new Error("Transcript unavailable")))
+      .then(setTranscript)
+      .catch(() => setTranscript("The transcript could not be loaded."));
+  }, []);
+  return <details className="transcript-appendix"><summary><span>Appendix A</span><b>Read the full interview transcript</b><i>+</i></summary><pre>{transcript}</pre></details>;
+}
+
 function App() {
   const [lens, setLens] = useState("reader");
   const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications") ? "spatial-audio" : "overview";
+  const primaryPage = window.location.pathname.includes("/primary/interview-kevin") ? "interview-kevin" : "overview";
   const activeChapter = window.location.pathname.includes("/secondary")
     ? "secondary"
     : window.location.pathname.includes("/primary")
@@ -109,7 +121,7 @@ function App() {
     <div id="top">
       <Progress />
       <CosmosHeader />
-      <CosmosSidebar active={activeChapter} subActive={activeChapter === "secondary" ? secondaryPage : undefined} />
+      <CosmosSidebar active={activeChapter} subActive={activeChapter === "secondary" ? secondaryPage : activeChapter === "primary" ? primaryPage : undefined} />
 
       <main>
         {activeChapter === "intro" && <section className="hero" id="intro">
@@ -283,39 +295,167 @@ function App() {
 
         {activeChapter === "secondary" && secondaryPage === "overview" && <section className="report-section secondary" id="secondary">
           <ChapterLabel number="02">Secondary research</ChapterLabel>
-          <div className="section-heading">
-            <h2>The feed is optimized for momentum.<br /><em>The wall is optimized for orientation.</em></h2>
-            <p>The first research pass changed the product metaphor. The strongest precedent for Cosmos was not social VR—it was the physical message wall.</p>
-          </div>
+          <article className="report-document secondary-document">
+            <header className="report-page-intro">
+              <p className="eyebrow">Evidence synthesis</p>
+              <h1>The feed is optimized for momentum. The wall is optimized for orientation.</h1>
+              <p>This review examines whether existing research supports the central Cosmos proposition: that an asynchronous discussion can become easier to understand when its structure is spatial, persistent, and readable without pressure to contribute.</p>
+            </header>
 
-          <div className="evidence-grid">
-            {evidence.map((item) => (
-              <article className={`evidence-card ${item.color}`} key={item.index}>
-                <span className="evidence-index">{item.index}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-                <strong>{item.takeaway}</strong>
-              </article>
-            ))}
-          </div>
+            <nav className="report-contents" aria-label="Secondary research contents">
+              <p>In this report</p>
+              <a href="#secondary-method"><span>0</span>Scope and method</a>
+              <a href="#secondary-map"><span>1</span>Evidence map</a>
+              <a href="#secondary-walls"><span>2</span>Offline community walls</a>
+              <a href="#secondary-reading"><span>3</span>Quiet reading</a>
+              <a href="#secondary-space"><span>4</span>Spatial communication</a>
+              <a href="#secondary-market"><span>5</span>Market landscape</a>
+              <a href="#secondary-xr"><span>6</span>XR reading and devices</a>
+              <a href="#secondary-ai"><span>7</span>AI and source trust</a>
+              <a href="#secondary-synthesis"><span>8</span>Synthesis</a>
+              <a href="#secondary-gaps"><span>9</span>Evidence gaps</a>
+            </nav>
 
-          <figure className="prototype-figure">
-            <div className="figure-image"><img src="/assets/images/cosmos-sphere-browse.png" alt="Early Cosmos prototype showing messages arranged in a spatial field" /></div>
-            <figcaption><span>Fig. 01</span><p>An early spatial browsing prototype. Messages become places; distance, density, and adjacency become part of how people read.</p></figcaption>
-          </figure>
+            <section className="report-chapter" id="secondary-method">
+              <span className="report-number">0</span>
+              <h2>Scope and method</h2>
+              <p className="report-lead">The secondary research tests the assumptions behind Cosmos before the project commits to a platform, interaction model, or hardware-specific implementation.</p>
+              <p>The review combines research on online participation, social media fatigue, information foraging, spatial memory, VR interface comfort, trustworthy AI summarization, and large-scale spatial communications. It also uses offline message walls as design references and compares adjacent products across forums, chat, social VR, spatial computing, structured debate, and AI synthesis.</p>
+              <p>Evidence is evaluated by strength and by relevance. A strong adjacent finding does not automatically validate Cosmos. For example, spatial audio research demonstrates that location cues can help attention, but it does not prove that a spatial message wall improves reading comprehension. Those claims remain separate.</p>
+              <aside className="report-note"><b>Review standard</b><p>Each evidence cluster must produce a limited conclusion, a product implication, and a primary-research question. The review does not treat conceptual fit as validation.</p></aside>
+            </section>
 
-          <div className="comparison-block">
-            <div>
-              <p className="mini-label">The market gap</p>
-              <h3>Existing products solve fragments of the experience.</h3>
-            </div>
-            <div className="comparison-list">
-              <p><span>Reddit / Discord</span><b>Content without spatial orientation</b></p>
-              <p><span>VRChat</span><b>Presence without quiet sensemaking</b></p>
-              <p><span>AI summaries</span><b>Speed without inspectable place</b></p>
-              <p className="highlight"><span>Cosmos</span><b>Read-first, spatial, source-linked</b></p>
-            </div>
-          </div>
+            <section className="report-chapter" id="secondary-map">
+              <span className="report-number">1</span>
+              <h2>Evidence map</h2>
+              <p>The review supports eight working conclusions. Their evidence strength varies, and several depend on direct comparative testing.</p>
+              <div className="report-table-scroll"><table className="report-table report-table-wide">
+                <thead><tr><th>Evidence cluster</th><th>Working conclusion</th><th>Strength</th><th>Primary research required</th></tr></thead>
+                <tbody>
+                  <tr><td>Offline community walls</td><td>Rebuild the wall, not the feed.</td><td>Strong design-reference support</td><td>Observe wall use and test translation into VR.</td></tr>
+                  <tr><td>Non-posting participation</td><td>Design for quiet readers first.</td><td>Strong literature support</td><td>Interview the intended audience.</td></tr>
+                  <tr><td>Feed and algorithm fatigue</td><td>Provide orientation rather than another ranking system.</td><td>Moderate support</td><td>Compare task performance against a flat feed.</td></tr>
+                  <tr><td>Spatial communications</td><td>Use spatial attention cues; defer live voice.</td><td>Strong adjacent technical support</td><td>Test async spatial browsing before co-presence.</td></tr>
+                  <tr><td>XR reading comfort</td><td>Reading comfort is a product requirement.</td><td>Strong support</td><td>Test typography and navigation on real devices.</td></tr>
+                  <tr><td>Device landscape</td><td>Cosmos must be cross-device.</td><td>Strong market support</td><td>Match tasks to desktop, headset, and glasses modes.</td></tr>
+                  <tr><td>AI summarization</td><td>Every generated label needs a source trail.</td><td>Strong technical support</td><td>Run source-trace and correction tasks.</td></tr>
+                  <tr><td>Product strategy</td><td>Prove the VR wall before building a platform.</td><td>Strategic inference</td><td>Measure preference, return intent, and contribution behavior.</td></tr>
+                </tbody>
+              </table></div>
+            </section>
+
+            <section className="report-chapter" id="secondary-walls">
+              <span className="report-number">2</span>
+              <h2>Offline community walls are the primary reference model</h2>
+              <p>Bulletin boards, poster walls, sticky-note walls, and public message surfaces are asynchronous community systems. Participants contribute at different times, while readers encounter the accumulated material later. The wall does not require everyone to be present or speaking together.</p>
+              <p>These surfaces are also spatial. Placement, density, repetition, proximity, material difference, and layering contribute to meaning. Readers alternate between scanning the whole wall and moving closer to inspect a particular item. They can return to a remembered location even when they cannot recall an exact title or author.</p>
+              <p>The most relevant property is social permission. Reading is a legitimate activity; adding a note is optional. The community remains perceptible through its traces without requiring a performance of participation.</p>
+              <figure className="report-figure">
+                <div><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.40.57.png" alt="Dense public poster wall" /><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.08.png" alt="Public wall covered with handwritten notes" /><img src="/offline-spatial-asyncronous-community/Screenshot%202026-06-11%20at%2011.41.13.png" alt="Curated community note wall" /></div>
+                <figcaption><span>Figure 1</span> Three wall conditions: dense informational display, accumulated public contribution, and curated community messages. Each makes participation visible through spatial arrangement.</figcaption>
+              </figure>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>The prototype should preserve scanning, density, adjacency, optional contribution, and return-to-place behavior. Internet threads may provide content, but they should not determine the interaction metaphor.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="secondary-reading">
+              <span className="report-number">3</span>
+              <h2>Quiet reading is meaningful participation</h2>
+              <p>Research on online community participation challenges the assumption that people who do not post are inactive. Readers may learn the group’s norms, gather information, avoid poor group dynamics, or simply have no need to contribute publicly. Non-posting can be strategic and sustained.</p>
+              <p>Preece, Nonnecke, and Andrews analyzed 1,188 responses from 375 MSN bulletin-board communities. Their findings show that reading without posting can reflect intentional participation rather than disengagement.</p>
+              <p className="report-source"><span>Source</span><a href="https://www.sciencedirect.com/science/article/abs/pii/S0747563203000876" target="_blank" rel="noreferrer">Preece, Nonnecke, and Andrews, “The top five reasons for lurking” ↗</a></p>
+              <h3>What this changes</h3>
+              <p>Cosmos should not use posting rate as its first success metric. The more relevant measures are comprehension, comfort, source recall, return intent, and whether readers can locate competing positions or missing voices.</p>
+              <aside className="report-note"><b>Open question</b><p>Does a spatial wall make quiet reading feel more oriented and socially legitimate, or does the immersive environment create a new form of pressure?</p></aside>
+            </section>
+
+            <section className="report-chapter" id="secondary-space">
+              <span className="report-number">4</span>
+              <h2>Spatial communication supports the attention premise, with an important boundary</h2>
+              <p>Paul Boustead’s presentation for Dolby IO explains how spatial separation helps listeners focus within overlapping conversation. The brain uses phase, volume, direction, and distance cues to separate speakers—a mechanism described as spatial release from masking.</p>
+              <p>The same presentation documents the systems complexity required to deliver this effect at scale: speaker selection, broad attenuation ranges, server-side mixing, noise and echo suppression, voice-activity detection, gain leveling, spatial codecs, and low-latency client rendering.</p>
+              <p>The finding supports a narrow conclusion. Space can carry useful attention cues. It does not follow that Cosmos should begin as a live voice environment.</p>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Apply spatial attention to asynchronous message browsing first. Evaluate optional ambient presence or spatial audio only after the wall produces measurable reading value.</p></aside>
+              <a className="report-subreport-link" href="/cosmos/secondary/spatial-communications/"><span>Detailed report 02.1</span><b>Spatial Communications at Scale in Virtual Environments</b><i>Read analysis →</i></a>
+            </section>
+
+            <section className="report-chapter" id="secondary-market">
+              <span className="report-number">5</span>
+              <h2>The market offers parts of the experience, not the whole model</h2>
+              <table className="report-table">
+                <thead><tr><th>Product category</th><th>What it offers</th><th>What remains missing</th></tr></thead>
+                <tbody>
+                  <tr><td>Offline bulletin and note walls</td><td>Spatial asynchronous public participation</td><td>Search, portability, remote access, and persistent digital return</td></tr>
+                  <tr><td>Reddit and Threads</td><td>Asynchronous discussion at scale</td><td>The shape of disagreement is hidden by ranking and chronology</td></tr>
+                  <tr><td>Discord</td><td>Persistent community spaces and mixed media</td><td>Channels fragment context; voice introduces participation pressure</td></tr>
+                  <tr><td>VRChat and social VR</td><td>Embodiment, spatial presence, and live interaction</td><td>Primarily synchronous and voice-forward</td></tr>
+                  <tr><td>Spatial operating systems</td><td>Windows and content placed around the user</td><td>Often relocates 2D layouts without changing discussion structure</td></tr>
+                  <tr><td>AI summarizers</td><td>Fast synthesis and topic extraction</td><td>May conceal disagreement, source context, and minority positions</td></tr>
+                  <tr><td>Argument-mapping tools</td><td>Explicit claim and counterclaim structure</td><td>High authoring effort, visual complexity, and limited adoption</td></tr>
+                </tbody>
+              </table>
+              <p>The opportunity is the missing middle: a persistent spatial discussion surface that supports quiet reading, source inspection, clustering, search, and cross-device return without requiring a live social room.</p>
+            </section>
+
+            <section className="report-chapter" id="secondary-xr">
+              <span className="report-number">6</span>
+              <h2>XR hardware creates different reading modes</h2>
+              <p>Desktop, mixed-reality headsets, spatial computers, and smart glasses should not be treated as interchangeable displays. They support different durations, input methods, fields of view, and levels of attention.</p>
+              <p>Public discussion around Vision Pro and Quest indicates that dense web layouts, unstable focus targets, blurry text, and excessive motion can make text-heavy browsing tiring. Cosmos cannot solve this by moving a standard feed into depth.</p>
+              <table className="report-table">
+                <thead><tr><th>Mode</th><th>Appropriate Cosmos task</th><th>Design constraint</th></tr></thead>
+                <tbody>
+                  <tr><td>Desktop</td><td>Baseline reading, searching, annotation, and broad access</td><td>Must remain useful without immersion</td></tr>
+                  <tr><td>Quest / mixed reality</td><td>Spatial browsing, cluster comparison, and place-memory testing</td><td>Comfort, legibility, motion, and navigation fatigue</td></tr>
+                  <tr><td>Vision Pro</td><td>Gaze-driven inspection and spatial reading</td><td>Stable focus targets and generous card spacing</td></tr>
+                  <tr><td>Smart glasses</td><td>Alerts, labels, saved paths, and lightweight resurfacing</td><td>Not suitable for sustained deep reading</td></tr>
+                </tbody>
+              </table>
+              <aside className="report-note"><b>Open question</b><p>Which parts of a spatial path remain useful when a user moves between headset and desktop, and which should be translated rather than reproduced?</p></aside>
+            </section>
+
+            <section className="report-chapter" id="secondary-ai">
+              <span className="report-number">7</span>
+              <h2>AI can organize the wall only if its structure remains inspectable</h2>
+              <p>AI-generated summaries and labels can reduce the cost of navigating a large discussion, but they can also compress disagreement, omit minority voices, or present an inferred cluster as if it were an objective fact.</p>
+              <p>Cosmos should treat AI structure as a navigational layer rather than a replacement for source material. Every label, cluster, tension, and missing-voice claim should link back to the posts that produced it. Users should be able to inspect, correct, or dismiss the generated structure.</p>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Generated labels must be source-linked, reversible, and visibly distinct from participant-authored content.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="secondary-synthesis">
+              <span className="report-number">8</span>
+              <h2>Cross-study synthesis</h2>
+              <p>No single evidence cluster validates Cosmos. Together, they define a coherent prototype and narrow what should be tested first.</p>
+              <table className="report-table">
+                <thead><tr><th>Finding</th><th>Design decision</th></tr></thead>
+                <tbody>
+                  <tr><td>Offline walls already support spatial asynchronous participation.</td><td>Use the wall—not the feed—as the interaction metaphor.</td></tr>
+                  <tr><td>Reading without posting can be intentional participation.</td><td>Measure comprehension and return behavior before contribution rate.</td></tr>
+                  <tr><td>Spatial cues can help direct attention.</td><td>Test location, density, adjacency, and distance as reading cues.</td></tr>
+                  <tr><td>Live spatial voice is technically and socially expensive.</td><td>Keep audio optional and outside the initial validation scope.</td></tr>
+                  <tr><td>XR reading comfort is fragile.</td><td>Use stable cards, generous spacing, predictable focus, and low motion.</td></tr>
+                  <tr><td>AI synthesis can hide source context.</td><td>Make generated structure inspectable and reversible.</td></tr>
+                  <tr><td>A new platform creates a cold-start problem.</td><td>Begin with controlled or permission-cleared datasets.</td></tr>
+                </tbody>
+              </table>
+              <aside className="report-note"><b>Secondary-research conclusion</b><p>Cosmos should test a controlled, cross-device VR community wall before adding native posting, persistent identity, live voice, or platform-scale community features.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="secondary-gaps">
+              <span className="report-number">9</span>
+              <h2>Evidence gaps</h2>
+              <p>The secondary research establishes a defensible direction, but the central product claim remains untested. The next phase must answer:</p>
+              <ul>
+                <li>Whether users interpret spatial clusters consistently or experience them as arbitrary.</li>
+                <li>Whether place memory improves retrieval after a delay.</li>
+                <li>Whether headset reading is comfortable enough for sustained discussion browsing.</li>
+                <li>Whether source-linked AI labels increase trust or add cognitive overhead.</li>
+                <li>Whether quiet readers feel less pressure in a wall or more visible in an immersive space.</li>
+                <li>Whether the value persists on desktop, where spatial depth is reduced.</li>
+              </ul>
+              <p>These are primary-research questions. The next report defines the comparative study, interview plan, survey, and decision criteria.</p>
+              <div className="report-next-links"><a href="/cosmos/primary/">Continue to primary research <span>→</span></a><a href="/cosmos/secondary/spatial-communications/">Read spatial communications analysis <span>→</span></a></div>
+            </section>
+          </article>
         </section>}
 
         {activeChapter === "secondary" && secondaryPage === "spatial-audio" && <section className="report-section spatial-audio" id="spatial-audio">
@@ -415,7 +555,7 @@ function App() {
           <footer className="video-source-note"><span>Source</span><p>Paul Boustead, “Spatial Communications at Scale in Virtual Environments,” Dolby IO. Timestamps and technical claims link to the source presentation.</p><a href="https://www.youtube.com/watch?v=aTzbpX9J134" target="_blank" rel="noreferrer">YouTube ↗</a></footer>
         </section>}
 
-        {activeChapter === "primary" && <section className="report-section primary" id="primary">
+        {activeChapter === "primary" && primaryPage === "overview" && <section className="report-section primary" id="primary">
           <ChapterLabel number="03">Primary research</ChapterLabel>
           <div className="section-heading split-heading">
             <h2>Turn the concept into<br /><em>a falsifiable study.</em></h2>
@@ -449,6 +589,174 @@ function App() {
               <li><span>04</span><p>When should AI organize a conversation—and when should it stay out?</p></li>
             </ol>
           </div>
+        </section>}
+
+        {activeChapter === "primary" && primaryPage === "interview-kevin" && <section className="report-section interview-report" id="interview-kevin">
+          <ChapterLabel number="03.1">Primary research / Interview 01</ChapterLabel>
+          <article className="report-document interview-document">
+            <header className="report-page-intro interview-intro">
+              <p className="eyebrow">Semi-structured interview + think-aloud walkthrough</p>
+              <h1>Kevin<br /><span>Software engineer at Meta</span></h1>
+              <p>Kevin discussed his forum and headset habits, then explored the browser-based Cosmos prototype while thinking aloud. The session surfaced a central tension: the spatial field was interesting, but text density, unclear input behavior, and headset friction could erase its advantage over a phone.</p>
+            </header>
+
+            <table className="report-table interview-meta">
+              <tbody>
+                <tr><th>Participant</th><td>Kevin</td><th>Role context</th><td>Software engineer at Meta; not on the Quest team</td></tr>
+                <tr><th>Format</th><td>Semi-structured interview</td><th>Activity</th><td>Think-aloud walkthrough of the web prototype</td></tr>
+                <tr><th>Relevant behavior</th><td>≈20 minutes of Reddit daily</td><th>Device context</th><td>Owns a Quest 3; limited regular headset use</td></tr>
+                <tr><th>Evidence status</th><td colSpan="3">One exploratory interview. Directional evidence, not validation.</td></tr>
+              </tbody>
+            </table>
+
+            <nav className="report-contents" aria-label="Interview report contents">
+              <p>In this report</p>
+              <a href="#kevin-summary"><span>0</span>Interview summary</a>
+              <a href="#kevin-method"><span>1</span>Method and limits</a>
+              <a href="#kevin-context"><span>2</span>Behavioral context</a>
+              <a href="#kevin-walkthrough"><span>3</span>Prototype walkthrough</a>
+              <a href="#kevin-findings"><span>4</span>Key findings</a>
+              <a href="#kevin-decisions"><span>5</span>Design decisions</a>
+              <a href="#kevin-next"><span>6</span>Next research</a>
+              <a href="#kevin-transcript"><span>A</span>Full transcript</a>
+            </nav>
+
+            <section className="report-chapter" id="kevin-summary">
+              <span className="report-number">0</span>
+              <h2>Interview summary</h2>
+              <p className="report-lead">Kevin could imagine value in a spatial information environment, particularly for monitoring several sources at once, but he did not see “doomscrolling in VR” as sufficient reason to put on a headset.</p>
+              <p>His first evaluation criterion was convenience. A phone is immediate, portable, and already optimized for casual browsing. A headset requires startup time, physical commitment, and a private setting. Cosmos therefore needs a headset-specific advantage that cannot be reduced to reproducing an existing mobile feed.</p>
+              <p>During the walkthrough, Kevin understood the spherical field and tried to infer meaning from card color, position, and content. He described the environment as “pretty cool,” but also “a bit chaotic.” The strongest usability issue was not navigation alone; it was the amount of text competing for attention across the entire field.</p>
+              <aside className="report-note"><b>Primary interpretation</b><p>The next prototype should stop treating content volume as evidence of spatial richness. It needs to establish a readable hierarchy: brief peripheral summaries, one clear focal item, non-color category cues, and explicit spatial controls.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="kevin-method">
+              <span className="report-number">1</span>
+              <h2>Method and limitations</h2>
+              <p>The session combined an interview about forum use and headset expectations with an open-ended think-aloud walkthrough. Kevin viewed the web version of Cosmos, moved through the spherical post field, inspected cards, tested display controls, attempted gaze and facial-gesture interactions, and tried to create a post.</p>
+              <h3>What the interview can support</h3>
+              <ul>
+                <li>Early hypotheses about convenience, information density, input expectations, and prototype comprehension.</li>
+                <li>Identification of usability failures that blocked the participant during the walkthrough.</li>
+                <li>Language for follow-up questions and tasks in the next comparative study.</li>
+              </ul>
+              <h3>What the interview cannot support</h3>
+              <ul>
+                <li>Claims about in-headset comfort or embodied navigation; the prototype was tested on the web.</li>
+                <li>Claims about broad user preference; this is one participant.</li>
+                <li>Claims about Meta’s product strategy. Kevin explicitly declined to discuss confidential work and does not work directly on the Quest team.</li>
+                <li>Reliable evaluation of several controls because gaze, card sizing, content listing, and posting were partially broken.</li>
+              </ul>
+              <aside className="report-note report-note-yellow"><b>Disclosure boundary</b><p>Kevin’s employer provides relevant professional context but should not be presented as endorsement, insider validation, or expert testimony about Meta hardware strategy.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="kevin-context">
+              <span className="report-number">2</span>
+              <h2>Behavioral context</h2>
+              <table className="report-table">
+                <thead><tr><th>Topic</th><th>Reported behavior</th><th>Research relevance</th></tr></thead>
+                <tbody>
+                  <tr><td>Forum use</td><td>Approximately 20 minutes of Reddit per day; occasional Instagram and Facebook</td><td>Kevin is familiar with feed-based community browsing but not a heavy multi-platform forum user.</td></tr>
+                  <tr><td>Infinite scroll</td><td>Can spend longer than intended because there are always more posts to catch up on</td><td>Supports the feed-control problem, but not necessarily a demand for VR browsing.</td></tr>
+                  <tr><td>Self-regulation</td><td>Attempts to limit usage and sometimes describes the behavior as addictive</td><td>Cosmos should not use immersion to intensify the same attention loop.</td></tr>
+                  <tr><td>Headset use</td><td>Owns Quest 3 but does not use headsets often</td><td>Startup effort and limited routine use are adoption constraints.</td></tr>
+                  <tr><td>Voice input</td><td>Generally prefers typing because speech recognition may produce incorrect results</td><td>Voice should remain optional rather than the default input method.</td></tr>
+                </tbody>
+              </table>
+              <blockquote className="report-quote">“If I want to doom scroll, isn’t it a lot easier to take out my phone and open the app, compared to turning on my headset?”</blockquote>
+              <p>Kevin identified one situational convenience advantage: browsing while lying down without holding a phone above the face. More significantly, he imagined a spatial workspace with Reddit, X, Threads, market information, and news visible simultaneously. This suggests that cross-source monitoring may be a stronger spatial use case than a single immersive feed.</p>
+            </section>
+
+            <section className="report-chapter" id="kevin-walkthrough">
+              <span className="report-number">3</span>
+              <h2>Prototype walkthrough</h2>
+              <p>Kevin first noticed that the interface wrapped content around him as a spherical field. He then inspected individual cards, inferred possible relationships between color and topic, tested display controls, and attempted gaze, facial-gesture, drag, and posting interactions.</p>
+              <figure className="interview-prototype-figure">
+                <div className="prototype-annotation">
+                  <img src="/assets/images/cosmos-sphere-browse.png" alt="The Cosmos spatial discussion prototype tested during Kevin's interview" />
+                  <span className="annotation-marker marker-1">1</span>
+                  <span className="annotation-marker marker-2">2</span>
+                  <span className="annotation-marker marker-3">3</span>
+                </div>
+                <figcaption><ol><li><b>Peripheral field:</b> many cards compete for attention simultaneously.</li><li><b>Focal card:</b> the selected post exposes substantially more detail.</li><li><b>Color groups:</b> category or sentiment is implied but not explicit or accessible.</li></ol></figcaption>
+              </figure>
+              <h3>Walkthrough sequence</h3>
+              <div className="walkthrough-sequence">
+                <span><i>01</i><b>Orient</b><small>Recognized the spherical wrap</small></span>
+                <span><i>02</i><b>Interpret</b><small>Inferred meaning from card color</small></span>
+                <span><i>03</i><b>Navigate</b><small>Tested size and layout controls</small></span>
+                <span><i>04</i><b>Attempt input</b><small>Gaze, nod, shake, drag, post</small></span>
+                <span><i>05</i><b>Reflect</b><small>Identified density and control issues</small></span>
+              </div>
+              <p>The sequence shows that the conceptual model was legible enough to invite exploration, but interaction failures prevented reliable evaluation of several features. These failures are findings about prototype readiness, not evidence that gaze or gesture interaction is inherently unsuitable.</p>
+            </section>
+
+            <section className="report-chapter" id="kevin-findings">
+              <span className="report-number">4</span>
+              <h2>Key findings</h2>
+              <div className="report-table-scroll"><table className="report-table report-table-wide interview-findings-table">
+                <thead><tr><th>Finding</th><th>Observed evidence</th><th>Interpretation</th><th>Priority</th></tr></thead>
+                <tbody>
+                  <tr><td>Headset convenience is a threshold</td><td>Kevin compared headset startup and physical commitment against taking out a phone.</td><td>Cosmos needs a spatially specific job, not feature parity with mobile browsing.</td><td><span className="priority strategic">Strategic</span></td></tr>
+                  <tr><td>Text density is overwhelming</td><td>“One of the biggest limitations is how many words there are on the screen.”</td><td>Use progressive disclosure and reduce peripheral cards to concise summaries.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Color alone is insufficient</td><td>Kevin inferred categories, then noted that colors looked similar and could fail for color-blind users.</td><td>Combine color with labels, icons, position, shape, or pattern.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Gaze lacked control and confirmation</td><td>The focal movement did not consistently match his target and sometimes traveled too far.</td><td>Increase target tolerance, stabilize selection, and show dwell/confirmation state.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Gestures need visible consequences</td><td>Nod and shake produced no response Kevin could identify.</td><td>Teach the gesture, preview its action, and provide immediate feedback.</td><td><span className="priority next">Next</span></td></tr>
+                  <tr><td>Spatial windows should be placeable</td><td>“I wish I could move the windows around a bit and fix them somewhere.”</td><td>Add move, pin, and restore-position controls.</td><td><span className="priority next">Next</span></td></tr>
+                  <tr><td>Images may improve scanning</td><td>Kevin supported representative images or media from the original post.</td><td>Test restrained image previews without increasing visual noise.</td><td><span className="priority test">Test</span></td></tr>
+                  <tr><td>Voice is not a universal preference</td><td>Kevin preferred typing because speech recognition can be inaccurate.</td><td>Support keyboard and hand input; keep voice optional.</td><td><span className="priority later">Later</span></td></tr>
+                  <tr><td>Timeline layers lacked discoverability</td><td>The time-layer behavior was only understood after Rae explained the gesture.</td><td>Expose time as a visible control with instructions and state.</td><td><span className="priority next">Next</span></td></tr>
+                  <tr><td>Adoption depends on polish</td><td>Kevin’s willingness remained conditional on bugs, usability, and information density.</td><td>Do not use concept appeal as a proxy for product willingness.</td><td><span className="priority critical">Critical</span></td></tr>
+                </tbody>
+              </table></div>
+            </section>
+
+            <section className="report-chapter" id="kevin-decisions">
+              <span className="report-number">5</span>
+              <h2>Design decisions for the next prototype</h2>
+              <h3>Fix before the next evaluative test</h3>
+              <ol>
+                <li><b>Reduce peripheral text.</b> Show one short headline or generated summary until a card is selected.</li>
+                <li><b>Add redundant category cues.</b> Use labels and shape or position in addition to color.</li>
+                <li><b>Stabilize selection.</b> Repair gaze targeting and add explicit hover, dwell, and selected states.</li>
+                <li><b>Repair core controls.</b> Card sizing, content listing, and posting must work before they can be evaluated.</li>
+                <li><b>Teach spatial behavior.</b> Make timeline, movement, and gesture controls visible rather than discoverable only through explanation.</li>
+              </ol>
+              <h3>Test in the next headset study</h3>
+              <ul>
+                <li>Hand-swipe navigation versus controller or pointer input.</li>
+                <li>Moveable and pinnable cards or application windows.</li>
+                <li>Representative images versus text-only peripheral cards.</li>
+                <li>A single-source wall versus a multi-source monitoring workspace.</li>
+                <li>The actual setup cost and reading comfort of an in-headset session.</li>
+              </ul>
+              <h3>Keep outside the immediate scope</h3>
+              <p>Voice-first search, facial gestures as primary controls, and a complete native posting system should remain secondary until basic reading and navigation are reliable.</p>
+            </section>
+
+            <section className="report-chapter" id="kevin-next">
+              <span className="report-number">6</span>
+              <h2>Next research</h2>
+              <p>This interview produces hypotheses for comparison, not final requirements. The next study should test the revised information hierarchy with participants who vary in forum use, headset familiarity, color vision, and preference for voice or gesture input.</p>
+              <table className="report-table">
+                <thead><tr><th>Question</th><th>Proposed comparison</th><th>Measure</th></tr></thead>
+                <tbody>
+                  <tr><td>How much text should remain visible?</td><td>Full cards vs. summary cards with focal expansion</td><td>Comprehension, search time, perceived overload</td></tr>
+                  <tr><td>How should categories be encoded?</td><td>Color only vs. color + label + spatial grouping</td><td>Category interpretation and accessibility</td></tr>
+                  <tr><td>Which input is reliable?</td><td>Gaze, hand gesture, pointer/controller</td><td>Error rate, correction time, confidence</td></tr>
+                  <tr><td>What justifies the headset?</td><td>Single feed vs. spatial comparison/multi-source task</td><td>Preference, task performance, return intent</td></tr>
+                </tbody>
+              </table>
+              <aside className="report-note"><b>Decision rule</b><p>If the revised spatial interface remains more overwhelming or less convenient than the flat baseline, the project should reduce spatial complexity rather than add more interaction modes.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="kevin-transcript">
+              <span className="report-number">A</span>
+              <h2>Full transcript</h2>
+              <p>The transcript is lightly edited for punctuation and obvious speech-to-text errors. Content, sequence, uncertainty, prototype failures, and confidentiality boundaries are preserved.</p>
+              <TranscriptAppendix />
+            </section>
+          </article>
         </section>}
 
         {activeChapter === "making" && <section className="report-section making" id="making">

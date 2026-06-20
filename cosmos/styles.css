@@ -193,6 +193,52 @@ h1 em, h2 em { color: var(--pink); font-weight: 500; }
 .report-table-questions td:first-child { width: 34%; }
 .report-next-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 38px; }
 .report-next-links a { display: flex; justify-content: space-between; gap: 22px; min-width: 260px; padding: 13px 15px; border: 1px solid var(--navy); font-size: 10px; font-weight: 700; text-decoration: none; text-transform: uppercase; letter-spacing: .06em; }
+.report-page-intro { margin-bottom: 58px; padding-bottom: 44px; border-bottom: 1px solid var(--navy); }
+.report-page-intro h1 { max-width: 760px; margin: 0; font-size: clamp(38px, 5vw, 56px); line-height: 1.06; letter-spacing: -.035em; }
+.report-page-intro > p:last-child { max-width: 690px; margin: 24px 0 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
+.report-source { display: grid; grid-template-columns: 65px 1fr; gap: 15px; margin: 25px 0 !important; padding: 13px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 10px !important; }
+.report-source span { color: var(--pink); font-family: var(--serif); }
+.report-source a { color: var(--navy); font-weight: 600; }
+.report-subreport-link { display: grid; grid-template-columns: 130px 1fr auto; gap: 18px; align-items: center; margin: 28px 0; padding: 18px 20px; border: 1px solid var(--navy); color: var(--navy); text-decoration: none; }
+.report-subreport-link span { color: var(--pink); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
+.report-subreport-link b { font-family: var(--serif); font-size: 15px; }
+.report-subreport-link i { font-size: 9px; font-style: normal; font-weight: 700; text-transform: uppercase; }
+
+/* Interview report */
+.interview-report { color: var(--navy); background: var(--paper); }
+.interview-report .chapter-label { border-color: var(--line); }
+.interview-document { padding-top: 16px; }
+.interview-intro h1 span { color: var(--pink); font-size: .48em; font-style: italic; font-weight: 500; letter-spacing: -.015em; }
+.interview-meta { margin-top: 0; margin-bottom: 58px; }
+.interview-meta th { width: 14%; border-bottom: 1px solid var(--line); background: var(--paper-deep); font-size: 8px; }
+.interview-meta td { width: 36%; }
+.interview-prototype-figure { margin: 28px 0 38px; }
+.prototype-annotation { position: relative; background: var(--navy); }
+.prototype-annotation img { display: block; width: 100%; }
+.annotation-marker { position: absolute; display: grid; place-items: center; width: 30px; height: 30px; border: 2px solid white; border-radius: 50%; color: var(--navy); background: var(--yellow); font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(17,28,78,.24); }
+.marker-1 { top: 18%; left: 12%; }.marker-2 { top: 47%; left: 51%; }.marker-3 { right: 16%; bottom: 18%; }
+.interview-prototype-figure figcaption { padding: 14px 18px; border: 1px solid var(--line); border-top: 0; }
+.interview-prototype-figure ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 0; padding: 0; list-style: none; }
+.interview-prototype-figure li { margin: 0; padding: 0; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.interview-prototype-figure li b { display: block; margin-bottom: 4px; color: var(--navy); font-size: 10px; }
+.walkthrough-sequence { display: grid; grid-template-columns: repeat(5, 1fr); margin: 22px 0 28px; border-top: 1px solid var(--navy); border-bottom: 1px solid var(--navy); }
+.walkthrough-sequence span { min-height: 120px; display: flex; flex-direction: column; padding: 14px 10px; border-right: 1px solid var(--line); }
+.walkthrough-sequence span:last-child { border: 0; }
+.walkthrough-sequence i { color: var(--pink); font-family: var(--serif); font-size: 9px; font-style: normal; }
+.walkthrough-sequence b { margin-top: auto; font-family: var(--serif); font-size: 14px; }
+.walkthrough-sequence small { margin-top: 5px; color: var(--muted); font-size: 8px; line-height: 1.4; }
+.interview-findings-table td:first-child { width: auto; }
+.priority { display: inline-block; padding: 5px 7px; border: 1px solid var(--line); border-radius: 99px; font-size: 8px; font-weight: 700; text-transform: uppercase; }
+.priority.critical { color: white; background: var(--pink); border-color: var(--pink); }.priority.strategic{background:var(--yellow)}.priority.next{color:white;background:var(--navy)}.priority.test{border-color:var(--pink)}.priority.later{color:var(--muted)}
+.transcript-appendix { margin: 26px 0 50px; border: 1px solid var(--navy); }
+.transcript-appendix summary { display: grid; grid-template-columns: 85px 1fr auto; gap: 18px; align-items: center; padding: 18px 20px; cursor: pointer; list-style: none; }
+.transcript-appendix summary::-webkit-details-marker { display: none; }
+.transcript-appendix summary span { color: var(--pink); font-family: var(--serif); font-size: 10px; }
+.transcript-appendix summary b { font-family: var(--serif); font-size: 16px; }
+.transcript-appendix summary i { font-size: 18px; font-style: normal; }
+.transcript-appendix[open] summary { border-bottom: 1px solid var(--line); }
+.transcript-appendix[open] summary i { transform: rotate(45deg); }
+.transcript-appendix pre { max-height: 70vh; margin: 0; padding: 24px; overflow: auto; white-space: pre-wrap; color: #39415f; background: #fbfaf6; font: 12px/1.75 var(--sans); }
 
 /* Spatial communications report */
 .spatial-audio { padding-top: 72px; padding-bottom: 90px; }
@@ -377,6 +423,12 @@ blockquote footer { max-width: 580px; font-size: 13px; line-height: 1.6; opacity
   .report-figure > div { grid-template-columns: 1fr; height: auto; }
   .report-figure img { height: 190px; }
   .report-figure figcaption { grid-template-columns: 1fr; }
+  .report-page-intro { margin-bottom: 44px; }
+  .report-subreport-link { grid-template-columns: 1fr; gap: 8px; }
+  .interview-meta { display: block; overflow-x: auto; }
+  .interview-prototype-figure ol, .walkthrough-sequence { grid-template-columns: 1fr; }
+  .walkthrough-sequence span { min-height: 85px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .transcript-appendix summary { grid-template-columns: 70px 1fr auto; }
   .spatial-audio { padding-top: 54px; }
   .cocktail-section, .audio-chain-section { grid-template-columns: 1fr; gap: 30px; }
   .scale-history { grid-template-columns: 1fr; }
