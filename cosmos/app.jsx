@@ -466,9 +466,10 @@ function App() {
               <a href="#secondary-space"><span>4</span>Spatial communication</a>
               <a href="#secondary-market"><span>5</span>Market landscape</a>
               <a href="#secondary-xr"><span>6</span>XR reading and devices</a>
-              <a href="#secondary-ai"><span>7</span>AI and source trust</a>
-              <a href="#secondary-synthesis"><span>8</span>Synthesis</a>
-              <a href="#secondary-gaps"><span>9</span>Evidence gaps</a>
+              <a href="#secondary-memorypods"><span>7</span>MemoryPods and asynchronous XR communication</a>
+              <a href="#secondary-ai"><span>8</span>AI and source trust</a>
+              <a href="#secondary-synthesis"><span>9</span>Synthesis</a>
+              <a href="#secondary-gaps"><span>10</span>Evidence gaps</a>
             </nav>
 
             <section className="report-chapter" id="secondary-method">
@@ -486,15 +487,16 @@ function App() {
               <p>The review supports eight working conclusions. Their evidence strength varies, and several depend on direct comparative testing.</p>
               <div className="report-table-scroll"><table className="report-table report-table-wide">
                 <thead><tr><th>Evidence cluster</th><th>Working conclusion</th><th>Strength</th><th>Primary research required</th></tr></thead>
-                <tbody>
-                  <tr><td>Offline community walls</td><td>Rebuild the wall, not the feed.</td><td>Strong design-reference support</td><td>Observe wall use and test translation into VR.</td></tr>
-                  <tr><td>Non-posting participation</td><td>Design for quiet readers first.</td><td>Strong literature support</td><td>Interview the intended audience.</td></tr>
-                  <tr><td>Feed and algorithm fatigue</td><td>Provide orientation rather than another ranking system.</td><td>Moderate support</td><td>Compare task performance against a flat feed.</td></tr>
-                  <tr><td>Spatial communications</td><td>Use spatial attention cues; defer live voice.</td><td>Strong adjacent technical support</td><td>Test async spatial browsing before co-presence.</td></tr>
-                  <tr><td>XR reading comfort</td><td>Reading comfort is a product requirement.</td><td>Strong support</td><td>Test typography and navigation on real devices.</td></tr>
-                  <tr><td>Device landscape</td><td>Cosmos must be cross-device.</td><td>Strong market support</td><td>Match tasks to desktop, headset, and glasses modes.</td></tr>
-                  <tr><td>AI summarization</td><td>Every generated label needs a source trail.</td><td>Strong technical support</td><td>Run source-trace and correction tasks.</td></tr>
-                  <tr><td>Product strategy</td><td>Prove the VR wall before building a platform.</td><td>Strategic inference</td><td>Measure preference, return intent, and contribution behavior.</td></tr>
+              <tbody>
+                <tr><td>Offline community walls</td><td>Rebuild the wall, not the feed.</td><td>Strong design-reference support</td><td>Observe wall use and test translation into VR.</td></tr>
+                <tr><td>Non-posting participation</td><td>Design for quiet readers first.</td><td>Strong literature support</td><td>Interview the intended audience.</td></tr>
+                <tr><td>Feed and algorithm fatigue</td><td>Provide orientation rather than another ranking system.</td><td>Moderate support</td><td>Compare task performance against a flat feed.</td></tr>
+                <tr><td>Spatial communications</td><td>Use spatial attention cues; defer live voice.</td><td>Strong adjacent technical support</td><td>Test async spatial browsing before co-presence.</td></tr>
+                <tr><td>Asynchronous XR records</td><td>Store spatial, visual, and audio context as revisit-able events.</td><td>Strong adjacent research support</td><td>Test whether annotations and summaries improve recall and navigation.</td></tr>
+                <tr><td>XR reading comfort</td><td>Reading comfort is a product requirement.</td><td>Strong support</td><td>Test typography and navigation on real devices.</td></tr>
+                <tr><td>Device landscape</td><td>Cosmos must be cross-device.</td><td>Strong market support</td><td>Match tasks to desktop, headset, and glasses modes.</td></tr>
+                <tr><td>AI summarization</td><td>Every generated label needs a source trail.</td><td>Strong technical support</td><td>Run source-trace and correction tasks.</td></tr>
+                <tr><td>Product strategy</td><td>Prove the VR wall before building a platform.</td><td>Strategic inference</td><td>Measure preference, return intent, and contribution behavior.</td></tr>
                 </tbody>
               </table></div>
             </section>
@@ -568,8 +570,28 @@ function App() {
               <aside className="report-note"><b>Open question</b><p>Which parts of a spatial path remain useful when a user moves between headset and desktop, and which should be translated rather than reproduced?</p></aside>
             </section>
 
-            <section className="report-chapter" id="secondary-ai">
+            <section className="report-chapter" id="secondary-memorypods">
               <span className="report-number">7</span>
+              <h2>MemoryPods make asynchronous XR communication navigable</h2>
+              <p>MemoryPods is a paper about asynchronous collaboration in XR that treats replay as a spatial record rather than a rigid linear recording. It addresses a concrete gap Cosmos also faces: long, unindexed sessions are hard to search, hard to annotate, and expensive to revisit.</p>
+              <p>The proposed system stores context-rich event containers with spatial, visual, and audio data. It then layers spatio-temporal annotations onto the original environment so users can jump to important moments without scrubbing through a flat timeline. An LLM can summarize the transcript first, lowering cognitive load before the user re-enters the full replay.</p>
+              <div className="report-table-scroll">
+                <table className="report-table">
+                  <thead><tr><th>Component</th><th>What it solves</th><th>Cosmos implication</th></tr></thead>
+                  <tbody>
+                    <tr><td>MemoryPod mechanism</td><td>Stores a context-rich record of an event from multiple perspectives.</td><td>Cosmos can preserve more than raw post text; it can preserve spatial reading context.</td></tr>
+                    <tr><td>Spatio-temporal annotations</td><td>Map markers to specific places and moments for fast retrieval.</td><td>Cosmos clusters should be inspectable in both space and time.</td></tr>
+                    <tr><td>AI-driven summarization</td><td>Generates concise summaries from transcripts before replay.</td><td>AI should help the reader orient before the deep dive, not replace it.</td></tr>
+                    <tr><td>Modular AI integration</td><td>Allows future analytical tools to plug into the record.</td><td>Cosmos can treat AI as a layer on top of source material, not the source itself.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>The evaluation used a remote maintenance task and showed improvements in temporal accuracy and spatial accuracy. That matters for Cosmos because it suggests that a spatial archive can help users remember both sequence and location, which is exactly the tension in a dense community wall.</p>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Cosmos should preserve spatial context, let readers jump through time and space, and use summaries as a front door to replay, not as a replacement for the original record.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="secondary-ai">
+              <span className="report-number">8</span>
               <h2>AI can organize the wall only if its structure remains inspectable</h2>
               <p>AI-generated summaries and labels can reduce the cost of navigating a large discussion, but they can also compress disagreement, omit minority voices, or present an inferred cluster as if it were an objective fact.</p>
               <p>Cosmos should treat AI structure as a navigational layer rather than a replacement for source material. Every label, cluster, tension, and missing-voice claim should link back to the posts that produced it. Users should be able to inspect, correct, or dismiss the generated structure.</p>
@@ -577,7 +599,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-synthesis">
-              <span className="report-number">8</span>
+              <span className="report-number">9</span>
               <h2>Cross-study synthesis</h2>
               <p>No single evidence cluster validates Cosmos. Together, they define a coherent prototype and narrow what should be tested first.</p>
               <table className="report-table">
@@ -588,6 +610,7 @@ function App() {
                   <tr><td>Spatial cues can help direct attention.</td><td>Test location, density, adjacency, and distance as reading cues.</td></tr>
                   <tr><td>Live spatial voice is technically and socially expensive.</td><td>Keep audio optional and outside the initial validation scope.</td></tr>
                   <tr><td>XR reading comfort is fragile.</td><td>Use stable cards, generous spacing, predictable focus, and low motion.</td></tr>
+                  <tr><td>Spatial replay systems can improve navigation through past events.</td><td>Explore annotations, summaries, and event containers for dense XR archives.</td></tr>
                   <tr><td>AI synthesis can hide source context.</td><td>Make generated structure inspectable and reversible.</td></tr>
                   <tr><td>A new platform creates a cold-start problem.</td><td>Begin with controlled or permission-cleared datasets.</td></tr>
                 </tbody>
@@ -596,7 +619,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-gaps">
-              <span className="report-number">9</span>
+              <span className="report-number">10</span>
               <h2>Evidence gaps</h2>
               <p>The secondary research establishes a defensible direction, but the central product claim remains untested. The next phase must answer:</p>
               <ul>
@@ -606,6 +629,7 @@ function App() {
                 <li>Whether source-linked AI labels increase trust or add cognitive overhead.</li>
                 <li>Whether quiet readers feel less pressure in a wall or more visible in an immersive space.</li>
                 <li>Whether the value persists on desktop, where spatial depth is reduced.</li>
+                <li>Whether a MemoryPods-style replay and annotation model would help Cosmos users revisit old discussions more effectively.</li>
               </ul>
               <p>These are primary-research questions. The next report defines the comparative study, interview plan, survey, and decision criteria.</p>
               <div className="report-next-links"><a href="/cosmos/primary/">Continue to primary research <span>→</span></a><a href="/cosmos/secondary/spatial-communications/">Read spatial communications analysis <span>→</span></a></div>
