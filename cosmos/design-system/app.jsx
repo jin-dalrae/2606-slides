@@ -1,4 +1,6 @@
-const { useEffect, useState } = React;
+import { CosmosHeader, CosmosSidebar, CosmosMark } from "../shell.jsx";
+
+const { useState } = React;
 
 const sections = [
   ["foundations", "01", "Foundations"],
@@ -17,24 +19,8 @@ const colors = [
   ["Muted Ink", "#66708B", "Supporting information", "muted"],
 ];
 
-function Mark() {
-  return <span className="mark"><i /><i /><i /></span>;
-}
-
 function App() {
-  const [active, setActive] = useState("foundations");
   const [copied, setCopied] = useState("");
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(entry => entry.isIntersecting && setActive(entry.target.id)),
-      { rootMargin: "-20% 0px -65%", threshold: 0 }
-    );
-    sections.forEach(([id]) => {
-      const node = document.getElementById(id);
-      if (node) observer.observe(node);
-    });
-    return () => observer.disconnect();
-  }, []);
 
   const copy = async value => {
     await navigator.clipboard?.writeText(value);
@@ -44,21 +30,8 @@ function App() {
 
   return (
     <div>
-      <header className="topbar">
-        <a className="brand" href="../"><Mark /><b>COSMOS</b><span>/ Design system</span></a>
-        <nav><a href="../">Research report ↗</a><span>Version 1.0</span></nav>
-      </header>
-
-      <aside className="index">
-        <div className="index-title"><p>Cosmos system</p><h1>Field<br />notes.</h1><span>A visual language for spatial research and quiet reading.</span></div>
-        <nav>
-          <p>On this page</p>
-          {sections.map(([id, number, label]) => (
-            <a className={active === id ? "active" : ""} key={id} href={`#${id}`}><span>{number}</span><b>{label}</b><i>→</i></a>
-          ))}
-        </nav>
-        <div className="index-foot"><i /> Light system <span>06.2026</span></div>
-      </aside>
+      <CosmosHeader meta="Design system · v1.0" />
+      <CosmosSidebar active="design" />
 
       <main>
         <section className="intro" id="foundations">
@@ -145,7 +118,7 @@ function App() {
             <li><span>03</span><div><b>Contrast without noise</b><p>Reserve lemon and magenta for moments that need distinction. Most reading happens on paper.</p></div></li>
             <li><span>04</span><div><b>Motion with purpose</b><p>Use motion only to clarify progress, spatial relationship, or state—and honor reduced-motion settings.</p></div></li>
           </ol></div>
-          <footer><Mark /><p>Cosmos design system · Version 1.0</p><a href="../">Return to report ↑</a></footer>
+          <footer><CosmosMark /><p>Cosmos design system · Version 1.0</p><a href="../">Return to report ↑</a></footer>
         </section>
       </main>
     </div>

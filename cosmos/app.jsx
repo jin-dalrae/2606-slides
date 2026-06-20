@@ -1,11 +1,6 @@
-const { useEffect, useState } = React;
+import { CosmosHeader, CosmosSidebar } from "./shell.jsx";
 
-const chapters = [
-  ["intro", "01", "Introduction", "/cosmos/"],
-  ["secondary", "02", "Secondary research", "/cosmos/secondary/"],
-  ["primary", "03", "Primary research", "/cosmos/primary/"],
-  ["making", "04", "Making Cosmos", "/cosmos/making/"],
-];
+const { useEffect, useState } = React;
 
 const evidence = [
   {
@@ -83,26 +78,6 @@ function Progress() {
   return <div className="reading-progress" style={{ transform: `scaleX(${progress})` }} />;
 }
 
-function Header() {
-  const [open, setOpen] = useState(false);
-  return (
-    <>
-      <Progress />
-      <header className="site-header">
-        <a className="wordmark" href="/cosmos/" aria-label="Cosmos home">
-          <span className="wordmark-mark"><i /><i /><i /></span>
-          COSMOS
-        </a>
-        <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open}>Menu</button>
-        <nav className={open ? "top-nav is-open" : "top-nav"} aria-label="Main navigation">
-          {chapters.map(([id, n, label, path]) => <a key={id} href={path} onClick={() => setOpen(false)}>{label}</a>)}
-        </nav>
-        <p className="header-meta">Research report <span>•</span> 2026</p>
-      </header>
-    </>
-  );
-}
-
 function ChapterLabel({ number, children }) {
   return <div className="chapter-label"><span>{number}</span><p>{children}</p></div>;
 }
@@ -118,21 +93,9 @@ function App() {
         : "intro";
   return (
     <div id="top">
-      <Header />
-
-      <aside className="chapter-rail" aria-label="Report chapters">
-        <div className="rail-intro">
-          <p>Research report</p>
-          <h2>Cosmos</h2>
-          <span>Spatializing asynchronous community</span>
-        </div>
-        <nav>
-          <p>Index</p>
-          {chapters.map(([id, n, label, path]) => <a className={activeChapter === id ? "active" : ""} key={id} href={path}><span>{n}</span><b>{label}</b><i>→</i></a>)}
-          <a href="/cosmos/design-system/"><span>05</span><b>Design system</b><i>→</i></a>
-        </nav>
-        <div className="rail-status"><i /> Reading mode <span>2026</span></div>
-      </aside>
+      <Progress />
+      <CosmosHeader />
+      <CosmosSidebar active={activeChapter} />
 
       <main>
         {activeChapter === "intro" && <section className="hero" id="intro">

@@ -22,7 +22,7 @@ a { color:inherit; }
 .index nav a span { color:var(--pink); font-family:var(--serif); }.index nav a b{font-weight:600}.index nav a i{font-style:normal;opacity:0}
 .index nav a:hover,.index nav a.active { color:var(--navy); background:var(--yellow); }.index nav a.active i,.index nav a:hover i{opacity:1}
 .index-foot { display:flex; align-items:center; gap:7px; margin-top:auto; color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:.08em; }.index-foot i{width:6px;height:6px;border-radius:50%;background:var(--pink)}.index-foot span{margin-left:auto}
-main { margin-left:270px; overflow:hidden; }
+main { margin-left:260px; overflow:hidden; }
 section { max-width:1180px; margin:0 auto; padding:110px 58px; border-bottom:1px solid var(--line); }
 .intro { padding-top:75px; }
 .overline { margin:0 0 34px; color:var(--pink); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.16em; }
