@@ -95,21 +95,25 @@ function ChapterLabel({ number, children }) {
   return <div className="chapter-label"><span>{number}</span><p>{children}</p></div>;
 }
 
-function TranscriptAppendix() {
+function TranscriptAppendix({ src }) {
   const [transcript, setTranscript] = useState("Loading transcript…");
   useEffect(() => {
-    fetch("/cosmos/primary/interview-kris/transcript.txt")
+    fetch(src)
       .then(response => response.ok ? response.text() : Promise.reject(new Error("Transcript unavailable")))
       .then(setTranscript)
       .catch(() => setTranscript("The transcript could not be loaded."));
-  }, []);
+  }, [src]);
   return <details className="transcript-appendix"><summary><span>Appendix A</span><b>Read the full interview transcript</b><i>+</i></summary><pre>{transcript}</pre></details>;
 }
 
 function App() {
   const [lens, setLens] = useState("reader");
   const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications") ? "spatial-audio" : "overview";
-  const primaryPage = window.location.pathname.includes("/primary/interview-kris") ? "interview-kris" : "overview";
+  const primaryPage = window.location.pathname.includes("/primary/interview-kris")
+    ? "interview-kris"
+    : window.location.pathname.includes("/primary/interview-yeoul")
+      ? "interview-yeoul"
+      : "overview";
   const activeChapter = window.location.pathname.includes("/secondary")
     ? "secondary"
     : window.location.pathname.includes("/primary")
@@ -754,7 +758,177 @@ function App() {
               <span className="report-number">A</span>
               <h2>Full transcript</h2>
               <p>The transcript is lightly edited for punctuation and obvious speech-to-text errors. Content, sequence, uncertainty, prototype failures, and confidentiality boundaries are preserved.</p>
-              <TranscriptAppendix />
+              <TranscriptAppendix src="/cosmos/primary/interview-kris/transcript.txt" />
+            </section>
+          </article>
+        </section>}
+
+        {activeChapter === "primary" && primaryPage === "interview-yeoul" && <section className="report-section interview-report" id="interview-yeoul">
+          <ChapterLabel number="03.2">Primary research / Interview 02</ChapterLabel>
+          <article className="report-document interview-document">
+            <header className="report-page-intro interview-intro">
+              <p className="eyebrow">Semi-structured interview + concept walkthrough</p>
+              <h1>Yeoul<br /><span>3D artist</span></h1>
+              <p>Yeoul discussed purposeful and passive social-media use, her experience developing for VR, and the physical constraints that limit headset sessions. During the Cosmos walkthrough, she responded strongly to the spatial-note concept while challenging the prototype to become more volumetric, organic, and emotionally contextual.</p>
+            </header>
+
+            <table className="report-table interview-meta">
+              <tbody>
+                <tr><th>Participant</th><td>Yeoul</td><th>Practice</th><td>3D art; prior Unity VR development</td></tr>
+                <tr><th>Format</th><td>Semi-structured interview</td><th>Activity</th><td>Concept and prototype walkthrough</td></tr>
+                <tr><th>Relevant hardware</th><td>Quest 3S, HTC Vive, Spectacles, Vision Pro</td><th>Session constraint</th><td>Reports motion sickness after 20–30 minutes</td></tr>
+                <tr><th>Evidence status</th><td colSpan="3">One exploratory interview. Directional evidence, not validation.</td></tr>
+              </tbody>
+            </table>
+
+            <nav className="report-contents" aria-label="Interview report contents">
+              <p>In this report</p>
+              <a href="#yeoul-summary"><span>0</span>Interview summary</a>
+              <a href="#yeoul-method"><span>1</span>Method and limits</a>
+              <a href="#yeoul-media"><span>2</span>Media behavior</a>
+              <a href="#yeoul-xr"><span>3</span>XR constraints</a>
+              <a href="#yeoul-space"><span>4</span>Spatial interpretation</a>
+              <a href="#yeoul-voice"><span>5</span>Voice and context</a>
+              <a href="#yeoul-findings"><span>6</span>Key findings</a>
+              <a href="#yeoul-decisions"><span>7</span>Design decisions</a>
+              <a href="#yeoul-transcript"><span>A</span>Full transcript</a>
+            </nav>
+
+            <section className="report-chapter" id="yeoul-summary">
+              <span className="report-number">0</span>
+              <h2>Interview summary</h2>
+              <p className="report-lead">Yeoul found the idea of a non-linear “note-taking universe” compelling, but her feedback makes long headset browsing a questionable baseline. For her, comfort, facial fit, motion sickness, and contamination from makeup are immediate barriers.</p>
+              <p>Her media habits also separate two different jobs. Reddit is a purposeful research tool used for immigration timelines and cultural context, sometimes for more than an hour on a laptop. Instagram and Threads are passive, bedtime entertainment that can continue for two or three hours. Cosmos should not assume those modes should become one immersive behavior.</p>
+              <p>As a 3D artist, Yeoul expected more than flat cards distributed in depth. She described the current arrangement as aligned “like an Excel file” and proposed a more asymmetrical, 360-degree composition. She also introduced a different interaction metaphor: calling a note with a wand rather than scrolling through a disguised feed.</p>
+              <aside className="report-note"><b>Primary interpretation</b><p>The next prototype should test spatial composition and retrieval without increasing motion. Immersive atmosphere may support orientation or mood, but it should remain a controlled research variable—not become decorative complexity by default.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="yeoul-method">
+              <span className="report-number">1</span>
+              <h2>Method and limitations</h2>
+              <p>The session combined questions about social-media behavior, VR/AR experience, and physical comfort with a walkthrough of the Cosmos concept and interface. Yeoul described her expectations for navigation, voice contribution, spatial composition, world-building, and adaptive sound and environment.</p>
+              <h3>What the interview can support</h3>
+              <ul>
+                <li>Identification of physical and contextual barriers to sustained headset reading.</li>
+                <li>Hypotheses about the difference between purposeful information search and passive entertainment.</li>
+                <li>A 3D practitioner’s critique of the prototype’s spatial composition and environmental coherence.</li>
+                <li>New test concepts for voice input, object-mediated prompting, atmosphere, and sound.</li>
+              </ul>
+              <h3>What the interview cannot support</h3>
+              <ul>
+                <li>General claims about all users prone to motion sickness or all women who wear makeup.</li>
+                <li>Evaluation of a production VR interaction; the discussion did not test a complete in-headset Cosmos build.</li>
+                <li>Validation of generative backgrounds, characters, or adaptive ASMR. These are concepts proposed during the interview.</li>
+              </ul>
+            </section>
+
+            <section className="report-chapter" id="yeoul-media">
+              <span className="report-number">2</span>
+              <h2>Two browsing modes: inquiry and escape</h2>
+              <table className="report-table">
+                <thead><tr><th>Mode</th><th>Platform and duration</th><th>Purpose</th><th>Implication</th></tr></thead>
+                <tbody>
+                  <tr><td>Purposeful inquiry</td><td>Reddit on laptop or phone; sometimes more than one hour</td><td>Immigration timelines, specific information, and cultural interpretation</td><td>Needs search, comparison, source context, and an efficient stopping point.</td></tr>
+                  <tr><td>Passive entertainment</td><td>Instagram and Threads; often two to three hours before sleep</td><td>Killing time and following entertaining community threads</td><td>Creates a long attention loop that Cosmos should not intensify through immersion.</td></tr>
+                </tbody>
+              </table>
+              <p>These modes may need different product treatments. Purposeful research benefits from spatial comparison and memory. Passive browsing may benefit from boundaries, summaries, or deliberate session controls rather than a more enveloping endless environment.</p>
+              <blockquote className="report-quote">“Reddit is for specific reasons… But for killing time, I use Instagram.”</blockquote>
+            </section>
+
+            <section className="report-chapter" id="yeoul-xr">
+              <span className="report-number">3</span>
+              <h2>Physical comfort limits the reading session</h2>
+              <p>Yeoul used Quest 3S while developing a Unity application and could tolerate sessions of approximately 20–30 minutes before motion sickness. She had also tried HTC Vive, Spectacles, a single-lens AR prototype, and Apple Vision Pro. Vision Pro produced a better experience than the Quest hardware she referenced, but still placed uncomfortable weight on her nose.</p>
+              <p>Her constraints extend beyond motion sickness. Headsets do not fit her nose bridge well, make contact with makeup, and feel inappropriate for spontaneous use. She could imagine immersive reading only after cleansing her face, lying still in bed, and minimizing movement.</p>
+              <table className="report-table">
+                <thead><tr><th>Constraint</th><th>Reported effect</th><th>Design consequence</th></tr></thead>
+                <tbody>
+                  <tr><td>Motion sickness</td><td>Limits use to roughly 20–30 minutes</td><td>Avoid continuous locomotion and test short, stationary sessions.</td></tr>
+                  <tr><td>Weight and facial fit</td><td>Pressure on the nose; poor fit for her face</td><td>Do not assume “relaxed reading” is physically relaxed in a headset.</td></tr>
+                  <tr><td>Makeup and contamination</td><td>Reduces willingness to put on the device casually</td><td>Setup context is part of adoption, not an external inconvenience.</td></tr>
+                  <tr><td>Bedtime posture</td><td>Prefers lying down with little movement</td><td>Support recentering, limited head rotation, and reachable content zones.</td></tr>
+                </tbody>
+              </table>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Do not optimize for hours of immersive scrolling. Test short sessions, stationary navigation, and desktop continuity. Comfort should be measured as a primary outcome.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="yeoul-space">
+              <span className="report-number">4</span>
+              <h2>A 3D field must feel spatial, not merely displaced</h2>
+              <p>Yeoul initially found two-finger navigation unfamiliar because the notes moved backward and forward instead of vertically. Once Rae explained the non-linear intention, she described the environment as a “note-taking universe” and compared it to a Harry Potter classroom with notes moving through the air.</p>
+              <p>Her positive response came with a compositional critique. Cards remained front-facing and regularly aligned, so the environment did not feel fully three-dimensional. She expected cards to occupy a 360-degree field, vary in orientation, and form asymmetrical but intentional clusters.</p>
+              <div className="spatial-composition-comparison" aria-label="Comparison between aligned spatial cards and an organic spatial field">
+                <div><span>Current reading</span><div className="aligned-field"><i /><i /><i /><i /><i /><i /></div><p>Parallel cards distributed in depth still read as a spreadsheet.</p></div>
+                <b>→</b>
+                <div><span>Proposed test</span><div className="organic-field"><i /><i /><i /><i /><i /><i /></div><p>Asymmetrical orientation and clustered depth may improve volumetric legibility.</p></div>
+              </div>
+              <h3>Interaction metaphor</h3>
+              <p>Yeoul proposed using a wand-like gesture to call a note. This is useful as a testable retrieval metaphor: point toward a region, summon one item into focus, and return it to its remembered location. The gaming reference should not determine the aesthetic, but it may clarify how a spatial field replaces scrolling.</p>
+            </section>
+
+            <section className="report-chapter" id="yeoul-voice">
+              <span className="report-number">5</span>
+              <h2>Voice input needs a social object</h2>
+              <p>Unlike Kris, Yeoul preferred voice note-taking and saw it used by software engineers and older adults. However, she anticipated that speaking toward empty space would feel awkward. Her comparison was green-screen acting: expression becomes difficult without a person, object, or environmental context to address.</p>
+              <p>She proposed an animal, mirror, or assistant character that listens and converts speech into a draft post. The relevant hypothesis is not that Cosmos needs a mascot. It is that an addressable object may make asynchronous voice composition feel more intentional and may help a user externalize emotion.</p>
+              <table className="report-table">
+                <thead><tr><th>Condition</th><th>Expected experience</th><th>Test</th></tr></thead>
+                <tbody>
+                  <tr><td>Voice to empty space</td><td>Awkward, unsupported self-talk</td><td>Measure completion, fluency, and comfort.</td></tr>
+                  <tr><td>Voice to a neutral object</td><td>Clearer addressee without a social persona</td><td>Compare mirror, recorder, or listening orb.</td></tr>
+                  <tr><td>Voice to an assistant character</td><td>Potentially more expressive, but more suggestive</td><td>Measure comfort, trust, and influence on wording.</td></tr>
+                </tbody>
+              </table>
+              <aside className="report-note"><b>Risk</b><p>A character that drafts posts may shape tone, disclosure, or opinion. The system must show the transcription and draft, preserve user control, and avoid implying human understanding.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="yeoul-findings">
+              <span className="report-number">6</span>
+              <h2>Key findings</h2>
+              <div className="report-table-scroll"><table className="report-table report-table-wide interview-findings-table">
+                <thead><tr><th>Finding</th><th>Evidence</th><th>Interpretation</th><th>Priority</th></tr></thead>
+                <tbody>
+                  <tr><td>Long headset sessions are not a safe baseline</td><td>Motion sickness after 20–30 minutes; weight and fit discomfort</td><td>Use short stationary sessions and cross-device continuation.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>Purposeful and passive browsing are different jobs</td><td>Reddit for research; Instagram/Threads for hours of entertainment</td><td>Design task-focused wall modes rather than one immersive feed loop.</td><td><span className="priority strategic">Strategic</span></td></tr>
+                  <tr><td>Existing gestures carry strong expectations</td><td>Two-finger input implied vertical scrolling</td><td>Teach spatial navigation or use an interaction that does not resemble scrolling.</td><td><span className="priority critical">Critical</span></td></tr>
+                  <tr><td>The field lacks volumetric credibility</td><td>Cards appeared aligned “like an Excel file”</td><td>Test controlled variation in angle, depth, scale, and clustering.</td><td><span className="priority next">Next</span></td></tr>
+                  <tr><td>Calling a note may replace scrolling</td><td>Proposed a wand to summon content</td><td>Prototype point/select/summon/return as a spatial retrieval loop.</td><td><span className="priority test">Test</span></td></tr>
+                  <tr><td>Voice benefits from an addressee</td><td>Blank-space speaking compared with green-screen acting</td><td>Compare no object, neutral object, and assistant character.</td><td><span className="priority test">Test</span></td></tr>
+                  <tr><td>Atmosphere can contextualize reading</td><td>Proposed adaptive HDRI, mood backgrounds, soundscapes, and ASMR</td><td>Test only after legibility; atmosphere may aid context or introduce bias.</td><td><span className="priority later">Later</span></td></tr>
+                </tbody>
+              </table></div>
+            </section>
+
+            <section className="report-chapter" id="yeoul-decisions">
+              <span className="report-number">7</span>
+              <h2>Design decisions and next research</h2>
+              <h3>Fix or constrain before the next headset study</h3>
+              <ol>
+                <li><b>Design for a stationary origin.</b> Content should be reachable without continuous rotation or locomotion.</li>
+                <li><b>Define session length.</b> Test a 10–15 minute task before considering extended browsing.</li>
+                <li><b>Clarify spatial navigation.</b> Avoid gestures that look like vertical scroll but produce depth movement.</li>
+                <li><b>Create a volumetric composition system.</b> Add bounded variation without sacrificing readable orientation.</li>
+                <li><b>Preserve a desktop continuation path.</b> Users should be able to resume research without wearing the headset.</li>
+              </ol>
+              <h3>Prototype as controlled comparisons</h3>
+              <table className="report-table">
+                <thead><tr><th>Question</th><th>Comparison</th><th>Measure</th></tr></thead>
+                <tbody>
+                  <tr><td>Does organic orientation help?</td><td>Parallel cards vs. bounded asymmetric field</td><td>Cluster interpretation, reading speed, comfort</td></tr>
+                  <tr><td>Can a summon gesture replace scrolling?</td><td>Drag/scroll vs. point and call</td><td>Error rate, time to target, perceived control</td></tr>
+                  <tr><td>Does an addressee improve voice composition?</td><td>Empty space vs. neutral object vs. character</td><td>Fluency, comfort, edit distance, trust</td></tr>
+                  <tr><td>Does atmosphere support comprehension?</td><td>Neutral environment vs. content-linked background/audio</td><td>Recall, mood influence, distraction, bias</td></tr>
+                </tbody>
+              </table>
+              <aside className="report-note"><b>Scope boundary</b><p>Dynamic generated environments and adaptive ASMR are later hypotheses. They should not enter the next prototype until the wall is readable, navigable, and comfortable in a neutral environment.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="yeoul-transcript">
+              <span className="report-number">A</span>
+              <h2>Full transcript</h2>
+              <p>The transcript is lightly edited for punctuation and obvious speech-to-text errors. The sequence and substantive responses are preserved.</p>
+              <TranscriptAppendix src="/cosmos/primary/interview-yeoul/transcript.txt" />
             </section>
           </article>
         </section>}
