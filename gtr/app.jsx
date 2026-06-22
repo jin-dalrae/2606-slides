@@ -223,13 +223,13 @@ function PageIntro({ eyebrow, title, summary, links = [] }) {
   );
 }
 
-function FieldworkFigure({ src, alt, caption, label = "Fig." }) {
+function FieldworkFigure({ src, alt, caption, label = "Fig.", compact = false }) {
   return (
-    <figure className="prototype-figure">
+    <figure className={`prototype-figure${compact ? " prototype-figure--compact" : ""}`}>
       <div className="figure-image">
         <img src={src} alt={alt} />
       </div>
-      <figcaption><span>{label}</span><p>{caption}</p></figcaption>
+      <figcaption>{label && <span>{label}</span>}<p>{caption}</p></figcaption>
     </figure>
   );
 }
@@ -836,8 +836,9 @@ function FieldworkReportPage() {
           <FieldworkFigure
             src="/assets/images/gtr/fieldwork/funding-stages.jpg"
             alt="Handwritten funding stage list: Pre-Seed, Seed, Series A, Series B plus"
-            caption="Assessment 1 (A) investment-stage paper / assessment1-stage.jpeg: Pre-Seed, Seed, Series A, and Series B+ choices."
-            label="Prompt"
+            caption="Investment-stage choices in Assessment 1 (A)."
+            label=""
+            compact
           />
           <p>Screen 2 states files stay in-browser and are not uploaded to servers.</p>
 

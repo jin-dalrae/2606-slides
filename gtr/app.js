@@ -181,8 +181,8 @@
   function PageIntro({ eyebrow, title, summary, links = [] }) {
     return /* @__PURE__ */ React.createElement("header", { className: "report-page-intro" }, /* @__PURE__ */ React.createElement("p", { className: "eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement("h1", null, title), /* @__PURE__ */ React.createElement("p", null, summary), links.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, links.map(([href, label]) => /* @__PURE__ */ React.createElement("a", { key: href, href }, label, " ", /* @__PURE__ */ React.createElement("span", null, "\u2192")))));
   }
-  function FieldworkFigure({ src, alt, caption, label = "Fig." }) {
-    return /* @__PURE__ */ React.createElement("figure", { className: "prototype-figure" }, /* @__PURE__ */ React.createElement("div", { className: "figure-image" }, /* @__PURE__ */ React.createElement("img", { src, alt })), /* @__PURE__ */ React.createElement("figcaption", null, /* @__PURE__ */ React.createElement("span", null, label), /* @__PURE__ */ React.createElement("p", null, caption)));
+  function FieldworkFigure({ src, alt, caption, label = "Fig.", compact = false }) {
+    return /* @__PURE__ */ React.createElement("figure", { className: `prototype-figure${compact ? " prototype-figure--compact" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "figure-image" }, /* @__PURE__ */ React.createElement("img", { src, alt })), /* @__PURE__ */ React.createElement("figcaption", null, label && /* @__PURE__ */ React.createElement("span", null, label), /* @__PURE__ */ React.createElement("p", null, caption)));
   }
   function IntroPage() {
     return /* @__PURE__ */ React.createElement("section", { className: "report-section", id: "intro" }, /* @__PURE__ */ React.createElement(ChapterLabel, { number: "01" }, "Overview"), /* @__PURE__ */ React.createElement("div", { className: "report-document" }, /* @__PURE__ */ React.createElement(
@@ -285,8 +285,9 @@
       {
         src: "/assets/images/gtr/fieldwork/funding-stages.jpg",
         alt: "Handwritten funding stage list: Pre-Seed, Seed, Series A, Series B plus",
-        caption: "Assessment 1 (A) investment-stage paper / assessment1-stage.jpeg: Pre-Seed, Seed, Series A, and Series B+ choices.",
-        label: "Prompt"
+        caption: "Investment-stage choices in Assessment 1 (A).",
+        label: "",
+        compact: true
       }
     ), /* @__PURE__ */ React.createElement("p", null, "Screen 2 states files stay in-browser and are not uploaded to servers."), /* @__PURE__ */ React.createElement("h3", null, "Report 1 (A) / Report 2 (B)"), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("b", null, "Report 1"), " (", /* @__PURE__ */ React.createElement("code", null, "report1-information.jpeg"), ") was information-led: footprint and handprint values, ranked hotspot bars, peer range, cost exposure, methodology, impact beyond carbon, and share/account actions. ", /* @__PURE__ */ React.createElement("b", null, "Report 2"), " (", /* @__PURE__ */ React.createElement("code", null, "report2-infographic.jpeg"), ") presented the same assessment as visual cards: handprint, maturity gauge, footprint, donut charts for hotspots, and energy/water/waste cards."), /* @__PURE__ */ React.createElement(
       FieldworkFigure,

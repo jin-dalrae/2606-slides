@@ -82,6 +82,15 @@ body {
   margin: 0;
 }
 
+.prototype-figure--compact {
+  max-width: 420px;
+  margin: 32px 0 48px;
+}
+
+.prototype-figure--compact figcaption {
+  display: block;
+}
+
 .rail-section-label {
   margin: 28px 0 12px !important;
 }
