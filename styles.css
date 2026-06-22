@@ -2270,6 +2270,27 @@ body[data-display-mode="slide"] .stage[data-view="presentation"] .slide {
   box-shadow: none;
 }
 
+/* Deck embed: slide list + stage + speaker notes, no all-decks presentation list. */
+body[data-display-mode="deck"] {
+  overflow: hidden;
+}
+
+body[data-display-mode="deck"] .app-shell {
+  display: block;
+  min-height: 100vh;
+}
+
+body[data-display-mode="deck"] .presentation-list,
+body[data-display-mode="deck"] .sidebar-toggle,
+body[data-display-mode="deck"] .site-footer {
+  display: none !important;
+}
+
+body[data-display-mode="deck"] .stage {
+  min-height: 100vh;
+  padding: 0 var(--space-3) var(--space-3);
+}
+
 @media (max-width: 760px) {
   .app-shell {
     display: block;

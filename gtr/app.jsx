@@ -1128,7 +1128,7 @@ function Stage2Page() {
 }
 
 function fieldworkSlideEmbedSrc() {
-  return `/?display=slide#${fieldworkSlide.slug}`;
+  return `/?display=deck#${fieldworkSlide.slug}`;
 }
 
 function FieldworkSlidePage() {

@@ -100,7 +100,8 @@ const openSidebar = document.querySelector("#openSidebar");
 const closeSidebar = document.querySelector("#closeSidebar");
 const mobileMedia = window.matchMedia("(max-width: 760px)");
 const urlSearchParams = new URLSearchParams(window.location.search);
-const displayMode = urlSearchParams.get("display") === "slide";
+const slideOnlyMode = urlSearchParams.get("display") === "slide";
+const deckEmbedMode = urlSearchParams.get("display") === "deck";
 const printPdfMode = urlSearchParams.has("print-pdf");
 const presentationChannel = "BroadcastChannel" in window ? new BroadcastChannel("rae-slides-presentation") : null;
 
@@ -1153,7 +1154,7 @@ function updatePinnedSlideRef() {
 }
 
 function renderSpeakerNotes() {
-  if (!speakerNotes || displayMode || currentView !== "presentation") {
+  if (!speakerNotes || slideOnlyMode || currentView !== "presentation") {
     if (speakerNotes) {
       speakerNotes.hidden = true;
       speakerNotes.innerHTML = "";
@@ -1923,6 +1924,10 @@ function toggleSidebar(open) {
 }
 
 function syncSidebarForViewport() {
+  if (deckEmbedMode) {
+    toggleSidebar(false);
+    return;
+  }
   toggleSidebar(!mobileMedia.matches);
 }
 
@@ -2105,8 +2110,11 @@ window.addEventListener("hashchange", () => {
 });
 
 async function initApp() {
-  if (displayMode) {
+  if (slideOnlyMode) {
     document.body.dataset.displayMode = "slide";
+  } else if (deckEmbedMode) {
+    document.body.dataset.displayMode = "deck";
+    toggleSidebar(false);
   }
   if (printPdfMode) {
     document.body.dataset.printPdfMode = "true";
