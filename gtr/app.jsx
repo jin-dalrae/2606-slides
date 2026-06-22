@@ -91,6 +91,66 @@ const journeyStages = [
   ["Extend", "Operating use", "Additional company documents added to dashboard."],
 ];
 
+const fieldworkSlideAgenda = [
+  ["1", "Storyboard to prototypes", "What we built and which A/B pairs matter"],
+  ["2", "Testing process", "Who we tested, what failed, what worked"],
+  ["3", "What we learned", "How to read directional evidence"],
+  ["4", "Next direction", "Challenges, pivots, and the hybrid prototype"],
+];
+
+const testingMistakes = [
+  ["01", "Trust before value", "Sensitive documents were requested before participants saw what they would receive.", "Noise"],
+  ["02", "Facilitator-dependent terms", "Net impact, maturity, projection, and milestones required interviewer explanation.", "Control"],
+  ["03", "Inconsistent sample values", "Report and dashboard used different illustrative emissions numbers.", "Noise"],
+  ["04", "Too much per session", "Full journey plus two A/B pairs and dashboard limited depth on each question.", "Scope"],
+];
+
+const testingStrengths = [
+  ["Peer-test first", "Internal walkthroughs caught sequencing and script problems before stakeholder time."],
+  ["Storyboard framing", "Every participant entered the same founder journey before comparing screens."],
+  ["Think-aloud", "Trust, comprehension, sharing, and accessibility surfaced beyond task completion."],
+  ["Low-fidelity A/B", "Paper artifacts made structural alternatives cheap to compare and revise."],
+];
+
+const stakeholderLenses = [
+  ["Ted", "Founder", "Value unclear; document upload felt risky", "Show benefit first; manual inputs before files"],
+  ["Amali", "Data", "Scope and dashboard terms unclear; wanted visual + explanation", "Define terms; combine both report strengths"],
+  ["Caroline", "Investment", "Preferred presets, Assessment 2, and Report 2", "Guided inputs and visual first-read"],
+  ["Josh", "Peer design", "Preferred Assessment 1 reviewability and Report 2 readability", "Preserve easy review inside guided flow"],
+  ["Brian", "Accessibility", "Labels, hierarchy, and data requests created barriers", "Accessible labels, clearer hierarchy, trusted inputs"],
+];
+
+const validatedDecisions = [
+  ["Keep", "Storyboard-led sequence: discover → assess → instant report → dashboard."],
+  ["Hybrid", "Assessment 2 guidance + Assessment 1 visibility and answer review."],
+  ["Layer", "Report 2 visual overview + Report 1 explanation and methodology."],
+  ["Separate", "Footprint and handprint distinct, with plain-language definitions."],
+];
+
+const openChallenges = [
+  ["01", "Assessment navigation", "Guidance and easy review still need to work together.", "Open"],
+  ["02", "Real workflow", "No real data, files, deployment, or calculation accuracy was tested.", "Untested"],
+  ["03", "Comprehension", "Core terms still depend on facilitator explanation.", "Open"],
+  ["04", "Trust", "Privacy claims and trusted document handling remain untested.", "Untested"],
+  ["05", "Founder sample", "Only one participant was an actual startup founder.", "Sample"],
+  ["06", "Calculation accuracy", "Illustrative emissions model was not tested against real company data.", "Untested"],
+];
+
+const pivotChanges = [
+  ["Ask for documents before payoff", "Show benefit first; manual fields before files"],
+  ["Assessment 1 or Assessment 2", "Hybrid: guided steps + visible scope + answer review"],
+  ["Report 1 or Report 2", "Layered: visual overview + explanation and methodology"],
+  ["Generic activity checklist", "Business-model-specific questions and defaults"],
+  ["Horizontal dashboard cards", "Vertical hierarchy with goals and milestones grouped"],
+  ["Public sharing default", "Private by default; selective sharing only for positive or improved metrics"],
+];
+
+const nextResearchSteps = [
+  ["01", "Build the hybrid", "Value proposition → guided assessment with review → visual report with expandable detail."],
+  ["02", "Separate the studies", "Test terminology, document trust, and assessment navigation as distinct questions."],
+  ["03", "Recruit more founders", "Then test real data and calculation credibility after the flow works without facilitation."],
+];
+
 const archiveMap = [
   {
     id: "fieldwork",
@@ -1166,14 +1226,238 @@ function Stage2Page() {
   );
 }
 
-function fieldworkSlideEmbedSrc() {
-  return `/?display=deck#${fieldworkSlide.slug}`;
-}
-
 function FieldworkSlidePage() {
   return (
-    <section className="gtr-slide-shell gtr-slide-shell--deck-only" id="fieldwork-slides">
-      <iframe title={fieldworkSlide.label} src={fieldworkSlideEmbedSrc()} className="gtr-slide-embed" loading="lazy" />
+    <section className="report-section fieldwork-slides" id="fieldwork-slides">
+      <ChapterLabel number="02.1">Docs / Fieldwork slides</ChapterLabel>
+
+      <div className="spatial-audio-hero">
+        <div>
+          <p className="eyebrow">GTR · Fieldwork week</p>
+          <h1>Prototype testing<br />for climate startups.</h1>
+          <p>The journey storyboard defined the founder experience first. From it, the team built two A/B pairs — Assessment 1 vs 2 and Report 1 vs 2 — plus a dashboard concept for continued use.</p>
+          <a className="source-link" href="/gtr/docs/fieldwork-report/">Read the full report <span>↗</span></a>
+        </div>
+        <div className="fieldwork-hero-frame">
+          <img
+            src="/assets/images/gtr/fieldwork/user-journey-storyboard.jpg"
+            alt="Eight-panel founder journey storyboard from demo day through assessment, report, dashboard, and extended use"
+          />
+        </div>
+      </div>
+
+      <div className="audio-thesis">
+        <span>Study boundary</span>
+        <h2>Directional prototype evidence —<br /><em>not product-market fit.</em></h2>
+        <p>Five founder-role walkthroughs support comprehension and structure decisions. Ted was the only actual founder; the other four brought technical, investment, peer-design, and accessibility lenses to the same scenario. This round identifies what to retest — it does not validate calculation accuracy or market demand.</p>
+      </div>
+
+      <nav className="report-contents fieldwork-slide-agenda" aria-label="Presentation agenda">
+        <p>In this presentation</p>
+        {fieldworkSlideAgenda.map(([number, label, decides]) => (
+          <a key={number} href={`#fieldwork-slide-${number}`}>
+            <span>{number}</span>{label}<i>{decides}</i>
+          </a>
+        ))}
+      </nav>
+
+      <div className="scale-history">
+        <div><p className="mini-label">This round</p><h2>Storyboard first, then A/B pairs.</h2></div>
+        <article><strong>5</strong><h3>Sessions</h3><p>Founder-role think-aloud walkthroughs with mixed expertise lenses.</p></article>
+        <article><strong>2</strong><h3>A/B pairs</h3><p>Assessment 1/2 and Report 1/2 tested the key transitions.</p></article>
+        <article><strong>8</strong><h3>Journey stages</h3><p>From demo-day discovery through dashboard and extended use.</p></article>
+      </div>
+
+      <div className="cocktail-section" id="fieldwork-slide-1">
+        <div className="cocktail-copy">
+          <p className="mini-label">Storyboard to prototypes</p>
+          <h2>The storyboard came first.<br />Artifacts followed the journey.</h2>
+          <p><code>storyboard.jpeg</code> mapped discovery at demo day through referral, mobile assessment, instant report, dashboard use, team access, and extended use. Each prototype tested one decision inside that sequence.</p>
+        </div>
+        <div className="journey-flow" aria-label="Founder journey from discovery to extended use">
+          <div className="journey-flow__stage"><span>Entice</span><b>Demo day</b><small>Peer referral</small></div>
+          <b className="journey-flow__arrow">→</b>
+          <div className="journey-flow__stage"><span>Enter</span><b>Mobile open</b><small>Free assessment CTA</small></div>
+          <b className="journey-flow__arrow">→</b>
+          <div className="journey-flow__stage journey-flow__stage--highlight"><span>Engage</span><b>Assess</b><small>A/B intake pair</small></div>
+          <b className="journey-flow__arrow">→</b>
+          <div className="journey-flow__stage journey-flow__stage--highlight"><span>Engage</span><b>Instant report</b><small>A/B result pair</small></div>
+          <b className="journey-flow__arrow">→</b>
+          <div className="journey-flow__stage"><span>Extend</span><b>Dashboard</b><small>Continued use</small></div>
+        </div>
+      </div>
+
+      <div className="prototype-grid fieldwork-slides-grid">
+        <FieldworkFigure
+          src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
+          alt="Continuous handwritten free impact assessment"
+          caption="2A · Assessment 1: continuous long-form assessment with visible scope and answer review."
+          label="Fig. 2A"
+        />
+        <FieldworkFigure
+          src="/assets/images/gtr/fieldwork/onboarding-flow-4up.jpg"
+          alt="Four hand-drawn screens for Assessment 2"
+          caption="2B · Assessment 2: four-screen mobile flow with progress, Back, and Next controls."
+          label="Fig. 2B"
+        />
+        <FieldworkFigure
+          src="/assets/images/gtr/fieldwork/assessment-report-print.jpg"
+          alt="Printed two-page instant impact assessment report"
+          caption="3A · Report 1: information-led result with footprint, handprint, hotspots, and methodology."
+          label="Fig. 3A"
+        />
+        <FieldworkFigure
+          src="/assets/images/gtr/fieldwork/assessment-report-sketch.jpg"
+          alt="Visual infographic instant impact report"
+          caption="3B · Report 2: infographic result with metric cards, gauge, and hotspot charts."
+          label="Fig. 3B"
+        />
+      </div>
+
+      <FieldworkFigure
+        src="/assets/images/gtr/fieldwork/dashboard-sketch.jpg"
+        alt="Hand-drawn dashboard overview sketch"
+        caption="4 · dashboard.jpeg: continued-use concept with footprint, handprint, derived net, maturity, goals, milestones, and projection."
+        label="Fig. 4"
+      />
+
+      <div className="walkthrough-sequence fieldwork-intake-sequence">
+        {onboardingSteps.map(([number, title, detail]) => (
+          <span key={number}><i>{number}</i><b>{title}</b><small>{detail}</small></span>
+        ))}
+      </div>
+
+      <div className="strategy-section" id="fieldwork-slide-2">
+        <div className="strategy-heading">
+          <p className="mini-label">Testing process</p>
+          <h2>The test mixed too many questions<br />and introduced avoidable noise.</h2>
+          <p>Each session began with the storyboard scenario, then moved through Assessment 1/2, Report 1/2, and the dashboard while participants thought aloud.</p>
+        </div>
+        <div className="strategy-grid">
+          {testingMistakes.map(([number, title, body, verdict]) => (
+            <article key={number}>
+              <div><span>{number}</span><i>{verdict}</i></div>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div className="cocktail-section fieldwork-worked">
+        <div className="cocktail-copy">
+          <p className="mini-label">What worked</p>
+          <h2>Low fidelity and think-aloud<br />exposed the right blockers.</h2>
+          <p>Internal peer tests, storyboard framing, and cheap A/B comparison produced the signal. Session scope and facilitator dependence did not.</p>
+        </div>
+        <div className="fieldwork-strength-grid">
+          {testingStrengths.map(([title, body]) => (
+            <article key={title}><b>{title}</b><p>{body}</p></article>
+          ))}
+        </div>
+      </div>
+
+      <FieldworkFigure
+        src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
+        alt="Assessment 1 continuous paper prototype used in sessions"
+        caption="Assessment 1 paper prototype shown during think-aloud sessions."
+        label="Session"
+        compact
+      />
+
+      <div className="architecture-section">
+        <div className="architecture-heading">
+          <p className="mini-label">Who we tested</p>
+          <h2>Five participants — one lens each.</h2>
+          <p>Everyone used the founder scenario. Only Ted brought direct founder experience; the others stress-tested comprehension, investment logic, design review, and accessibility.</p>
+        </div>
+        <div className="architecture-table" role="table" aria-label="Participant lenses and decisions">
+          <div className="architecture-row architecture-header" role="row">
+            <span>Participant</span><span>Lens</span><span>Strongest feedback</span><span>Decision</span>
+          </div>
+          {stakeholderLenses.map(([name, lens, feedback, decision]) => (
+            <div className="architecture-row" role="row" key={name}>
+              <b>{name}</b><span>{lens}</span><i>{feedback}</i><p>{decision}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="audio-thesis fieldwork-synthesis" id="fieldwork-slide-3">
+        <span>What we learned</span>
+        <h2>The winning direction is a synthesis —<br /><em>not one untouched variant.</em></h2>
+        <p>Repeated blockers matter more than isolated enthusiasm. Assessment 2's guided flow should keep Assessment 1's visibility and revisability. Report 2's visual hierarchy should carry Report 1's explanatory depth. Founder role-play reveals friction; founder-specific behavior still needs more actual founders.</p>
+      </div>
+
+      <div className="cosmos-implication fieldwork-validated">
+        <span>Validated for next prototype</span>
+        <h2>Four decisions are ready to build.</h2>
+        <div className="implication-grid">
+          {validatedDecisions.map(([label, body]) => (
+            <article key={label}><b>{label}</b><p>{body}</p></article>
+          ))}
+        </div>
+        <p className="implication-close">A/B preference at n=5 is directional. Repeated signals determine what to retest, not what is validated.</p>
+      </div>
+
+      <div className="strategy-section" id="fieldwork-slide-4">
+        <div className="strategy-heading">
+          <p className="mini-label">Open challenges</p>
+          <h2>Six questions remain<br />before the dashboard expands.</h2>
+          <p>Trust, comprehension, founder sample size, and calculation credibility are still open. The next prototype should narrow — not grow — the feature set.</p>
+        </div>
+        <div className="strategy-grid">
+          {openChallenges.map(([number, title, body, verdict]) => (
+            <article key={number}>
+              <div><span>{number}</span><i>{verdict}</i></div>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div className="comparison-block fieldwork-pivots">
+        <div>
+          <p className="mini-label">Pivots from feedback</p>
+          <h3>Feedback changes the prototype,<br />not the storyboard sequence.</h3>
+        </div>
+        <div className="comparison-list">
+          {pivotChanges.map(([before, after]) => (
+            <p key={before} className="highlight"><span>{before}</span><b>{after}</b></p>
+          ))}
+        </div>
+      </div>
+
+      <div className="audio-chain-section fieldwork-next">
+        <div>
+          <p className="mini-label">Next steps</p>
+          <h2>Narrow, build, then test.</h2>
+          <p>Prove value, trust, independent comprehension, and the hybrid flow before expanding the dashboard or testing real company data.</p>
+        </div>
+        <ol className="audio-chain">
+          {nextResearchSteps.map(([number, title, body]) => (
+            <li key={number}><span>{number}</span><div><b>{title}</b><p>{body}</p></div></li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="cosmos-implication fieldwork-close">
+        <span>Close</span>
+        <h2>Fieldwork moved the project from feature questions to trust questions.</h2>
+        <div className="implication-grid">
+          <article><b>Value first</b><p>Show the outcome before requesting effort or sensitive data.</p></article>
+          <article><b>Evidence precisely</b><p>Keep directional support separate from validation.</p></article>
+          <article><b>Test narrowly</b><p>One research question per round will produce stronger decisions.</p></article>
+        </div>
+        <p className="implication-close">Full report, participant records, and prototype archive: /gtr/docs/fieldwork-report/</p>
+      </div>
+
+      <footer className="video-source-note">
+        <span>Archive</span>
+        <p>Fieldwork week slides distill the written report. Reveal deck export remains at /?display=deck#gtr-fieldwork-week.</p>
+        <a href="/gtr/docs/fieldwork-report/">Full report ↗</a>
+      </footer>
     </section>
   );
 }

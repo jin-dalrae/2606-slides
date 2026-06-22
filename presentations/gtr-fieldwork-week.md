@@ -11,34 +11,126 @@ Note: All five participants were asked to act as startup founders. Ted was the o
 
 ---
 
-## Storyboard first — prototypes followed the journey
+## Agenda
 
-<p class="slide-ref">Scope</p>
+<p class="slide-ref">Storyline</p>
 
-| Sequence | Original prototype file | Purpose |
-| --- | --- | --- |
-| **1 · Storyboard** | `storyboard.jpeg` | Defined the eight-stage founder journey and the moments to prototype |
-| **2 · Assessment 1 (A)** | `assessment1.jpeg` + `assessment1-stage.jpeg` | Continuous assessment; investment-stage paper belongs to this version |
-| **2 · Assessment 2 (B)** | `assessment2-mobile.jpeg` | Step-by-step mobile assessment |
-| **3 · Report 1 (A)** | `report1-information.jpeg` | Information-led result |
-| **3 · Report 2 (B)** | `report2-infographic.jpeg` | Infographic result |
-| **4 · Dashboard** | `dashboard.jpeg` | Extended the journey beyond the instant report |
-
-<p class="slide-closing">We tested these prototypes in founder-role walkthroughs and captured the feedback in the provided transcript.</p>
+| Section | What it decides |
+| --- | --- |
+| 1. Storyboard to prototypes | What we built and which A/B pairs matter |
+| 2. Testing process | Who we tested, what failed, what worked |
+| 3. What we learned | How to read directional evidence |
+| 4. Next direction | Challenges, pivots, and the hybrid prototype |
 
 ---
 
-## What this study can and cannot show
+## Directional prototype evidence — not product-market fit
 
-<p class="slide-ref">Before the findings</p>
+<p class="slide-ref">Study boundary</p>
 
-| Study design | Limitation | Interpretation |
+Five founder-role walkthroughs support comprehension and structure decisions. Ted was the only actual founder; the other four brought technical, investment, peer-design, and accessibility lenses to the same scenario.
+
+<div class="metric-strip">
+  <article><strong>5</strong><span>founder-role sessions</span></article>
+  <article><strong>2</strong><span>A/B pairs tested</span></article>
+  <article><strong>8</strong><span>journey stages</span></article>
+</div>
+
+<p class="slide-closing">This round identifies what to retest; it does not validate calculation accuracy or market demand.</p>
+
+---
+
+## The storyboard came first — artifacts followed the journey
+
+<p class="slide-ref">Storyboard to prototypes</p>
+
+<div class="media-split">
+  <div>
+    <p><code>storyboard.jpeg</code> mapped discovery at demo day through referral, mobile assessment, instant report, dashboard use, team access, and extended use.</p>
+    <p>Each prototype tested one decision inside that sequence — not a feature tour.</p>
+  </div>
+  <img src="assets/images/gtr/fieldwork/user-journey-storyboard.jpg" alt="Eight-panel founder journey storyboard from demo day through assessment, report, dashboard, and extended use">
+</div>
+
+---
+
+## Two A/B pairs tested the key transitions
+
+<p class="slide-ref">Prototype inventory</p>
+
+| Sequence | Original file | Purpose in the journey |
 | --- | --- | --- |
-| Five founder-role walkthroughs | Ted was the only actual founder | Role-play findings guide prototypes; direct founder evidence remains limited |
-| Storyboard-led prototypes with Assessment 1/2 and Report 1/2 A/B pairs | No working product or real-data workflow | Findings concern structure, comprehension, and stated preference |
-| Repeated and one-off observations | Small, mixed participant sample | Repeated signals determine what to retest, not what is validated |
+| **1 · Storyboard** | `storyboard.jpeg` | Eight-stage founder journey and moments to prototype |
+| **2 · Assessment 1 (A)** | `assessment1.jpeg` + `assessment1-stage.jpeg` | Continuous assessment; investment-stage paper belongs here |
+| **2 · Assessment 2 (B)** | `assessment2-mobile.jpeg` | Step-by-step mobile assessment |
+| **3 · Report 1 (A)** | `report1-information.jpeg` | Information-led result |
+| **3 · Report 2 (B)** | `report2-infographic.jpeg` | Infographic result |
+| **4 · Dashboard** | `dashboard.jpeg` | Continued use beyond the instant report |
 
-<p class="slide-closing">This round identifies the next prototype and research questions; it does not establish product-market fit.</p>
+---
+
+## Assessment 1 vs Assessment 2 split on guidance and review
+
+<p class="slide-ref">Assessment A/B</p>
+
+<div class="media-split">
+  <div>
+    <div class="cards-2">
+      <article><h3>Assessment 1 (A)</h3><p>Continuous long-form layout with visible scope and easy answer review. Josh preferred this when step count and duration were shown.</p></article>
+      <article><h3>Assessment 2 (B)</h3><p>Four-screen mobile flow with progress, Back, and Next. Amali and Caroline preferred this guided structure.</p></article>
+    </div>
+  </div>
+  <img src="assets/images/gtr/fieldwork/onboarding-flow-4up.jpg" alt="Four hand-drawn screens for Assessment 2 mobile flow">
+</div>
+
+<p class="slide-closing">Next prototype: hybrid — Assessment 2 guidance + Assessment 1 visibility and revisability.</p>
+
+---
+
+## Report 1 vs Report 2 split on first-read vs depth
+
+<p class="slide-ref">Report A/B</p>
+
+<div class="media-split">
+  <img src="assets/images/gtr/fieldwork/assessment-report-sketch.jpg" alt="Visual infographic instant impact report with metric cards and charts">
+  <div>
+    <div class="cards-2">
+      <article><h3>Report 1 (A)</h3><p>Information-led: footprint, handprint, hotspots, peer range, methodology, and share actions.</p></article>
+      <article><h3>Report 2 (B)</h3><p>Infographic first-read: metric cards, maturity gauge, hotspot charts. Caroline, Josh, and Brian preferred this direction.</p></article>
+    </div>
+    <p>Amali asked for both: Report 2 visuals plus Report 1 explanation.</p>
+  </div>
+</div>
+
+<p class="slide-closing">Next prototype: layered — Report 2 overview + Report 1 explanation and methodology.</p>
+
+---
+
+## The dashboard extends the journey — it is not the first payoff
+
+<p class="slide-ref">Continued use</p>
+
+<div class="media-split">
+  <div>
+    <p>Participants treated the instant report as the first result. The dashboard tested continued use: goals, milestones, maturity, and projection.</p>
+    <p>Josh and Brian wanted a vertical hierarchy with goals and milestones grouped near the top. Amali could not interpret milestones or projection without explanation.</p>
+  </div>
+  <img src="assets/images/gtr/fieldwork/dashboard-sketch.jpg" alt="Hand-drawn dashboard overview with footprint, handprint, goals, milestones, and projection">
+</div>
+
+---
+
+## Intake sequence shared by both assessment variants
+
+<p class="slide-ref">Test materials</p>
+
+<div class="steps-3">
+  <article><span class="steps-3__num">01</span><div><h3>Startup profile</h3><p>Company name, website, business model, funding stage, team size. Stated duration: 2-5 minutes.</p></div></article>
+  <article><span class="steps-3__num">02</span><div><h3>Optional documents</h3><p>Pitch deck and accounts. Files stay local in browser — but trust was not established before this step.</p></div></article>
+  <article><span class="steps-3__num">03</span><div><h3>EMITS / AVOIDS</h3><p>Checkbox activities drive estimation scope. Footprint and handprint must stay separate and labeled.</p></div></article>
+</div>
+
+<img src="assets/images/gtr/fieldwork/onboarding-sheets.jpg" alt="Continuous handwritten free impact assessment paper prototype">
 
 ---
 
@@ -54,7 +146,7 @@ Note: All five participants were asked to act as startup founders. Ted was the o
 
 ---
 
-## Five participants, with different relationships to the problem
+## Five participants — one lens each
 
 <p class="slide-ref">Testing Process · who</p>
 
@@ -93,12 +185,12 @@ Note: All five participants were asked to act as startup founders. Ted was the o
   <div>
     <div class="cards-2">
       <article><h3>Peer-test first</h3><p>Internal walkthroughs caught sequencing and script problems before stakeholder time.</p></article>
+      <article><h3>Storyboard framing</h3><p>Every participant entered the same founder journey before comparing screens.</p></article>
       <article><h3>Think beyond task completion</h3><p>Participants surfaced trust, comprehension, sharing, and accessibility concerns.</p></article>
-      <article><h3>Cheap comparison</h3><p>Paper artifacts made structural alternatives easy to compare and revise.</p></article>
-      <article><h3>Multiple lenses</h3><p>Founder, technical, investment, peer-design, and accessibility perspectives exposed different questions.</p></article>
+      <article><h3>Cheap A/B comparison</h3><p>Paper artifacts made structural alternatives easy to compare and revise.</p></article>
     </div>
   </div>
-  <img src="assets/images/gtr/fieldwork/onboarding-sheets.jpg" alt="Assessment 1 continuous paper prototype used in sessions">
+  <img src="assets/images/gtr/fieldwork/assessment-report-print.jpg" alt="Printed two-page instant impact assessment report used in sessions">
 </div>
 
 <p class="slide-closing">Testing Process conclusion: storyboard-first framing and low-fidelity A/B comparison worked; session scope and facilitator dependence did not.</p>
@@ -143,15 +235,15 @@ Note: All five participants were asked to act as startup founders. Ted was the o
 
 ---
 
-## Four decisions are ready for the next prototype
+## The winning direction is a synthesis — not one untouched variant
 
-<p class="slide-ref">What we learned · ideas to carry forward</p>
+<p class="slide-ref">What we learned · synthesis</p>
 
 <div class="cards-2">
-  <article><h3>Storyboard-led sequence</h3><p>Discover → assess → instant report → dashboard remains the product journey.</p></article>
   <article><h3>Hybrid assessment</h3><p>Assessment 2 guidance + Assessment 1 visibility and easy answer review.</p></article>
   <article><h3>Layered report</h3><p>Report 2 visual overview + Report 1 explanation and methodology.</p></article>
-  <article><h3>Separate + / −</h3><p>Keep footprint and handprint distinct, with plain-language definitions.</p></article>
+  <article><h3>Storyboard-led sequence</h3><p>Discover → assess → instant report → dashboard remains the product journey.</p></article>
+  <article><h3>Separate + / −</h3><p>Keep footprint and handprint distinct, with plain-language definitions before any derived net.</p></article>
 </div>
 
 <p class="slide-closing">What we learned conclusion: the next direction is a synthesis of the variants, not a single untouched winner.</p>
@@ -197,6 +289,7 @@ Note: All five participants were asked to act as startup founders. Ted was the o
 | Report 1 or Report 2 | Layered: visual overview + explanation and methodology |
 | Generic activity checklist | Business-model-specific questions and defaults |
 | Horizontal dashboard cards | Vertical hierarchy with goals and milestones grouped |
+| Public sharing default | Private by default; selective sharing for positive metrics |
 
 ---
 
