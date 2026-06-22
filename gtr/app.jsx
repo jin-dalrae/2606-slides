@@ -1,4 +1,4 @@
-import { GTRHeader, GTRSidebar, slidesReports } from "./shell.jsx";
+import { GTRHeader, GTRSidebar, fieldworkSlide } from "./shell.jsx";
 
 const { useEffect, useState } = React;
 
@@ -368,7 +368,7 @@ function IntroPage() {
           <p>That means the introduction should read like a report summary, and the research section should read like a report body. The archive should not feel like a portfolio or a marketing site.</p>
           <div className="report-next-links">
             <a href="/gtr/docs/fieldwork-report/">Open the fieldwork report <span>→</span></a>
-            <a href="/gtr/slides/fieldwork-week/">Open fieldwork slides <span>→</span></a>
+            <a href="/gtr/docs/fieldwork-report/slides/">Open fieldwork slides <span>→</span></a>
           </div>
         </section>
       </div>
@@ -475,7 +475,7 @@ function FieldworkReportPage() {
           <p className="report-lead">Fieldwork week deliverable: five prototype sessions for a startup climate concern platform.</p>
           <p>Tested intake (scroll vs step-by-step), assessment report (text vs visual), and dashboard layout with founders and founder-adjacent participants. Recurring blockers: document upload sensitivity, missing value proposition before intake, undefined terms (net impact, maturity levels), dashboard density. Validated: visual report format, preset inputs, separate +/- framing when explained, four-step intake structure.</p>
           <div className="report-next-links">
-            <a href="/gtr/slides/fieldwork-week/">Present fieldwork slides <span>→</span></a>
+            <a href="/gtr/docs/fieldwork-report/slides/">Present fieldwork slides <span>→</span></a>
             <a href="/gtr/docs/research-report/">Research report <span>→</span></a>
           </div>
         </section>
@@ -646,7 +646,7 @@ function FieldworkReportPage() {
             <li>Run accessibility pass on required-field labeling and form structure.</li>
           </ol>
           <div className="report-next-links">
-            <a href="/gtr/slides/fieldwork-week/">Present fieldwork week slides <span>→</span></a>
+            <a href="/gtr/docs/fieldwork-report/slides/">Present fieldwork slides <span>→</span></a>
             <a href="/gtr/docs/stage-1/">Stage 1 PRD <span>→</span></a>
           </div>
         </section>
@@ -1127,21 +1127,17 @@ function Stage2Page() {
   );
 }
 
-function SlideEmbedPage({ slideId }) {
-  const entry = slidesReports.find(([id]) => id === slideId);
-  if (!entry) return null;
-  const [, number, label, , slug] = entry;
+function FieldworkSlidePage() {
   return (
-    <section className="gtr-slide-shell" id={slideId}>
+    <section className="gtr-slide-shell" id="fieldwork-slides">
       <div className="gtr-slide-shell__chrome">
-        <p><span>{number}</span> {label}</p>
+        <p><span>2.0</span> {fieldworkSlide.label}</p>
         <div className="gtr-slide-shell__links">
-          {slideId === "fieldwork-week" && <a href="/gtr/docs/fieldwork-report/">Fieldwork report</a>}
-          {slideId === "climate-goal-platform" && <a href="/gtr/docs/research-report/">Research report</a>}
-          <a href={`/#${slug}`} target="_blank" rel="noopener noreferrer">Open fullscreen ↗</a>
+          <a href="/gtr/docs/fieldwork-report/">Fieldwork report</a>
+          <a href={`/#${fieldworkSlide.slug}`} target="_blank" rel="noopener noreferrer">Open fullscreen ↗</a>
         </div>
       </div>
-      <iframe title={label} src={`/#${slug}`} className="gtr-slide-embed" loading="lazy" />
+      <iframe title={fieldworkSlide.label} src={`/#${fieldworkSlide.slug}`} className="gtr-slide-embed" loading="lazy" />
     </section>
   );
 }
@@ -1150,8 +1146,8 @@ function isDocsIndex(path) {
   return path === "/gtr/docs" || path === "/gtr/docs/" || path.endsWith("/gtr/docs/index.html");
 }
 
-function isSlidesIndex(path) {
-  return path === "/gtr/slides" || path === "/gtr/slides/" || path.endsWith("/gtr/slides/index.html");
+function isLegacySlidesPath(path) {
+  return path.includes("/gtr/slides/");
 }
 
 function App() {
@@ -1160,32 +1156,23 @@ function App() {
   useEffect(() => {
     if (isDocsIndex(path)) {
       window.location.replace("/gtr/docs/fieldwork-report/");
-    } else if (isSlidesIndex(path)) {
-      window.location.replace("/gtr/slides/fieldwork-week/");
+    } else if (isLegacySlidesPath(path)) {
+      window.location.replace("/gtr/docs/fieldwork-report/slides/");
     }
   }, [path]);
 
-  const activeChapter = path.includes("/docs/")
-    ? "docs"
-    : path.includes("/slides/")
-      ? "slides"
-      : "intro";
-  const docsPage = path.includes("/docs/fieldwork-report")
-    ? "fieldwork-report"
-    : path.includes("/docs/research-report")
-      ? "research-report"
-      : path.includes("/docs/stage-1")
-        ? "stage-1"
-        : path.includes("/docs/stage-2")
-          ? "stage-2"
-          : null;
-  const slidesPage = path.includes("/slides/fieldwork-week")
-    ? "fieldwork-week"
-    : path.includes("/slides/gtr-partners")
-      ? "gtr-partners"
-      : path.includes("/slides/climate-goal-platform")
-        ? "climate-goal-platform"
-        : null;
+  const activeChapter = path.includes("/docs/") ? "docs" : "intro";
+  const docsPage = path.includes("/docs/fieldwork-report/slides")
+    ? fieldworkSlide.id
+    : path.includes("/docs/fieldwork-report")
+      ? "fieldwork-report"
+      : path.includes("/docs/research-report")
+        ? "research-report"
+        : path.includes("/docs/stage-1")
+          ? "stage-1"
+          : path.includes("/docs/stage-2")
+            ? "stage-2"
+            : null;
 
   return (
     <div id="top">
@@ -1193,7 +1180,7 @@ function App() {
       <GTRHeader />
       <GTRSidebar
         active={activeChapter}
-        subActive={activeChapter === "docs" ? docsPage : activeChapter === "slides" ? slidesPage : undefined}
+        subActive={activeChapter === "docs" ? docsPage : undefined}
       />
 
       <main>
@@ -1202,7 +1189,7 @@ function App() {
         {activeChapter === "docs" && docsPage === "research-report" && <ResearchReportPage />}
         {activeChapter === "docs" && docsPage === "stage-1" && <Stage1Page />}
         {activeChapter === "docs" && docsPage === "stage-2" && <Stage2Page />}
-        {activeChapter === "slides" && slidesPage && <SlideEmbedPage slideId={slidesPage} />}
+        {activeChapter === "docs" && docsPage === fieldworkSlide.id && <FieldworkSlidePage />}
       </main>
     </div>
   );

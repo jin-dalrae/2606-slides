@@ -1,7 +1,6 @@
 export const gtrPages = [
   ["intro", "01", "Overview", "/gtr/"],
   ["docs", "02", "Docs", "/gtr/docs/fieldwork-report/"],
-  ["slides", "03", "Slides", "/gtr/slides/fieldwork-week/"],
 ];
 
 export const docsReports = [
@@ -11,22 +10,22 @@ export const docsReports = [
   ["stage-2", "2.3", "Stage 2 PRD", "/gtr/docs/stage-2/"],
 ];
 
-export const slidesReports = [
-  ["fieldwork-week", "3.0", "Fieldwork week", "/gtr/slides/fieldwork-week/", "gtr-fieldwork-week"],
-  ["gtr-partners", "3.1", "GTR Partners", "/gtr/slides/gtr-partners/", "gtr-partners"],
-  ["climate-goal-platform", "3.2", "Climate Goal Platform", "/gtr/slides/climate-goal-platform/", "social-lab-climate-goal-platform"],
-];
+export const fieldworkSlide = {
+  id: "fieldwork-slides",
+  label: "Fieldwork slides",
+  path: "/gtr/docs/fieldwork-report/slides/",
+  slug: "gtr-fieldwork-week",
+};
 
 const reportChildren = {
   docs: docsReports,
-  slides: slidesReports,
 };
 
 export function GTRMark() {
   return <span className="wordmark-mark"><i /><i /><i /></span>;
 }
 
-export function GTRHeader({ meta = "Docs and slides archive · 2026" }) {
+export function GTRHeader({ meta = "Docs archive · 2026" }) {
   const [open, setOpen] = React.useState(false);
   return (
     <header className="site-header">
@@ -38,13 +37,13 @@ export function GTRHeader({ meta = "Docs and slides archive · 2026" }) {
         {gtrPages.map(([id, number, label, path]) => (
           <React.Fragment key={id}>
             <a href={path} onClick={() => setOpen(false)}>{label}</a>
-            {(id === "docs"
-              ? docsReports
-              : id === "slides"
-                ? slidesReports
-                : reportChildren[id]?.slice(1)
-            )?.map(([subId, , subLabel, subPath]) => (
-              <a className="top-nav-child" key={subId} href={subPath} onClick={() => setOpen(false)}>↳ {subLabel}</a>
+            {reportChildren[id]?.map(([subId, , subLabel, subPath]) => (
+              <React.Fragment key={subId}>
+                <a className="top-nav-child" href={subPath} onClick={() => setOpen(false)}>↳ {subLabel}</a>
+                {subId === "fieldwork-report" && (
+                  <a className="top-nav-child top-nav-child--nested" href={fieldworkSlide.path} onClick={() => setOpen(false)}>↳ {fieldworkSlide.label}</a>
+                )}
+              </React.Fragment>
             ))}
           </React.Fragment>
         ))}
@@ -60,26 +59,30 @@ export function GTRSidebar({ active, subActive }) {
       <div className="rail-intro">
         <p>Archive</p>
         <h2>GTR</h2>
-        <span>Docs and slides for the climate goal platform work</span>
+        <span>Docs for the climate goal platform work</span>
       </div>
       <nav>
-        <p>Docs</p>
+        <p>Index</p>
         <a className={active === "intro" ? "active" : ""} href="/gtr/">
           <span>01</span><b>Overview</b><i>→</i>
         </a>
         {docsReports.map(([id, number, label, path]) => (
-          <a className={active === "docs" && subActive === id ? "active" : ""} key={id} href={path}>
-            <span>{number}</span><b>{label}</b><i>→</i>
-          </a>
-        ))}
-        <p className="rail-section-label">Slides</p>
-        <div className="rail-subnav rail-subnav--always">
-          {slidesReports.map(([id, number, label, path]) => (
-            <a className={active === "slides" && subActive === id ? "active" : ""} key={id} href={path}>
-              <span>{number}</span><b>{label}</b><i>↗</i>
+          <React.Fragment key={id}>
+            <a className={active === "docs" && subActive === id ? "active" : ""} href={path}>
+              <span>{number}</span><b>{label}</b><i>→</i>
             </a>
-          ))}
-        </div>
+            {id === "fieldwork-report" && (
+              <div className="rail-subnav rail-subnav--always">
+                <a
+                  className={active === "docs" && subActive === fieldworkSlide.id ? "active" : ""}
+                  href={fieldworkSlide.path}
+                >
+                  <span>↳</span><b>{fieldworkSlide.label}</b><i>↗</i>
+                </a>
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       </nav>
       <div className="rail-status"><i /> GTR archive <span>2026</span></div>
     </aside>
