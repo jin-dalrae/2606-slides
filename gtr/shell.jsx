@@ -1,11 +1,11 @@
 export const gtrPages = [
   ["intro", "01", "Overview", "/gtr/"],
-  ["docs", "02", "Docs", "/gtr/docs/"],
+  ["docs", "02", "Docs", "/gtr/docs/fieldwork-report/"],
   ["slides", "03", "Slides", "/gtr/slides/"],
 ];
 
 export const docsReports = [
-  ["overview", "2.0", "Overview", "/gtr/docs/"],
+  ["fieldwork-report", "2.0", "Fieldwork report", "/gtr/docs/fieldwork-report/"],
   ["research-report", "2.1", "Research report", "/gtr/docs/research-report/"],
   ["stage-1", "2.2", "Stage 1 PRD", "/gtr/docs/stage-1/"],
   ["stage-2", "2.3", "Stage 2 PRD", "/gtr/docs/stage-2/"],
@@ -13,8 +13,9 @@ export const docsReports = [
 
 export const slidesReports = [
   ["overview", "3.0", "Overview", "/gtr/slides/"],
-  ["gtr-partners", "3.1", "GTR Partners", "/gtr/slides/gtr-partners/"],
-  ["climate-goal-platform", "3.2", "Climate Goal Platform", "/gtr/slides/climate-goal-platform/"],
+  ["fieldwork-week", "3.1", "Fieldwork week", "/gtr/slides/fieldwork-week/"],
+  ["gtr-partners", "3.2", "GTR Partners", "/gtr/slides/gtr-partners/"],
+  ["climate-goal-platform", "3.3", "Climate Goal Platform", "/gtr/slides/climate-goal-platform/"],
 ];
 
 const reportChildren = {
@@ -38,7 +39,7 @@ export function GTRHeader({ meta = "Docs and slides archive · 2026" }) {
         {gtrPages.map(([id, number, label, path]) => (
           <React.Fragment key={id}>
             <a href={path} onClick={() => setOpen(false)}>{label}</a>
-            {reportChildren[id]?.slice(1).map(([subId, subNumber, subLabel, subPath]) => (
+            {(id === "docs" ? docsReports : reportChildren[id]?.slice(1))?.map(([subId, subNumber, subLabel, subPath]) => (
               <a className="top-nav-child" key={subId} href={subPath} onClick={() => setOpen(false)}>↳ {subLabel}</a>
             ))}
           </React.Fragment>
@@ -55,25 +56,17 @@ export function GTRSidebar({ active, subActive }) {
       <div className="rail-intro">
         <p>Archive</p>
         <h2>GTR</h2>
-        <span>Docs and slides for the climate goal platform work</span>
+        <span>Docs for the climate goal platform work</span>
       </div>
       <nav>
         <p>Index</p>
-        {gtrPages.map(([id, number, label, path]) => (
-          <React.Fragment key={id}>
-            <a className={active === id ? "active" : ""} href={path}>
-              <span>{number}</span><b>{label}</b><i>→</i>
-            </a>
-            {reportChildren[id] && active === id && (
-              <div className="rail-subnav">
-                {reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => (
-                  <a className={subActive === subId ? "active" : ""} key={subId} href={subPath}>
-                    <span>{subNumber}</span><b>{subLabel}</b><i>↗</i>
-                  </a>
-                ))}
-              </div>
-            )}
-          </React.Fragment>
+        <a className={active === "intro" ? "active" : ""} href="/gtr/">
+          <span>01</span><b>Overview</b><i>→</i>
+        </a>
+        {docsReports.map(([id, number, label, path]) => (
+          <a className={subActive === id ? "active" : ""} key={id} href={path}>
+            <span>{number}</span><b>{label}</b><i>→</i>
+          </a>
         ))}
       </nav>
       <div className="rail-status"><i /> GTR archive <span>2026</span></div>

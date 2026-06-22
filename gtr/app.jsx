@@ -2,7 +2,94 @@ import { GTRHeader, GTRSidebar } from "./shell.jsx";
 
 const { useEffect, useState } = React;
 
+const testParticipants = [
+  ["Amali", "CCA Interaction Design fieldwork participant", "Walked through prototypes one screen at a time"],
+  ["Caroline", "Spouse's SaaS startup (Deltic), Seed, 7 FTE", "Role-played founder intake using husband's company"],
+  ["Josh", "Pet services startup (Otto)", "Founder tester"],
+  ["Ted", "AI marketplace startup", "Founder tester"],
+  ["Brian", "Accessibility reviewer", "Founder-adjacent tester"],
+];
+
+const sessionQuotes = [
+  ["Amali", "Onboarding", "Onboarding can be shorter like plan B. Progressive disclosure step by step feels shorter than the long form."],
+  ["Amali", "Report", "Report should combine A and B. Graphs and visualization would help, together with supporting text."],
+  ["Amali", "Dashboard", "Milestones looks confusing. What is impact projection? What is the milestone diagram?"],
+  ["Amali", "Product", "Is it an app? What is the product — what does it do? Is it specifically climate, environment-related, or finance companies?"],
+  ["Amali", "Feature", "Wants leaderboard. Wants to see what other startups are doing and how they are achieving."],
+  ["Caroline", "Onboarding", "Every time we have pre-set options to choose from, it's way better."],
+  ["Caroline", "Onboarding", "I like this step-by-step version. I prefer the Back/Next setup."],
+  ["Caroline", "Privacy", "Early-stage founders in stealth mode might be a little cautious with sharing that data."],
+  ["Caroline", "Report", "Oh, the visual one for sure."],
+  ["Caroline", "Terms", "What does Net Impact mean? Do people know what levels 1, 2, 3, and 5 mean?"],
+  ["Caroline", "Audience", "If you can get access to bigger companies through your university network, you should interview them too."],
+  ["Josh", "Onboarding", "When I see there are only four steps, I know it's going to take 5 to 10 minutes tops."],
+  ["Josh", "Report", "I was struggling to read and understand what the text-heavy version meant."],
+  ["Josh", "Sharing", "No one wants to broadcast their high emissions."],
+  ["Ted", "Drop-off", "What am I getting out of this? I would probably stop right here and not fill out the rest of the form."],
+  ["Ted", "Upload", "Uploading a pitch deck feels like a massive risk of exposing my intellectual property to a random company without any clear upside."],
+  ["Brian", "Accessibility", "Using asterisks for required fields without a clear, visual text indicator fails basic web accessibility guidelines."],
+  ["Brian", "Value", "The main question is: why would I do this? How would this benefit me?"],
+];
+
+const aggregatedFindings = [
+  ["Onboarding format split", "Amali and Caroline preferred step-by-step (variation B). Josh preferred scroll with visible step count and time estimate.", "Support both patterns or default to stepped flow with stated duration and step count."],
+  ["Preset inputs over typing", "Amali, Caroline, Josh, and Brian preferred dropdowns and checkboxes over free text.", "Add dropdowns for business model; minimize typing."],
+  ["Document upload friction", "Caroline raised stealth-mode concern; Josh, Ted, and Brian also flagged sensitive uploads.", "Replace uploads with manual aggregate fields; keep files local or incubator-only path."],
+  ["Value proposition missing", "Amali: product purpose unclear. Ted stopped at upload; Brian asked why he would complete the form.", "State benefit before document step; show preview after step 1."],
+  ["Footprint/handprint confusion", "Caroline: card purpose unclear; SaaS handprint = transport avoidance via remote work.", "Add labels; tailor activity defaults by business model."],
+  ["Report format", "Amali requested combine A+B; Caroline, Josh, and Brian preferred visual over text-heavy layout.", "Combine text explanation with charts; single-page visual preferred."],
+  ["Net impact and maturity unexplained", "Caroline and Josh required interviewer explanation of net impact and levels 1-5.", "Add inline definitions or tooltips."],
+  ["Dashboard density", "Amali: milestones and projection confusing; Josh: four-card row skipped; Brian: goals/milestones should be top.", "Vertical stack; separate maturity from metrics; combine goals and milestones."],
+  ["LinkedIn sharing conditional", "Josh: would not share high-emission results publicly.", "Share only positive or improved metrics; default to private or investor-only."],
+  ["Audience scope unclear", "Amali: unclear if product is an app; climate-only, environment-related, or finance audience.", "State product type, audience, and scope on landing page."],
+  ["SaaS / AI fit", "Ted: primary cost is cloud/AI tokens; limited actionable levers at early stage.", "Add token/compute observability; reduce hardware defaults for SaaS."],
+  ["Accessibility", "Brian: asterisk-only required fields fail accessibility.", "Use visible [Required] text."],
+  ["Peer comparison request", "Amali: wants to see what other startups are doing.", "Add peer benchmark or anonymized comparison section."],
+  ["Leaderboard request", "Amali requested leaderboard.", "Out of scope for MVP unless defined; record as future item."],
+  ["Larger-company segment", "Caroline and Brian suggested bigger companies may yield richer insights than early startups.", "Record as future research path; not tested in this round."],
+];
+
+const onboardingSteps = [
+  ["01", "Tell us about your startup", "Company name, website, business model, funding stage, team size. Stated duration: 2-5 minutes."],
+  ["02", "Add your documents", "Optional pitch deck and accounts. Files stay local in browser."],
+  ["03", "Confirm what your company does", "Checkbox list of EMITS (-) and AVOIDS (+) activities. Selection drives estimation scope."],
+  ["04", "Describe it in your words", "Optional free-text field. Generate my assessment ends intake."],
+];
+
+const emitsActivities = [
+  "Cloud & AI compute",
+  "Hardware & electronics",
+  "Air travel & commutes",
+  "Key vendors & SaaS",
+  "Logistics & distribution",
+];
+
+const avoidsActivities = [
+  "Grid decarbonization",
+  "Transport avoidance",
+  "Low-carbon materials",
+];
+
+
+
+const journeyStages = [
+  ["Entice", "Demo day", "Awareness via startups presenting impact calculations."],
+  ["Entice", "Peer referral", "Referral includes app access and discount code."],
+  ["Enter", "Mobile open", "Site opened on mobile; free-assessment CTA visible."],
+  ["Engage", "Onboarding", "Pitch deck, accounts, and intake questions completed."],
+  ["Engage", "Instant report", "Analysis report delivered; LinkedIn share shown."],
+  ["Engage", "Dashboard", "Desktop login for goals, data, and checkpoints."],
+  ["Exit", "Team invite", "Team invite link issued; legitimacy evaluated."],
+  ["Extend", "Operating use", "Additional company documents added to dashboard."],
+];
+
 const archiveMap = [
+  {
+    id: "fieldwork",
+    label: "Fieldwork report",
+    purpose: "Prototype user testing for a startup climate concern platform.",
+    question: "Can founders complete intake and read the report and dashboard concepts?",
+  },
   {
     id: "report",
     label: "Climate Goal Platform Research Report",
@@ -128,6 +215,17 @@ function PageIntro({ eyebrow, title, summary, links = [] }) {
   );
 }
 
+function FieldworkFigure({ src, alt, caption, label = "Fig." }) {
+  return (
+    <figure className="prototype-figure">
+      <div className="figure-image">
+        <img src={src} alt={alt} />
+      </div>
+      <figcaption><span>{label}</span><p>{caption}</p></figcaption>
+    </figure>
+  );
+}
+
 function IntroPage() {
   return (
     <section className="report-section" id="intro">
@@ -138,6 +236,7 @@ function IntroPage() {
           title="Climate Goal Platform is a product report, not a pitch deck"
           summary="The archive reads the GTR project the way the docs ask it to be read: as a climate-first product transition. The early advisory framing gives way to a reusable +/- impact dashboard for climate startups, with the slide decks showing the same pivot from service to product."
           links={[
+            ["/gtr/docs/fieldwork-report/", "Read the fieldwork report"],
             ["/gtr/docs/research-report/", "Read the research report"],
             ["/gtr/slides/climate-goal-platform/", "See the product deck"],
           ]}
@@ -268,7 +367,7 @@ function IntroPage() {
           <p>If a reader can understand why GTR changed shape by reading the report, PRDs, and decks in this archive, the site is doing its job. The content should feel like a documented design decision, not a brand page.</p>
           <p>That means the introduction should read like a report summary, and the research section should read like a report body. The archive should not feel like a portfolio or a marketing site.</p>
           <div className="report-next-links">
-            <a href="/gtr/docs/">Open the docs <span>→</span></a>
+            <a href="/gtr/docs/fieldwork-report/">Open the fieldwork report <span>→</span></a>
             <a href="/gtr/slides/">Open the slides <span>→</span></a>
           </div>
         </section>
@@ -287,6 +386,7 @@ function DocsOverviewPage() {
           title="The docs are where the product logic lives"
           summary="These pages explain the project direction in report form: the research report, the Stage 1 PRD, and the Stage 2 PRD. The point is not to compress them into a pitch, but to preserve the reasoning."
           links={[
+            ["/gtr/docs/fieldwork-report/", "Fieldwork report"],
             ["/gtr/docs/research-report/", "Research report"],
             ["/gtr/docs/stage-1/", "Stage 1 PRD"],
             ["/gtr/docs/stage-2/", "Stage 2 PRD"],
@@ -297,7 +397,7 @@ function DocsOverviewPage() {
           <span className="report-number">2.0</span>
           <h2>Scope and method</h2>
           <p className="report-lead">The docs turn a messy project trail into a clear sequence of decisions.</p>
-          <p>The research report establishes the rationale for the climate startup wedge. Stage 1 defines the product boundary. Stage 2 defines the extension path. Together they show where the project starts, what it must prove, and what remains deliberately out of scope.</p>
+          <p>The fieldwork report documents five prototype testing sessions for a startup climate concern platform. The research report establishes the rationale for the climate startup wedge. Stage 1 defines the product boundary. Stage 2 defines the extension path. Together they show where the project starts, what it must prove, and what remains deliberately out of scope.</p>
         </section>
 
         <section className="report-chapter" id="docs-map">
@@ -307,6 +407,7 @@ function DocsOverviewPage() {
             <table className="report-table">
               <thead><tr><th>Document</th><th>Main use</th><th>Reading cue</th></tr></thead>
               <tbody>
+                <tr><td>Fieldwork report</td><td>Five-session prototype user test (Amali, Caroline, Josh, Ted, Brian).</td><td>Intake A/B, report format, dashboard hierarchy.</td></tr>
                 <tr><td>Research report</td><td>Explains the rescoped direction and the + / - model.</td><td>Why this product exists.</td></tr>
                 <tr><td>PRD Stage 1</td><td>Defines the MVP and the first shippable boundary.</td><td>What gets built first.</td></tr>
                 <tr><td>PRD Stage 2</td><td>Generalization, customization, and follow-up.</td><td>What comes after the wedge works.</td></tr>
@@ -330,6 +431,7 @@ function DocsOverviewPage() {
           <span className="report-number">2.3</span>
           <h2>Go deeper</h2>
           <div className="report-next-links">
+            <a href="/gtr/docs/fieldwork-report/">Fieldwork report <span>→</span></a>
             <a href="/gtr/docs/research-report/">Read the report <span>→</span></a>
             <a href="/gtr/docs/stage-1/">Stage 1 PRD <span>→</span></a>
             <a href="/gtr/docs/stage-2/">Stage 2 PRD <span>→</span></a>
@@ -340,16 +442,422 @@ function DocsOverviewPage() {
   );
 }
 
+function FieldworkReportPage() {
+  return (
+    <section className="report-section" id="fieldwork-report">
+      <ChapterLabel number="02.1">Docs / Fieldwork report</ChapterLabel>
+      <div className="report-document">
+        <PageIntro
+          eyebrow="Fieldwork week · prototype user testing"
+          title="Prototype user testing for a startup climate concern platform"
+          summary="Five participant sessions. Paper and screen prototypes of intake (variations A/B), assessment report (text vs visual), and dashboard. CCA Interaction Design graduation project fieldwork. Evidence: session notes, debriefs, and transcript (Caroline)."
+          links={[
+            ["/gtr/docs/research-report/", "Research report"],
+            ["/gtr/docs/stage-1/", "Stage 1 PRD"],
+          ]}
+        />
+
+        <nav className="report-contents" aria-label="Fieldwork report contents">
+          <p>In this report</p>
+          <a href="#fieldwork-summary"><span>0</span>Executive summary</a>
+          <a href="#fieldwork-raw"><span>1</span>Raw materials</a>
+          <a href="#fieldwork-testing"><span>2</span>The act of testing</a>
+          <a href="#fieldwork-project"><span>3</span>About your project</a>
+          <a href="#fieldwork-method"><span>4</span>Method and evidence</a>
+          <a href="#fieldwork-participants"><span>5</span>Participant records</a>
+          <a href="#fieldwork-materials"><span>6</span>Test materials</a>
+          <a href="#fieldwork-findings"><span>7</span>Aggregated findings</a>
+        </nav>
+
+        <section className="report-chapter" id="fieldwork-summary">
+          <span className="report-number">0</span>
+          <h2>Executive summary</h2>
+          <p className="report-lead">Fieldwork week deliverable: five prototype sessions for a startup climate concern platform.</p>
+          <p>Tested intake (scroll vs step-by-step), assessment report (text vs visual), and dashboard layout with founders and founder-adjacent participants. Recurring blockers: document upload sensitivity, missing value proposition before intake, undefined terms (net impact, maturity levels), dashboard density. Validated: visual report format, preset inputs, separate +/- framing when explained, four-step intake structure.</p>
+          <div className="report-next-links">
+            <a href="/gtr/slides/fieldwork-week/">Fieldwork week slides <span>→</span></a>
+            <a href="/gtr/docs/research-report/">Research report <span>→</span></a>
+          </div>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-raw">
+          <span className="report-number">1</span>
+          <h2>Raw materials</h2>
+          <p className="report-lead">Quotes, prototype images, and session observations from fieldwork week. Source: session notes and debriefs only.</p>
+
+          <h3>Participant quotes</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Participant</th><th>Topic</th><th>Quote</th></tr></thead>
+              <tbody>
+                {sessionQuotes.map(([name, topic, quote]) => (
+                  <tr key={`${name}-${topic}-${quote.slice(0, 24)}`}><td>{name}</td><td>{topic}</td><td><q>{quote}</q></td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Prototype artifacts</h3>
+          <p>Paper and screen prototypes shown in sessions. Sample company in printed materials: pre-seed hardware and clean-energy startup.</p>
+          <div className="prototype-grid">
+            <FieldworkFigure
+              src="/assets/images/gtr/fieldwork/onboarding-flow-4up.jpg"
+              alt="Four hand-drawn wireframe screens for the free impact assessment onboarding flow"
+              caption="Onboarding flow: company profile, documents, EMITS/AVOIDS selection, generate assessment."
+              label="Fig. 1"
+            />
+            <FieldworkFigure
+              src="/assets/images/gtr/fieldwork/assessment-report-print.jpg"
+              alt="Printed two-page instant impact assessment report"
+              caption="Instant report: footprint, handprint, hotspots, peer comparison, share CTA."
+              label="Fig. 2"
+            />
+            <FieldworkFigure
+              src="/assets/images/gtr/fieldwork/dashboard-sketch.jpg"
+              alt="Hand-drawn dashboard overview sketch"
+              caption="Dashboard sketch: footprint, handprint, net, goals, milestones, projection."
+              label="Fig. 3"
+            />
+            <FieldworkFigure
+              src="/assets/images/gtr/fieldwork/user-journey-storyboard.jpg"
+              alt="Eight-panel user journey storyboard"
+              caption="Storyboard: demo day through onboarding, report, dashboard, extended use."
+              label="Fig. 4"
+            />
+          </div>
+
+          <h3>Cross-session observations</h3>
+          <ul>
+            <li>Amali and Caroline both preferred step-by-step onboarding (variation B); Josh preferred scroll with step count (variation A).</li>
+            <li>Amali, Caroline, Josh, and Brian preferred preset dropdowns and checkboxes over free text.</li>
+            <li>Caroline raised stealth-mode concern for pitch deck and accounts upload; Ted and Brian also flagged sensitive uploads.</li>
+            <li>Amali requested combine text and visual report; Caroline, Josh, and Brian preferred visual over text-heavy layout.</li>
+            <li>Net impact and maturity levels 1-5 required interviewer explanation (Caroline, Josh).</li>
+          </ul>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-testing">
+          <span className="report-number">2</span>
+          <h2>The act of testing</h2>
+          <p className="report-lead">Draft reflection on how testing was run during fieldwork week.</p>
+
+          <h3>What did you learn about testing?</h3>
+          <ul>
+            <li>Peer sessions before stakeholder sessions caught flow and script problems early. Internal runs reduced embarrassment and let the team fix sequencing before exposing founders.</li>
+            <li>Think-aloud on paper prototypes still surfaces real blockers. Upload sensitivity, value proposition gaps, and jargon confusion appeared without a working product.</li>
+            <li>Participants react to the project concept and the UI in the same session. A founder can reject the form before evaluating the report if the upside is unclear.</li>
+            <li>A/B comparisons (scroll vs step-by-step onboarding; text vs visual report) produce directional signal but not a unanimous winner at n=5. Pattern-level issues (uploads, undefined terms) replicated faster than layout preferences.</li>
+            <li>Role-play with a proxy company (Caroline using spouse's SaaS startup Deltic) still produced valid friction on stealth mode, SaaS handprint interpretation, and product scope questions.</li>
+            <li>Single-session red flags should be held; cross-participant patterns should trigger redesign. The iteration rule matched how the team actually decided what to change.</li>
+          </ul>
+
+          <h3>What mistakes did you make while testing?</h3>
+          <ul>
+            <li>Placed optional document upload (step 2) before participants understood what they would receive. Ted stated he would stop before finishing; Brian asked why he would complete the form at all.</li>
+            <li>Used terms (net impact, maturity levels, impact projection, milestone diagram) without inline definitions. Multiple sessions required interviewer explanation, which is not scalable.</li>
+            <li>Footprint and handprint card labels did not read clearly for SaaS. Caroline had to infer handprint from transport avoidance via remote work.</li>
+            <li>Sample numbers differed between the instant report and dashboard sketch (e.g. footprint 10.7 vs 42.6 tCO₂e). This added confusion when asking participants to evaluate hierarchy, not arithmetic.</li>
+            <li>Tested many concepts per session (onboarding A/B, report A/B, dashboard, storyboard, sharing). Sessions ran long and some questions (e.g. leaderboard, peer comparison) were recorded but not designed for.</li>
+
+          </ul>
+
+          <h3>What worked well while testing?</h3>
+          <ul>
+            <li>Internal peer-test-first protocol. Team resolved obvious flow issues before stakeholder time.</li>
+            <li>Think-aloud with interviewer-led walkthrough. Participants named concerns (IP risk, LinkedIn sharing, accessibility) unprompted.</li>
+            <li>Low-fidelity paper and pencil prototypes. Fast to revise between sessions; founders engaged with layout and copy, not polish.</li>
+            <li>Four-step intake with stated duration (2-5 minutes) and visible step count. Josh used step count to estimate time commitment.</li>
+            <li>A/B onboarding and report variants in the same session. Direct preference statements (Amali and Caroline: B; Josh: A for onboarding; visual report preferred across sessions).</li>
+            <li>Real startup contexts in the room: Josh (Otto pet services), Ted (AI marketplace), Brian (accessibility and founder-adjacent). Feedback mapped to business models, not generic opinions.</li>
+            <li>Recording concept reactions alongside task walkthrough. Ted's drop-off and Brian's incubator distribution suggestion came from "would you use this?" not checkbox tasks.</li>
+          </ul>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-project">
+          <span className="report-number">3</span>
+          <h2>About your project</h2>
+          <p className="report-lead">Draft synthesis: who was tested, what changed, what held, and what remains open.</p>
+
+          <h3>Who did you test with?</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Participant</th><th>Context</th><th>Role in test</th></tr></thead>
+              <tbody>
+                {testParticipants.map(([name, context, role]) => (
+                  <tr key={name}><td>{name}</td><td>{context}</td><td>{role}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p>Primary audience: startup founders or founder proxies completing intake and reacting to report and dashboard concepts. Amali walked through prototypes one screen at a time. Caroline role-played her husband's SaaS startup (Deltic). Brian added accessibility and distribution lens.</p>
+
+          <h3>What did you learn from your stakeholders?</h3>
+          <ul>
+            <li>Early-stage founders treat pitch decks and accounts as IP and stealth risks, not optional convenience (Caroline, Ted, Brian).</li>
+            <li>Product purpose and audience must be clear before intake investment. Amali asked whether this is an app and who it is for; Ted and Brian asked what they get from completing the form.</li>
+            <li>Visual report with graphs and supporting text beats text-heavy layout; Amali requested combining both report variations (Caroline, Josh, Brian).</li>
+            <li>Dashboard should stack vertically: overview, then goals and milestones at top; maturity and status metrics lower (Josh, Brian). Four-card horizontal row was skipped or read as messy.</li>
+            <li>SaaS and AI startups: primary cost driver is cloud compute and token usage, not hardware checklist items (Ted). Manual spend fields may fit better than document upload.</li>
+            <li>LinkedIn sharing is conditional. Founders will not broadcast high-emission results; positive or improved metrics for investors are acceptable (Josh).</li>
+            <li>Product scope and audience are unclear from prototypes alone. Amali asked whether this is an app and whether the audience is climate-only, environment-related, or finance companies.</li>
+            <li>Accessibility: asterisk-only required fields fail basic guidelines; use visible [Required] text (Brian).</li>
+            <li>Peer comparison and leaderboard requested (Amali) but undefined for MVP scope.</li>
+            <li>Caroline and Brian suggested interviewing larger companies for richer environmental footprint data.</li>
+          </ul>
+
+          <h3>Major changes or pivots from their feedback</h3>
+          <ul>
+            <li>Deprioritize pitch deck and accounts upload as default intake path. Shift toward manual aggregate fields (e.g. monthly AI/cloud spend) and incubator-only document path (Brian).</li>
+            <li>Move value proposition and output preview earlier — show what the assessment delivers after step 1, not only at report end (Brian, Ted).</li>
+            <li>Default report direction toward visual/infographic layout combined with explanatory text, not text-primary alone (Amali, Caroline, Josh).</li>
+            <li>Redesign dashboard hierarchy: vertical stack; combine goals and milestones; separate maturity from headline metrics (Josh, Brian).</li>
+            <li>Add SaaS-specific intake: token/compute observability instead of generic hardware defaults (Ted).</li>
+            <li>Restrict public sharing to positive or improved metrics; default private or investor-only (Josh).</li>
+          </ul>
+
+          <h3>Ideas validated from testing</h3>
+          <ul>
+            <li>Four-step intake structure (profile, documents optional, EMITS/AVOIDS selection, generate) is completable and understandable when jargon is explained.</li>
+            <li>Separate footprint (-) and handprint (+) framing resonates when labels are clear. Participants engaged with activity checklists.</li>
+            <li>Preset options and dropdowns preferred over typing for business model, funding stage, and activity selection.</li>
+            <li>Progress indicator and stated step count reduce perceived length of onboarding.</li>
+            <li>Instant visual assessment report is the compelling artifact. Participants preferred it over dashboard for first read.</li>
+            <li>Overall concept rated positively (Amali: clean design, understandable, idea is good; Caroline: interesting and cool).</li>
+          </ul>
+
+          <h3>Challenges you still face</h3>
+          <ul>
+            <li>Onboarding format unresolved: scroll with step count (Josh) vs step-by-step with Back/Next (Amali and Caroline).</li>
+            <li>Document upload path not tested with real files, incubator integration, or trusted third-party context.</li>
+            <li>Emissions numbers in prototypes are illustrative only; not validated against source data.</li>
+            <li>Net impact, maturity levels, impact projection, and milestones still need product copy, not interviewer explanation.</li>
+            <li>Peer benchmark and leaderboard requested but scope, privacy, and data model undefined.</li>
+            <li>Larger-company segment suggested by Caroline and Brian; not tested in this round.</li>
+          </ul>
+
+          <h3>Next steps based on feedback</h3>
+          <ol>
+            <li>Build interactive prototype with value proposition above the fold and preview after step 1.</li>
+            <li>Replace default document upload with manual spend fields; keep upload as optional incubator path.</li>
+            <li>Ship visual report layout first; add inline definitions for net impact, maturity, milestones, impact projection.</li>
+            <li>Redesign dashboard as vertical hierarchy with goals and milestones at top.</li>
+            <li>Add business-model-specific defaults (SaaS: cloud/AI compute; pet services: logistics; etc.).</li>
+            <li>Retest onboarding A vs B with additional participants before picking a default.</li>
+            <li>Run accessibility pass on required-field labeling and form structure.</li>
+          </ol>
+          <div className="report-next-links">
+            <a href="/gtr/slides/fieldwork-week/">Present fieldwork week slides <span>→</span></a>
+            <a href="/gtr/docs/stage-1/">Stage 1 PRD <span>→</span></a>
+          </div>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-method">
+          <span className="report-number">4</span>
+          <h2>Method and evidence</h2>
+          <p className="report-lead">Think-aloud prototype sessions during fieldwork week.</p>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Dimension</th><th>Record</th></tr></thead>
+              <tbody>
+                <tr><td>Sequence</td><td>Internal team runs first; stakeholder sessions after internal kinks are addressed.</td></tr>
+                <tr><td>Participants</td><td>5 (Amali, Caroline, Josh, Ted, Brian).</td></tr>
+                <tr><td>Format</td><td>Interviewer-led walkthrough; think-aloud; A/B comparison of onboarding and report layouts.</td></tr>
+                <tr><td>Materials</td><td>Onboarding wireframes (scroll and step), assessment report (text and visual), dashboard sketch, user-journey storyboard.</td></tr>
+                <tr><td>Test objectives</td><td>Intake friction, document sensitivity, +/- comprehension, report readability, dashboard hierarchy, stated willingness to share, reaction to overall project concept.</td></tr>
+                <tr><td>Iteration rule</td><td>Small prototype updates allowed after each session. Specific headline or CTA variants require multiple participants before a decision.</td></tr>
+                <tr><td>Change threshold</td><td>Single-participant red flags held until replicated. Pattern-level red flags trigger redesign of what is tested and how.</td></tr>
+                <tr><td>Evidence status</td><td>Session notes and debriefs. Not production validation.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Testing protocol</h3>
+          <ul>
+            <li>Run sessions with each other before stakeholder sessions. Resolve flow and script issues internally first.</li>
+            <li>Record reactions to the overall project concept, not only UI task completion.</li>
+            <li>Apply minor prototype edits between sessions. Do not treat one session as final for headline/CTA decisions without repetition across participants.</li>
+            <li>Do not change the test plan based on one negative session alone.</li>
+            <li>Change the test plan when the same issue appears across multiple participants.</li>
+          </ul>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-participants">
+          <span className="report-number">5</span>
+          <h2>Participant records</h2>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Participant</th><th>Context</th><th>Role</th></tr></thead>
+              <tbody>
+                {testParticipants.map(([name, context, role]) => (
+                  <tr key={name}><td>{name}</td><td>{context}</td><td>{role}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Amali</h3>
+          <p>Participant 1. Walked through the form one screen at a time. Stated design is clean and understandable.</p>
+          <ul>
+            <li>Onboarding: preferred variation B (shorter, step-by-step). Stated progressive disclosure feels shorter than long form. Requested clear end state on final step.</li>
+            <li>Report: requested combining variations A and B. Stated graphs and visualization would help with supporting text to explain what the graph shows.</li>
+            <li>Dashboard: milestones read as confusing. Asked what impact projection and the milestone diagram mean. Requested leaderboard and peer comparison (what other startups are doing and how they are achieving).</li>
+            <li>Product scope: asked whether product is an app. Stated what the product does is not clear. Asked whether audience is climate-only, environment-related, or finance companies.</li>
+            <li>Overall: stated idea is good and the project could be improved.</li>
+          </ul>
+
+          <h3>Caroline</h3>
+          <p>Role-played spouse's SaaS startup Deltic (deltic.com, Seed, 7 FTE, SaaS). Think-aloud session with transcript on file. Not a founder herself; raised founder-proxy concerns.</p>
+          <ul>
+            <li>Onboarding: opened session using husband's startup as example. Asked whether Pre-Seed includes accelerators and incubators. Preferred preset options and dropdowns over typing; requested business model dropdown. Progress indicator noted as useful. Preferred variation B (Back/Next) over continuous scroll.</li>
+            <li>Documents: raised stealth-mode concern for pitch deck and accounts at early stage. Stated early-stage founders are cautious about competitors and sharing business ideas.</li>
+            <li>Footprint/handprint: card purpose unclear initially. For SaaS, applied transport avoidance via remote work (home offices; walking/biking vs commute). Hardware and logistics examples did not apply to Deltic.</li>
+            <li>Report: preferred visual/infographic variation ("the visual one for sure").</li>
+            <li>Dashboard: assessment layout preferred over dashboard layout. Net impact and maturity levels 1-5 required interviewer explanation.</li>
+            <li>Audience: suggested interviewing bigger companies through university network; noted larger environmental footprint and reporting requirements.</li>
+            <li>Overall: stated project is interesting and cool. Congratulated team on graduation project (CCA Interaction Design).</li>
+          </ul>
+
+          <h3>Josh (Otto, pet services)</h3>
+          <ul>
+            <li>Onboarding: preferred variation A (scroll) if step count and time estimate shown at start (e.g. four steps, 5-10 minutes). Stated scroll allows correcting answers without repeated Back clicks.</li>
+            <li>Report: preferred visual/infographic variation. Stated text-heavy layout was difficult to parse.</li>
+            <li>Sharing: stated full report on LinkedIn is too much; would not share high-emission results publicly. Would share if metrics look good for investors.</li>
+            <li>Dashboard: four-card horizontal layout read as messy; recommended vertical stack (overview, then goals, then milestones).</li>
+          </ul>
+
+          <h3>Ted (AI marketplace)</h3>
+          <ul>
+            <li>Value proposition: asked what he gets from completing the form; stated he would stop before finishing. Uploading pitch deck stated as IP risk without clear upside.</li>
+            <li>Business model auto-detect: stated system cannot infer business model from company name or URL alone.</li>
+            <li>Documents: one-person/tiny teams lack data to upload; larger teams still hesitant on sensitive files.</li>
+            <li>SaaS impact: stated primary cost is cloud compute and AI credits; limited levers at early stage. Suggested token-usage observability instead of generic footprint checklist.</li>
+          </ul>
+
+          <h3>Brian</h3>
+          <ul>
+            <li>Accessibility: asterisk-only required fields fail basic accessibility; use visible [Required] text.</li>
+            <li>Labels: business model label unclear; recent accounts and pitch deck read as sensitive. Suggested manual numeric fields (e.g. monthly AI/cloud spend) instead of document upload.</li>
+            <li>Onboarding: long form did not invite investment; suggested progressive preview of output after step 1.</li>
+            <li>Report: second (visual) variation easier to understand; main question remained "why would I do this?" Suggested correlating cost reduction with impact.</li>
+            <li>Metrics: requested travel spend and website carbon (deploy/load impact) in addition to emissions.</li>
+            <li>Dashboard: layout dense. Recommended milestones and climate goals at top; maturity and status metrics at bottom; combine goals and milestones sections.</li>
+            <li>Distribution: suggested incubator or investor partnership so document sharing occurs inside trusted context.</li>
+            <li>Audience: noted larger companies may yield more insight than early startups (legal reporting requirements).</li>
+          </ul>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-materials">
+          <span className="report-number">6</span>
+          <h2>Test materials</h2>
+          <p>Materials shown across sessions. Sample company in printed materials: pre-seed hardware and clean-energy startup, FTE-scaled modeled estimate.</p>
+
+          <h3>Onboarding (variations A and B)</h3>
+          <p>Four steps. Variation A: continuous scroll. Variation B: step-by-step with Back/Next and progress indicator. Stated duration: 2-5 minutes.</p>
+          <div className="walkthrough-sequence">
+            {onboardingSteps.map(([number, title, detail]) => (
+              <span key={number}><i>{number}</i><b>{title}</b><small>{detail}</small></span>
+            ))}
+          </div>
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/onboarding-flow-4up.jpg"
+            alt="Four hand-drawn wireframe screens for the free impact assessment onboarding flow"
+            caption="Screens 1-4: company profile, optional local documents, EMITS/AVOIDS activity selection, free-text description, generate assessment."
+          />
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
+            alt="Five handwritten paper sheets showing the free impact assessment intake flow"
+            caption="Alternate layout: business model, team size, document reminders, generate-assessment CTA."
+          />
+          <p>Screen 3 collects EMITS (-) footprint and AVOIDS (+) handprint activities. Selection determines estimation scope.</p>
+          <div className="report-table-scroll">
+            <table className="report-table">
+              <thead><tr><th>EMITS (-) footprint</th><th>AVOIDS (+) handprint</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><ul>{emitsActivities.map((item) => <li key={item}>{item}</li>)}</ul></td>
+                  <td><ul>{avoidsActivities.map((item) => <li key={item}>{item}</li>)}</ul></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/funding-stages.jpg"
+            alt="Handwritten funding stage list: Pre-Seed, Seed, Series A, Series B plus"
+            caption="Funding-stage options: Pre-Seed, Seed, Series A, Series B+."
+            label="Prompt"
+          />
+          <p>Screen 2 states files stay in-browser and are not uploaded to servers.</p>
+
+          <h3>Assessment report (variations A and B)</h3>
+          <p>Printed report (sample company): footprint 10.7 tCO₂e/yr, handprint potential ~20 tCO₂e/yr, maturity Level 1 Mapped. Hotspots: logistics and distribution, cloud and AI compute, purchased electricity. Pencil sketch uses same layout; hotspot values differ (e.g. cloud compute 2.5 vs 0.25 tCO₂e/yr on print).</p>
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/assessment-report-print.jpg"
+            alt="Printed two-page instant impact assessment report with footprint, handprint, hotspots, peer comparison, and methodology"
+            caption="Printed sample report: footprint, handprint, hotspots, impact beyond carbon, peer comparison, cost exposure, methodology, share and account CTAs."
+          />
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/assessment-report-sketch.jpg"
+            alt="Pencil sketch of the instant impact assessment report layout"
+            caption="Pencil sketch of report layout: footprint, handprint, maturity, hotspots, impact beyond carbon."
+          />
+          <h3>Dashboard</h3>
+          <p>Dashboard sketch: footprint, handprint, derived net, maturity gauge, climate goals, milestones, impact projection. Sample values differ from instant report (footprint 42.6, handprint 108, net -65.4 tCO₂e on sketch vs 10.7 / ~20 on report). Participants asked to define impact projection, milestone diagram, net impact, and maturity levels.</p>
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/dashboard-sketch.jpg"
+            alt="Hand-drawn dashboard overview sketch with footprint, handprint, net impact, maturity level, climate goals, milestones, and impact projection"
+            caption="Dashboard sketch: separate footprint and handprint, derived net, goals, milestones, projection."
+          />
+
+          <h3>User journey storyboard</h3>
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/user-journey-storyboard.jpg"
+            alt="Hand-drawn eight-panel user journey storyboard from demo day awareness through onboarding, report sharing, dashboard use, and extended use"
+            caption="Eight-stage storyboard shown in sessions. Not validated against live participant behavior."
+          />
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Stage</th><th>Moment</th><th>Description</th></tr></thead>
+              <tbody>
+                {journeyStages.map(([stage, moment, detail]) => (
+                  <tr key={`${stage}-${moment}`}><td>{stage}</td><td>{moment}</td><td>{detail}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-findings">
+          <span className="report-number">7</span>
+          <h2>Aggregated findings</h2>
+          <p className="report-lead">Cross-participant observations from five sessions. Counts noted where applicable.</p>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Finding</th><th>Observation</th><th>Implication</th></tr></thead>
+              <tbody>
+                {aggregatedFindings.map(([finding, observation, implication]) => (
+                  <tr key={finding}><td>{finding}</td><td>{observation}</td><td>{implication}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+
+      </div>
+    </section>
+  );
+}
+
 function ResearchReportPage() {
   return (
     <section className="report-section" id="research-report">
-      <ChapterLabel number="02.1">Docs / Research report</ChapterLabel>
+      <ChapterLabel number="02.2">Docs / Research report</ChapterLabel>
       <div className="report-document">
         <PageIntro
           eyebrow="Climate Goal Platform research report"
           title="The report turns GTR into a climate startup product"
           summary="The research report is the core document in the archive. It explains why the project narrowed from broad startup climate support into a climate startup +/- impact dashboard, why that wedge is credible, and what has to be tested before the product expands."
           links={[
+            ["/gtr/docs/fieldwork-report/", "Fieldwork report"],
             ["/gtr/docs/stage-1/", "Stage 1 PRD"],
             ["/gtr/slides/climate-goal-platform/", "Product deck"],
           ]}
@@ -497,7 +1005,7 @@ function ResearchReportPage() {
 function Stage1Page() {
   return (
     <section className="report-section" id="stage-1">
-      <ChapterLabel number="02.2">Docs / Stage 1 PRD</ChapterLabel>
+      <ChapterLabel number="02.3">Docs / Stage 1 PRD</ChapterLabel>
       <div className="report-document">
         <PageIntro
           eyebrow="PRD stage 1"
@@ -570,7 +1078,7 @@ function Stage1Page() {
 function Stage2Page() {
   return (
     <section className="report-section" id="stage-2">
-      <ChapterLabel number="02.3">Docs / Stage 2 PRD</ChapterLabel>
+      <ChapterLabel number="02.4">Docs / Stage 2 PRD</ChapterLabel>
       <div className="report-document">
         <PageIntro
           eyebrow="PRD stage 2"
@@ -627,8 +1135,9 @@ function SlidesOverviewPage() {
         <PageIntro
           eyebrow="Slides index"
           title="The slide decks show the pivot in presentation form"
-          summary="The GTR Partners deck is the service-era story: San Francisco startup culture, climate awareness, founder behavior, and advisory support. The Climate Goal Platform deck is the product-era story: a two-sided dashboard, a climate startup wedge, and a weekly operating loop."
+          summary="The Fieldwork Week deck shares prototype testing insights from fieldwork week. The GTR Partners deck is the service-era story. The Climate Goal Platform deck is the product-era story: a two-sided dashboard, a climate startup wedge, and a weekly operating loop."
           links={[
+            ["/gtr/slides/fieldwork-week/", "Fieldwork week"],
             ["/gtr/slides/gtr-partners/", "GTR Partners"],
             ["/gtr/slides/climate-goal-platform/", "Climate Goal Platform"],
           ]}
@@ -637,11 +1146,12 @@ function SlidesOverviewPage() {
         <section className="report-chapter">
           <span className="report-number">3.0</span>
           <h2>Deck map</h2>
-          <p>The slides are useful because they preserve the project's sequence. The early deck argues why climate awareness belongs in startup culture. The later deck shows how that concern became a product with an explicit accounting model.</p>
+          <p>The slides preserve the project's sequence: fieldwork evidence, then the service framing, then the product framing.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Deck</th><th>Focus</th><th>Relationship to the docs</th></tr></thead>
               <tbody>
+                <tr><td>Fieldwork week</td><td>Prototype user testing insights, quotes, and pivots</td><td>Pairs with fieldwork report (2.1)</td></tr>
                 <tr><td>GTR Partners</td><td>Startup climate awareness and advisory services</td><td>Earlier framing</td></tr>
                 <tr><td>Climate Goal Platform</td><td>Two-sided impact dashboard for climate startups</td><td>Later product framing</td></tr>
               </tbody>
@@ -659,10 +1169,49 @@ function SlidesOverviewPage() {
   );
 }
 
+function FieldworkWeekPage() {
+  return (
+    <section className="report-section" id="fieldwork-week">
+      <ChapterLabel number="03.1">Slides / Fieldwork week</ChapterLabel>
+      <div className="report-document">
+        <PageIntro
+          eyebrow="Fieldwork week"
+          title="Prototype user testing presentation"
+          summary="Slide deck for the fieldwork week deliverable: five sessions on intake, assessment report, and dashboard prototypes. Shares quotes, images, testing reflections, and project pivots."
+          links={[
+            ["/#gtr-fieldwork-week", "Open slide deck"],
+            ["/gtr/docs/fieldwork-report/", "Fieldwork report"],
+          ]}
+        />
+
+        <section className="report-chapter">
+          <span className="report-number">0</span>
+          <h2>What the deck covers</h2>
+          <ul>
+            <li>Raw findings: upload sensitivity, value proposition gap, visual report preference.</li>
+            <li>The act of testing: peer-test-first protocol, mistakes, what worked.</li>
+            <li>About the project: participants, pivots, validated ideas, open challenges, next steps.</li>
+          </ul>
+        </section>
+
+        <section className="report-chapter">
+          <span className="report-number">1</span>
+          <h2>Deck spine</h2>
+          <p>Founders stop when upside is unclear and document upload feels risky. The visual instant report is the hook; dashboard hierarchy and jargon need a second pass.</p>
+          <div className="report-next-links">
+            <a href="/#gtr-fieldwork-week">Present slides <span>→</span></a>
+            <a href="/gtr/docs/fieldwork-report/">Read full report <span>→</span></a>
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
 function GTRPartnersPage() {
   return (
     <section className="report-section" id="gtr-partners">
-      <ChapterLabel number="03.1">Slides / GTR Partners</ChapterLabel>
+      <ChapterLabel number="03.2">Slides / GTR Partners</ChapterLabel>
       <div className="report-document">
         <PageIntro
           eyebrow="GTR Partners"
@@ -716,7 +1265,7 @@ function GTRPartnersPage() {
 function ClimateGoalPlatformPage() {
   return (
     <section className="report-section" id="climate-goal-platform">
-      <ChapterLabel number="03.2">Slides / Climate Goal Platform</ChapterLabel>
+      <ChapterLabel number="03.3">Slides / Climate Goal Platform</ChapterLabel>
       <div className="report-document">
         <PageIntro
           eyebrow="Climate Goal Platform"
@@ -768,25 +1317,40 @@ function ClimateGoalPlatformPage() {
   );
 }
 
+function isDocsIndex(path) {
+  return path === "/gtr/docs" || path === "/gtr/docs/" || path.endsWith("/gtr/docs/index.html");
+}
+
 function App() {
   const path = window.location.pathname;
+
+  useEffect(() => {
+    if (isDocsIndex(path)) {
+      window.location.replace("/gtr/docs/fieldwork-report/");
+    }
+  }, [path]);
+
   const activeChapter = path.includes("/docs/")
     ? "docs"
     : path.includes("/slides/")
       ? "slides"
       : "intro";
-  const docsPage = path.includes("/docs/research-report")
-    ? "research-report"
-    : path.includes("/docs/stage-1")
-      ? "stage-1"
-      : path.includes("/docs/stage-2")
-        ? "stage-2"
+  const docsPage = path.includes("/docs/fieldwork-report")
+    ? "fieldwork-report"
+    : path.includes("/docs/research-report")
+      ? "research-report"
+      : path.includes("/docs/stage-1")
+        ? "stage-1"
+        : path.includes("/docs/stage-2")
+          ? "stage-2"
+          : null;
+  const slidesPage = path.includes("/slides/fieldwork-week")
+    ? "fieldwork-week"
+    : path.includes("/slides/gtr-partners")
+      ? "gtr-partners"
+      : path.includes("/slides/climate-goal-platform")
+        ? "climate-goal-platform"
         : "overview";
-  const slidesPage = path.includes("/slides/gtr-partners")
-    ? "gtr-partners"
-    : path.includes("/slides/climate-goal-platform")
-      ? "climate-goal-platform"
-      : "overview";
 
   return (
     <div id="top">
@@ -799,11 +1363,12 @@ function App() {
 
       <main>
         {activeChapter === "intro" && <IntroPage />}
-        {activeChapter === "docs" && docsPage === "overview" && <DocsOverviewPage />}
+        {activeChapter === "docs" && docsPage === "fieldwork-report" && <FieldworkReportPage />}
         {activeChapter === "docs" && docsPage === "research-report" && <ResearchReportPage />}
         {activeChapter === "docs" && docsPage === "stage-1" && <Stage1Page />}
         {activeChapter === "docs" && docsPage === "stage-2" && <Stage2Page />}
         {activeChapter === "slides" && slidesPage === "overview" && <SlidesOverviewPage />}
+        {activeChapter === "slides" && slidesPage === "fieldwork-week" && <FieldworkWeekPage />}
         {activeChapter === "slides" && slidesPage === "gtr-partners" && <GTRPartnersPage />}
         {activeChapter === "slides" && slidesPage === "climate-goal-platform" && <ClimateGoalPlatformPage />}
       </main>

@@ -1,1 +1,89 @@
 @import url("/cosmos/styles.css");
+
+/* GTR readability: cosmos archive defaults are compact (11–14px) for dense research layouts. */
+body {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.chapter-rail a {
+  font-size: 13px;
+}
+
+.chapter-rail a span {
+  font-size: 12px;
+}
+
+.rail-intro > span {
+  font-size: 14px;
+  max-width: 200px;
+}
+
+.rail-status {
+  font-size: 10px;
+}
+
+.report-page-intro > p:last-child {
+  font-size: 16px;
+}
+
+.report-chapter > p,
+.report-chapter li {
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.report-chapter .report-lead {
+  font-size: 22px;
+}
+
+.report-chapter h3 {
+  font-size: 22px;
+}
+
+.report-contents a {
+  font-size: 13px;
+}
+
+.report-table {
+  font-size: 13px;
+}
+
+.report-table th {
+  font-size: 10px;
+}
+
+.chapter-label p {
+  font-size: 12px;
+}
+
+.eyebrow,
+.mini-label {
+  font-size: 12px;
+}
+
+.report-note p,
+.report-note b {
+  font-size: 14px;
+}
+
+.report-next-links a {
+  font-size: 12px;
+}
+
+.prototype-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px 32px;
+  margin: 32px 0 48px;
+}
+
+.prototype-grid .prototype-figure {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .prototype-grid {
+    grid-template-columns: 1fr;
+  }
+}

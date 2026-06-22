@@ -87,6 +87,17 @@
       public: true
     },
     {
+      slug: "gtr-fieldwork-week",
+      title: "Fieldwork Week",
+      docTitle: "Team GTR prototype user testing",
+      sidebarTitle: "GTR fieldwork week",
+      project: "Social Lab",
+      date: "June 2026",
+      file: "presentations/gtr-fieldwork-week.md",
+      transition: "slide",
+      public: true
+    },
+    {
       slug: "cloudflare-case-study",
       title: "Case Study for Cloudflare",
       docTitle: "Case study for Cloudflare",
