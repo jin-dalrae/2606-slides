@@ -95,6 +95,8 @@
       date: "June 2026",
       file: "presentations/gtr-fieldwork-week.md",
       transition: "slide",
+      background: "waves",
+      font: "source-serif",
       public: true
     },
     {
