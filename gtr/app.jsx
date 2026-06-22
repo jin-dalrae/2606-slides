@@ -520,19 +520,6 @@ function FieldworkReportPage() {
           </div>
           <p><code>testing1.jpeg</code> through <code>testing6.jpeg</code> document the prototype sessions. The walkthrough feedback was captured in the provided transcript.</p>
 
-          <h3>Participant observations</h3>
-          <p>Transcript feedback is summarized by participant and topic rather than presented as isolated quotations.</p>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Participant</th><th>Topic</th><th>Observation</th></tr></thead>
-              <tbody>
-                {sessionObservations.map(([name, topic, observation]) => (
-                  <tr key={`${name}-${topic}-${observation.slice(0, 24)}`}><td>{name}</td><td>{topic}</td><td>{observation}</td></tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
           <h3>Prototype sequence</h3>
           <p>Paper and screen prototypes shown in sessions. Sample company in printed materials: pre-seed hardware and clean-energy startup.</p>
           <div className="prototype-grid">
@@ -568,14 +555,6 @@ function FieldworkReportPage() {
             />
           </div>
 
-          <h3>Cross-session observations</h3>
-          <ul>
-            <li>Amali and Caroline preferred Assessment 2, the step-by-step mobile flow; Josh preferred Assessment 1, the continuous flow, when step count and duration were visible.</li>
-            <li>Amali, Caroline, Josh, and Brian preferred preset dropdowns and checkboxes over free text.</li>
-            <li>Caroline raised stealth-mode concern for pitch deck and accounts upload; Ted and Brian also flagged sensitive uploads.</li>
-            <li>Amali requested a combination of Report 1 and Report 2; Caroline, Josh, and Brian preferred the infographic direction of Report 2 over the information-led Report 1.</li>
-            <li>Net impact and maturity levels 1-5 required interviewer explanation (Caroline, Josh).</li>
-          </ul>
         </section>
 
         <section className="report-chapter" id="fieldwork-testing">
@@ -731,6 +710,19 @@ function FieldworkReportPage() {
               <tbody>
                 {testParticipants.map(([name, context, role]) => (
                   <tr key={name}><td>{name}</td><td>{context}</td><td>{role}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Transcript summary by participant and topic</h3>
+          <p>The transcript is summarized here by topic; detailed session notes follow.</p>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Participant</th><th>Topic</th><th>Observation</th></tr></thead>
+              <tbody>
+                {sessionObservations.map(([name, topic, observation]) => (
+                  <tr key={`${name}-${topic}-${observation.slice(0, 24)}`}><td>{name}</td><td>{topic}</td><td>{observation}</td></tr>
                 ))}
               </tbody>
             </table>
