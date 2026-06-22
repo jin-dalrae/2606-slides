@@ -1,4 +1,4 @@
-import { GTRHeader, GTRSidebar } from "./shell.jsx";
+import { GTRHeader, GTRSidebar, slidesReports } from "./shell.jsx";
 
 const { useEffect, useState } = React;
 
@@ -368,7 +368,7 @@ function IntroPage() {
           <p>That means the introduction should read like a report summary, and the research section should read like a report body. The archive should not feel like a portfolio or a marketing site.</p>
           <div className="report-next-links">
             <a href="/gtr/docs/fieldwork-report/">Open the fieldwork report <span>→</span></a>
-            <a href="/gtr/slides/">Open the slides <span>→</span></a>
+            <a href="/gtr/slides/fieldwork-week/">Open fieldwork slides <span>→</span></a>
           </div>
         </section>
       </div>
@@ -475,7 +475,7 @@ function FieldworkReportPage() {
           <p className="report-lead">Fieldwork week deliverable: five prototype sessions for a startup climate concern platform.</p>
           <p>Tested intake (scroll vs step-by-step), assessment report (text vs visual), and dashboard layout with founders and founder-adjacent participants. Recurring blockers: document upload sensitivity, missing value proposition before intake, undefined terms (net impact, maturity levels), dashboard density. Validated: visual report format, preset inputs, separate +/- framing when explained, four-step intake structure.</p>
           <div className="report-next-links">
-            <a href="/gtr/slides/fieldwork-week/">Fieldwork week slides <span>→</span></a>
+            <a href="/gtr/slides/fieldwork-week/">Present fieldwork slides <span>→</span></a>
             <a href="/gtr/docs/research-report/">Research report <span>→</span></a>
           </div>
         </section>
@@ -1127,192 +1127,21 @@ function Stage2Page() {
   );
 }
 
-function SlidesOverviewPage() {
+function SlideEmbedPage({ slideId }) {
+  const entry = slidesReports.find(([id]) => id === slideId);
+  if (!entry) return null;
+  const [, number, label, , slug] = entry;
   return (
-    <section className="report-section" id="slides">
-      <ChapterLabel number="03">Slides</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Slides index"
-          title="The slide decks show the pivot in presentation form"
-          summary="The Fieldwork Week deck shares prototype testing insights from fieldwork week. The GTR Partners deck is the service-era story. The Climate Goal Platform deck is the product-era story: a two-sided dashboard, a climate startup wedge, and a weekly operating loop."
-          links={[
-            ["/gtr/slides/fieldwork-week/", "Fieldwork week"],
-            ["/gtr/slides/gtr-partners/", "GTR Partners"],
-            ["/gtr/slides/climate-goal-platform/", "Climate Goal Platform"],
-          ]}
-        />
-
-        <section className="report-chapter">
-          <span className="report-number">3.0</span>
-          <h2>Deck map</h2>
-          <p>The slides preserve the project's sequence: fieldwork evidence, then the service framing, then the product framing.</p>
-          <div className="report-table-scroll">
-            <table className="report-table">
-              <thead><tr><th>Deck</th><th>Focus</th><th>Relationship to the docs</th></tr></thead>
-              <tbody>
-                <tr><td>Fieldwork week</td><td>Prototype user testing insights, quotes, and pivots</td><td>Pairs with fieldwork report (2.1)</td></tr>
-                <tr><td>GTR Partners</td><td>Startup climate awareness and advisory services</td><td>Earlier framing</td></tr>
-                <tr><td>Climate Goal Platform</td><td>Two-sided impact dashboard for climate startups</td><td>Later product framing</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="report-chapter">
-          <span className="report-number">3.1</span>
-          <h2>Reading note</h2>
-          <p>The slides are not separate from the docs. They are the presentation layer for the same trajectory. If the docs explain the logic, the slides show how the logic was communicated to reviewers, peers, and potential collaborators.</p>
-        </section>
+    <section className="gtr-slide-shell" id={slideId}>
+      <div className="gtr-slide-shell__chrome">
+        <p><span>{number}</span> {label}</p>
+        <div className="gtr-slide-shell__links">
+          {slideId === "fieldwork-week" && <a href="/gtr/docs/fieldwork-report/">Fieldwork report</a>}
+          {slideId === "climate-goal-platform" && <a href="/gtr/docs/research-report/">Research report</a>}
+          <a href={`/#${slug}`} target="_blank" rel="noopener noreferrer">Open fullscreen ↗</a>
+        </div>
       </div>
-    </section>
-  );
-}
-
-function FieldworkWeekPage() {
-  return (
-    <section className="report-section" id="fieldwork-week">
-      <ChapterLabel number="03.1">Slides / Fieldwork week</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Fieldwork week"
-          title="Prototype user testing presentation"
-          summary="Slide deck for the fieldwork week deliverable: five sessions on intake, assessment report, and dashboard prototypes. Shares quotes, images, testing reflections, and project pivots."
-          links={[
-            ["/#gtr-fieldwork-week", "Open slide deck"],
-            ["/gtr/docs/fieldwork-report/", "Fieldwork report"],
-          ]}
-        />
-
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>What the deck covers</h2>
-          <ul>
-            <li>Raw findings: upload sensitivity, value proposition gap, visual report preference.</li>
-            <li>The act of testing: peer-test-first protocol, mistakes, what worked.</li>
-            <li>About the project: participants, pivots, validated ideas, open challenges, next steps.</li>
-          </ul>
-        </section>
-
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Deck spine</h2>
-          <p>Founders stop when upside is unclear and document upload feels risky. The visual instant report is the hook; dashboard hierarchy and jargon need a second pass.</p>
-          <div className="report-next-links">
-            <a href="/#gtr-fieldwork-week">Present slides <span>→</span></a>
-            <a href="/gtr/docs/fieldwork-report/">Read full report <span>→</span></a>
-          </div>
-        </section>
-      </div>
-    </section>
-  );
-}
-
-function GTRPartnersPage() {
-  return (
-    <section className="report-section" id="gtr-partners">
-      <ChapterLabel number="03.2">Slides / GTR Partners</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="GTR Partners"
-          title="The original deck framed GTR as a transition service"
-          summary="This deck argues that San Francisco startup culture, climate impact, founder habits, and the relationship to nature should all be part of the conversation before the product pivot."
-          links={[
-            ["/gtr/slides/climate-goal-platform/", "Later product deck"],
-            ["/gtr/docs/research-report/", "Research report"],
-          ]}
-        />
-
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>What the deck argues</h2>
-          <p>The deck treats climate awareness as something startups should build into daily operations. It proposes advisory services, founder support, and nature-based immersive work as a bridge between ambition and responsibility.</p>
-          <div className="report-table-scroll">
-            <table className="report-table">
-              <thead><tr><th>Section</th><th>Point being made</th></tr></thead>
-              <tbody>
-                <tr><td>Why San Francisco</td><td>The city is dense with startups and founder culture, so it is the right setting for the service.</td></tr>
-                <tr><td>The blind spot</td><td>Climate impact is underpriced, climate startups are undervalued, and founder culture disconnects from nature.</td></tr>
-                <tr><td>Core tension</td><td>Climate change and infrastructure operate on long timelines while venture capital pushes speed.</td></tr>
-                <tr><td>Company overview</td><td>GTR Partners bridges the gap with climate measurement, strategy, and immersive experiences.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Key themes</h2>
-          <ul>
-            <li>Startup culture in San Francisco is the setting.</li>
-            <li>Climate impact is underpriced and often disconnected from the company story.</li>
-            <li>Founders need a way to connect strategy, operations, and nature.</li>
-            <li>Climate Brick appears as a reference for scaling and capital logic.</li>
-            <li>The deck positions GTR as a bridge between tech innovation and planetary impact.</li>
-          </ul>
-        </section>
-
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>How it differs from the product deck</h2>
-          <p>This deck is advisory-led and service-led. The later deck is measurement-led and product-led. That is the archive's most important pivot. The slide sequence makes the transition visible: first the service, then the net-impact product.</p>
-        </section>
-      </div>
-    </section>
-  );
-}
-
-function ClimateGoalPlatformPage() {
-  return (
-    <section className="report-section" id="climate-goal-platform">
-      <ChapterLabel number="03.3">Slides / Climate Goal Platform</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Climate Goal Platform"
-          title="The updated deck makes the product shift explicit"
-          summary="This deck reframes GTR as a climate startup +/- impact dashboard with a two-sided ledger, integrity gates, and a weekly operating loop."
-          links={[
-            ["/gtr/docs/research-report/", "Back to the report"],
-            ["/gtr/docs/stage-1/", "Stage 1 PRD"],
-          ]}
-        />
-
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>What the deck emphasizes</h2>
-          <ul>
-            <li>Climate startups first, because the value proposition is already impact-shaped.</li>
-            <li>Positive and negative impact must stay separate.</li>
-            <li>The product needs to be credible enough for diligence, not just catchy on a slide.</li>
-            <li>The workflow should turn impact into a weekly habit.</li>
-            <li>Climate tech VC, carbon software, and regulatory pressure make the wedge timely enough to test.</li>
-          </ul>
-        </section>
-
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Slide logic</h2>
-          <p>The deck is structured to make the switch from service to product feel inevitable: the market is real, the accounting is careful, and the operating loop is the thing that makes the product different from a one-off carbon calculator.</p>
-          <div className="report-table-scroll">
-            <table className="report-table">
-              <thead><tr><th>Section</th><th>Purpose</th></tr></thead>
-              <tbody>
-                <tr><td>Why climate startups first</td><td>Defines the wedge and buyer.</td></tr>
-                <tr><td>The +/- model</td><td>Explains the accounting separation.</td></tr>
-                <tr><td>Integrity gate</td><td>Shows why additionality matters.</td></tr>
-                <tr><td>Roadmap</td><td>Connects MVP, Stage 2, and the longer product path.</td></tr>
-                <tr><td>Market / why now</td><td>Connects funding, software spend, and reporting pressure.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>One-line conclusion</h2>
-          <aside className="report-note report-note-yellow"><b>Slide conclusion</b><p>The deck turns GTR into a product story with a measurable wedge and a visible growth path.</p></aside>
-        </section>
-      </div>
+      <iframe title={label} src={`/#${slug}`} className="gtr-slide-embed" loading="lazy" />
     </section>
   );
 }
@@ -1321,12 +1150,18 @@ function isDocsIndex(path) {
   return path === "/gtr/docs" || path === "/gtr/docs/" || path.endsWith("/gtr/docs/index.html");
 }
 
+function isSlidesIndex(path) {
+  return path === "/gtr/slides" || path === "/gtr/slides/" || path.endsWith("/gtr/slides/index.html");
+}
+
 function App() {
   const path = window.location.pathname;
 
   useEffect(() => {
     if (isDocsIndex(path)) {
       window.location.replace("/gtr/docs/fieldwork-report/");
+    } else if (isSlidesIndex(path)) {
+      window.location.replace("/gtr/slides/fieldwork-week/");
     }
   }, [path]);
 
@@ -1350,7 +1185,7 @@ function App() {
       ? "gtr-partners"
       : path.includes("/slides/climate-goal-platform")
         ? "climate-goal-platform"
-        : "overview";
+        : null;
 
   return (
     <div id="top">
@@ -1367,10 +1202,7 @@ function App() {
         {activeChapter === "docs" && docsPage === "research-report" && <ResearchReportPage />}
         {activeChapter === "docs" && docsPage === "stage-1" && <Stage1Page />}
         {activeChapter === "docs" && docsPage === "stage-2" && <Stage2Page />}
-        {activeChapter === "slides" && slidesPage === "overview" && <SlidesOverviewPage />}
-        {activeChapter === "slides" && slidesPage === "fieldwork-week" && <FieldworkWeekPage />}
-        {activeChapter === "slides" && slidesPage === "gtr-partners" && <GTRPartnersPage />}
-        {activeChapter === "slides" && slidesPage === "climate-goal-platform" && <ClimateGoalPlatformPage />}
+        {activeChapter === "slides" && slidesPage && <SlideEmbedPage slideId={slidesPage} />}
       </main>
     </div>
   );
