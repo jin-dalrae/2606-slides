@@ -2234,6 +2234,7 @@ body[data-display-mode="slide"] .app-shell {
 body[data-display-mode="slide"] .presentation-list,
 body[data-display-mode="slide"] .presentation-header,
 body[data-display-mode="slide"] .slide-list,
+body[data-display-mode="slide"] .slide-list-reopen,
 body[data-display-mode="slide"] .presentation-settings,
 body[data-display-mode="slide"] .speaker-notes,
 body[data-display-mode="slide"] .markdown-editor,

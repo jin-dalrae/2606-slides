@@ -107,6 +107,10 @@ body {
   background: var(--paper);
 }
 
+.gtr-slide-shell--deck-only {
+  height: calc(100vh - 76px);
+}
+
 .gtr-slide-shell__chrome {
   display: flex;
   align-items: center;

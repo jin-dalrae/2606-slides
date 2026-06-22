@@ -1127,17 +1127,14 @@ function Stage2Page() {
   );
 }
 
+function fieldworkSlideEmbedSrc() {
+  return `/?display=slide#${fieldworkSlide.slug}`;
+}
+
 function FieldworkSlidePage() {
   return (
-    <section className="gtr-slide-shell" id="fieldwork-slides">
-      <div className="gtr-slide-shell__chrome">
-        <p><span>2.0</span> {fieldworkSlide.label}</p>
-        <div className="gtr-slide-shell__links">
-          <a href="/gtr/docs/fieldwork-report/">Fieldwork report</a>
-          <a href={`/#${fieldworkSlide.slug}`} target="_blank" rel="noopener noreferrer">Open fullscreen ↗</a>
-        </div>
-      </div>
-      <iframe title={fieldworkSlide.label} src={`/#${fieldworkSlide.slug}`} className="gtr-slide-embed" loading="lazy" />
+    <section className="gtr-slide-shell gtr-slide-shell--deck-only" id="fieldwork-slides">
+      <iframe title={fieldworkSlide.label} src={fieldworkSlideEmbedSrc()} className="gtr-slide-embed" loading="lazy" />
     </section>
   );
 }
