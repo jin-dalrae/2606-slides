@@ -1,6 +1,6 @@
 # Fieldwork Week
 
-## Prototype testing for a startup climate-impact platform
+## Prototype testing for a climate impact platform for startups
 
 <p class="deck-subtitle">Storyboard-led prototypes · Assessment 1/2 · Report 1/2 · dashboard</p>
 

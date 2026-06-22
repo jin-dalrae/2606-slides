@@ -95,7 +95,7 @@ const archiveMap = [
   {
     id: "fieldwork",
     label: "Fieldwork report",
-    purpose: "Prototype user testing for a startup climate concern platform.",
+    purpose: "Prototype user testing for a climate impact platform for startups.",
     question: "Can founders complete intake and read the report and dashboard concepts?",
   },
   {
@@ -405,7 +405,7 @@ function DocsOverviewPage() {
           <span className="report-number">2.0</span>
           <h2>Scope and method</h2>
           <p className="report-lead">The docs turn a messy project trail into a clear sequence of decisions.</p>
-          <p>The fieldwork report documents five prototype testing sessions for a startup climate concern platform. The research report establishes the rationale for the climate startup wedge. Stage 1 defines the product boundary. Stage 2 defines the extension path. Together they show where the project starts, what it must prove, and what remains deliberately out of scope.</p>
+          <p>The fieldwork report documents five prototype testing sessions for a climate impact platform for startups. The research report establishes the rationale for the climate startup wedge. Stage 1 defines the product boundary. Stage 2 defines the extension path. Together they show where the project starts, what it must prove, and what remains deliberately out of scope.</p>
         </section>
 
         <section className="report-chapter" id="docs-map">
@@ -457,7 +457,7 @@ function FieldworkReportPage() {
       <div className="report-document">
         <PageIntro
           eyebrow="Fieldwork week · prototype user testing"
-          title="Prototype user testing for a startup climate concern platform"
+          title="Prototype testing for a climate impact platform for startups"
           summary="The journey storyboard defined the founder experience first. From it, the team built and tested two A/B pairs—Assessment 1 vs 2 and Report 1 vs 2—plus a dashboard concept for continued use."
           links={[
             ["/gtr/docs/research-report/", "Research report"],
@@ -481,7 +481,7 @@ function FieldworkReportPage() {
         <section className="report-chapter" id="fieldwork-summary">
           <span className="report-number">0</span>
           <h2>Executive summary</h2>
-          <p className="report-lead">Fieldwork week deliverable: five prototype sessions for a startup climate concern platform.</p>
+          <p className="report-lead">Fieldwork week deliverable: five prototype sessions for a climate impact platform for startups.</p>
           <p>The team began with an eight-stage journey storyboard: discovery at demo day, referral, mobile entry, assessment, instant report, dashboard use, team access, and extended use. The prototypes were built around that journey. Assessment 1 and Assessment 2 tested two intake structures; Report 1 and Report 2 tested two result formats; the dashboard explored what continued use could look like after the instant report. Five participants completed the founder-role walkthrough, and their feedback was captured in the provided transcript.</p>
           <aside className="report-note"><b>Study boundary</b><p>All five participants were asked to act as a startup founder. Ted was the only actual founder; the other four brought technical, investment, peer-design, and accessibility perspectives to the founder scenario. The study supports prototype and comprehension decisions, not product-market-fit or calculation-accuracy claims.</p></aside>
           <div className="report-next-links">
@@ -497,6 +497,12 @@ function FieldworkReportPage() {
 
           <h3>1. Storyboard defined the experience</h3>
           <p><code>storyboard.jpeg</code> mapped the founder journey from initial awareness through assessment, instant results, dashboard use, team access, and longer-term use. It gave the sessions a shared scenario and determined which prototype moments needed to be built.</p>
+          <FieldworkFigure
+            src="/assets/images/gtr/fieldwork/user-journey-storyboard.jpg"
+            alt="Eight-panel founder journey storyboard"
+            caption="storyboard.jpeg: discovery at demo day → referral → mobile assessment → instant report → dashboard → team access → extended use."
+            label="Storyboard"
+          />
 
           <h3>2. Two A/B pairs tested the key transitions</h3>
           <p>The first pair tested how a founder completes the free impact assessment: Assessment 1 (A) versus Assessment 2 (B). The investment-stage paper, <code>assessment1-stage.jpeg</code>, belongs to Assessment 1 (A). The second pair tested how the result should be communicated: Report 1 (A) versus Report 2 (B).</p>
@@ -530,12 +536,6 @@ function FieldworkReportPage() {
           <h3>Prototype sequence</h3>
           <p>Paper and screen prototypes shown in sessions. Sample company in printed materials: pre-seed hardware and clean-energy startup.</p>
           <div className="prototype-grid">
-            <FieldworkFigure
-              src="/assets/images/gtr/fieldwork/user-journey-storyboard.jpg"
-              alt="Eight-panel user journey storyboard"
-              caption="1 · storyboard.jpeg: journey from demo-day discovery through assessment, instant report, dashboard, team access, and extended use."
-              label="Fig. 1"
-            />
             <FieldworkFigure
               src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
               alt="Continuous handwritten free impact assessment"
