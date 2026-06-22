@@ -3,32 +3,31 @@ import { GTRHeader, GTRSidebar, fieldworkSlide } from "./shell.jsx";
 const { useEffect, useState } = React;
 
 const testParticipants = [
-  ["Amali", "CCA Interaction Design fieldwork participant", "Walked through prototypes one screen at a time"],
-  ["Caroline", "Spouse's SaaS startup (Deltic), Seed, 7 FTE", "Role-played founder intake using husband's company"],
-  ["Josh", "Pet services startup (Otto)", "Founder tester"],
-  ["Ted", "AI marketplace startup", "Founder tester"],
-  ["Brian", "Accessibility reviewer", "Founder-adjacent tester"],
+  ["Amali", "Data engineer met at a networking event", "External participant; technical and data perspective"],
+  ["Caroline", "Investment analyst", "External participant; investor perspective"],
+  ["Josh", "CCA Interaction Design student", "Peer participant; interaction-design critique"],
+  ["Ted", "Startup founder", "Target-audience participant; founder perspective"],
+  ["Brian", "Accessibility Lead at Superhuman", "Accessibility expert review"],
 ];
 
-const sessionQuotes = [
-  ["Amali", "Onboarding", "Onboarding can be shorter like plan B. Progressive disclosure step by step feels shorter than the long form."],
-  ["Amali", "Report", "Report should combine A and B. Graphs and visualization would help, together with supporting text."],
-  ["Amali", "Dashboard", "Milestones looks confusing. What is impact projection? What is the milestone diagram?"],
-  ["Amali", "Product", "Is it an app? What is the product — what does it do? Is it specifically climate, environment-related, or finance companies?"],
-  ["Amali", "Feature", "Wants leaderboard. Wants to see what other startups are doing and how they are achieving."],
-  ["Caroline", "Onboarding", "Every time we have pre-set options to choose from, it's way better."],
-  ["Caroline", "Onboarding", "I like this step-by-step version. I prefer the Back/Next setup."],
-  ["Caroline", "Privacy", "Early-stage founders in stealth mode might be a little cautious with sharing that data."],
-  ["Caroline", "Report", "Oh, the visual one for sure."],
-  ["Caroline", "Terms", "What does Net Impact mean? Do people know what levels 1, 2, 3, and 5 mean?"],
-  ["Caroline", "Audience", "If you can get access to bigger companies through your university network, you should interview them too."],
-  ["Josh", "Onboarding", "When I see there are only four steps, I know it's going to take 5 to 10 minutes tops."],
-  ["Josh", "Report", "I was struggling to read and understand what the text-heavy version meant."],
-  ["Josh", "Sharing", "No one wants to broadcast their high emissions."],
-  ["Ted", "Drop-off", "What am I getting out of this? I would probably stop right here and not fill out the rest of the form."],
-  ["Ted", "Upload", "Uploading a pitch deck feels like a massive risk of exposing my intellectual property to a random company without any clear upside."],
-  ["Brian", "Accessibility", "Using asterisks for required fields without a clear, visual text indicator fails basic web accessibility guidelines."],
-  ["Brian", "Value", "The main question is: why would I do this? How would this benefit me?"],
+const sessionObservations = [
+  ["Amali", "Onboarding", "Preferred the shorter, step-by-step onboarding direction."],
+  ["Amali", "Report", "Recommended combining graphs with supporting explanation."],
+  ["Amali", "Dashboard", "Could not interpret milestones or impact projection without explanation."],
+  ["Amali", "Product", "Could not identify the product type, purpose, or intended audience from the prototype alone."],
+  ["Amali", "Feature", "Requested peer comparison and a leaderboard concept."],
+  ["Caroline", "Onboarding", "Preferred preset choices and the Back/Next flow."],
+  ["Caroline", "Privacy", "Raised stealth-stage sensitivity around sharing company documents."],
+  ["Caroline", "Report", "Preferred the visual report variation."],
+  ["Caroline", "Terms", "Needed definitions for net impact and maturity levels."],
+  ["Caroline", "Audience", "Suggested including larger companies in future research."],
+  ["Josh", "Onboarding", "Preferred a scroll flow when step count and expected duration were visible."],
+  ["Josh", "Report", "Found the text-heavy report difficult to parse."],
+  ["Josh", "Sharing", "Would not publicly share a high-emissions result."],
+  ["Ted", "Value", "Did not see enough benefit to justify completing the intake."],
+  ["Ted", "Privacy", "Treated pitch-deck upload as an IP risk without a clear return."],
+  ["Brian", "Accessibility", "Flagged asterisk-only required-field labeling as inaccessible."],
+  ["Brian", "Value", "Could not identify a sufficient reason to complete the intake."],
 ];
 
 const aggregatedFindings = [
@@ -450,7 +449,7 @@ function FieldworkReportPage() {
         <PageIntro
           eyebrow="Fieldwork week · prototype user testing"
           title="Prototype user testing for a startup climate concern platform"
-          summary="Five participant sessions. Paper and screen prototypes of intake (variations A/B), assessment report (text vs visual), and dashboard. CCA Interaction Design graduation project fieldwork. Evidence: session notes, debriefs, and transcript (Caroline)."
+          summary="Five exploratory prototype sessions covering intake, assessment-report, and dashboard concepts. Findings are directional and require confirmation against the original session records before they are treated as final evidence."
           links={[
             ["/gtr/docs/research-report/", "Research report"],
             ["/gtr/docs/stage-1/", "Stage 1 PRD"],
@@ -461,19 +460,21 @@ function FieldworkReportPage() {
           <p>In this report</p>
           <a href="#fieldwork-summary"><span>0</span>Executive summary</a>
           <a href="#fieldwork-raw"><span>1</span>Raw materials</a>
-          <a href="#fieldwork-testing"><span>2</span>The act of testing</a>
-          <a href="#fieldwork-project"><span>3</span>About your project</a>
-          <a href="#fieldwork-method"><span>4</span>Method and evidence</a>
-          <a href="#fieldwork-participants"><span>5</span>Participant records</a>
-          <a href="#fieldwork-materials"><span>6</span>Test materials</a>
-          <a href="#fieldwork-findings"><span>7</span>Aggregated findings</a>
+          <a href="#fieldwork-testing"><span>2</span>Testing Process</a>
+          <a href="#fieldwork-project"><span>3</span>What we learned</a>
+          <a href="#fieldwork-direction"><span>4</span>Changes &amp; Future Direction</a>
+          <a href="#fieldwork-method"><span>5</span>Method and evidence</a>
+          <a href="#fieldwork-participants"><span>6</span>Participant records</a>
+          <a href="#fieldwork-materials"><span>7</span>Test materials</a>
+          <a href="#fieldwork-findings"><span>8</span>Aggregated findings</a>
         </nav>
 
         <section className="report-chapter" id="fieldwork-summary">
           <span className="report-number">0</span>
           <h2>Executive summary</h2>
           <p className="report-lead">Fieldwork week deliverable: five prototype sessions for a startup climate concern platform.</p>
-          <p>Tested intake (scroll vs step-by-step), assessment report (text vs visual), and dashboard layout with founders and founder-adjacent participants. Recurring blockers: document upload sensitivity, missing value proposition before intake, undefined terms (net impact, maturity levels), dashboard density. Validated: visual report format, preset inputs, separate +/- framing when explained, four-step intake structure.</p>
+          <p>Tested intake (scroll vs step-by-step), assessment report (text vs visual), and dashboard layout with one startup founder, two external professionals, one CCA Interaction Design peer, and an accessibility expert. The strongest repeated signals were document-upload sensitivity, an unclear value proposition before intake, undefined terminology, and dashboard density. The visual report, preset inputs, and separate +/- framing earned enough support to retest—not to call validated.</p>
+          <aside className="report-note"><b>Evidence status</b><p>Exploratory prototype feedback from five sessions. The repository currently contains a synthesis but not the original GTR notes or transcript. Participant-specific wording below is therefore paraphrased; verify it against the source records before final publication.</p></aside>
           <div className="report-next-links">
             <a href="/gtr/docs/fieldwork-report/slides/">Present fieldwork slides <span>→</span></a>
             <a href="/gtr/docs/research-report/">Research report <span>→</span></a>
@@ -483,15 +484,16 @@ function FieldworkReportPage() {
         <section className="report-chapter" id="fieldwork-raw">
           <span className="report-number">1</span>
           <h2>Raw materials</h2>
-          <p className="report-lead">Quotes, prototype images, and session observations from fieldwork week. Source: session notes and debriefs only.</p>
+          <p className="report-lead">Prototype images and participant-attributed observations from the current fieldwork synthesis.</p>
 
-          <h3>Participant quotes</h3>
+          <h3>Participant observations</h3>
+          <p>These are paraphrases, not verified quotations.</p>
           <div className="report-table-scroll">
             <table className="report-table report-table-wide">
-              <thead><tr><th>Participant</th><th>Topic</th><th>Quote</th></tr></thead>
+              <thead><tr><th>Participant</th><th>Topic</th><th>Observation</th></tr></thead>
               <tbody>
-                {sessionQuotes.map(([name, topic, quote]) => (
-                  <tr key={`${name}-${topic}-${quote.slice(0, 24)}`}><td>{name}</td><td>{topic}</td><td><q>{quote}</q></td></tr>
+                {sessionObservations.map(([name, topic, observation]) => (
+                  <tr key={`${name}-${topic}-${observation.slice(0, 24)}`}><td>{name}</td><td>{topic}</td><td>{observation}</td></tr>
                 ))}
               </tbody>
             </table>
@@ -538,45 +540,8 @@ function FieldworkReportPage() {
 
         <section className="report-chapter" id="fieldwork-testing">
           <span className="report-number">2</span>
-          <h2>The act of testing</h2>
-          <p className="report-lead">Draft reflection on how testing was run during fieldwork week.</p>
-
-          <h3>What did you learn about testing?</h3>
-          <ul>
-            <li>Peer sessions before stakeholder sessions caught flow and script problems early. Internal runs reduced embarrassment and let the team fix sequencing before exposing founders.</li>
-            <li>Think-aloud on paper prototypes still surfaces real blockers. Upload sensitivity, value proposition gaps, and jargon confusion appeared without a working product.</li>
-            <li>Participants react to the project concept and the UI in the same session. A founder can reject the form before evaluating the report if the upside is unclear.</li>
-            <li>A/B comparisons (scroll vs step-by-step onboarding; text vs visual report) produce directional signal but not a unanimous winner at n=5. Pattern-level issues (uploads, undefined terms) replicated faster than layout preferences.</li>
-            <li>Role-play with a proxy company (Caroline using spouse's SaaS startup Deltic) still produced valid friction on stealth mode, SaaS handprint interpretation, and product scope questions.</li>
-            <li>Single-session red flags should be held; cross-participant patterns should trigger redesign. The iteration rule matched how the team actually decided what to change.</li>
-          </ul>
-
-          <h3>What mistakes did you make while testing?</h3>
-          <ul>
-            <li>Placed optional document upload (step 2) before participants understood what they would receive. Ted stated he would stop before finishing; Brian asked why he would complete the form at all.</li>
-            <li>Used terms (net impact, maturity levels, impact projection, milestone diagram) without inline definitions. Multiple sessions required interviewer explanation, which is not scalable.</li>
-            <li>Footprint and handprint card labels did not read clearly for SaaS. Caroline had to infer handprint from transport avoidance via remote work.</li>
-            <li>Sample numbers differed between the instant report and dashboard sketch (e.g. footprint 10.7 vs 42.6 tCO₂e). This added confusion when asking participants to evaluate hierarchy, not arithmetic.</li>
-            <li>Tested many concepts per session (onboarding A/B, report A/B, dashboard, storyboard, sharing). Sessions ran long and some questions (e.g. leaderboard, peer comparison) were recorded but not designed for.</li>
-
-          </ul>
-
-          <h3>What worked well while testing?</h3>
-          <ul>
-            <li>Internal peer-test-first protocol. Team resolved obvious flow issues before stakeholder time.</li>
-            <li>Think-aloud with interviewer-led walkthrough. Participants named concerns (IP risk, LinkedIn sharing, accessibility) unprompted.</li>
-            <li>Low-fidelity paper and pencil prototypes. Fast to revise between sessions; founders engaged with layout and copy, not polish.</li>
-            <li>Four-step intake with stated duration (2-5 minutes) and visible step count. Josh used step count to estimate time commitment.</li>
-            <li>A/B onboarding and report variants in the same session. Direct preference statements (Amali and Caroline: B; Josh: A for onboarding; visual report preferred across sessions).</li>
-            <li>Real startup contexts in the room: Josh (Otto pet services), Ted (AI marketplace), Brian (accessibility and founder-adjacent). Feedback mapped to business models, not generic opinions.</li>
-            <li>Recording concept reactions alongside task walkthrough. Ted's drop-off and Brian's incubator distribution suggestion came from "would you use this?" not checkbox tasks.</li>
-          </ul>
-        </section>
-
-        <section className="report-chapter" id="fieldwork-project">
-          <span className="report-number">3</span>
-          <h2>About your project</h2>
-          <p className="report-lead">Draft synthesis: who was tested, what changed, what held, and what remains open.</p>
+          <h2>Testing Process</h2>
+          <p className="report-lead">Five exploratory think-aloud sessions used low-fidelity intake, report, and dashboard concepts.</p>
 
           <h3>Who did you test with?</h3>
           <div className="report-table-scroll">
@@ -589,61 +554,92 @@ function FieldworkReportPage() {
               </tbody>
             </table>
           </div>
-          <p>Primary audience: startup founders or founder proxies completing intake and reacting to report and dashboard concepts. Amali walked through prototypes one screen at a time. Caroline role-played her husband's SaaS startup (Deltic). Brian added accessibility and distribution lens.</p>
+          <p>The sample included one startup founder, two external professionals, one CCA Interaction Design student, and one accessibility expert. The single founder session provides directional target-audience evidence, but it cannot validate founder behavior or product-market fit.</p>
+
+          <h3>What mistakes did you make while testing?</h3>
+          <ul>
+            <li>The test asked for sensitive documents before clearly showing the participant benefit. This confounded trust in the concept with usability of the form.</li>
+            <li>Terms such as net impact, maturity, projection, and milestones required interviewer explanation. The facilitator became part of the interface.</li>
+            <li>The report and dashboard used inconsistent illustrative emissions values, adding noise to a hierarchy test.</li>
+            <li>Each session covered too many artifacts. Onboarding A/B, report A/B, dashboard, storyboard, and sharing produced breadth but shallow evidence.</li>
+            <li>The participant mix included only one target startup founder. Founder, professional, peer-design, and accessibility feedback should not be collapsed into one validation count.</li>
+          </ul>
+
+          <h3>What worked well while testing?</h3>
+          <ul>
+            <li>Internal walkthroughs caught sequencing and script problems before stakeholder sessions.</li>
+            <li>Think-aloud exposed trust, comprehension, sharing, and accessibility concerns that task completion alone would have missed.</li>
+            <li>Low-fidelity artifacts kept iteration inexpensive and made it possible to compare alternative structures in the same session.</li>
+            <li>Using hypothetical startup contexts exposed questions worth testing directly with founders in the next round.</li>
+            <li>Repeated issues were separated from one-off requests, creating a clearer threshold for redesign.</li>
+          </ul>
+        </section>
+
+        <section className="report-chapter" id="fieldwork-project">
+          <span className="report-number">3</span>
+          <h2>What we learned</h2>
+          <p className="report-lead">The sessions identified the conditions under which the concept is worth testing again. They did not validate a product or market.</p>
+
+          <h3>What did you learn about testing?</h3>
+          <ul>
+            <li>Concept value, trust, and interface usability cannot be interpreted as separate layers when participants encounter them at the same time.</li>
+            <li>Low-fidelity testing is sufficient for identifying blockers, but preference comparisons at n=5 remain directional.</li>
+            <li>Cross-participant repetition is more useful than isolated enthusiasm. Repeated blockers should drive the next prototype; one-off feature requests should enter a backlog.</li>
+            <li>Adjacent professional and peer perspectives can reveal friction, but they must be followed by direct research with the target founder role.</li>
+          </ul>
 
           <h3>What did you learn from your stakeholders?</h3>
           <ul>
-            <li>Early-stage founders treat pitch decks and accounts as IP and stealth risks, not optional convenience (Caroline, Ted, Brian).</li>
-            <li>Product purpose and audience must be clear before intake investment. Amali asked whether this is an app and who it is for; Ted and Brian asked what they get from completing the form.</li>
-            <li>Visual report with graphs and supporting text beats text-heavy layout; Amali requested combining both report variations (Caroline, Josh, Brian).</li>
-            <li>Dashboard should stack vertically: overview, then goals and milestones at top; maturity and status metrics lower (Josh, Brian). Four-card horizontal row was skipped or read as messy.</li>
-            <li>SaaS and AI startups: primary cost driver is cloud compute and token usage, not hardware checklist items (Ted). Manual spend fields may fit better than document upload.</li>
-            <li>LinkedIn sharing is conditional. Founders will not broadcast high-emission results; positive or improved metrics for investors are acceptable (Josh).</li>
-            <li>Product scope and audience are unclear from prototypes alone. Amali asked whether this is an app and whether the audience is climate-only, environment-related, or finance companies.</li>
-            <li>Accessibility: asterisk-only required fields fail basic guidelines; use visible [Required] text (Brian).</li>
-            <li>Peer comparison and leaderboard requested (Amali) but undefined for MVP scope.</li>
-            <li>Caroline and Brian suggested interviewing larger companies for richer environmental footprint data.</li>
+            <li>Early-stage company documents are trust-sensitive. A local-file claim alone does not establish enough value or confidence.</li>
+            <li>The product must explain its audience, output, and benefit before asking for effort or data.</li>
+            <li>A visual report with concise explanation was easier to interpret than either a text-heavy report or a dense dashboard.</li>
+            <li>Input defaults must reflect the business model. SaaS and AI participants focused on cloud and token costs rather than hardware and logistics.</li>
+            <li>Public sharing is conditional; negative results require private, controlled handling.</li>
+            <li>Accessible labels and a clear vertical hierarchy are baseline requirements, not optional polish.</li>
           </ul>
 
-          <h3>Major changes or pivots from their feedback</h3>
+          <h3>What ideas were validated from testing?</h3>
+          <p>None were validated in the strong sense. The following ideas received enough directional support to carry into the next round:</p>
           <ul>
-            <li>Deprioritize pitch deck and accounts upload as default intake path. Shift toward manual aggregate fields (e.g. monthly AI/cloud spend) and incubator-only document path (Brian).</li>
-            <li>Move value proposition and output preview earlier — show what the assessment delivers after step 1, not only at report end (Brian, Ted).</li>
-            <li>Default report direction toward visual/infographic layout combined with explanatory text, not text-primary alone (Amali, Caroline, Josh).</li>
-            <li>Redesign dashboard hierarchy: vertical stack; combine goals and milestones; separate maturity from headline metrics (Josh, Brian).</li>
-            <li>Add SaaS-specific intake: token/compute observability instead of generic hardware defaults (Ted).</li>
-            <li>Restrict public sharing to positive or improved metrics; default private or investor-only (Josh).</li>
+            <li>A short intake with visible progress and preset choices.</li>
+            <li>Separate negative footprint and positive handprint framing, provided both terms are explained.</li>
+            <li>A visual assessment report supported by concise explanatory text.</li>
+            <li>Business-model-specific questions rather than one generic checklist.</li>
           </ul>
+        </section>
 
-          <h3>Ideas validated from testing</h3>
+        <section className="report-chapter" id="fieldwork-direction">
+          <span className="report-number">4</span>
+          <h2>Changes &amp; Future Direction</h2>
+          <p className="report-lead">The next round should narrow the question, reduce trust risk, and test comprehension with a more representative sample.</p>
+
+          <h3>What challenges do you still face?</h3>
           <ul>
-            <li>Four-step intake structure (profile, documents optional, EMITS/AVOIDS selection, generate) is completable and understandable when jargon is explained.</li>
-            <li>Separate footprint (-) and handprint (+) framing resonates when labels are clear. Participants engaged with activity checklists.</li>
-            <li>Preset options and dropdowns preferred over typing for business model, funding stage, and activity selection.</li>
-            <li>Progress indicator and stated step count reduce perceived length of onboarding.</li>
-            <li>Instant visual assessment report is the compelling artifact. Participants preferred it over dashboard for first read.</li>
-            <li>Overall concept rated positively (Amali: clean design, understandable, idea is good; Caroline: interesting and cool).</li>
+            <li>The preferred onboarding pattern remains unresolved: continuous scroll versus step-by-step navigation.</li>
+            <li>The prototype has not tested real data entry, real files, calculation accuracy, or trust in a deployed system.</li>
+            <li>Illustrative emissions values are not validated source data and should not be interpreted as product accuracy.</li>
+            <li>Core terms still need to be understood without facilitator explanation.</li>
+            <li>The sample is small and mixed, with only one target startup founder.</li>
           </ul>
 
-          <h3>Challenges you still face</h3>
+          <h3>Any major changes or pivots from their feedback?</h3>
           <ul>
-            <li>Onboarding format unresolved: scroll with step count (Josh) vs step-by-step with Back/Next (Amali and Caroline).</li>
-            <li>Document upload path not tested with real files, incubator integration, or trusted third-party context.</li>
-            <li>Emissions numbers in prototypes are illustrative only; not validated against source data.</li>
-            <li>Net impact, maturity levels, impact projection, and milestones still need product copy, not interviewer explanation.</li>
-            <li>Peer benchmark and leaderboard requested but scope, privacy, and data model undefined.</li>
-            <li>Larger-company segment suggested by Caroline and Brian; not tested in this round.</li>
+            <li>Lead with the benefit and a preview of the output before requesting company information.</li>
+            <li>Replace default file upload with manual aggregate fields; reserve file use for an explicitly trusted path.</li>
+            <li>Make the visual report the primary first-read artifact and move the dashboard to follow-up use.</li>
+            <li>Use a vertical dashboard hierarchy with goals and milestones grouped near the top.</li>
+            <li>Tailor intake questions to the participant's business model.</li>
+            <li>Default results to private; treat public sharing as an explicit, selective action.</li>
           </ul>
 
-          <h3>Next steps based on feedback</h3>
+          <h3>What are your next steps based on feedback?</h3>
           <ol>
-            <li>Build interactive prototype with value proposition above the fold and preview after step 1.</li>
-            <li>Replace default document upload with manual spend fields; keep upload as optional incubator path.</li>
-            <li>Ship visual report layout first; add inline definitions for net impact, maturity, milestones, impact projection.</li>
-            <li>Redesign dashboard as vertical hierarchy with goals and milestones at top.</li>
-            <li>Add business-model-specific defaults (SaaS: cloud/AI compute; pet services: logistics; etc.).</li>
-            <li>Retest onboarding A vs B with additional participants before picking a default.</li>
-            <li>Run accessibility pass on required-field labeling and form structure.</li>
+            <li>Verify participant wording and attribution against the original notes and transcript; attach those records to the project archive.</li>
+            <li>Build one focused interactive prototype: value proposition, short intake, and visual report.</li>
+            <li>Run separate tests for comprehension, trust, and onboarding pattern instead of combining every question in one session.</li>
+            <li>Recruit more startup founders and keep founder, peer-design, investor, technical, and accessibility evidence as separate groups.</li>
+            <li>Test accessibility and terminology without facilitator assistance.</li>
+            <li>Only after comprehension is stable, test real-data workflows and calculation credibility.</li>
           </ol>
           <div className="report-next-links">
             <a href="/gtr/docs/fieldwork-report/slides/">Present fieldwork slides <span>→</span></a>
@@ -652,7 +648,7 @@ function FieldworkReportPage() {
         </section>
 
         <section className="report-chapter" id="fieldwork-method">
-          <span className="report-number">4</span>
+          <span className="report-number">5</span>
           <h2>Method and evidence</h2>
           <p className="report-lead">Think-aloud prototype sessions during fieldwork week.</p>
           <div className="report-table-scroll">
@@ -666,7 +662,7 @@ function FieldworkReportPage() {
                 <tr><td>Test objectives</td><td>Intake friction, document sensitivity, +/- comprehension, report readability, dashboard hierarchy, stated willingness to share, reaction to overall project concept.</td></tr>
                 <tr><td>Iteration rule</td><td>Small prototype updates allowed after each session. Specific headline or CTA variants require multiple participants before a decision.</td></tr>
                 <tr><td>Change threshold</td><td>Single-participant red flags held until replicated. Pattern-level red flags trigger redesign of what is tested and how.</td></tr>
-                <tr><td>Evidence status</td><td>Session notes and debriefs. Not production validation.</td></tr>
+                <tr><td>Evidence status</td><td>Exploratory and directional. The current repository contains the synthesis but not the original GTR session records; verify attribution before final publication.</td></tr>
               </tbody>
             </table>
           </div>
@@ -681,8 +677,9 @@ function FieldworkReportPage() {
         </section>
 
         <section className="report-chapter" id="fieldwork-participants">
-          <span className="report-number">5</span>
+          <span className="report-number">6</span>
           <h2>Participant records</h2>
+          <p className="report-lead">Paraphrased from the current synthesis. Confirm participant details and attribution against the original session records.</p>
           <div className="report-table-scroll">
             <table className="report-table report-table-wide">
               <thead><tr><th>Participant</th><th>Context</th><th>Role</th></tr></thead>
@@ -695,7 +692,7 @@ function FieldworkReportPage() {
           </div>
 
           <h3>Amali</h3>
-          <p>Participant 1. Walked through the form one screen at a time. Stated design is clean and understandable.</p>
+          <p>Data engineer met at a networking event. Walked through the form one screen at a time and contributed an external technical perspective.</p>
           <ul>
             <li>Onboarding: preferred variation B (shorter, step-by-step). Stated progressive disclosure feels shorter than long form. Requested clear end state on final step.</li>
             <li>Report: requested combining variations A and B. Stated graphs and visualization would help with supporting text to explain what the graph shows.</li>
@@ -705,18 +702,18 @@ function FieldworkReportPage() {
           </ul>
 
           <h3>Caroline</h3>
-          <p>Role-played spouse's SaaS startup Deltic (deltic.com, Seed, 7 FTE, SaaS). Think-aloud session with transcript on file. Not a founder herself; raised founder-proxy concerns.</p>
+          <p>Investment analyst. Reviewed the concept through an investor and company-evaluation lens. The current synthesis references a transcript, but that transcript is not included in this repository.</p>
           <ul>
             <li>Onboarding: opened session using husband's startup as example. Asked whether Pre-Seed includes accelerators and incubators. Preferred preset options and dropdowns over typing; requested business model dropdown. Progress indicator noted as useful. Preferred variation B (Back/Next) over continuous scroll.</li>
             <li>Documents: raised stealth-mode concern for pitch deck and accounts at early stage. Stated early-stage founders are cautious about competitors and sharing business ideas.</li>
-            <li>Footprint/handprint: card purpose unclear initially. For SaaS, applied transport avoidance via remote work (home offices; walking/biking vs commute). Hardware and logistics examples did not apply to Deltic.</li>
-            <li>Report: preferred visual/infographic variation ("the visual one for sure").</li>
+            <li>Footprint/handprint: card purpose was unclear initially. The proxy context used transport avoidance through remote work; hardware and logistics examples did not fit the SaaS scenario.</li>
+            <li>Report: preferred the visual/infographic variation.</li>
             <li>Dashboard: assessment layout preferred over dashboard layout. Net impact and maturity levels 1-5 required interviewer explanation.</li>
             <li>Audience: suggested interviewing bigger companies through university network; noted larger environmental footprint and reporting requirements.</li>
-            <li>Overall: stated project is interesting and cool. Congratulated team on graduation project (CCA Interaction Design).</li>
           </ul>
 
-          <h3>Josh (Otto, pet services)</h3>
+          <h3>Josh</h3>
+          <p>CCA Interaction Design student. Participated as a peer tester and design critic, not as a startup founder.</p>
           <ul>
             <li>Onboarding: preferred variation A (scroll) if step count and time estimate shown at start (e.g. four steps, 5-10 minutes). Stated scroll allows correcting answers without repeated Back clicks.</li>
             <li>Report: preferred visual/infographic variation. Stated text-heavy layout was difficult to parse.</li>
@@ -724,7 +721,8 @@ function FieldworkReportPage() {
             <li>Dashboard: four-card horizontal layout read as messy; recommended vertical stack (overview, then goals, then milestones).</li>
           </ul>
 
-          <h3>Ted (AI marketplace)</h3>
+          <h3>Ted</h3>
+          <p>Startup founder. Participated as the only direct target-audience representative in this round.</p>
           <ul>
             <li>Value proposition: asked what he gets from completing the form; stated he would stop before finishing. Uploading pitch deck stated as IP risk without clear upside.</li>
             <li>Business model auto-detect: stated system cannot infer business model from company name or URL alone.</li>
@@ -733,11 +731,12 @@ function FieldworkReportPage() {
           </ul>
 
           <h3>Brian</h3>
+          <p>Accessibility Lead at Superhuman. Reviewed the prototype as an accessibility expert.</p>
           <ul>
             <li>Accessibility: asterisk-only required fields fail basic accessibility; use visible [Required] text.</li>
             <li>Labels: business model label unclear; recent accounts and pitch deck read as sensitive. Suggested manual numeric fields (e.g. monthly AI/cloud spend) instead of document upload.</li>
             <li>Onboarding: long form did not invite investment; suggested progressive preview of output after step 1.</li>
-            <li>Report: second (visual) variation easier to understand; main question remained "why would I do this?" Suggested correlating cost reduction with impact.</li>
+            <li>Report: the visual variation was easier to understand, but the benefit of completing the assessment remained unclear. Suggested correlating cost reduction with impact.</li>
             <li>Metrics: requested travel spend and website carbon (deploy/load impact) in addition to emissions.</li>
             <li>Dashboard: layout dense. Recommended milestones and climate goals at top; maturity and status metrics at bottom; combine goals and milestones sections.</li>
             <li>Distribution: suggested incubator or investor partnership so document sharing occurs inside trusted context.</li>
@@ -746,7 +745,7 @@ function FieldworkReportPage() {
         </section>
 
         <section className="report-chapter" id="fieldwork-materials">
-          <span className="report-number">6</span>
+          <span className="report-number">7</span>
           <h2>Test materials</h2>
           <p>Materials shown across sessions. Sample company in printed materials: pre-seed hardware and clean-energy startup, FTE-scaled modeled estimate.</p>
 
@@ -826,9 +825,9 @@ function FieldworkReportPage() {
         </section>
 
         <section className="report-chapter" id="fieldwork-findings">
-          <span className="report-number">7</span>
+          <span className="report-number">8</span>
           <h2>Aggregated findings</h2>
-          <p className="report-lead">Cross-participant observations from five sessions. Counts noted where applicable.</p>
+          <p className="report-lead">Directional cross-participant observations from five sessions. These findings identify what to retest; they do not establish validation.</p>
           <div className="report-table-scroll">
             <table className="report-table report-table-wide">
               <thead><tr><th>Finding</th><th>Observation</th><th>Implication</th></tr></thead>
