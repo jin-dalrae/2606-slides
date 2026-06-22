@@ -151,6 +151,26 @@ const nextResearchSteps = [
   ["03", "Recruit more founders", "Then test real data and calculation credibility after the flow works without facilitation."],
 ];
 
+const fieldworkSpeakerNotes = {
+  title: "This is our fieldwork week deliverable — five prototype testing sessions for a climate impact platform aimed at startups. We are not pitching a finished product. We are reporting what we built, how we tested it, what broke, and what we would change before the next round. Flag upfront: every participant was asked to act as a startup founder, but Ted was the only actual founder. That shapes how you read everything that follows.",
+  boundary: "Set the boundary before the findings. Five think-aloud sessions, two A/B pairs, one journey storyboard with eight stages. Enough to decide what to redesign and retest — not enough to claim product-market fit, calculation accuracy, or a winning UI variant. Keep Amali, Caroline, Josh, and Brian's role-play feedback analytically separate from Ted's founder signal.",
+  agenda: "Four sections, each with a decision attached — not a topic tour. Prototypes first, then honest process review, then how to interpret findings without over-claiming, then concrete pivots for the hybrid prototype. The full written report with participant records is at /gtr/docs/fieldwork-report/.",
+  metrics: "Walk the three numbers if needed: five sessions, two A/B pairs, eight journey stages. This round identifies what to retest; it does not validate calculation accuracy or market demand.",
+  storyboard: "Walk the storyboard left to right if you have time: demo day, referral, mobile entry, assessment, instant report, dashboard, team invite, extended use. Every paper prototype tested a specific moment in this journey. The narrative came first — and that turned out to be one of the things that worked well.",
+  prototypes: "Two numbered A/B pairs, not four unrelated screens. Pair one: Assessment 1 continuous layout versus Assessment 2 four-screen mobile flow — investment-stage paper belongs to Assessment 1. Pair two: Report 1 information-led versus Report 2 infographic-first. Dashboard extends continued use after the instant report; it is not an A/B pair.",
+  dashboard: "Participants treated the instant report as the first payoff. Josh wanted a vertical stack; Brian wanted goals and milestones at the top. Amali could not read milestones or projection without facilitator help. Do not expand the dashboard until the instant report works without explanation.",
+  intake: "Both assessment variants shared the same intake: profile, optional evidence, EMITS and AVOIDS selection, free text. Screen two says files stay in-browser — but several participants never trusted that because value was not clear first. Caroline's SaaS scenario exposed footprint/handprint card confusion.",
+  mistakes: "Be direct about what we did wrong. Trust before value confounded concept trust with form usability. Facilitator-dependent terms mean the prototype did not stand alone. Inconsistent sample values added noise. Too much per session gave breadth but not depth on each A/B question.",
+  worked: "What we would repeat: internal peer tests first, storyboard framing, think-aloud for trust and accessibility, paper A/B in the same session. Separate repeated blockers from one-off requests — Amali's leaderboard goes to backlog; trust and comprehension drive redesign.",
+  participants: "Five lenses, not five identical founders. Ted's trust reactions are the highest-priority founder signal. Brian's findings are baseline requirements. Caroline informs presets and sharing defaults. When you hear a finding later, ask which lens produced it.",
+  synthesis: "Nobody picked one prototype and won. The package is: keep the storyboard sequence, hybrid assessment, layered report, separate footprint and handprint with plain-language definitions. If someone asks which variant won, the answer is synthesis.",
+  validated: "Four decisions directionally supported for the next build. Stress that A/B preference at n=5 is directional — repeated signals determine what to retest, not what is validated.",
+  challenges: "Do not skip this if the audience is planning-oriented. Real data, deployed trust, facilitator-free comprehension, and calculation accuracy are all still open. Illustrative emissions values are not validated source data.",
+  pivots: "The journey sequence stays — feedback did not overturn that. What changes is ordering inside it: benefit before documents, hybrid assessment, layered report, business-model defaults, vertical dashboard, private-by-default sharing. Ted's SaaS point for Q&A: primary cost is cloud and AI tokens, not generic hardware defaults.",
+  next: "Three steps in order: build the hybrid flow, run separate studies for terminology trust and navigation, recruit more actual founders. Only after comprehension is stable should real-data workflows enter the test plan. Stage 1 PRD is the build target if anyone asks what ships first.",
+  close: "Close on the shift, not a recap. Fieldwork moved us from which layout looks better to whether a founder would trust the intake and understand the result without help. Full participant records and prototype files are in the written report. Open for questions on any lens or artifact.",
+};
+
 const archiveMap = [
   {
     id: "fieldwork",
@@ -291,6 +311,19 @@ function FieldworkFigure({ src, alt, caption, label = "Fig.", compact = false })
       </div>
       <figcaption>{label && <span>{label}</span>}<p>{caption}</p></figcaption>
     </figure>
+  );
+}
+
+function SlideNote({ note, visible = true }) {
+  if (!note || !visible) {
+    return null;
+  }
+
+  return (
+    <aside className="slide-speaker-note" aria-label="Speaker note">
+      <b>Speaker note</b>
+      <p>{note}</p>
+    </aside>
   );
 }
 
@@ -1227,10 +1260,25 @@ function Stage2Page() {
 }
 
 function FieldworkSlidePage() {
+  const [showNotes, setShowNotes] = useState(true);
+
   return (
-    <section className="report-section fieldwork-slides" id="fieldwork-slides">
+    <section className={`report-section fieldwork-slides${showNotes ? " fieldwork-slides--notes-on" : ""}`} id="fieldwork-slides">
       <ChapterLabel number="02.1">Docs / Fieldwork slides</ChapterLabel>
 
+      <div className="fieldwork-slides-toolbar">
+        <p>Presenter view</p>
+        <button
+          type="button"
+          className={showNotes ? "active" : ""}
+          onClick={() => setShowNotes((value) => !value)}
+          aria-pressed={showNotes}
+        >
+          {showNotes ? "Hide speaker notes" : "Show speaker notes"}
+        </button>
+      </div>
+
+      <article className="fieldwork-slide" id="fieldwork-slide-title">
       <div className="spatial-audio-hero">
         <div>
           <p className="eyebrow">GTR · Fieldwork week</p>
@@ -1245,13 +1293,19 @@ function FieldworkSlidePage() {
           />
         </div>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.title} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-boundary">
       <div className="audio-thesis">
         <span>Study boundary</span>
         <h2>Directional prototype evidence —<br /><em>not product-market fit.</em></h2>
         <p>Five founder-role walkthroughs support comprehension and structure decisions. Ted was the only actual founder; the other four brought technical, investment, peer-design, and accessibility lenses to the same scenario. This round identifies what to retest — it does not validate calculation accuracy or market demand.</p>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.boundary} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-agenda">
       <nav className="report-contents fieldwork-slide-agenda" aria-label="Presentation agenda">
         <p>In this presentation</p>
         {fieldworkSlideAgenda.map(([number, label, decides]) => (
@@ -1260,15 +1314,21 @@ function FieldworkSlidePage() {
           </a>
         ))}
       </nav>
+      <SlideNote note={fieldworkSpeakerNotes.agenda} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-metrics">
       <div className="scale-history">
         <div><p className="mini-label">This round</p><h2>Storyboard first, then A/B pairs.</h2></div>
         <article><strong>5</strong><h3>Sessions</h3><p>Founder-role think-aloud walkthroughs with mixed expertise lenses.</p></article>
         <article><strong>2</strong><h3>A/B pairs</h3><p>Assessment 1/2 and Report 1/2 tested the key transitions.</p></article>
         <article><strong>8</strong><h3>Journey stages</h3><p>From demo-day discovery through dashboard and extended use.</p></article>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.metrics} visible={showNotes} />
+      </article>
 
-      <div className="cocktail-section" id="fieldwork-slide-1">
+      <article className="fieldwork-slide" id="fieldwork-slide-1">
+      <div className="cocktail-section">
         <div className="cocktail-copy">
           <p className="mini-label">Storyboard to prototypes</p>
           <h2>The storyboard came first.<br />Artifacts followed the journey.</h2>
@@ -1286,7 +1346,10 @@ function FieldworkSlidePage() {
           <div className="journey-flow__stage"><span>Extend</span><b>Dashboard</b><small>Continued use</small></div>
         </div>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.storyboard} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-prototypes">
       <div className="prototype-grid fieldwork-slides-grid">
         <FieldworkFigure
           src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
@@ -1313,21 +1376,30 @@ function FieldworkSlidePage() {
           label="Fig. 3B"
         />
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.prototypes} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-dashboard">
       <FieldworkFigure
         src="/assets/images/gtr/fieldwork/dashboard-sketch.jpg"
         alt="Hand-drawn dashboard overview sketch"
         caption="4 · dashboard.jpeg: continued-use concept with footprint, handprint, derived net, maturity, goals, milestones, and projection."
         label="Fig. 4"
       />
+      <SlideNote note={fieldworkSpeakerNotes.dashboard} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-intake">
       <div className="walkthrough-sequence fieldwork-intake-sequence">
         {onboardingSteps.map(([number, title, detail]) => (
           <span key={number}><i>{number}</i><b>{title}</b><small>{detail}</small></span>
         ))}
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.intake} visible={showNotes} />
+      </article>
 
-      <div className="strategy-section" id="fieldwork-slide-2">
+      <article className="fieldwork-slide" id="fieldwork-slide-2">
+      <div className="strategy-section">
         <div className="strategy-heading">
           <p className="mini-label">Testing process</p>
           <h2>The test mixed too many questions<br />and introduced avoidable noise.</h2>
@@ -1343,7 +1415,10 @@ function FieldworkSlidePage() {
           ))}
         </div>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.mistakes} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-worked">
       <div className="cocktail-section fieldwork-worked">
         <div className="cocktail-copy">
           <p className="mini-label">What worked</p>
@@ -1356,7 +1431,10 @@ function FieldworkSlidePage() {
           ))}
         </div>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.worked} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-participants">
       <FieldworkFigure
         src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
         alt="Assessment 1 continuous paper prototype used in sessions"
@@ -1382,13 +1460,19 @@ function FieldworkSlidePage() {
           ))}
         </div>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.participants} visible={showNotes} />
+      </article>
 
-      <div className="audio-thesis fieldwork-synthesis" id="fieldwork-slide-3">
+      <article className="fieldwork-slide" id="fieldwork-slide-3">
+      <div className="audio-thesis fieldwork-synthesis">
         <span>What we learned</span>
         <h2>The winning direction is a synthesis —<br /><em>not one untouched variant.</em></h2>
         <p>Repeated blockers matter more than isolated enthusiasm. Assessment 2's guided flow should keep Assessment 1's visibility and revisability. Report 2's visual hierarchy should carry Report 1's explanatory depth. Founder role-play reveals friction; founder-specific behavior still needs more actual founders.</p>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.synthesis} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-validated">
       <div className="cosmos-implication fieldwork-validated">
         <span>Validated for next prototype</span>
         <h2>Four decisions are ready to build.</h2>
@@ -1399,8 +1483,11 @@ function FieldworkSlidePage() {
         </div>
         <p className="implication-close">A/B preference at n=5 is directional. Repeated signals determine what to retest, not what is validated.</p>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.validated} visible={showNotes} />
+      </article>
 
-      <div className="strategy-section" id="fieldwork-slide-4">
+      <article className="fieldwork-slide" id="fieldwork-slide-4">
+      <div className="strategy-section">
         <div className="strategy-heading">
           <p className="mini-label">Open challenges</p>
           <h2>Six questions remain<br />before the dashboard expands.</h2>
@@ -1416,7 +1503,10 @@ function FieldworkSlidePage() {
           ))}
         </div>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.challenges} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-pivots">
       <div className="comparison-block fieldwork-pivots">
         <div>
           <p className="mini-label">Pivots from feedback</p>
@@ -1428,7 +1518,10 @@ function FieldworkSlidePage() {
           ))}
         </div>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.pivots} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-next">
       <div className="audio-chain-section fieldwork-next">
         <div>
           <p className="mini-label">Next steps</p>
@@ -1441,7 +1534,10 @@ function FieldworkSlidePage() {
           ))}
         </ol>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.next} visible={showNotes} />
+      </article>
 
+      <article className="fieldwork-slide" id="fieldwork-slide-close">
       <div className="cosmos-implication fieldwork-close">
         <span>Close</span>
         <h2>Fieldwork moved the project from feature questions to trust questions.</h2>
@@ -1452,10 +1548,12 @@ function FieldworkSlidePage() {
         </div>
         <p className="implication-close">Full report, participant records, and prototype archive: /gtr/docs/fieldwork-report/</p>
       </div>
+      <SlideNote note={fieldworkSpeakerNotes.close} visible={showNotes} />
+      </article>
 
       <footer className="video-source-note">
         <span>Archive</span>
-        <p>Fieldwork week slides distill the written report. Reveal deck export remains at /?display=deck#gtr-fieldwork-week.</p>
+        <p>Fieldwork week slides distill the written report. Speaker notes toggle above for presenter view.</p>
         <a href="/gtr/docs/fieldwork-report/">Full report ↗</a>
       </footer>
     </section>

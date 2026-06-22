@@ -115,28 +115,103 @@ body {
   padding-bottom: 90px;
 }
 
-.fieldwork-slides .spatial-audio-hero,
-.fieldwork-slides .audio-thesis,
-.fieldwork-slides .cocktail-section,
-.fieldwork-slides .scale-history,
-.fieldwork-slides .strategy-section,
-.fieldwork-slides .architecture-section,
-.fieldwork-slides .audio-chain-section,
-.fieldwork-slides .cosmos-implication,
-.fieldwork-slides .comparison-block,
-.fieldwork-slides .video-source-note,
-.fieldwork-slides .fieldwork-slide-agenda,
-.fieldwork-slides .prototype-grid,
-.fieldwork-slides .walkthrough-sequence,
-.fieldwork-slides .prototype-figure {
+.fieldwork-slides-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   width: min(100%, 900px);
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 36px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
 }
 
-.fieldwork-slides .prototype-figure {
-  margin-top: 48px;
-  margin-bottom: 48px;
+.fieldwork-slides-toolbar p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fieldwork-slides-toolbar button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--navy);
+  color: var(--navy);
+  background: transparent;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fieldwork-slides-toolbar button.active {
+  color: white;
+  background: var(--pink);
+  border-color: var(--pink);
+}
+
+.fieldwork-slide {
+  width: min(100%, 900px);
+  margin: 0 auto 72px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.fieldwork-slide:last-of-type {
+  border-bottom: 0;
+}
+
+.slide-speaker-note {
+  margin: 28px 0 0;
+  padding: 18px 20px;
+  border-left: 4px solid var(--yellow);
+  background: var(--paper-deep);
+}
+
+.slide-speaker-note b {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--pink);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.slide-speaker-note p {
+  margin: 0;
+  color: #39415f;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.fieldwork-slide .spatial-audio-hero,
+.fieldwork-slide .audio-thesis,
+.fieldwork-slide .cocktail-section,
+.fieldwork-slide .scale-history,
+.fieldwork-slide .strategy-section,
+.fieldwork-slide .architecture-section,
+.fieldwork-slide .audio-chain-section,
+.fieldwork-slide .cosmos-implication,
+.fieldwork-slide .comparison-block,
+.fieldwork-slide .fieldwork-slide-agenda,
+.fieldwork-slide .prototype-grid,
+.fieldwork-slide .walkthrough-sequence,
+.fieldwork-slide .prototype-figure,
+.fieldwork-slides .video-source-note {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.fieldwork-slide .prototype-figure {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .fieldwork-slides-grid {
