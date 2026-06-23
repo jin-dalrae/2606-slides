@@ -1,4 +1,4 @@
-import { GTRHeader, GTRSidebar, fieldworkSlide } from "./shell.jsx";
+import { GTRHeader, GTRSidebar, fieldworkSlide, fieldworkFeedback } from "./shell.jsx";
 
 const { useEffect, useState } = React;
 
@@ -469,6 +469,7 @@ function FieldworkReportPage() {
           title="Prototype testing for a climate impact platform for startups"
           summary="The journey storyboard defined the founder experience first. From it, the team built and tested two A/B pairs—Assessment 1 vs 2 and Report 1 vs 2—plus a dashboard concept for continued use."
           links={[
+            ["/gtr/docs/fieldwork-report/feedback/", "Presentation feedback"],
             ["/gtr/", "Research report"],
             ["/gtr/docs/stage-1/", "Stage 1 PRD"],
           ]}
@@ -495,6 +496,7 @@ function FieldworkReportPage() {
           <aside className="report-note"><b>Study boundary</b><p>All five participants were asked to act as a startup founder. Ted was the only actual founder; the other four brought technical, investment, peer-design, and accessibility perspectives to the founder scenario. The study supports prototype and comprehension decisions, not product-market-fit or calculation-accuracy claims.</p></aside>
           <div className="report-next-links">
             <a href="/gtr/docs/fieldwork-report/slides/">Present fieldwork slides <span>→</span></a>
+            <a href="/gtr/docs/fieldwork-report/feedback/">Presentation feedback <span>→</span></a>
             <a href="/gtr/">Research report <span>→</span></a>
           </div>
         </section>
@@ -1020,8 +1022,161 @@ function Stage2Page() {
   );
 }
 
+const presentationParticipants = [
+  ["Amali", "Data engineer", "Technical and data perspective on intake, report, and dashboard comprehension."],
+  ["Caroline", "Investment analyst", "Investor-side reading of stealth risk, report format, and term clarity."],
+  ["Josh", "CCA Interaction Design student", "Product-design feedback on flow density, report parsing, and sharing behavior."],
+  ["Ted", "Startup founder", "Only actual founder in the cohort; closest match to the target audience."],
+  ["Brian", "Accessibility Lead, Superhuman", "Accessibility gaps and whether the intake justified the effort."],
+];
+
+const presentationTakeaways = [
+  ["Value proposition gap", "Participants liked the concept but repeatedly asked why they should complete the flow.", "State the benefit before document upload; show a preview after step one."],
+  ["Session overload", "Two assessments, two reports, and a dashboard in one sitting was hard to follow.", "Group complete Track A and Track B experiences instead of mixing variations mid-journey."],
+  ["Language density", "Early prototype copy was too complex for most role-played founders.", "Run an internal walkthrough before each session; simplify labels and definitions."],
+  ["A/B value", "Side-by-side variations made preferences legible and gave room to elaborate on feedback.", "Keep paired testing, but sequence each track end-to-end."],
+  ["Trust and privacy", "Early-stage founders resisted sharing pitch decks with an unfamiliar team.", "Replace sensitive uploads with manual aggregate fields where possible."],
+  ["Sample size", "Only one participant was an actual founder.", "Recruit more founders before treating comprehension results as validation."],
+];
+
 function fieldworkSlideEmbedSrc() {
   return `/?display=deck#${fieldworkSlide.slug}`;
+}
+
+function FieldworkFeedbackPage() {
+  return (
+    <section className="report-section" id="fieldwork-feedback">
+      <ChapterLabel number="02.0">Fieldwork / Presentation feedback</ChapterLabel>
+      <div className="report-document">
+        <PageIntro
+          eyebrow="Fieldwork week · team presentation and critique"
+          title="What we said in the room, and what the feedback pushed back on"
+          summary="This page synthesizes the fieldwork-week presentation transcript and the mentor Q&amp;A that followed. It captures how the team explained the paper-prototype study, what landed with participants, what confused them, and what to change before the next round."
+          links={[
+            ["/gtr/docs/fieldwork-report/", "Fieldwork report"],
+            ["/gtr/docs/fieldwork-report/slides/", "Fieldwork slides"],
+          ]}
+        />
+
+        <nav className="report-contents" aria-label="Presentation feedback contents">
+          <p>In this page</p>
+          <a href="#feedback-summary"><span>0</span>Executive summary</a>
+          <a href="#feedback-product"><span>1</span>What we presented</a>
+          <a href="#feedback-process"><span>2</span>Testing process</a>
+          <a href="#feedback-signal"><span>3</span>What participants valued</a>
+          <a href="#feedback-friction"><span>4</span>Where the sessions broke</a>
+          <a href="#feedback-question"><span>5</span>The recurring question</a>
+          <a href="#feedback-mentor"><span>6</span>Mentor feedback</a>
+          <a href="#feedback-next"><span>7</span>What changes next</a>
+        </nav>
+
+        <section className="report-chapter" id="feedback-summary">
+          <span className="report-number">0</span>
+          <h2>Executive summary</h2>
+          <p className="report-lead">The presentation closed fieldwork week by narrating a paper-prototype study for a startup climate-impact platform — onboarding, instant report, and dashboard — tested with five founder-role participants.</p>
+          <p>The team’s honest read: the concept and the link between business activity and environmental impact resonated, but the sessions asked too much at once and still failed to answer the simplest founder question — <em>why should I do this?</em> Mentor feedback reinforced that gap and suggested a cleaner A/B structure for the next round.</p>
+          <aside className="report-note"><b>How to read this page</b><p>Use the detailed fieldwork report for artifact inventory, participant tables, and aggregated findings. This page preserves the spoken narrative and the critique that shaped the next iteration.</p></aside>
+        </section>
+
+        <section className="report-chapter" id="feedback-product">
+          <span className="report-number">1</span>
+          <h2>What we presented</h2>
+          <p>Team GTR introduced a carbon planner for startups — a product direction aimed at helping founders see the planning impact of continuing to operate as they do today. The study focused on paper prototypes for three moments in the journey:</p>
+          <ol>
+            <li><b>Onboarding / assessment</b> — mobile-first intake so founders could imagine using their own phone.</li>
+            <li><b>Instant report</b> — deliberately letter-shaped to feel like receiving a real document, while remaining readable on desktop.</li>
+            <li><b>Dashboard</b> — a surface founders would return to while running the business.</li>
+          </ol>
+          <p>The storyboard came first: make founders aware the platform exists, open it on a smartphone, complete assessment, receive a report, then move into ongoing dashboard use. Every prototype artifact tested a specific transition in that path.</p>
+        </section>
+
+        <section className="report-chapter" id="feedback-process">
+          <span className="report-number">2</span>
+          <h2>Testing process</h2>
+          <p>After building the paper prototypes, the team ran five sessions and synthesized feedback across distinct perspectives:</p>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Participant</th><th>Background</th><th>What they brought</th></tr></thead>
+              <tbody>
+                {presentationParticipants.map(([name, role, note]) => (
+                  <tr key={name}><td>{name}</td><td>{role}</td><td>{note}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p>Sessions took place at the Superhuman office during a team visit and at a Monday coffee-connection event. Ted was the only actual startup founder; the other four stress-tested comprehension, investor logic, design clarity, and accessibility — which helped surface inclusive-design gaps the team might have missed with a founder-only sample.</p>
+          <p>For each major step, the team showed two variations and asked which felt better: Assessment A vs B, Report A vs B, then the dashboard. Participants moved start-to-finish through the journey, but with A/B choices embedded throughout the session rather than as two fully separated tracks.</p>
+        </section>
+
+        <section className="report-chapter" id="feedback-signal">
+          <span className="report-number">3</span>
+          <h2>What participants valued</h2>
+          <p>Despite friction in the sessions, the overall concept left a strong impression. Participants responded well to usability ideas and to the connection between environmental impact and everyday business decisions — seeing effects they had not previously considered.</p>
+          <p>A/B comparisons were especially productive. When a first variation missed, a second often landed: <em>“The first one didn’t quite land, but the second one did — this is what I was imagining.”</em> That pattern gave the team clearer evidence about which intake structure, report format, and visual hierarchy deserved another pass.</p>
+          <aside className="report-note report-note-yellow"><b>Signal to keep</b><p>Early paired testing worked. The next iteration should preserve comparison, but reduce cognitive load by presenting each track as a coherent whole.</p></aside>
+        </section>
+
+        <section className="report-chapter" id="feedback-friction">
+          <span className="report-number">4</span>
+          <h2>Where the sessions broke</h2>
+          <p>The team identified three self-inflicted problems in how the study was built and run:</p>
+          <ul>
+            <li><b>Too much in one sitting.</b> Two assessments, two reports, and a dashboard in a single session overwhelmed participants.</li>
+            <li><b>Complex prototype language.</b> Early copy was hard to follow for most role-played founders; only Ted, the actual founder, navigated it comfortably.</li>
+            <li><b>Uneven session setup.</b> Not every participant entered with the same mental model of the journey until the team added an internal walkthrough before showing screens.</li>
+          </ul>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Theme</th><th>What we heard</th><th>Implication</th></tr></thead>
+              <tbody>
+                {presentationTakeaways.map(([theme, heard, implication]) => (
+                  <tr key={theme}><td>{theme}</td><td>{heard}</td><td>{implication}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="report-chapter" id="feedback-question">
+          <span className="report-number">5</span>
+          <h2>The recurring question</h2>
+          <p className="report-lead">Across sessions, the most consistent pushback was not a layout detail. It was purpose.</p>
+          <blockquote className="report-quote">Why? What is the main purpose behind this product? Why would we want to use it?</blockquote>
+          <p>Participants liked the design direction but needed a sharper value proposition before they would invest attention — let alone documents — in the flow. The onboarding journey currently asks for information before delivering meaningful value. That sequencing showed up again in the detailed fieldwork findings as upload friction and an unclear product type.</p>
+          <p>If the next iteration answers <em>why</em> before <em>what to upload</em>, the same prototype structure becomes much easier to defend.</p>
+        </section>
+
+        <section className="report-chapter" id="feedback-mentor">
+          <span className="report-number">6</span>
+          <h2>Mentor feedback</h2>
+          <h3>Climate Brick outreach</h3>
+          <p>The team reached out through email, LinkedIn, and Instagram but did not receive a substantive reply beyond one positive expression of interest. Climate Brick remains a reference shelf, not a confirmed partnership.</p>
+          <h3>Stay on purpose</h3>
+          <p>The mentor treated the recurring <em>why</em> question as a useful gut check rather than a failure — a reminder to pause amid prototypes and pixels and restate what the product is actually trying to achieve.</p>
+          <h3>Reframe A/B testing</h3>
+          <p>When participants felt confused despite seeing the full journey, the mentor suspected the within-session A/B switching. Homework for the next round: group all of Track A into one complete experience and all of Track B into another, so messaging, flow, CTAs, and tone stay consistent inside each track.</p>
+          <aside className="report-note"><b>Mentor verdict</b><p>The latest iteration read as the strongest version so far. The team was encouraged to carry the feedback forward into the working prototype and the next founder-recruitment pass.</p></aside>
+        </section>
+
+        <section className="report-chapter" id="feedback-next">
+          <span className="report-number">7</span>
+          <h2>What changes next</h2>
+          <ul>
+            <li>Deliver value earlier in onboarding — before document upload and before the heaviest inputs.</li>
+            <li>Combine the strongest elements from Assessment A/B and Report A/B instead of treating them as isolated winners.</li>
+            <li>Add clearer guidance across onboarding, dashboard, and report materials; reduce unexplained complexity.</li>
+            <li>Address trust and privacy explicitly for very early-stage startups reluctant to share sensitive files.</li>
+            <li>Recruit more actual founders; five sessions are enough for prototype direction, not for hypothesis validation.</li>
+            <li>Update prototypes from these results and test again with a working build.</li>
+          </ul>
+          <div className="report-next-links">
+            <a href="/gtr/docs/fieldwork-report/">Open the fieldwork report <span>→</span></a>
+            <a href="/gtr/docs/fieldwork-report/slides/">Review fieldwork slides <span>→</span></a>
+          </div>
+        </section>
+      </div>
+    </section>
+  );
 }
 
 function FieldworkSlidePage() {
@@ -1066,13 +1221,15 @@ function App() {
   const activeChapter = path.includes("/docs/") ? "docs" : "intro";
   const docsPage = path.includes("/docs/fieldwork-report/slides")
     ? fieldworkSlide.id
-    : path.includes("/docs/fieldwork-report")
-      ? "fieldwork-report"
-      : path.includes("/docs/stage-1")
-        ? "stage-1"
-        : path.includes("/docs/stage-2")
-          ? "stage-2"
-          : null;
+    : path.includes("/docs/fieldwork-report/feedback")
+      ? fieldworkFeedback.id
+      : path.includes("/docs/fieldwork-report")
+        ? "fieldwork-report"
+        : path.includes("/docs/stage-1")
+          ? "stage-1"
+          : path.includes("/docs/stage-2")
+            ? "stage-2"
+            : null;
 
   return (
     <div id="top">
@@ -1089,6 +1246,7 @@ function App() {
         {activeChapter === "docs" && docsPage === "stage-1" && <Stage1Page />}
         {activeChapter === "docs" && docsPage === "stage-2" && <Stage2Page />}
         {activeChapter === "docs" && docsPage === fieldworkSlide.id && <FieldworkSlidePage />}
+        {activeChapter === "docs" && docsPage === fieldworkFeedback.id && <FieldworkFeedbackPage />}
       </main>
     </div>
   );

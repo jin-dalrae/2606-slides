@@ -16,6 +16,14 @@ export const fieldworkSlide = {
   slug: "gtr-fieldwork-week",
 };
 
+export const fieldworkFeedback = {
+  id: "fieldwork-feedback",
+  label: "Presentation feedback",
+  path: "/gtr/docs/fieldwork-report/feedback/",
+};
+
+export const fieldworkSubnav = [fieldworkSlide, fieldworkFeedback];
+
 const reportChildren = {
   docs: docsReports,
 };
@@ -39,9 +47,9 @@ export function GTRHeader({ meta = "Docs archive · 2026" }) {
             {reportChildren[id]?.map(([subId, , subLabel, subPath]) => (
               <React.Fragment key={subId}>
                 <a className="top-nav-child" href={subPath} onClick={() => setOpen(false)}>↳ {subLabel}</a>
-                {subId === "fieldwork-report" && (
-                  <a className="top-nav-child top-nav-child--nested" href={fieldworkSlide.path} onClick={() => setOpen(false)}>↳ {fieldworkSlide.label}</a>
-                )}
+                {subId === "fieldwork-report" && fieldworkSubnav.map((item) => (
+                  <a className="top-nav-child top-nav-child--nested" key={item.id} href={item.path} onClick={() => setOpen(false)}>↳ {item.label}</a>
+                ))}
               </React.Fragment>
             ))}
           </React.Fragment>
@@ -72,12 +80,15 @@ export function GTRSidebar({ active, subActive }) {
             </a>
             {id === "fieldwork-report" && (
               <div className="rail-subnav rail-subnav--always">
-                <a
-                  className={active === "docs" && subActive === fieldworkSlide.id ? "active" : ""}
-                  href={fieldworkSlide.path}
-                >
-                  <span>↳</span><b>{fieldworkSlide.label}</b><i>↗</i>
-                </a>
+                {fieldworkSubnav.map((item) => (
+                  <a
+                    key={item.id}
+                    className={active === "docs" && subActive === item.id ? "active" : ""}
+                    href={item.path}
+                  >
+                    <span>↳</span><b>{item.label}</b><i>↗</i>
+                  </a>
+                ))}
               </div>
             )}
           </React.Fragment>
