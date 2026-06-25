@@ -259,7 +259,9 @@ function App() {
       ? "memory-pods"
       : window.location.pathname.includes("/secondary/socially-late")
         ? "socially-late"
-        : "overview";
+        : window.location.pathname.includes("/secondary/vr-reading")
+          ? "vr-reading"
+          : "overview";
   const primaryPage = window.location.pathname.includes("/primary/interview-kris")
     ? "interview-kris"
     : window.location.pathname.includes("/primary/interview-yves")
@@ -539,6 +541,7 @@ function App() {
                 <a className="report-subreport-link" href="/cosmos/secondary/spatial-communications/" style={{ margin: 0 }}><span>Detailed report 02.1</span><b>Spatial Communications at Scale in Virtual Environments</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/secondary/memory-pods/" style={{ margin: 0 }}><span>Detailed report 02.2</span><b>MemoryPods: Enhancing Asynchronous Communication in Extended Reality</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/secondary/socially-late/" style={{ margin: 0 }}><span>Detailed report 02.3</span><b>Socially Late, Virtually Present: Transforming Asynchronous Social VR (Stanford)</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/secondary/vr-reading/" style={{ margin: 0 }}><span>Detailed report 02.4</span><b>Reading in VR: Customizing Your Reading Experience (HTC VIVE)</b><i>Read analysis →</i></a>
               </div>
             </section>
 
@@ -621,6 +624,7 @@ function App() {
                 <a href="/cosmos/secondary/spatial-communications/">Read spatial communications analysis <span>→</span></a>
                 <a href="/cosmos/secondary/memory-pods/">Read MemoryPods analysis <span>→</span></a>
                 <a href="/cosmos/secondary/socially-late/">Read Stanford Asynchronous VR analysis <span>→</span></a>
+                <a href="/cosmos/secondary/vr-reading/">Read Customizing VR Reading analysis <span>→</span></a>
                 <a href="/cosmos/primary/">Continue to primary research <span>→</span></a>
               </div>
             </section>
@@ -854,6 +858,60 @@ function App() {
           </div>
 
           <footer className="video-source-note"><span>Source</span><p>Portia Wang, Mark Roman Miller, Anna Carolina Muller Queiroz, and Jeremy Bailenson, “Socially Late, Virtually Present: The Effects of Transforming Asynchronous Social Interactions in Virtual Reality,” Stanford University, Virtual Human Interaction Lab, CHI 2024. Talk ID g86YhG0Hofk.</p><a href="https://vhil.stanford.edu/publications/social-interaction/socially-late-virtually-present-effects-transforming-asynchronous" target="_blank" rel="noreferrer">Stanford VHIL ↗</a></footer>
+        </section>}
+
+        {activeChapter === "secondary" && secondaryPage === "vr-reading" && <section className="report-section vr-reading" id="vr-reading">
+          <ChapterLabel number="02.4">Secondary research / Video analysis</ChapterLabel>
+          <div className="spatial-audio-hero">
+            <div>
+              <p className="eyebrow">HTC VIVE · VIVE TALK</p>
+              <h1>Reading in VR: Customizing Your Reading Experience</h1>
+              <p>This official HTC VIVE Talk segment investigates the practical parameters of spatial reading. It explores how custom environment backdrops, contrast controls, and depth adjustments can transform a headset from a simple screen-viewer into a highly optimized, ergonomic, and personal reading sanctuary.</p>
+              <a className="source-link" href="https://www.youtube.com/watch?v=wWj7egAS7Vs" target="_blank" rel="noreferrer">Watch on YouTube <span>↗</span></a>
+            </div>
+            <div className="video-frame">
+              <iframe src="https://www.youtube-nocookie.com/embed/wWj7egAS7Vs" title="Reading in VR: Customizing Your Reading Experience by HTC VIVE" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+            </div>
+          </div>
+
+          <div className="audio-thesis">
+            <span>Core Thesis</span>
+            <h2>Active visual ergonomics over static re-projection.<br /><em>Fusing spatial context with personalized reading parameters.</em></h2>
+            <p>Simply copying 2D documents into a headset creates high cognitive load and visual strain. By contrast, HTC's segment highlights that a viable VR reading experience requires a combination of <b>Achromatic Voids</b> (to prevent lens flare and peripheral distractions), <b>Depth Calibration</b> (to manage convergence-accommodation conflicts), and <b>Adaptive Typography</b>. True spatial reading is not about mimicking a physical sheet, but adapting the digital medium to human sensory limits.</p>
+          </div>
+
+          <div className="cocktail-section">
+            <div className="cocktail-copy">
+              <p className="mini-label">The Ergonomic Formula</p>
+              <h2>Configuring the canvas for sensory comfort.</h2>
+              <p>For spatial reading to compete with the sheer convenience of physical paper or mobile screens, the environment must be adapted to the reader. The presentation emphasizes swapping high-stimulus landscapes for dark, quiet voids. This eliminates distracting glare, boosts letter contrast, and focuses the reader's entire attention span on the text itself, significantly lowering task fatigue.</p>
+            </div>
+            <div className="masking-diagram" aria-label="Diagram of Static Flat Layout versus Cosmos Adaptive Canvas">
+              <div className="flat-mix" style={{ borderColor: "var(--pink)" }}><span>Flat 2D Projection</span><div><i>T₁</i><i>T₂</i></div><b>High-glare, rigid depth placement</b></div>
+              <div className="diagram-arrow">→</div>
+              <div className="spatial-mix" style={{ borderColor: "var(--mint)" }}><span>Cosmos Adaptive Canvas</span><div className="listener" style={{ backgroundColor: "var(--mint)" }}><i>R</i></div><i className="voice v1">C₁*</i><i className="voice v2">C₂*</i><b>Dynamic Curve + Amber Contrast</b></div>
+            </div>
+          </div>
+
+          <div className="scale-history">
+            <div><p className="mini-label">Key Pillars of VR Reading</p><h2>Spatial options that remove reading friction.</h2></div>
+            <article><strong>Depth</strong><h3>Focal Calibration</h3><p>Let readers move text panels dynamically along the z-axis (typically 1.2m to 2.0m) to bypass eye convergence conflicts.</p></article>
+            <article><strong>Glare</strong><h3>Achromatic Voids</h3><p>Swapping noisy scenes for minimalist, dark backgrounds isolates text and eliminates distracting peripheral light reflections.</p></article>
+            <article><strong>Scale</strong><h3>Contrast Schemes</h3><p>Utilizing high-contrast, warm-tinted sepia or amber backdrops to maximize font legibility and make long sessions comfortable.</p></article>
+          </div>
+
+          <div className="cosmos-implication" style={{ marginTop: "40px" }}>
+            <span>Implication for Cosmos</span>
+            <h2>Designing the ultimate spatial book-wall.</h2>
+            <div className="implication-grid">
+              <article><b>1. Depth Slider Control</b><p>Allow readers to dynamically drag, scale, and lock conversational clusters closer or further to match their comfort range.</p></article>
+              <article><b>2. High-Contrast Voids</b><p>Provide a "Focus Mode" that dials down peripheral details and uses amber backgrounds to maximize letter legibility.</p></article>
+              <article><b>3. Column Wrapping</b><p>Avoid wide, horizontal sheets. Format comments into vertical card columns that match comfort-optimal angular visual fields.</p></article>
+            </div>
+            <p className="implication-close">HTC VIVE's insights guide Cosmos toward a highly customizer-first spatial UI, ensuring that reading asynchronous comments doesn't feel like a chore.</p>
+          </div>
+
+          <footer className="video-source-note"><span>Source</span><p>“VIVE TALK - Reading in VR: Customizing Your Reading Experience,” HTC VIVE, official presentation on ergonomic customization and sensory optimization in virtual reality. Video ID wWj7egAS7Vs.</p><a href="https://www.youtube.com/watch?v=wWj7egAS7Vs" target="_blank" rel="noreferrer">HTC VIVE ↗</a></footer>
         </section>}
 
         {activeChapter === "primary" && primaryPage === "overview" && <section className="report-section primary" id="primary">

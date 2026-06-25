@@ -11,6 +11,7 @@ export const secondaryReports = [
   ["spatial-audio", "2.1", "Spatial communications", "/cosmos/secondary/spatial-communications/"],
   ["memory-pods", "2.2", "MemoryPods (arXiv)", "/cosmos/secondary/memory-pods/"],
   ["socially-late", "2.3", "Asynchronous social VR", "/cosmos/secondary/socially-late/"],
+  ["vr-reading", "2.4", "Customizing VR reading", "/cosmos/secondary/vr-reading/"],
 ];
 
 export const primaryReports = [
