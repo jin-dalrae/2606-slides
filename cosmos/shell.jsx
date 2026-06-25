@@ -9,6 +9,7 @@ export const cosmosPages = [
 export const secondaryReports = [
   ["overview", "2.0", "Overview", "/cosmos/secondary/"],
   ["spatial-audio", "2.1", "Spatial communications", "/cosmos/secondary/spatial-communications/"],
+  ["memory-pods", "2.2", "MemoryPods (arXiv)", "/cosmos/secondary/memory-pods/"],
 ];
 
 export const primaryReports = [

@@ -254,7 +254,11 @@ function ExpertQuestionnaire() {
 
 function App() {
   const [lens, setLens] = useState("reader");
-  const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications") ? "spatial-audio" : "overview";
+  const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications")
+    ? "spatial-audio"
+    : window.location.pathname.includes("/secondary/memory-pods")
+      ? "memory-pods"
+      : "overview";
   const primaryPage = window.location.pathname.includes("/primary/interview-kris")
     ? "interview-kris"
     : window.location.pathname.includes("/primary/interview-yves")
@@ -530,7 +534,10 @@ function App() {
               <p>The same presentation documents the systems complexity required to deliver this effect at scale: speaker selection, broad attenuation ranges, server-side mixing, noise and echo suppression, voice-activity detection, gain leveling, spatial codecs, and low-latency client rendering.</p>
               <p>The finding supports a narrow conclusion. Space can carry useful attention cues. It does not follow that Cosmos should begin as a live voice environment.</p>
               <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Apply spatial attention to asynchronous message browsing first. Evaluate optional ambient presence or spatial audio only after the wall produces measurable reading value.</p></aside>
-              <a className="report-subreport-link" href="/cosmos/secondary/spatial-communications/"><span>Detailed report 02.1</span><b>Spatial Communications at Scale in Virtual Environments</b><i>Read analysis →</i></a>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px", margin: "28px 0" }}>
+                <a className="report-subreport-link" href="/cosmos/secondary/spatial-communications/" style={{ margin: 0 }}><span>Detailed report 02.1</span><b>Spatial Communications at Scale in Virtual Environments</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/secondary/memory-pods/" style={{ margin: 0 }}><span>Detailed report 02.2</span><b>MemoryPods: Enhancing Asynchronous Communication in Extended Reality</b><i>Read analysis →</i></a>
+              </div>
             </section>
 
             <section className="report-chapter" id="secondary-market">
@@ -608,7 +615,11 @@ function App() {
                 <li>Whether the value persists on desktop, where spatial depth is reduced.</li>
               </ul>
               <p>These are primary-research questions. The next report defines the comparative study, interview plan, survey, and decision criteria.</p>
-              <div className="report-next-links"><a href="/cosmos/primary/">Continue to primary research <span>→</span></a><a href="/cosmos/secondary/spatial-communications/">Read spatial communications analysis <span>→</span></a></div>
+              <div className="report-next-links">
+                <a href="/cosmos/secondary/spatial-communications/">Read spatial communications analysis <span>→</span></a>
+                <a href="/cosmos/secondary/memory-pods/">Read MemoryPods analysis <span>→</span></a>
+                <a href="/cosmos/primary/">Continue to primary research <span>→</span></a>
+              </div>
             </section>
           </article>
         </section>}
@@ -708,6 +719,84 @@ function App() {
           </div>
 
           <footer className="video-source-note"><span>Source</span><p>Paul Boustead, “Spatial Communications at Scale in Virtual Environments,” Dolby IO. Timestamps and technical claims link to the source presentation.</p><a href="https://www.youtube.com/watch?v=aTzbpX9J134" target="_blank" rel="noreferrer">YouTube ↗</a></footer>
+        </section>}
+
+        {activeChapter === "secondary" && secondaryPage === "memory-pods" && <section className="report-section memory-pods" id="memory-pods">
+          <ChapterLabel number="02.2">Secondary research / Paper analysis</ChapterLabel>
+          <div className="spatial-audio-hero">
+            <div>
+              <p className="eyebrow">Nagy · Spyridis · Mills · Argyriou · Kingston University</p>
+              <h1>MemoryPods: Asynchronous<br />XR communication.</h1>
+              <p>This research introduces "MemoryPods"—interactive digital containers that store 3D mesh and tracking data of past events, enabling asynchronous replay across physical or virtual scales, augmented by AI summarization.</p>
+              <a className="source-link" href="https://arxiv.org/html/2502.15622v1" target="_blank" rel="noreferrer">Read the arXiv paper <span>↗</span></a>
+            </div>
+            <div className="video-frame">
+              <iframe src="https://www.youtube-nocookie.com/embed/g86YhG0Hofk" title="MemoryPods: Enhancing Asynchronous Communication in Extended Reality" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+            </div>
+          </div>
+
+          <div className="audio-thesis">
+            <span>Finding</span>
+            <h2>Record structural traces, not passive frames.<br /><em>Lower cognitive load through spatial replay.</em></h2>
+            <p>Instead of relying on flat linear video recordings, preserving 3D tracking data (hand/head positions, gaze trajectories) and environmental meshes allows late-joining users to explore past social activities dynamically. Integrating modular LLM-driven narrative summaries reduces search time and informational fatigue.</p>
+          </div>
+
+          <div className="cocktail-section">
+            <div className="cocktail-copy">
+              <p className="mini-label">The Perspective Gap</p>
+              <h2>Linear playbacks flatten space.<br />MemoryPods preserve context.</h2>
+              <p>Standard videos restrict asynchronous viewing to a fixed, passive camera angle. In contrast, MemoryPods capture spatial parameters and coordinates relative to a calibration marker, giving users the freedom to inspect and navigate the interaction scene from any viewpoint.</p>
+            </div>
+            <div className="masking-diagram" aria-label="Diagram comparing flat replay to MemoryPod multi-perspective playback">
+              <div className="flat-mix" style={{ borderColor: "var(--pink)" }}><span>Flat replay</span><div><i>Video</i><i>Audio</i></div><b>Passive 2D viewport</b></div>
+              <div className="diagram-arrow">→</div>
+              <div className="spatial-mix" style={{ borderColor: "var(--mint)" }}><span>MemoryPod</span><div className="listener" style={{ backgroundColor: "var(--pink)" }}><i>U</i></div><i className="voice v1">3D Mesh</i><i className="voice v2">Tracks</i><i className="voice v3">Notes</i><b>Multi-perspective replay</b></div>
+            </div>
+          </div>
+
+          <div className="scale-history">
+            <div><p className="mini-label">Empirical Validation</p><h2>Empirical user study (N=20) shows XR outperforming text and video.</h2></div>
+            <article><strong>97 / 100</strong><h3>System Usability</h3><p>The XR Real Scale modality achieved a System Usability Scale (SUS) score of 97, compared to 55 for text and 77 for traditional video.</p></article>
+            <article><strong>2.24 seconds</strong><h3>Average Time Offset</h3><p>Spatio-temporal annotations cut temporal recall error to just 2.24s (real scale), compared to a massive 84.68s offset for video.</p></article>
+            <article><strong>96% accuracy</strong><h3>Spatial Accuracy</h3><p>Immersive full-scale playback enabled participants to locate and map critical maintenance tasks with 96% spatial accuracy.</p></article>
+          </div>
+
+          <div className="strategy-section">
+            <div className="strategy-heading"><p className="mini-label">System Architecture</p><h2>Five core components make up the MemoryPods framework.</h2><p>Combining hardware-level tracking with cloud-level AI intelligence constructs a highly readable asynchronous record.</p></div>
+            <div className="strategy-grid">
+              <article><div><span>01</span><i>Spatio-temporal</i></div><h3>Contextual Annotations</h3><p>Strategic 3D visual markers highlighting key actions, tool acquisitions, or process starts directly within the augmented space.</p></article>
+              <article><div><span>02</span><i>Fidelity</i></div><h3>Spatial Anchor Point</h3><p>QR code or calibration marker calibrating headset sensors to establish precise 1:1 physical-to-virtual positional coordinates.</p></article>
+              <article><div><span>03</span><i>Presence</i></div><h3>Body Movement Tracking</h3><p>Continuous capture of hand, head, and limb trajectories synchronized to let late-joining users review past body actions in 3D.</p></article>
+              <article><div><span>04</span><i>Geometry</i></div><h3>Environment Recording</h3><p>Depth sensor point clouds translated into 3D mesh models, allowing virtual objects to integrate seamlessly or scale down cleanly.</p></article>
+              <article><div><span>05</span><i>Summarization</i></div><h3>Narrative Abstraction</h3><p>Cloud-based LLM engine processing event transcripts to generate concise, real-time summaries and highlight key interactions.</p></article>
+            </div>
+          </div>
+
+          <div className="mixing-system" style={{ background: "rgba(255, 255, 255, 0.02)" }}>
+            <p className="mini-label">Dual Replay Framework</p>
+            <h2>Review processes across spatial scales.</h2>
+            <div className="mix-flow" aria-label="MemoryPods dual replay mode diagram">
+              <div className="mix-sources" style={{ background: "rgba(255, 255, 255, 0.05)" }}><span>Recorded Event</span><div><i>Mesh</i><i>Audio</i><i>Track</i></div></div>
+              <b>→</b>
+              <div className="mix-server" style={{ background: "rgba(0, 240, 255, 0.1)" }}><span>Real Scale Mode</span><strong>1:1 Immersive Replay</strong><small>Full size · Spatial context</small></div>
+              <b>or</b>
+              <div className="mix-codec" style={{ background: "rgba(240, 0, 255, 0.1)" }}><span>Miniature Mode</span><strong>Scaled Tabletop Replay</strong><small>Overview · Multitasking</small></div>
+            </div>
+            <p className="mix-note">Real Scale Mode provides perfect spatial immersion (96% accuracy). Miniature Scale Mode downsizes the entire 3D mesh and track data, allowing users to place multiple recordings on a table and review them concurrently.</p>
+          </div>
+
+          <div className="cosmos-implication">
+            <span>Implication for Cosmos</span>
+            <h2>Asynchronous presence is a spatial design space.</h2>
+            <div className="implication-grid">
+              <article><b>Leverage Spatial Traces</b><p>Capture movement and view tracking to let users browse discussion histories as physical pathways they can walk into.</p></article>
+              <article><b>Source-Linked Summaries</b><p>Deploy AI-generated summaries as an inspectable layer where every claim traces back to the source text on the wall.</p></article>
+              <article><b>Multi-Scale Navigation</b><p>Allow readers to zoom from a bird's-eye "tabletop" cluster overview down into full-scale immersion of specific threads.</p></article>
+            </div>
+            <p className="implication-close">The paper validates that pairing spatial tracking with AI abstraction lowers the cognitive overhead of asynchronous collaboration.</p>
+          </div>
+
+          <footer className="video-source-note"><span>Source</span><p>Akos Nagy, Yannis Spyridis, Gregory Mills, and Vasileios Argyriou, “MemoryPods: Enhancing Asynchronous Communication in Extended Reality,” Kingston University, arXiv:2502.15622v1, 2025.</p><a href="https://arxiv.org/html/2502.15622v1" target="_blank" rel="noreferrer">arXiv ↗</a></footer>
         </section>}
 
         {activeChapter === "primary" && primaryPage === "overview" && <section className="report-section primary" id="primary">
