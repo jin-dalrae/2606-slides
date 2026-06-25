@@ -253,7 +253,6 @@ function ExpertQuestionnaire() {
 }
 
 function App() {
-  const [lens, setLens] = useState("reader");
   const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications")
     ? "spatial-audio"
     : window.location.pathname.includes("/secondary/memory-pods")
@@ -801,38 +800,131 @@ function App() {
 
         {activeChapter === "primary" && primaryPage === "overview" && <section className="report-section primary" id="primary">
           <ChapterLabel number="03">Primary research</ChapterLabel>
-          <div className="section-heading split-heading">
-            <h2>Turn the concept into<br /><em>a falsifiable study.</em></h2>
-            <p>The next phase compares the wall against a conventional flat feed. The question is not whether VR feels novel—it is whether spatial form improves understanding.</p>
-          </div>
+          <article className="report-document primary-document">
+            <header className="report-page-intro">
+              <p className="eyebrow">Exploratory Phase & Synthesis</p>
+              <h1>The physical limits of immersion and the premium on provenance.</h1>
+              <p>This chapter compiles synthesized findings from three semi-structured interviews with think-aloud walkthroughs (Kris, Yves, Johnny) and a remote expert questionnaire. The qualitative feedback highlights a deep tension between headset convenience thresholds and the clear user demand for visual focus, ergonomic pacing, and verifiable source provenance.</p>
+            </header>
 
-          <div className="metrics-row">
-            {methods.map((method) => <article key={method.label}><strong>{method.number}</strong><h3>{method.label}</h3><p>{method.note}</p></article>)}
-          </div>
+            <nav className="report-contents" aria-label="Primary research contents">
+              <p>In this report</p>
+              <a href="#primary-scope"><span>0</span>Exploratory scope</a>
+              <a href="#primary-synthesis"><span>1</span>Executive findings map</a>
+              <a href="#primary-convenience"><span>2</span>Convenience thresholds</a>
+              <a href="#primary-ergonomics"><span>3</span>Physical constraints</a>
+              <a href="#primary-focus"><span>4</span>Cognitive focus & provenance</a>
+              <a href="#primary-experts"><span>5</span>Expert design consensus</a>
+              <a href="#primary-directives"><span>6</span>Strategic design directives</a>
+            </nav>
 
-          <div className="research-question">
-            <p className="mini-label">Study lens</p>
-            <div className="lens-tabs" role="tablist" aria-label="Research lenses">
-              {[["reader", "Reader"], ["community", "Community"], ["system", "System"]].map(([id, label]) => (
-                <button key={id} className={lens === id ? "active" : ""} onClick={() => setLens(id)}>{label}</button>
-              ))}
-            </div>
-            <div className="lens-panel">
-              {lens === "reader" && <><span>01 / Reader</span><h3>Can people understand and remember a discussion more comfortably in space than in a feed?</h3><p>Measure comprehension, reading comfort, source recall, place memory, and the ability to find a missing viewpoint.</p></>}
-              {lens === "community" && <><span>02 / Community</span><h3>Does a wall lower the pressure to participate while preserving a sense of shared public space?</h3><p>Interview quiet readers, observe contribution decisions, and compare perceived social pressure across formats.</p></>}
-              {lens === "system" && <><span>03 / System</span><h3>Can AI-generated structure remain useful when every label is inspectable, reversible, and source-linked?</h3><p>Test trust through source-trace tasks, incorrect-label recovery, and user-controlled clustering.</p></>}
-            </div>
-          </div>
+            <section className="report-chapter" id="primary-scope">
+              <span className="report-number">0</span>
+              <h2>Exploratory scope and participant profiles</h2>
+              <p className="report-lead">To ground our theoretical spatial concept in user reality, we conducted four distinct research tracks with designers, engineers, and XR practitioners.</p>
+              <p>These early engagements let us stress-test our web-based prototype, understand behavioral limits, and refine our evaluation criteria before committing to native platform-specific development. Because user habits around online forums are deeply entrenched on desktop and mobile, our findings focus on the exact barriers that prevent people from switching to virtual environments for reading tasks.</p>
 
-          <div className="field-notes">
-            <div><p className="mini-label">Interview prompts</p><h3>Listen for the moment when reading becomes participation.</h3></div>
-            <ol>
-              <li><span>01</span><p>Tell me about the last online discussion you read but did not reply to.</p></li>
-              <li><span>02</span><p>How do you know where the important parts of a long discussion are?</p></li>
-              <li><span>03</span><p>What would make a spatial version feel useful rather than overwhelming?</p></li>
-              <li><span>04</span><p>When should AI organize a conversation—and when should it stay out?</p></li>
-            </ol>
-          </div>
+              <div className="report-table-scroll"><table className="report-table report-table-wide">
+                <thead><tr><th>Track</th><th>Participant profile</th><th>Methodology</th><th>Key focus area</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Interview 01 (Kris)</b></td><td>Software Engineer at BigTech; owns Quest 3; low routine XR use</td><td>Semi-structured walkthrough on web</td><td>Adoption convenience & text density limits</td></tr>
+                  <tr><td><b>Interview 02 (Yves)</b></td><td>3D Artist; prior Unity XR developer; highly sensitive to motion</td><td>Concept walk & design critique</td><td>Physical comfort & spatial composition</td></tr>
+                  <tr><td><b>Interview 03 (Johnny)</b></td><td>Graphic Designer; zero VR experience; frequent screen reader</td><td>Think-aloud walkthrough</td><td>Visual isolation, focus & source trust</td></tr>
+                  <tr><td><b>Expert Survey</b></td><td>UX, UI, XR practitioners and experienced VR readers</td><td>Remote structured questionnaire</td><td>Typographic criteria & input modalities</td></tr>
+                </tbody>
+              </table></div>
+            </section>
+
+            <section className="report-chapter" id="primary-synthesis">
+              <span className="report-number">1</span>
+              <h2>Executive findings map</h2>
+              <p>Our exploratory research revealed that while the conceptual model of a spatial discussion wall is highly engaging, its success depends entirely on resolving three core physical and cognitive friction points.</p>
+
+              <div className="report-table-scroll"><table className="report-table report-table-wide">
+                <thead><tr><th>Dimension</th><th>Identified user barrier</th><th>Empirical evidence</th><th>Strategic design directive</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Convenience & Access</b></td><td>Headset adoption threshold is high; phone is default for quick browsing.</td><td>Kris: <i>“If I want to doom scroll, isn't it easier to use my phone?”</i></td><td>Establish a spatially unique task (multi-source comparison) instead of feed parity.</td></tr>
+                  <tr><td><b>Physical Ergonomics</b></td><td>Headset fatigue limits productive reading sessions to 20–30 minutes.</td><td>Yves: Red marks, nose bridge pressure, makeup contamination, motion sickness.</td><td>Design for stationary, 20-minute focused review. Avoid continuous locomotion.</td></tr>
+                  <tr><td><b>Information Structure</b></td><td>High-density text layouts in VR feel chaotic and visually overwhelming.</td><td>Kris: <i>“One of the biggest limitations is how many words there are.”</i></td><td>Use progressive peripheral disclosure; reduce background text; highlight one focus card.</td></tr>
+                  <tr><td><b>Cognitive Trust</b></td><td>AI grouping and summaries provoke immediate skepticism about source validity.</td><td>Johnny: Refuses to trust synthesized threads without explicit source tracking.</td><td>Implement absolute provenance; let users trace every label back to raw text.</td></tr>
+                </tbody>
+              </table></div>
+            </section>
+
+            <section className="report-chapter" id="primary-convenience">
+              <span className="report-number">2</span>
+              <h2>Convenience thresholds: Why VR "doomscrolling" is a non-starter</h2>
+              <p>Both Kris and Johnny emphasized that the immediate, low-friction convenience of mobile phones dictates their daily browsing habits. A phone is always within arm's reach, highly portable, and requires zero physical setup. In contrast, putting on a headset requires a startup sequence, sensory isolation from the physical room, and a deliberate decision to enter a virtual environment.</p>
+              <p>Therefore, <b>Cosmos cannot win on casual or passive browsing.</b> If Cosmos merely recreates a chronological feed in three dimensions, users will choose their phone every time.</p>
+              <blockquote className="report-quote">“If I want to browse Reddit, I'm already in a relaxed state on the couch. Putting on a Quest feels like going to work.”</blockquote>
+              <p><b>The Solution:</b> Cosmos must target purposeful, intensive information-seeking tasks where spatial comparison is a superpower—for instance, analyzing competing arguments, reading complex research trees, or monitoring multiple active channels simultaneously.</p>
+              <aside className="report-note report-note-yellow"><b>Implication</b><p>Move away from infinite-scroll structures. Build a bounded "workspace" that supports cross-source intelligence mapping instead of trying to make spatial reading a passive pastime.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="primary-ergonomics">
+              <span className="report-number">3</span>
+              <h2>Physical limits: The 20-minute ergonomic cutoff</h2>
+              <p>Yves's experience as a 3D artist and VR developer highlighted the physical realities of current headset hardware. For many users—particularly those prone to motion sickness or concerned with skin hygiene (makeup, sweat)—the headset is a high-cost environment. Yves noted that nose bridge pressure, red marks on the cheeks, and headset weight restrict continuous focus to 20 or 30 minutes at most.</p>
+              <p>Furthermore, Yves challenged the prototype's "flat cards in depth" spatial model, comparing it to an "Excel file wrapped in a circle." As a 3D practitioner, she demanded a more asymmetric, volumetric, and organic use of the 360-degree environment.</p>
+              <blockquote className="report-quote">“We are in 3D space, but we're still looking at flat sheets of text. Why can't we call notes with a physical wand, or have groups form organic clusters in depth?”</blockquote>
+              <p><b>The Solution:</b> We must design the software around a 20-minute comfort budget. This means optimizing layouts to prevent rapid head-swiveling, supporting laid-back/reclined postures with easy recentering, and utilizing actual depth (depth-layering, volumetric clusters) rather than merely bending a traditional 2D dashboard around the reader.</p>
+              <aside className="report-note"><b>Physical Design Standard</b><p>Support lying down with zero continuous locomotion. Ensure all interactive targets reside within a comfortable 60-degree focal cone directly in front of the user's resting posture.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="primary-focus">
+              <span className="report-number">4</span>
+              <h2>Cognitive focus over immersion: Being here now, not everywhere</h2>
+              <p>Johnny's walkthrough brought a critical graphic-design lens: <b>immersion is not a feature; focus is.</b> He reacted strongly against the visual noise of the full spherical field. When many cards compete for attention at once, the reading experience feels scattered and stressful.</p>
+              <p>However, when the prototype visually isolated a single focal card and dimmed the periphery, Johnny responded with enthusiasm, describing it as "being here now instead of everywhere."</p>
+              <blockquote className="report-quote">“I love that everything else goes away. In a physical book, your eyes block out the room. VR should do that for my screen.”</blockquote>
+              <p>Johnny also raised a fundamental trust barrier: the moment he noticed that the discussion cards used AI-synthesized structures, his trust dropped. He demanded absolute transparency—knowing where each post originated, which user wrote it, and how the AI derived its summary tags.</p>
+              <aside className="report-note report-note-yellow"><b>Cognitive Design Standard</b><p>Implement absolute provenance. Every AI-generated summary, label, or spatial cluster must contain a visible, inspectable trail directly back to the original human text block. Trust is built on reversibility and trace verification.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="primary-experts">
+              <span className="report-number">5</span>
+              <h2>Expert design consensus: Reading ergonomics and physical posture</h2>
+              <p>The feedback from our remote expert questionnaire aligns with the physical boundaries reported by our interviewees, while defining precise typographical and mechanical rules for spatial reading platforms:</p>
+              <ul>
+                <li><b>Ideal Typography:</b> Experts suggest a default reading distance of 1.5 to 2.0 meters in virtual space, using highly legible sans-serif fonts (e.g. DM Sans, Inter) at a minimum angular size of 1.2 to 1.5 degrees to avoid subpixel rendering artifacts.</li>
+                <li><b>Postural Support:</b> Productive reading sessions are almost exclusively sedentary or reclined. Gaze and head rotation must be minimized; users should be able to scroll, expand, and move panels with minimal physical exertion.</li>
+                <li><b>Input Modalities:</b> Hand tracking is highly intuitive for spatial placement, but eye tracking combined with subtle finger-pinches (gaze + pinch) is the preferred standard for rapid, fatigue-free reading and card selection.</li>
+                <li><b>Environmental Comfort:</b> Avoid pure black or high-contrast white backgrounds, which cause lens flare and eye strain. Use mid-tone glassmorphic, low-contrast gradients and soft ambient lighting to set a relaxed focal tone.</li>
+              </ul>
+            </section>
+
+            <section className="report-chapter" id="primary-directives">
+              <span className="report-number">6</span>
+              <h2>Strategic design directives: The Cosmos spatial architecture</h2>
+              <p className="report-lead">These synthesis insights translate directly into the following architectural decisions for the next development cycle of Cosmos:</p>
+              
+              <div className="implication-grid">
+                <article>
+                  <b>1. Bounded 20-Min Sessions</b>
+                  <p>Structure the interface as a bounded review workspace rather than an infinite scroll. Let users digest a debate, extract key findings, and exit comfortably.</p>
+                </article>
+                <article>
+                  <b>2. Progressive Disclosure</b>
+                  <p>Keep the periphery clean. Show only abstract shapes, icons, or single-word tags in the 3D space, revealing full text cards only when selected into the focal zone.</p>
+                </article>
+                <article>
+                  <b>3. Multi-Modal Cues</b>
+                  <p>Never rely on color alone to categorize or link discussions. Use geometric clusters, connector lines, tactile icons, and spatial depth layering to show relationships.</p>
+                </article>
+                <article>
+                  <b>4. Source Trace (Provenance)</b>
+                  <p>Expose the raw human source for every summarized layer. Let users double-click any AI cluster label to see the exact paragraph on the original board.</p>
+                </article>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px", margin: "32px 0 12px 0" }}>
+                <a className="report-subreport-link" href="/cosmos/primary/interview-kris/" style={{ margin: 0 }}><span>Detailed report 03.1</span><b>Think-Aloud Walkthrough: Software Engineer Kris</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/primary/interview-yves/" style={{ margin: 0 }}><span>Detailed report 03.2</span><b>Concept Critique: 3D Artist Yves</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/primary/interview-johnny/" style={{ margin: 0 }}><span>Detailed report 03.3</span><b>Visual Focus & Trust Walkthrough: Graphic Designer Johnny</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/primary/expert-questionnaire/" style={{ margin: 0 }}><span>Detailed report 03.4</span><b>Remote Expert Questionnaire Responses</b><i>Read analysis →</i></a>
+              </div>
+            </section>
+          </article>
         </section>}
 
         {activeChapter === "primary" && primaryPage === "interview-kris" && <section className="report-section interview-report" id="interview-kris">
