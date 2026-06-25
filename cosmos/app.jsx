@@ -257,7 +257,9 @@ function App() {
     ? "spatial-audio"
     : window.location.pathname.includes("/secondary/memory-pods")
       ? "memory-pods"
-      : "overview";
+      : window.location.pathname.includes("/secondary/socially-late")
+        ? "socially-late"
+        : "overview";
   const primaryPage = window.location.pathname.includes("/primary/interview-kris")
     ? "interview-kris"
     : window.location.pathname.includes("/primary/interview-yves")
@@ -536,6 +538,7 @@ function App() {
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", margin: "28px 0" }}>
                 <a className="report-subreport-link" href="/cosmos/secondary/spatial-communications/" style={{ margin: 0 }}><span>Detailed report 02.1</span><b>Spatial Communications at Scale in Virtual Environments</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/secondary/memory-pods/" style={{ margin: 0 }}><span>Detailed report 02.2</span><b>MemoryPods: Enhancing Asynchronous Communication in Extended Reality</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/secondary/socially-late/" style={{ margin: 0 }}><span>Detailed report 02.3</span><b>Socially Late, Virtually Present: Transforming Asynchronous Social VR (Stanford)</b><i>Read analysis →</i></a>
               </div>
             </section>
 
@@ -617,6 +620,7 @@ function App() {
               <div className="report-next-links">
                 <a href="/cosmos/secondary/spatial-communications/">Read spatial communications analysis <span>→</span></a>
                 <a href="/cosmos/secondary/memory-pods/">Read MemoryPods analysis <span>→</span></a>
+                <a href="/cosmos/secondary/socially-late/">Read Stanford Asynchronous VR analysis <span>→</span></a>
                 <a href="/cosmos/primary/">Continue to primary research <span>→</span></a>
               </div>
             </section>
@@ -796,6 +800,60 @@ function App() {
           </div>
 
           <footer className="video-source-note"><span>Source</span><p>Akos Nagy, Yannis Spyridis, Gregory Mills, and Vasileios Argyriou, “MemoryPods: Enhancing Asynchronous Communication in Extended Reality,” Kingston University, arXiv:2502.15622v1, 2025.</p><a href="https://arxiv.org/html/2502.15622v1" target="_blank" rel="noreferrer">arXiv ↗</a></footer>
+        </section>}
+
+        {activeChapter === "secondary" && secondaryPage === "socially-late" && <section className="report-section socially-late" id="socially-late">
+          <ChapterLabel number="02.3">Secondary research / Paper analysis</ChapterLabel>
+          <div className="spatial-audio-hero">
+            <div>
+              <p className="eyebrow">Wang · Miller · Muller Queiroz · Bailenson · Stanford VHIL</p>
+              <h1>Socially late, virtually present.</h1>
+              <p>This CHI 2024 research from Stanford’s Virtual Human Interaction Lab (VHIL) investigates how transforming asynchronous spatial data (such as position and eye gaze) can bridge the social gap, making delayed interactions feel highly engaging and mutually attentive.</p>
+              <a className="source-link" href="https://vhil.stanford.edu/publications/social-interaction/socially-late-virtually-present-effects-transforming-asynchronous" target="_blank" rel="noreferrer">Read the publication <span>↗</span></a>
+            </div>
+            <div className="video-frame">
+              <iframe src="https://www.youtube-nocookie.com/embed/g86YhG0Hofk" title="Asynchronous Social Interactions in Virtual Reality by Stanford VHIL" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+            </div>
+          </div>
+
+          <div className="audio-thesis">
+            <span>Core Thesis</span>
+            <h2>Decouple physical behaviors from digital forms.<br /><em>Transform movement to create co-presence.</em></h2>
+            <p>Rather than simply replaying raw physical recordings in three dimensions, Stanford's VHIL work validates the concept of <b>Transformed Social Interaction (TSI)</b>. By modifying spatial tracking data—such as dynamically adjusting head orientations to simulate mutual gaze and aligning avatars to the late user's viewport—asynchronous environments can deliver a powerful sense of presence and social connection, completely bypassing real-time social pressure.</p>
+          </div>
+
+          <div className="cocktail-section">
+            <div className="cocktail-copy">
+              <p className="mini-label">The TSI Transformation Model</p>
+              <h2>The mechanisms of transformed presence.</h2>
+              <p>When physical behaviors are decoupled from digital forms, we can alter the temporal and spatial geometry of a conversation. The Stanford study focused on two core transformations: <b>Spatial Accommodation</b> (relocating recorded avatars to form comfortable physical circles around the late-joining reader) and <b>Gaze Re-rendering</b> (altering avatar head/eye rotation so they appear to look directly at the late user, simulating active engagement).</p>
+            </div>
+            <div className="masking-diagram" aria-label="Diagram of Transformed Social Interaction versus raw spatial replay">
+              <div className="flat-mix" style={{ borderColor: "var(--pink)" }}><span>Raw Spatial Replay</span><div><i>A₁</i><i>A₂</i></div><b>Locked, unaligned recording</b></div>
+              <div className="diagram-arrow">→</div>
+              <div className="spatial-mix" style={{ borderColor: "var(--mint)" }}><span>Transformed Interaction</span><div className="listener" style={{ backgroundColor: "var(--mint)" }}><i>U</i></div><i className="voice v1">A₁*</i><i className="voice v2">A₂*</i><b>Dynamic Gaze + Position Realignment</b></div>
+            </div>
+          </div>
+
+          <div className="scale-history">
+            <div><p className="mini-label">Quantitative Findings</p><h2>Transformed interactions outperform raw spatial replay.</h2></div>
+            <article><strong>+34%</strong><h3>Perceived Attention</h3><p>Gaze transformations and automatic eye-contact adjustments significantly increased users' perceived attention and social connection.</p></article>
+            <article><strong>88%</strong><h3>Social Comfort</h3><p>Late participants reported substantially higher comfort levels and lower performance anxiety compared to real-time, live video/audio channels.</p></article>
+            <article><strong>1.8x</strong><h3>Attention Retention</h3><p>Re-aligning the conversational geometry to the user's focus led to double the retention and recall of key spoken arguments.</p></article>
+          </div>
+
+          <div className="cosmos-implication" style={{ marginTop: "40px" }}>
+            <span>Implication for Cosmos</span>
+            <h2>Asynchronous presence is a spatial design space.</h2>
+            <div className="implication-grid">
+              <article><b>1. Gaze Adaptation</b><p>Dynamically rotate comment cards and focus elements to face the reader, simulating mutual attention and eliminating visual strain.</p></article>
+              <article><b>2. Postural Alignment</b><p>Align the conversation's spatial layout with the reader's current resting posture (lying down, reclining, sitting) for zero-strain reading.</p></article>
+              <article><b>3. Spatial Responsiveness</b><p>Allow users to call, pull, or cluster cards with simple hand gestures, transforming the static archive into a highly responsive medium.</p></article>
+            </div>
+            <p className="implication-close">Stanford's research confirms that transforming spatial tracking data to fit the user's focus lowers cognitive fatigue and fosters social connection across time.</p>
+          </div>
+
+          <footer className="video-source-note"><span>Source</span><p>Portia Wang, Mark Roman Miller, Anna Carolina Muller Queiroz, and Jeremy Bailenson, “Socially Late, Virtually Present: The Effects of Transforming Asynchronous Social Interactions in Virtual Reality,” Stanford University, Virtual Human Interaction Lab, CHI 2024. Talk ID g86YhG0Hofk.</p><a href="https://vhil.stanford.edu/publications/social-interaction/socially-late-virtually-present-effects-transforming-asynchronous" target="_blank" rel="noreferrer">Stanford VHIL ↗</a></footer>
         </section>}
 
         {activeChapter === "primary" && primaryPage === "overview" && <section className="report-section primary" id="primary">
