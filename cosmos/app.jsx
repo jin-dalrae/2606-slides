@@ -252,7 +252,298 @@ function ExpertQuestionnaire() {
   </section>;
 }
 
+function Version1Review() {
+  return (
+    <section className="report-section interview-report" id="version1-review">
+      <ChapterLabel number="03.5">Primary research / Submission & Review</ChapterLabel>
+      <article className="report-document interview-document">
+        <header className="report-page-intro interview-intro" style={{ borderBottom: "1px solid var(--navy)", paddingBottom: "32px", marginBottom: "32px" }}>
+          <p className="eyebrow">SIGGRAPH 2026 Poster Submission & Peer Review</p>
+          <h1>COSMOS V1<br /><span>Spatial Discourse Browser for AR, VR, and Desktop</span></h1>
+          <p className="report-lead">
+            In April 2026, Cosmos Version 1 was submitted as a poster to SIGGRAPH 2026. While the submission was ultimately rejected, the academic peer review process provided an invaluable diagnostic crucible. The detailed critiques on text legibility, cognitive clutter, and the demand for empirical utility became the direct architectural blueprints for the Version 2 study tested with Kris, Yves, and Johnny.
+          </p>
+          <div style={{ display: "flex", gap: "16px", marginTop: "24px", flexWrap: "wrap" }}>
+            <a className="source-link" href="https://cosmosweb.web.app" target="_blank" rel="noreferrer" style={{ margin: 0 }}>
+              Launch V1 Live Demo <span>↗</span>
+            </a>
+            <a className="source-link" href="https://github.com/jin-dalrae/2602-Cosmos/" target="_blank" rel="noreferrer" style={{ margin: 0, borderColor: "var(--pink)", color: "var(--pink)" }}>
+              Explore V1 GitHub Repository <span>↗</span>
+            </a>
+          </div>
+        </header>
+
+        <table className="report-table interview-meta" style={{ marginBottom: "40px" }}>
+          <tbody>
+            <tr><th>Title</th><td>COSMOS: Spatial Discourse Browser for AR, VR, and Desktop</td><th>Author</th><td>Rae Jin (dalrae.jin.work@gmail.com)</td></tr>
+            <tr><th>Submission</th><td>SIGGRAPH 2026 Poster (Rejected)</td><th>Date</th><td>April 21, 2026</td></tr>
+            <tr><th>Core Paradigm</th><td>3D Planetarium spherical discussion mapping</td><th>Key Technology</th><td>Five-Agent AI Pipeline & GazeLearner Engine</td></tr>
+            <tr><th>Evidence Status</th><td colSpan="3">Comprehensive functional prototype + 3 peer-review expert panels. Direct lineage to V2.</td></tr>
+          </tbody>
+        </table>
+
+        <nav className="report-contents" aria-label="Version 1 report contents">
+          <p>In this report</p>
+          <a href="#v1-problem"><span>0</span>The original problem & pitch</a>
+          <a href="#v1-pipeline"><span>1</span>The 5-Agent AI pipeline</a>
+          <a href="#v1-coordinates"><span>2</span>Spherical coordinate encoding</a>
+          <a href="#v1-input"><span>3</span>Input paradigm & GazeLearner</a>
+          <a href="#v1-reviews"><span>4</span>SIGGRAPH peer reviews verbatim</a>
+          <a href="#v1-pivot"><span>5</span>Strategic pivot responses</a>
+        </nav>
+
+        <section className="report-chapter" id="v1-problem">
+          <span className="report-number">0</span>
+          <h2>The original problem & pitch</h2>
+          <p className="report-lead">Every major community platform flattens multi-threaded public debate into a single linear post-after-another feed, erasing the topology of discussion.</p>
+          <p>
+            Whether it is Reddit, X, HackerNews, or Discord, feeds decide the sequence of what you read. Readers have zero agency, decision fatigue is high, and polarization accelerates because sorted lists surface the loudest, most extreme voices. 500-comment threads have complex structure: worldviews, bridges, gaps, and logical trajectories, but flat feeds reduce them to a stream of noise.
+          </p>
+          <p>
+            Cosmos Version 1 proposed an elegant solution: <b>stand inside the conversation and navigate it with your body.</b>
+          </p>
+          <div className="report-table-scroll"><table className="report-table">
+            <thead>
+              <tr><th>Feed Limitation</th><th>Cosmos Spatial Answer</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><b>Flatten everything into one stream</b></td><td><b>Infinite dimensions:</b> A sphere has every direction. Curiosity determines the reading sequence.</td></tr>
+              <tr><td><b>Hide the landscape</b></td><td><b>Topics become places:</b> Diverse discussion clusters self-organize in space, connected by bridge posts.</td></tr>
+              <tr><td><b>Reward extremes</b></td><td><b>Nuance as physical space:</b> Worldview clustering places opposing ideas at opposite sides of the dome, rendering gaps visible.</td></tr>
+              <tr><td><b>Exhaust readers</b></td><td><b>Passive Gaze Selection:</b> Eliminates manual point-and-click fatigue via continuous body and head coordination.</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section className="report-chapter" id="v1-pipeline">
+          <span className="report-number">1</span>
+          <h2>The 5-Agent AI pipeline</h2>
+          <p className="report-lead">To transform raw, unstructured discourse into a coherent physical planetarium, Cosmos V1 developed a structured multi-agent backend pipeline.</p>
+          <p>
+            This pipeline doesn't just display data; it extracts semantic dimensions to coordinate the physical geometry of the discussion:
+          </p>
+          <div className="masking-diagram" style={{ margin: "24px 0", padding: "24px", background: "rgba(10, 25, 47, 0.3)", borderRadius: "8px", border: "1px solid var(--navy)", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
+              <div style={{ padding: "8px 12px", border: "1px dashed var(--pink)", borderRadius: "4px", fontSize: "11px", color: "var(--pink)" }}>Topic Input</div>
+              <div style={{ fontSize: "14px", color: "var(--mint)" }}>→</div>
+              <div style={{ padding: "8px 12px", border: "1px solid var(--mint)", borderRadius: "4px" }}><b>[1] Generator</b><br /><span style={{ fontSize: "10px", color: "var(--slate)" }}>150+ diverse voices</span></div>
+              <div style={{ fontSize: "14px", color: "var(--mint)" }}>→</div>
+              <div style={{ padding: "8px 12px", border: "1px solid var(--mint)", borderRadius: "4px" }}><b>[2] Cartographer</b><br /><span style={{ fontSize: "10px", color: "var(--slate)" }}>Extracts stance & metadata</span></div>
+              <div style={{ fontSize: "14px", color: "var(--mint)" }}>→</div>
+              <div style={{ padding: "8px 12px", border: "1px solid var(--mint)", borderRadius: "4px" }}><b>[3] Architect</b><br /><span style={{ fontSize: "10px", color: "var(--slate)" }}>Computes 3D coordinates</span></div>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: "24px", marginTop: "12px", borderTop: "1px solid var(--navy)", paddingTop: "12px" }}>
+              <div style={{ padding: "8px 12px", border: "1px solid var(--mint)", borderRadius: "4px" }}><b>[4] Classifier</b><br /><span style={{ fontSize: "10px", color: "var(--slate)" }}>Slots new user posts in real-time</span></div>
+              <div style={{ padding: "8px 12px", border: "1px solid var(--mint)", borderRadius: "4px" }}><b>[5] Narrator</b><br /><span style={{ fontSize: "10px", color: "var(--slate)" }}>Answers meta-questions on topology</span></div>
+            </div>
+          </div>
+          <h3>Cartographer Enrichment Profile</h3>
+          <p>The Cartographer enriches every post with structural metadata. The resulting schema represents a rich semantic envelope that determines card layout, edge connections, and position hints:</p>
+          <pre style={{ background: "rgba(10, 25, 47, 0.4)", border: "1px solid var(--navy)", padding: "16px", borderRadius: "8px", overflowX: "auto", fontSize: "12px", color: "var(--mint)" }}>
+{`{
+  "id": "post_42",
+  "stance": "pro-density-housing",
+  "emotion": "passionate",
+  "core_claim": "Rent control helps current tenants but discourages new construction",
+  "assumptions": ["Free market principles produce optimal housing volume"],
+  "logical_chain": {
+    "builds_on": ["post_17"],
+    "root_premise": "Markets self-correct under supply-side freedom"
+  },
+  "perceived_by": {
+    "renters": "dismissive",
+    "developers": "economically sound"
+  },
+  "relationships": [
+    { "target": "post_17", "type": "extends", "strength": 0.95 },
+    { "target": "post_31", "type": "rebuts", "strength": 0.88 }
+  ],
+  "embedding_hint": [0.35, 0.71, -0.18]
+}`}
+          </pre>
+        </section>
+
+        <section className="report-chapter" id="v1-coordinates">
+          <span className="report-number">2</span>
+          <h2>Spherical coordinate encoding</h2>
+          <p className="report-lead">In Cosmos V1, spatial positions are not arbitrary. Visual locations on the planetarium dome directly represent underlying ideological spectrums and levels of conceptual abstraction.</p>
+          <p>
+            By converting high-dimensional embeddings into a constrained 3D spherical shell, the coordinate map establishes semantic axes:
+          </p>
+          <div className="report-table-scroll"><table className="report-table report-table-wide">
+            <thead>
+              <tr><th>Sphere Dimension</th><th>Technical Coordinate</th><th>Semantic Representation</th><th>Implementation Details</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Longitude Spectrum</b></td>
+                <td><code>\(\theta\) (theta_deg)</code></td>
+                <td>Ideological spectrum and opposing viewpoints.</td>
+                <td>Opposing worldviews are mapped to polar opposites ($180^\circ$ apart) across the horizontal equator.</td>
+              </tr>
+              <tr>
+                <td><b>Latitude Abstraction</b></td>
+                <td><code>\(\phi\) (phi_deg)</code></td>
+                <td>Level of conceptual and systemic abstraction.</td>
+                <td>Personal accounts sit near the equator (90 degrees); structural or systemic academic papers move toward the poles. Clamped to 30 to 150 degrees to prevent card collision at the poles.</td>
+              </tr>
+              <tr>
+                <td><b>Radius Offset</b></td>
+                <td><code>r_offset</code></td>
+                <td>Fine depth adjustment and local layering.</td>
+                <td>Adjusted within ±5% of the sphere's core radius to minimize card overlap and accommodate dense groupings.</td>
+              </tr>
+              <tr>
+                <td><b>Ideological Clustering</b></td>
+                <td>Local coordinate density</td>
+                <td>Shared assumptions and worldviews.</td>
+                <td>Cards sharing identical baseline assumptions group into high-density neighborhoods, rendering clusters immediately visible.</td>
+              </tr>
+              <tr>
+                <td><b>Visual Gaps</b></td>
+                <td>Empty surface coordinates</td>
+                <td>Missing points of view and unexplored debate territory.</td>
+                <td>Unpopulated coordinate zones highlight gaps in the conversational spectrum.</td>
+              </tr>
+              <tr>
+                <td><b>Constellation Edges</b></td>
+                <td>3D straight line cylinders</td>
+                <td>Semantic discourse relationships.</td>
+                <td>Bridges of connection (agrees, disagrees, extends, challenges) are drawn through the sphere interior as glowing color-coded links.</td>
+              </tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section className="report-chapter" id="v1-input">
+          <span className="report-number">3</span>
+          <h2>Input paradigm & GazeLearner</h2>
+          <p className="report-lead">To reduce physical strain, Cosmos V1 introduced GazeLearner: a zero-calibration, passive eye-head coordination tracking engine.</p>
+          <p>
+            Rather than requiring a tedious 9-dot setup cycle before usage, GazeLearner silently trains itself during ordinary browsing actions:
+          </p>
+          <ul>
+            <li><b>1. Initial Steering:</b> The reader rotates the sphere using basic head-pose tracking (driven via MediaPipe at 60fps) or drag gestures.</li>
+            <li><b>2. Natural Ground Truth:</b> Every time the reader clicks a card, the system records the head-pose direction and card orientation as a ground-truth calibration sample.</li>
+            <li><b>3. Linear Regression:</b> Once 5 clicks are completed, the system initializes weighted linear regression calculations to dynamically adjust the raw head-tracking vectors.</li>
+            <li><b>4. Full Calibrated Confidence:</b> By 20 clicks, the model reaches full calibration confidence. It employs an exponential time decay (60-second half-life) to favor recent posture shifts.</li>
+            <li><b>5. Reading Protection Shield:</b> To avoid accidental card changes from rapid eye movements, the system filters out small reading scan motions and blocks targeting behind open articles.</li>
+          </ul>
+          <aside className="report-note">
+            <b>Temporal Depth and Dimming</b><p>As discussions age, they recede back into the starfield. Cosmos V1 maps posts into equal chronological slots. Focal items are fully illuminated, while older layers dim down to 60% via CSS <code>brightness()</code>, forming a visual history trail.</p>
+          </aside>
+        </section>
+
+        <section className="report-chapter" id="v1-reviews">
+          <span className="report-number">4</span>
+          <h2>SIGGRAPH 2026 poster peer reviews</h2>
+          <p className="report-lead">The submission to SIGGRAPH 2026 received rigorous, direct feedback from three expert peer reviewers. Their assessments identified crucial limitations in visual legibility, visual clutter, and the demand for empirical validation.</p>
+          
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", margin: "24px 0" }} className="expert-cons-grid">
+            <div style={{ padding: "20px", background: "rgba(255, 255, 255, 0.03)", border: "1px solid var(--navy)", borderRadius: "8px" }}>
+              <span style={{ fontSize: "11px", textTransform: "uppercase", color: "var(--pink)", fontWeight: "700" }}>Reviewer 1</span>
+              <h3 style={{ margin: "8px 0", color: "var(--pink)", fontFamily: "var(--serif)" }}>"Strong & imaginative, but cluttered"</h3>
+              <p style={{ fontSize: "13px", color: "var(--slate)" }}>
+                Highly praised the originality of standing inside a conversation. However, raised serious readability issues:
+              </p>
+              <ul style={{ fontSize: "12px", paddingLeft: "16px", color: "var(--slate)" }}>
+                <li>Distant and faded cards are blurry and hard to read, especially on non-Retina screens.</li>
+                <li>High cognitive load: "Too many cards competing for attention... non-focal items should fade, blur, or move further back."</li>
+                <li>Lack of reading progress indicators (what is read, unread, or new).</li>
+                <li>"AI black box" - users have no mechanism to inspect, verify, or correct stance, emotion, or assumptions.</li>
+              </ul>
+            </div>
+            
+            <div style={{ padding: "20px", background: "rgba(255, 255, 255, 0.03)", border: "1px solid var(--navy)", borderRadius: "8px" }}>
+              <span style={{ fontSize: "11px", textTransform: "uppercase", color: "var(--mint)", fontWeight: "700" }}>Reviewer 2</span>
+              <h3 style={{ margin: "8px 0", color: "var(--mint)", fontFamily: "var(--serif)" }}>"High originality, venue mismatch"</h3>
+              <p style={{ fontSize: "13px", color: "var(--slate)" }}>
+                Acknowledged extremely high novelty and an artistic, genuinely distinctive perspective.
+              </p>
+              <ul style={{ fontSize: "12px", paddingLeft: "16px", color: "var(--slate)" }}>
+                <li>Noted that the project proposes a highly valuable and interesting conceptual leap.</li>
+                <li>Stressed a venue mismatch: SIGGRAPH reviewers skew heavily towards core computer graphics algorithms (geometric shaders, ray tracing) rather than novel reading layouts and interactive social computing.</li>
+              </ul>
+            </div>
+            
+            <div style={{ padding: "20px", background: "rgba(255, 255, 255, 0.03)", border: "1px solid var(--navy)", borderRadius: "8px" }}>
+              <span style={{ fontSize: "11px", textTransform: "uppercase", color: "var(--yellow)", fontWeight: "700" }}>Reviewer 3</span>
+              <h3 style={{ margin: "8px 0", color: "var(--yellow)", fontFamily: "var(--serif)" }}>"Unproven utility & unremarkable"</h3>
+              <p style={{ fontSize: "13px", color: "var(--slate)" }}>
+                Delivered a highly critical evaluation of the technical and visual implementation:
+              </p>
+              <ul style={{ fontSize: "12px", paddingLeft: "16px", color: "var(--slate)" }}>
+                <li>Evaluated the visuals as "unremarkable" standard CSS-Three.js HTML sprites, lacking deep computer graphics sophistication.</li>
+                <li>Challenged the five-agent pipeline as unnecessary, over-engineered prompting.</li>
+                <li>Noted that while VR/AR support was claimed, it was not demonstrably working in the submitted video materials.</li>
+                <li><b>Severe gap:</b> Complete lack of human-subjects evaluation. "Is a spatial list actually better or faster for reading than a 2D feed?"</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="report-chapter" id="v1-pivot">
+          <span className="report-number">5</span>
+          <h2>Strategic pivot responses: Designing V2</h2>
+          <p className="report-lead">Rather than seeing the rejection as a setback, the criticisms became the direct catalyst for Cosmos Version 2, turning unproven hypotheses into a rigorous, human-centered study.</p>
+          <div className="report-table-scroll"><table className="report-table report-table-wide">
+            <thead>
+              <tr><th>SIGGRAPH Peer Critique</th><th>Pivot Strategy for Version 2</th><th>Implemented V2 Design Proof</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>R1: Distant cards are unreadable and blurry</b></td>
+                <td><b>Strict physical depth boundaries</b></td>
+                <td>Constrained depth layout to comfortable 1.5–2.0m zone, ensuring text remains within human subpixel-AA limits.</td>
+              </tr>
+              <tr>
+                <td><b>R1: Excessive visual noise & cognitive load</b></td>
+                <td><b>Focus plus Context (Achromatic Voids)</b></td>
+                <td>When an item is opened, the surrounding sphere dims, applies light Gaussian blur, and translates deeper into the background.</td>
+              </tr>
+              <tr>
+                <td><b>R1: No reading progress cues</b></td>
+                <td><b>Persistent reading states</b></td>
+                <td>Integrated localStorage-backed read/unread states, visually fading completed posts while highlighting newly arriving items.</td>
+              </tr>
+              <tr>
+                <td><b>R1: "AI black-box" & trust skepticism</b></td>
+                <td><b>Absolute Source Provenance</b></td>
+                <td>Elevated raw sources. Every summary tag and stance categorization has a double-click inspector tracing directly back to original human text.</td>
+              </tr>
+              <tr>
+                <td><b>R3: AR/VR support claimed but not demonstrated</b></td>
+                <td><b>Native WebXR integration</b></td>
+                <td>Completed full WebXR camera integrations allowing Quest 3 and Vision Pro browsers to drive spatial viewing with zero external dependencies.</td>
+              </tr>
+              <tr>
+                <td><b>R3: Complete lack of user evaluation</b></td>
+                <td><b>Empirical qualitative user studies</b></td>
+                <td>Designed and conducted in-depth think-aloud studies with Software Engineer Kris, 3D Artist Yves, and Designer Johnny to measure legibility, trust, and fatigue.</td>
+              </tr>
+            </tbody>
+          </table></div>
+          
+          <div className="cosmos-implication" style={{ marginTop: "40px" }}>
+            <span>The Core Trajectory</span>
+            <h2>From graphics novelty to reading ergonomics.</h2>
+            <p style={{ margin: 0 }}>
+              SIGGRAPH's feedback forced Cosmos to mature. By moving away from purely "novel 3D visualizations" and focusing on the <b>hard, human physical constraints of reading in VR</b>, the project shifted its core metric of success: away from visual flash, and toward long-term visual comfort and absolute semantic trust.
+            </p>
+          </div>
+          
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "48px", borderTop: "1px solid var(--navy)", paddingTop: "24px" }}>
+            <a href="/cosmos/primary/expert-questionnaire/" className="text-link" style={{ fontSize: "14px" }}>← Previous: Expert questionnaire</a>
+            <a href="/cosmos/making/" className="text-link" style={{ fontSize: "14px" }}>Next: Making Cosmos →</a>
+          </div>
+        </section>
+      </article>
+    </section>
+  );
+}
+
 function App() {
+
   const secondaryPage = window.location.pathname.includes("/secondary/spatial-communications")
     ? "spatial-audio"
     : window.location.pathname.includes("/secondary/memory-pods")
@@ -270,6 +561,8 @@ function App() {
         ? "interview-johnny"
       : window.location.pathname.includes("/primary/expert-questionnaire")
         ? "expert-questionnaire"
+      : window.location.pathname.includes("/primary/version1-review")
+        ? "version1-review"
         : "overview";
   const activeChapter = window.location.pathname.includes("/secondary")
     ? "secondary"
@@ -286,6 +579,7 @@ function App() {
 
       <main>
         {activeChapter === "primary" && primaryPage === "expert-questionnaire" && <ExpertQuestionnaire />}
+        {activeChapter === "primary" && primaryPage === "version1-review" && <Version1Review />}
         {activeChapter === "intro" && <section className="hero" id="intro">
           <div className="hero-kicker"><span>Independent research</span><span>June 2026</span></div>
           <div className="hero-grid">
@@ -1038,6 +1332,7 @@ function App() {
                 <a className="report-subreport-link" href="/cosmos/primary/interview-yves/" style={{ margin: 0 }}><span>Detailed report 03.2</span><b>Concept Critique: 3D Artist Yves</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/primary/interview-johnny/" style={{ margin: 0 }}><span>Detailed report 03.3</span><b>Visual Focus & Trust Walkthrough: Graphic Designer Johnny</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/primary/expert-questionnaire/" style={{ margin: 0 }}><span>Detailed report 03.4</span><b>Remote Expert Questionnaire Responses</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/primary/version1-review/" style={{ margin: 0 }}><span>Detailed report 03.5</span><b>Version 1 Architecture & SIGGRAPH Poster Peer Review</b><i>Read analysis →</i></a>
               </div>
             </section>
           </article>
