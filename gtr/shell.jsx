@@ -1,12 +1,31 @@
 export const gtrPages = [
-  ["intro", "01", "Overview", "/gtr/"],
-  ["docs", "02", "Docs", "/gtr/docs/fieldwork-report/"],
+  ["intro", "0", "Overview", "/gtr/"],
+  ["first-prototype", "1", "First Prototype", "/gtr/docs/stage-1/"],
+  ["second-prototype", "2", "Second Prototype", "/gtr/docs/stage-2/"],
 ];
 
-export const docsReports = [
-  ["fieldwork-report", "2.0", "Fieldwork report", "/gtr/docs/fieldwork-report/"],
-  ["stage-1", "2.1", "Stage 1 PRD", "/gtr/docs/stage-1/"],
-  ["stage-2", "2.2", "Stage 2 PRD", "/gtr/docs/stage-2/"],
+export const firstPrototypeChildren = [
+  ["stage-1", "1.1", "Stage 1 PRD", "/gtr/docs/stage-1/"],
+  ["fieldwork-report", "1.2", "Fieldwork Report", "/gtr/docs/fieldwork-report/"],
+  ["fieldwork-feedback", "1.3", "Presentation Feedback", "/gtr/docs/fieldwork-report/feedback/"],
+];
+
+export const secondPrototypeChildren = [
+  ["stage-2", "2.1", "Stage 2 PRD", "/gtr/docs/stage-2/"],
+];
+
+export const stage2PrdChildren = [
+  ["stage-2-onboarding-a", "2.1.1", "Onboarding A", "/gtr/docs/stage-2/onboarding-a/"],
+  ["stage-2-onboarding-b", "2.1.2", "Onboarding B (ChatGPT MCP)", "/gtr/docs/stage-2/onboarding-b/"],
+  ["stage-2-report-a", "2.1.3", "Report A", "/gtr/docs/stage-2/report-a/"],
+  ["stage-2-dashboard-a", "2.1.4", "Dashboard A", "/gtr/docs/stage-2/dashboard-a/"],
+  ["stage-2-report-dashboard-b", "2.1.5", "Report + Dashboard Connected (B)", "/gtr/docs/stage-2/report-dashboard-b/"],
+  ["stage-2-insights", "2.1.6", "Giving Actionable Insights", "/gtr/docs/stage-2/insights/"],
+  ["stage-2-the-model", "2.1.7", "The Model", "/gtr/docs/stage-2/the-model/"],
+  ["stage-2-auth-and-access", "2.1.8", "Auth, Accounts & Access", "/gtr/docs/stage-2/auth-and-access/"],
+  ["stage-2-foundation-model", "2.1.9", "Foundation-Model Handling", "/gtr/docs/stage-2/foundation-model/"],
+  ["stage-2-multi-sector", "2.1.10", "Modular Multi-Sector Reports", "/gtr/docs/stage-2/multi-sector/"],
+  ["stage-2-admin", "2.1.11", "Admin & Platform", "/gtr/docs/stage-2/admin/"],
 ];
 
 export const fieldworkSlide = {
@@ -22,10 +41,15 @@ export const fieldworkFeedback = {
   path: "/gtr/docs/fieldwork-report/feedback/",
 };
 
-export const fieldworkSubnav = [fieldworkSlide, fieldworkFeedback];
+export const fieldworkSubnav = [fieldworkSlide];
 
 const reportChildren = {
-  docs: docsReports,
+  "first-prototype": firstPrototypeChildren,
+  "second-prototype": secondPrototypeChildren,
+};
+
+const reportGrandchildren = {
+  "stage-2": stage2PrdChildren,
 };
 
 export function GTRMark() {
@@ -47,6 +71,9 @@ export function GTRHeader({ meta = "Docs archive · 2026" }) {
             {reportChildren[id]?.map(([subId, , subLabel, subPath]) => (
               <React.Fragment key={subId}>
                 <a className="top-nav-child" href={subPath} onClick={() => setOpen(false)}>↳ {subLabel}</a>
+                {reportGrandchildren[subId]?.map(([gsId, , gsLabel, gsPath]) => (
+                  <a className="top-nav-child top-nav-child--nested" key={gsId} href={gsPath} onClick={() => setOpen(false)}>↳ {gsLabel}</a>
+                ))}
                 {subId === "fieldwork-report" && fieldworkSubnav.map((item) => (
                   <a className="top-nav-child top-nav-child--nested" key={item.id} href={item.path} onClick={() => setOpen(false)}>↳ {item.label}</a>
                 ))}
@@ -60,7 +87,7 @@ export function GTRHeader({ meta = "Docs archive · 2026" }) {
   );
 }
 
-export function GTRSidebar({ active, subActive }) {
+export function GTRSidebar({ active, subActive, subSubActive }) {
   return (
     <aside className="chapter-rail" aria-label="GTR archive">
       <div className="rail-intro">
@@ -71,11 +98,14 @@ export function GTRSidebar({ active, subActive }) {
       <nav>
         <p>Index</p>
         <a className={active === "intro" ? "active" : ""} href="/gtr/">
-          <span>01</span><b>Overview</b><i>→</i>
+          <span>0</span><b>Overview</b><i>→</i>
         </a>
-        {docsReports.map(([id, number, label, path]) => (
+        <a className={active === "first-prototype" ? "active" : ""} href="/gtr/docs/stage-1/">
+          <span>1</span><b>First Prototype</b><i>→</i>
+        </a>
+        {firstPrototypeChildren.map(([id, number, label, path]) => (
           <React.Fragment key={id}>
-            <a className={active === "docs" && subActive === id ? "active" : ""} href={path}>
+            <a className={active === "first-prototype" && subActive === id ? "active" : ""} href={path}>
               <span>{number}</span><b>{label}</b><i>→</i>
             </a>
             {id === "fieldwork-report" && (
@@ -83,10 +113,33 @@ export function GTRSidebar({ active, subActive }) {
                 {fieldworkSubnav.map((item) => (
                   <a
                     key={item.id}
-                    className={active === "docs" && subActive === item.id ? "active" : ""}
+                    className={active === "first-prototype" && subActive === item.id ? "active" : ""}
                     href={item.path}
                   >
                     <span>↳</span><b>{item.label}</b><i>↗</i>
+                  </a>
+                ))}
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+        <a className={active === "second-prototype" ? "active" : ""} href="/gtr/docs/stage-2/">
+          <span>2</span><b>Second Prototype</b><i>→</i>
+        </a>
+        {secondPrototypeChildren.map(([id, number, label, path]) => (
+          <React.Fragment key={id}>
+            <a className={active === "second-prototype" && subActive === id ? "active" : ""} href={path}>
+              <span>{number}</span><b>{label}</b><i>→</i>
+            </a>
+            {id === "stage-2" && (
+              <div className="rail-subnav rail-subnav--always">
+                {stage2PrdChildren.map(([gsId, gsNumber, gsLabel, gsPath]) => (
+                  <a
+                    key={gsId}
+                    className={active === "second-prototype" && subActive === "stage-2" && subSubActive === gsId ? "active" : ""}
+                    href={gsPath}
+                  >
+                    <span>{gsNumber}</span><b>{gsLabel}</b><i>↗</i>
                   </a>
                 ))}
               </div>
