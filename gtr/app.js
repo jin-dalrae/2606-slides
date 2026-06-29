@@ -52,19 +52,54 @@
     const [open, setOpen] = React.useState(false);
     return /* @__PURE__ */ React.createElement("header", { className: "site-header" }, /* @__PURE__ */ React.createElement("a", { className: "wordmark", href: "/gtr/", "aria-label": "GTR home" }, /* @__PURE__ */ React.createElement(GTRMark, null), " GTR"), /* @__PURE__ */ React.createElement("button", { className: "menu-button", onClick: () => setOpen(!open), "aria-expanded": open }, "Menu"), /* @__PURE__ */ React.createElement("nav", { className: open ? "top-nav is-open" : "top-nav", "aria-label": "GTR navigation" }, gtrPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { href: path, onClick: () => setOpen(false) }, label), reportChildren[id]?.map(([subId, , subLabel, subPath]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: subId }, /* @__PURE__ */ React.createElement("a", { className: "top-nav-child", href: subPath, onClick: () => setOpen(false) }, "\u21B3 ", subLabel), reportGrandchildren[subId]?.map(([gsId, , gsLabel, gsPath]) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child top-nav-child--nested", key: gsId, href: gsPath, onClick: () => setOpen(false) }, "\u21B3 ", gsLabel)), subId === "fieldwork-report" && fieldworkSubnav.map((item) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child top-nav-child--nested", key: item.id, href: item.path, onClick: () => setOpen(false) }, "\u21B3 ", item.label))))))), /* @__PURE__ */ React.createElement("p", { className: "header-meta" }, meta));
   }
+  var SIDEBAR_OPEN_KEY = "gtr-sidebar-open-v1";
+  function loadSidebarState() {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem(SIDEBAR_OPEN_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (typeof parsed !== "object" || parsed === null) return null;
+      return {
+        firstPrototype: !!parsed.firstPrototype,
+        secondPrototype: !!parsed.secondPrototype,
+        stage2Prd: !!parsed.stage2Prd
+      };
+    } catch {
+      return null;
+    }
+  }
+  function saveSidebarState(state) {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(SIDEBAR_OPEN_KEY, JSON.stringify(state));
+    } catch {
+    }
+  }
   function GTRSidebar({ active, subActive, subSubActive }) {
-    const [open, setOpen] = React.useState(() => ({
-      firstPrototype: active === "first-prototype",
-      secondPrototype: active === "second-prototype",
-      stage2Prd: active === "second-prototype"
-    }));
+    const [open, setOpen] = React.useState(() => {
+      const stored = loadSidebarState();
+      return stored ?? {
+        firstPrototype: active === "first-prototype",
+        secondPrototype: active === "second-prototype",
+        stage2Prd: active === "second-prototype"
+      };
+    });
+    const isFirstRender = React.useRef(true);
     React.useEffect(() => {
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        return;
+      }
       setOpen((prev) => ({
         firstPrototype: active === "first-prototype" || prev.firstPrototype,
         secondPrototype: active === "second-prototype" || prev.secondPrototype,
         stage2Prd: active === "second-prototype" || prev.stage2Prd
       }));
     }, [active]);
+    React.useEffect(() => {
+      saveSidebarState(open);
+    }, [open]);
     const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
     return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "GTR archive" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("p", null, "Archive"), /* @__PURE__ */ React.createElement("h2", null, "GTR"), /* @__PURE__ */ React.createElement("span", null, "Docs for the climate goal platform work")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), /* @__PURE__ */ React.createElement("a", { className: active === "intro" ? "active" : "", href: "/gtr/" }, /* @__PURE__ */ React.createElement("span", null, "0"), /* @__PURE__ */ React.createElement("b", null, "Overview"), /* @__PURE__ */ React.createElement("i", null, "\u2192")), /* @__PURE__ */ React.createElement(
       "button",

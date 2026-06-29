@@ -87,20 +87,60 @@ export function GTRHeader({ meta = "Docs archive · 2026" }) {
   );
 }
 
+const SIDEBAR_OPEN_KEY = "gtr-sidebar-open-v1";
+
+function loadSidebarState() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SIDEBAR_OPEN_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null) return null;
+    return {
+      firstPrototype: !!parsed.firstPrototype,
+      secondPrototype: !!parsed.secondPrototype,
+      stage2Prd: !!parsed.stage2Prd,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function saveSidebarState(state) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(SIDEBAR_OPEN_KEY, JSON.stringify(state));
+  } catch {
+  }
+}
+
 export function GTRSidebar({ active, subActive, subSubActive }) {
-  const [open, setOpen] = React.useState(() => ({
-    firstPrototype: active === "first-prototype",
-    secondPrototype: active === "second-prototype",
-    stage2Prd: active === "second-prototype",
-  }));
+  const [open, setOpen] = React.useState(() => {
+    const stored = loadSidebarState();
+    return stored ?? {
+      firstPrototype: active === "first-prototype",
+      secondPrototype: active === "second-prototype",
+      stage2Prd: active === "second-prototype",
+    };
+  });
+
+  const isFirstRender = React.useRef(true);
 
   React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     setOpen((prev) => ({
       firstPrototype: active === "first-prototype" || prev.firstPrototype,
       secondPrototype: active === "second-prototype" || prev.secondPrototype,
       stage2Prd: active === "second-prototype" || prev.stage2Prd,
     }));
   }, [active]);
+
+  React.useEffect(() => {
+    saveSidebarState(open);
+  }, [open]);
 
   const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
 
