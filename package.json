@@ -1,0 +1,13 @@
+{
+  "name": "2606-slides",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rae Jin Slides — a static presentation library. The GTR sub-app uses esbuild to compile app.jsx + shell.jsx into a single app.js bundle for browser delivery.",
+  "scripts": {
+    "build:gtr": "esbuild gtr/app.jsx --bundle --format=iife --outfile=gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment",
+    "watch:gtr": "esbuild gtr/app.jsx --bundle --format=iife --outfile=gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}
