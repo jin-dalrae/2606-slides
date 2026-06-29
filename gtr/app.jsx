@@ -1216,58 +1216,53 @@ function Stage2OverviewPage() {
         <PageIntro
           eyebrow="PRD stage 2 — second prototype, built"
           title="Stage 2 ships a working web app"
-          summary="Stage 2 turned the Stage 1 PRD into a deployed Cloudflare Workers product. The work is split into six sub-PRDs — Onboarding A (in-app wizard), Onboarding B (AI client via MCP), Report A, Dashboard A, Report + Dashboard Connected, and Actionable Insights. This page is the cross-cutting intro: the goals, what changed from Stage 1, non-goals, the auth / storage stack that runs underneath all six, and the open questions for the next round of testing."
+          summary="Stage 2 turned the Stage 1 PRD into a deployed Cloudflare Workers product. The full breakdown — the cross-cutting goals, what changed from Stage 1, the auth / storage stack, the non-goals, the open questions, and all eleven sub-PRDs (Onboarding A, Onboarding B, Report A, Dashboard A, Report + Dashboard Connected, Insights, The Model, Auth & Access, Foundation-Model Handling, Multi-Sector Reports, Admin & Platform) — is on this single page. Scroll, or use the contents below."
           links={[
             ["/gtr/docs/stage-1/", "Review Stage 1 PRD"],
             ["/gtr/docs/fieldwork-report/", "Fieldwork report"],
             ["/gtr/docs/fieldwork-report/feedback/", "Presentation feedback"],
-            ["/gtr/docs/stage-2/onboarding-a/", "Start at Onboarding A"],
           ]}
         />
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>The eleven sub-PRDs</h2>
-          <p className="report-lead">The second prototype is eleven documents, not one. The first six are the product surfaces (what the founder sees); the last five are the platform surfaces (what makes the product work).</p>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Number</th><th>Part</th><th>What it covers</th></tr></thead>
-              <tbody>
-                <tr><td>2.1.1</td><td><a href="/gtr/docs/stage-2/onboarding-a/">Onboarding A</a></td><td>In-app 6-step wizard. Funnel, tailored intake, document upload as optional step.</td></tr>
-                <tr><td>2.1.2</td><td><a href="/gtr/docs/stage-2/onboarding-b/">Onboarding B (ChatGPT MCP)</a></td><td>Remote MCP server at <code>/mcp</code>. The same assessment, run conversationally from ChatGPT, Claude Desktop, or Cursor.</td></tr>
-                <tr><td>2.1.3</td><td><a href="/gtr/docs/stage-2/report-a/">Report A</a></td><td>Hybrid report. Visual overview by default, methodology + evidence behind expanders, AI briefing grounded in the fact pack.</td></tr>
-                <tr><td>2.1.4</td><td><a href="/gtr/docs/stage-2/dashboard-a/">Dashboard A</a></td><td>Vertical hierarchy. Live footprint / handprint, maturity, risk radar, projection.</td></tr>
-                <tr><td>2.1.5</td><td><a href="/gtr/docs/stage-2/report-dashboard-b/">Report + Dashboard Connected (B)</a></td><td>Report history. Per-snapshot visibility. The connection that turns the report into a longitudinal surface.</td></tr>
-                <tr><td>2.1.6</td><td><a href="/gtr/docs/stage-2/insights/">Giving Actionable Insights</a></td><td>Goals rail, recommendations, AI briefing as insight, maturity progression, follow-up cadence.</td></tr>
-                <tr><td>2.1.7</td><td><a href="/gtr/docs/stage-2/the-model/">The Model</a></td><td>The <code>data/evidence.js</code> evidence library — every number's source, the AI's fact pack, the honesty rules.</td></tr>
-                <tr><td>2.1.8</td><td><a href="/gtr/docs/stage-2/auth-and-access/">Auth, Accounts &amp; Access</a></td><td>PBKDF2 auth, D1 schema, sessions, anonymous previews, the <code>?invite=</code> flow.</td></tr>
-                <tr><td>2.1.9</td><td><a href="/gtr/docs/stage-2/foundation-model/">Foundation-Model Handling</a></td><td>The 1000x compute multiplier and 25,000 tCO2e/yr RLHF baseline for AI / heavy-compute teams.</td></tr>
-                <tr><td>2.1.10</td><td><a href="/gtr/docs/stage-2/multi-sector/">Modular Multi-Sector Reports</a></td><td>How the report adapts across SaaS, hardware, food, pet, biotech, foundation model, and hybrid operations.</td></tr>
-                <tr><td>2.1.11</td><td><a href="/gtr/docs/stage-2/admin/">Admin &amp; Platform</a></td><td>The admin surface — stats, AI token logs, email-based admin gate.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+        <nav className="report-contents" aria-label="Stage 2 PRD contents">
+          <p>In this PRD</p>
+          <a href="#s2-goals"><span>0</span>Goals</a>
+          <a href="#s2-changes"><span>1</span>What changed from Stage 1</a>
+          <a href="#s2-auth"><span>2</span>Auth &amp; storage</a>
+          <a href="#s2-nongoals"><span>3</span>Non-goals</a>
+          <a href="#s2-open"><span>4</span>Open questions</a>
+          <a href="#s2-onboarding-a"><span>5</span>Onboarding A — in-app 6-step wizard</a>
+          <a href="#s2-onboarding-b"><span>10</span>Onboarding B — ChatGPT MCP server</a>
+          <a href="#s2-report-a"><span>15</span>Report A — hybrid report</a>
+          <a href="#s2-dashboard-a"><span>18</span>Dashboard A — vertical hierarchy</a>
+          <a href="#s2-connected"><span>20</span>Report + Dashboard Connected (B)</a>
+          <a href="#s2-insights"><span>24</span>Giving Actionable Insights</a>
+          <a href="#s2-model"><span>29</span>The Model — the evidence library</a>
+          <a href="#s2-auth-access"><span>33</span>Auth, Accounts &amp; Access</a>
+          <a href="#s2-foundation"><span>37</span>Foundation-Model Handling</a>
+          <a href="#s2-multisector"><span>41</span>Modular Multi-Sector Reports</a>
+          <a href="#s2-admin"><span>45</span>Admin &amp; Platform</a>
+        </nav>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
+        <section className="report-chapter" id="s2-goals">
+          <span className="report-number">0</span>
           <h2>Goals</h2>
-          <p className="report-lead">Cross-cutting. Each sub-page inherits these.</p>
+          <p className="report-lead">Cross-cutting. Every sub-PRD inherits these.</p>
           <ol>
             {stage2Goals.map((goal) => <li key={goal}>{goal}</li>)}
           </ol>
         </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
+        <section className="report-chapter" id="s2-changes">
+          <span className="report-number">1</span>
           <h2>What changed from Stage 1</h2>
           <ul>
             {stage2Changes.map((change) => <li key={change}>{change}</li>)}
           </ul>
         </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
+        <section className="report-chapter" id="s2-auth">
+          <span className="report-number">2</span>
           <h2>Auth &amp; storage</h2>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -1282,8 +1277,8 @@ function Stage2OverviewPage() {
           <p>Anonymous previews let logged-out visitors generate a limited preview report. A daily quota is enforced per client IP (<code>anonymous_report_limits</code> in D1) so AI billing stays predictable. The preview uses the same modeled snapshot path the post-login report uses — the difference is only whether the result persists.</p>
         </section>
 
-        <section className="report-chapter">
-          <span className="report-number">4</span>
+        <section className="report-chapter" id="s2-nongoals">
+          <span className="report-number">3</span>
           <h2>Non-goals</h2>
           <ul>
             <li>Not a certified carbon-accounting product. The first report is a directional model, not an audit-grade submission.</li>
@@ -1294,8 +1289,8 @@ function Stage2OverviewPage() {
           </ul>
         </section>
 
-        <section className="report-chapter">
-          <span className="report-number">5</span>
+        <section className="report-chapter" id="s2-open">
+          <span className="report-number">4</span>
           <h2>Open questions for the next test round</h2>
           <p className="report-lead">The second prototype is shippable, but it is not yet a validated product. The next round of founder testing needs to answer these.</p>
           <ol>
@@ -1303,31 +1298,13 @@ function Stage2OverviewPage() {
           </ol>
           <aside className="report-note report-note-yellow"><b>Stage 2 verdict</b><p>The Stage 1 PRD's wedge — climate-tech founders first, +/- separation visible, weekly operating loop — has been kept intact while the surface area grew. The next test round decides whether the system is usable enough that the loop actually sticks.</p></aside>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function OnboardingAPage() {
-  return (
-    <section className="report-section" id="stage-2-onboarding-a">
-      <ChapterLabel number="2.1.1">Stage 2 PRD / Onboarding A</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Onboarding A — in-app"
-          title="The 6-step wizard is the post-test-1 baseline"
-          summary="After the fieldwork-week tests, the in-app intake is a 6-step guided wizard with visible progress, dropdowns instead of free text, tailored defaults per business model, and a live preview that earns trust before document upload is asked for. The first visible payoff is the report — Phase A moved account creation and file upload behind the instant result."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/onboarding-b/", "Onboarding B (ChatGPT MCP)"],
-            ["/gtr/docs/stage-2/report-a/", "Report A"],
-            ["/gtr/docs/stage-2/dashboard-a/", "Dashboard A"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-onboarding-a">
+          <span className="report-number">5</span>
+          <h2>Onboarding A — the 6-step in-app wizard</h2>
+          <p>After the fieldwork-week tests, the in-app intake is a 6-step guided wizard with visible progress, dropdowns instead of free text, tailored defaults per business model, and a live preview that earns trust before document upload is asked for. The first visible payoff is the report — Phase A moved account creation and file upload behind the instant result.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>Funnel — the report is the first payoff</h2>
+          <h3>Funnel — the report is the first payoff</h3>
           <p>Phase A reversed the Stage 1 sequence. Auth and document upload no longer sit in front of the assessment; the report renders from the local state snapshot before any account is created. Log in is now a downstream "save your history" gate, not a precondition to seeing the result.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -1340,11 +1317,8 @@ function OnboardingAPage() {
             </table>
           </div>
           <p>The methodology page is its own dedicated screen in the funnel. The founder sees the framework before being asked to fill in the form. The "your data stays private" line sits on the landing page; the same promise is restated at the account gate.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Tailored intake — the business model gates the form</h2>
+          <h3>Tailored intake — the business model gates the form</h3>
           <p>Phase F made the intake respect the founder's actual business. The "business model" field selects a profile that pre-fills defaults, weights activities, and surfaces the right levers. Foundation-model teams — the cohort whose compute footprint the per-FTE baseline visibly mis-measures — are routed through a separate path with a 1000x compute multiplier and an explicit RLHF / data-annotation workforce baseline of 25,000 tCO2e/yr.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -1357,18 +1331,12 @@ function OnboardingAPage() {
             </table>
           </div>
           <p>Phase C converted the remaining free-text fields to dropdowns (cloud provider, hosting region, primary activity, energy source) with an "Other (specify)" escape hatch. The hybrid case aggregates the matched sector benchmarks and combines their notes.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>Document upload — optional, behind the report</h2>
+          <h3>Document upload — optional, behind the report</h3>
           <p>Phase B demoted document upload from a required step to an optional, skippable one. The <code>/api/documents</code> endpoints and the R2 binding stay wired for an incubator-only path, but the UI no longer asks. Stealth-mode and one-person teams can complete the assessment without exposing source files.</p>
           <p>The discoverable "upload evidence" path still lives in the dashboard's right rail — Phase B did not remove the option, it just stopped making it the second thing a founder sees. Incubator / investor partners can offer document sharing inside a trusted context instead.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>Accessibility and copy</h2>
+          <h3>Accessibility and copy</h3>
           <p>Quick wins that shipped with the wizard:</p>
           <ul>
             <li>Visible <code>[Required]</code> chip on required fields, with <code>aria-required="true"</code> for screen readers (Q1 a11y).</li>
@@ -1378,38 +1346,17 @@ function OnboardingAPage() {
           </ul>
           <aside className="report-note"><b>Why "A"</b><p>Onboarding A is the visual, self-serve path. It is the right default for most founders. For the cohort that already lives inside an AI client, Onboarding B is the parallel path — same math, different surface.</p></aside>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function OnboardingBPage() {
-  return (
-    <section className="report-section" id="stage-2-onboarding-b">
-      <ChapterLabel number="2.1.2">Stage 2 PRD / Onboarding B (ChatGPT MCP)</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Onboarding B — AI client"
-          title="The same assessment, run from ChatGPT or Claude"
-          summary="A remote MCP server at <code>/mcp</code> exposes the assessment as a set of tools to AI clients — ChatGPT, Claude Desktop, Cursor, and any other MCP-compatible client. The founder completes the intake conversationally, in the tool they already work in. Data stays in the AI client; pushing the result to the dashboard is opt-in via a separate one-time link."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/onboarding-a/", "Onboarding A (in-app)"],
-            ["/gtr/docs/stage-2/report-a/", "Report A"],
-            ["/gtr/docs/stage-2/report-dashboard-b/", "Report + Dashboard Connected"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-onboarding-b">
+          <span className="report-number">10</span>
+          <h2>Onboarding B — the same assessment, run from ChatGPT or Claude</h2>
+          <p>A remote MCP server at <code>/mcp</code> exposes the assessment as a set of tools to AI clients — ChatGPT, Claude Desktop, Cursor, and any other MCP-compatible client. The founder completes the intake conversationally, in the tool they already work in. Data stays in the AI client; pushing the result to the dashboard is opt-in via a separate one-time link.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>What MCP gives the assessment</h2>
+          <h3>What MCP gives the assessment</h3>
           <p>The MCP server (<code>worker/mcp.js</code>) is a stateless Streamable HTTP endpoint at <code>/mcp</code>. It does not require a Durable Object, a session cookie, or any per-call state. Each tool call is self-contained: a list call returns the same JSON every time, and <code>compute_snapshot</code> is a pure function of the inputs. That makes it cheap to host and safe to expose.</p>
           <p>The server is built on the raw MCP SDK (not the Agents SDK) so it runs on Workers, Node 18+, Deno, and Bun without runtime-specific imports. Founders connect their AI client to <code>https://&lt;worker&gt;/mcp</code> once; the client handles the protocol.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Tools exposed</h2>
+          <h3>Tools exposed</h3>
           <div className="report-table-scroll">
             <table className="report-table report-table-wide">
               <thead><tr><th>Tool</th><th>What the AI uses it for</th></tr></thead>
@@ -1421,11 +1368,8 @@ function OnboardingBPage() {
             </table>
           </div>
           <p>All read-only tools (<code>list_*</code>) are unrestricted. <code>compute_snapshot</code>, <code>generate_report</code>, and <code>create_dashboard_save_link</code> are gated — the AI is told to call them only when the founder has confirmed the inputs.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>The flow</h2>
+          <h3>The flow</h3>
           <ol>
             <li>Founder connects ChatGPT (or Claude / Cursor) to the MCP endpoint.</li>
             <li>The AI calls <code>list_business_models</code>, <code>list_funding_stages</code>, and <code>list_activities</code> to learn the schema.</li>
@@ -1434,19 +1378,13 @@ function OnboardingBPage() {
             <li>Pushing to the dashboard is a separate, explicit step: <code>create_dashboard_save_link</code> returns a one-time link the founder clicks to copy the assessment into the dashboard.</li>
           </ol>
           <p>The result is a JSON payload the AI narrates inline. The founder never has to visit the standalone site to get a report — that is the point.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>Privacy — data stays in the client</h2>
+          <h3>Privacy — data stays in the client</h3>
           <p>The MCP server is stateless and does not persist assessment data. The <code>create_dashboard_save_link</code> tool returns a short-TTL link (default 600 seconds) the founder uses to push the assessment to their dashboard; until they click it, the assessment lives in the AI client's conversation history. The server itself forgets the call as soon as it returns.</p>
           <p>There is no anonymous-quota path for the MCP route: the AI client has its own usage model, and the assessment is generated against the founder's existing account on the underlying LLM. The Worker only bills the AI for the briefing call.</p>
           <aside className="report-note report-note-yellow"><b>MVP gap</b><p>The dashboard does not auto-receive MCP assessments yet. The <code>create_dashboard_save_link</code> tool currently returns the assessment JSON inside the link payload; the founder pastes it into the dashboard. The auto-receive path is the next step.</p></aside>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">4</span>
-          <h2>Compared to Onboarding A</h2>
+          <h3>Compared to Onboarding A</h3>
           <div className="report-table-scroll">
             <table className="report-table report-table-wide">
               <thead><tr><th>Dimension</th><th>Onboarding A</th><th>Onboarding B</th></tr></thead>
@@ -1458,31 +1396,13 @@ function OnboardingBPage() {
             </table>
           </div>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function ReportAPage() {
-  return (
-    <section className="report-section" id="stage-2-report-a">
-      <ChapterLabel number="2.1.3">Stage 2 PRD / Report A</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Report A — visual overview, methodology on demand"
-          title="The report earns trust with a snapshot and rewards it with evidence"
-          summary="Phase E combined Report 1's explanatory depth with Report 2's infographic clarity. The default view is a one-page snapshot; 'Show methodology' and 'Show evidence' expanders reveal the factor sources, framework definitions, and citations behind every tile. The AI briefing is grounded in the same evidence library the snapshot draws from, so the narrative can never disagree with the numbers."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/dashboard-a/", "Dashboard A"],
-            ["/gtr/docs/stage-2/report-dashboard-b/", "Report + Dashboard Connected"],
-            ["/gtr/docs/stage-2/insights/", "Actionable Insights"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-report-a">
+          <span className="report-number">15</span>
+          <h2>Report A — the report earns trust with a snapshot and rewards it with evidence</h2>
+          <p>Phase E combined Report 1's explanatory depth with Report 2's infographic clarity. The default view is a one-page snapshot; "Show methodology" and "Show evidence" expanders reveal the factor sources, framework definitions, and citations behind every tile. The AI briefing is grounded in the same evidence library the snapshot draws from, so the narrative can never disagree with the numbers.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>The model — every number is sourced</h2>
+          <h3>The model — every number is sourced</h3>
           <p>The product's honesty rules are encoded in <code>data/evidence.js</code>, a single source of truth imported by both the SPA and the Worker. Every default factor names a public source + URL + year; benchmarks are derived ranges (per-FTE × typical headcount) and say so; regulatory precedents carry a status / date because regulation moves; and the AI is constrained to cite only from this library — never to invent a citation, statistic, or URL.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -1495,11 +1415,8 @@ function ReportAPage() {
             </table>
           </div>
           <aside className="report-note"><b>Honesty rule</b><p>Defaults are labelled modeled, never measured. The dashboard invites founders to replace them with their own data — kWh from a utility bill, supplier invoices, token spend — and visibly narrows the uncertainty band when they do.</p></aside>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Tiles — the one-page snapshot</h2>
+          <h3>Tiles — the one-page snapshot</h3>
           <p>Phase E combined Report 1's explanatory depth with Report 2's infographic clarity. The default view is a one-page snapshot; "Show methodology" and "Show evidence" expanders reveal the factor sources, framework definitions, and citations behind every tile.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -1511,47 +1428,23 @@ function ReportAPage() {
               </tbody>
             </table>
           </div>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>AI briefing — grounded, cited, reversible</h2>
+          <h3>AI briefing — grounded, cited, reversible</h3>
           <p>The AI briefing sits inside the report. It pulls company-specific environmental issues and analogous peer incidents through Google Search grounding when the founder supplies a public website, then constrains the model to cite only the curated fact pack assembled by <code>buildFactPack()</code>. Search queries and web sources are surfaced inline; the briefing never invents a URL.</p>
           <p>If the briefing's confidence is low, the system says so. The default call returns a 503 with a clear message when the Gemini key is absent, and the modeled snapshot still renders — the founder never sees a half-loaded report.</p>
           <aside className="report-note report-note-yellow"><b>SSRF guard</b><p>The Worker fetches the submitted public website behind SSRF guards (blocked private / local hosts, size-capped reads, timeout). The fetched content is included in the prompt, but the model is told to use it as background context only — citations still come from the fact pack.</p></aside>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function DashboardAPage() {
-  return (
-    <section className="report-section" id="stage-2-dashboard-a">
-      <ChapterLabel number="2.1.4">Stage 2 PRD / Dashboard A</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Dashboard A — vertical hierarchy, live snapshot"
-          title="The dashboard earns a second visit by surfacing the live number, not the project plan"
-          summary="Phase D reordered the dashboard so the things founders actually return to — goals, milestones, and the live footprint / handprint snapshot — sit at the top. The four-card row that testers skipped was split: footprint and handprint stay prominent; net and cost moved to a 'Details' expander. The dashboard is no longer a project plan; it is the second visit's reason to exist."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/report-a/", "Report A"],
-            ["/gtr/docs/stage-2/insights/", "Actionable Insights"],
-            ["/gtr/docs/stage-2/report-dashboard-b/", "Report + Dashboard Connected"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-dashboard-a">
+          <span className="report-number">18</span>
+          <h2>Dashboard A — the dashboard earns a second visit by surfacing the live number</h2>
+          <p>Phase D reordered the dashboard so the things founders actually return to — goals, milestones, and the live footprint / handprint snapshot — sit at the top. The four-card row that testers skipped was split: footprint and handprint stay prominent; net and cost moved to a "Details" expander. The dashboard is no longer a project plan; it is the second visit's reason to exist.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>Why vertical</h2>
+          <h3>Why vertical</h3>
           <p>The fieldwork report flagged two things at once: the four-card horizontal row got skipped, and the goals / milestones section was confused with the maturity section. Phase D fixes both with a single move — reorder top-to-bottom so the things the founder came back for sit at the top, and the things that earn trust on second read sit below them in expandable sections.</p>
           <p>The dashboard is no longer a one-glance readout; it is a sequence: glance (live number), orient (risks, maturity), act (goals, recommendations), look back (history).</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Sections, top to bottom</h2>
+          <h3>Sections, top to bottom</h3>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Section</th><th>Purpose</th></tr></thead>
@@ -1562,110 +1455,62 @@ function DashboardAPage() {
               </tbody>
             </table>
           </div>
-          <p>Actionable items (goals, recommendations, AI briefing) live in <a href="/gtr/docs/stage-2/insights/">Actionable Insights</a>. The longitudinal surface (report history, snapshot comparison) lives in <a href="/gtr/docs/stage-2/report-dashboard-b/">Report + Dashboard Connected</a>. This page is the live snapshot, the things that need to be visible every visit.</p>
+          <p>Actionable items (goals, recommendations, AI briefing) live in the Insights section below. The longitudinal surface (report history, snapshot comparison) lives in the Report + Dashboard Connected section. This page is the live snapshot — the things that need to be visible every visit.</p>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function ReportDashboardBPage() {
-  return (
-    <section className="report-section" id="stage-2-report-dashboard-b">
-      <ChapterLabel number="2.1.5">Stage 2 PRD / Report + Dashboard Connected (B)</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Report + Dashboard Connected — the history layer"
-          title="Snapshots, not settings — the report becomes the dashboard's source of truth"
-          summary="Phase G + report history make the dashboard a longitudinal surface. Every assessment is a snapshot the founder can save, list, open, and delete. Each snapshot carries its own visibility (private / link / investor) and its own share card. The report stops being a one-off deliverable and starts being the database the dashboard reads from."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/report-a/", "Report A"],
-            ["/gtr/docs/stage-2/dashboard-a/", "Dashboard A"],
-            ["/gtr/docs/stage-2/insights/", "Actionable Insights"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-connected">
+          <span className="report-number">20</span>
+          <h2>Report + Dashboard Connected (B) — snapshots, not settings</h2>
+          <p>Phase G + report history make the dashboard a longitudinal surface. Every assessment is a snapshot the founder can save, list, open, and delete. Each snapshot carries its own visibility (private / link / investor) and its own share card. The report stops being a one-off deliverable and starts being the database the dashboard reads from.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>Report history — the four actions</h2>
+          <h3>Report history — the four actions</h3>
           <p>Every completed assessment can be saved as a snapshot. The snapshot is the full workspace state — not a stripped-down report. Opening a snapshot replaces the current workspace, putting the founder back into a specific moment. Deleting a snapshot removes only that moment; the current state is unaffected.</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Action</th><th>Endpoint</th></tr></thead>
               <tbody>
                 {stage2ReportHistoryActions.map(([action, detail]) => (
-                  <tr key={action}><td>{action}</td><td>{detail}</td></tr>
+                  <tr key={action}><td>{action}</td><td dangerouslySetInnerHTML={{ __html: detail }} /></tr>
                 ))}
               </tbody>
             </table>
           </div>
           <p>The history list shows snapshots newest-first, with a one-line summary of each (footprint, handprint, net, date, visibility). Opening a snapshot is a deliberate "I want to see this version" action — the dashboard does not auto-switch between them.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Per-snapshot visibility</h2>
+          <h3>Per-snapshot visibility</h3>
           <p>Phase G built on the Stage 1 quick win (Q3) and turned sharing into a per-report decision. Each saved snapshot carries one of three visibility states:</p>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Visibility</th><th>Who can see it</th></tr></thead>
               <tbody>
                 {stage2ShareVisibility.map(([v, detail]) => (
-                  <tr key={v}><td>{v}</td><td>{detail}</td></tr>
+                  <tr key={v}><td>{v}</td><td dangerouslySetInnerHTML={{ __html: detail }} /></tr>
                 ))}
               </tbody>
             </table>
           </div>
           <p>The visibility is set on the snapshot, not on the account. A founder can keep last month's private and share this month's investor link from the same dashboard.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>Share card — the OG image</h2>
+          <h3>Share card — the OG image</h3>
           <p>The share-card generator auto-renders an Open Graph image with the founder's climate-impact grade and the benchmark bands — never the raw numbers. The link underneath the card is bound to the snapshot's visibility, so a private snapshot produces a private link, a link-only snapshot produces a link, and an investor snapshot produces a time-limited token URL.</p>
           <p>The LinkedIn share path has been demoted behind a consent dialog that defaults to a private link, addressing the fieldwork-week finding that founders refused to share high-emission results publicly. Sharing high-emission results still works — the founder just has to do it deliberately.</p>
           <aside className="report-note report-note-yellow"><b>Privacy default</b><p>Public sharing requires an explicit visibility choice. LinkedIn and share-card buttons stay disabled until the founder opts in — the system makes opting out the path of least resistance.</p></aside>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>Why this is "B" not "A"</h2>
+          <h3>Why this is "B" not "A"</h3>
           <p>Report A and Dashboard A are the standalone surfaces. Report + Dashboard Connected is what happens when the two stop being separate products. The history layer is what makes the weekly operating loop real: "what did we measure last month?", "is the handprint claim still defensible?", "did the cost-exposure estimate move?" all become answerable from the same snapshot stream.</p>
           <p>The Stage 1 PRD's "weekly operating loop" only works if the loop closes — and the loop closes when a snapshot taken on day 1 can be compared against a snapshot taken on day 30. That is what this page is for.</p>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function InsightsPage() {
-  return (
-    <section className="report-section" id="stage-2-insights">
-      <ChapterLabel number="2.1.6">Stage 2 PRD / Giving Actionable Insights</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Giving actionable insights"
-          title="The dashboard's job is to make the next decision obvious"
-          summary="A snapshot is not a product. A report is not a product. The product is what the founder does after the report — the goals, the recommendations, the maturity progression, the follow-up cadence. This page documents the surfaces that turn measurement into action, and the conditions under which those insights stay trustworthy as the product grows."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/dashboard-a/", "Dashboard A"],
-            ["/gtr/docs/stage-2/report-a/", "Report A"],
-            ["/gtr/docs/stage-2/report-dashboard-b/", "Report + Dashboard Connected"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-insights">
+          <span className="report-number">24</span>
+          <h2>Giving Actionable Insights — making the next decision obvious</h2>
+          <p>A snapshot is not a product. A report is not a product. The product is what the founder does after the report — the goals, the recommendations, the maturity progression, the follow-up cadence. This section documents the surfaces that turn measurement into action, and the conditions under which those insights stay trustworthy as the product grows.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>Goals rail — owned actions, deadlines, evidence</h2>
+          <h3>Goals rail — owned actions, deadlines, evidence</h3>
           <p>The goals rail groups near the top of the dashboard per the fieldwork-density finding. Each goal has an owner, a deadline, and an evidence point. The progress game uses levels and evidence points to create weekly momentum, not vanity points — a goal only counts toward maturity if the evidence is attached.</p>
           <p>Goals are not auto-generated. The recommendations system proposes them; the founder accepts, rejects, or rewrites. The acceptance is the act that ties the goal to a maturity progression.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Recommendations — where they come from</h2>
+          <h3>Recommendations — where they come from</h3>
           <p>Recommendations are rendered from the snapshot. Five signal sources feed them:</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -1678,11 +1523,8 @@ function InsightsPage() {
             </table>
           </div>
           <p>A recommendation is shown with its source signal explicitly labelled. "Reduce cloud spend" cites the snapshot's footprint rank; "Engage your largest customer on the handprint claim" cites the precedent library. The founder can trace every recommendation back to the data that produced it.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>Maturity progression</h2>
+          <h3>Maturity progression</h3>
           <p>Maturity is a four-level progression that mirrors the share-page's audit label. The dashboard shows the current level, the inputs that would move it up, and the date the level last changed.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -1695,217 +1537,23 @@ function InsightsPage() {
             </table>
           </div>
           <p>The maturity level is also a share-page label. A Level 3 dashboard can carry a "measured" badge on the public share; a Level 4 can carry an "audited" badge. The badge is a derivation, not a separate input — it stays consistent with the dashboard.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>AI briefing as insight</h2>
+          <h3>AI briefing as insight</h3>
           <p>The AI briefing is reused on the dashboard, not regenerated. The same grounded narrative the founder saw in the report travels with the snapshot, so the dashboard's "what does this mean?" answer is consistent with the report's. The briefing never invents a URL — it cites only from the fact pack.</p>
           <p>The briefing is persistent on the dashboard. It is not a one-time reveal; it is a surface the founder can re-read. If the underlying snapshot changes (a goal is closed, a milestone is hit), the briefing re-grounds against the new facts.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">4</span>
-          <h2>Follow-up cadence</h2>
+          <h3>Follow-up cadence</h3>
           <p>Every metric has a natural cadence. The dashboard surfaces it: a cloud-spend line is a monthly metric; a travel line is a quarterly one; a handprint claim is an annual one. Recommendations arrive at the cadence their underlying metric deserves, not on a single notification schedule.</p>
           <p>Cadence drift is the default failure mode — the same recommendation pinging weekly until the founder ignores it. The fix is to bind the cadence to the metric, not to the user, and to suppress repeat recommendations until the underlying signal changes.</p>
-          <aside className="report-note report-note-yellow"><b>Why this is the last sub-page</b><p>Insights are the place where the other five connect. Onboarding A and B produce the snapshot. Report A shows the snapshot. Dashboard A is the live view. Report + Dashboard Connected is the longitudinal view. Insights is what the founder does next, fed by all four.</p></aside>
-        </section>
-      </div>
-    </section>
-  );
-}
-
-const presentationParticipants = [
-  ["Amali", "Data engineer", "Technical and data perspective on intake, report, and dashboard comprehension."],
-  ["Caroline", "Investment analyst", "Investor-side reading of stealth risk, report format, and term clarity."],
-  ["Josh", "CCA Interaction Design student", "Product-design feedback on flow density, report parsing, and sharing behavior."],
-  ["Ted", "Startup founder", "Only actual founder in the cohort; closest match to the target audience."],
-  ["Brian", "Accessibility Lead, Superhuman", "Accessibility gaps and whether the intake justified the effort."],
-];
-
-const presentationTakeaways = [
-  ["Value proposition gap", "Participants liked the concept but repeatedly asked why they should complete the flow.", "State the benefit before document upload; show a preview after step one."],
-  ["Session overload", "Two assessments, two reports, and a dashboard in one sitting was hard to follow.", "Group complete Track A and Track B experiences instead of mixing variations mid-journey."],
-  ["Language density", "Early prototype copy was too complex for most role-played founders.", "Run an internal walkthrough before each session; simplify labels and definitions."],
-  ["A/B value", "Side-by-side variations made preferences legible and gave room to elaborate on feedback.", "Keep paired testing, but sequence each track end-to-end."],
-  ["Trust and privacy", "Early-stage founders resisted sharing pitch decks with an unfamiliar team.", "Replace sensitive uploads with manual aggregate fields where possible."],
-  ["Sample size", "Only one participant was an actual founder.", "Recruit more founders before treating comprehension results as validation."],
-];
-
-function fieldworkSlideEmbedSrc() {
-  return `/?display=deck#${fieldworkSlide.slug}`;
-}
-
-function FieldworkFeedbackPage() {
-  return (
-    <section className="report-section" id="fieldwork-feedback">
-      <ChapterLabel number="1.3">First Prototype / Presentation Feedback</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Fieldwork week · team presentation and critique"
-          title="What we said in the room, and what the feedback pushed back on"
-          summary="This page synthesizes the fieldwork-week presentation transcript and the mentor Q&amp;A that followed. It captures how the team explained the paper-prototype study, what landed with participants, what confused them, and what to change before the next round."
-          links={[
-            ["/gtr/docs/fieldwork-report/", "Fieldwork report"],
-            ["/gtr/docs/fieldwork-report/slides/", "Fieldwork slides"],
-          ]}
-        />
-
-        <nav className="report-contents" aria-label="Presentation feedback contents">
-          <p>In this page</p>
-          <a href="#feedback-summary"><span>0</span>Executive summary</a>
-          <a href="#feedback-product"><span>1</span>What we presented</a>
-          <a href="#feedback-process"><span>2</span>Testing process</a>
-          <a href="#feedback-signal"><span>3</span>What participants valued</a>
-          <a href="#feedback-friction"><span>4</span>Where the sessions broke</a>
-          <a href="#feedback-question"><span>5</span>The recurring question</a>
-          <a href="#feedback-mentor"><span>6</span>Mentor feedback</a>
-          <a href="#feedback-next"><span>7</span>What changes next</a>
-        </nav>
-
-        <section className="report-chapter" id="feedback-summary">
-          <span className="report-number">0</span>
-          <h2>Executive summary</h2>
-          <p className="report-lead">The presentation closed fieldwork week by narrating a paper-prototype study for a startup climate-impact platform — onboarding, instant report, and dashboard — tested with five founder-role participants.</p>
-          <p>The team’s honest read: the concept and the link between business activity and environmental impact resonated, but the sessions asked too much at once and still failed to answer the simplest founder question — <em>why should I do this?</em> Mentor feedback reinforced that gap and suggested a cleaner A/B structure for the next round.</p>
-          <aside className="report-note"><b>How to read this page</b><p>Use the detailed fieldwork report for artifact inventory, participant tables, and aggregated findings. This page preserves the spoken narrative and the critique that shaped the next iteration.</p></aside>
+          <aside className="report-note report-note-yellow"><b>Why insights are last</b><p>Insights are the place where the other surfaces connect. Onboarding A and B produce the snapshot. Report A shows the snapshot. Dashboard A is the live view. Report + Dashboard Connected is the longitudinal view. Insights is what the founder does next, fed by all four.</p></aside>
         </section>
 
-        <section className="report-chapter" id="feedback-product">
-          <span className="report-number">1</span>
-          <h2>What we presented</h2>
-          <p>Team GTR introduced a carbon planner for startups — a product direction aimed at helping founders see the planning impact of continuing to operate as they do today. The study focused on paper prototypes for three moments in the journey:</p>
-          <ol>
-            <li><b>Onboarding / assessment</b> — mobile-first intake so founders could imagine using their own phone.</li>
-            <li><b>Instant report</b> — deliberately letter-shaped to feel like receiving a real document, while remaining readable on desktop.</li>
-            <li><b>Dashboard</b> — a surface founders would return to while running the business.</li>
-          </ol>
-          <p>The storyboard came first: make founders aware the platform exists, open it on a smartphone, complete assessment, receive a report, then move into ongoing dashboard use. Every prototype artifact tested a specific transition in that path.</p>
-        </section>
+        <section className="report-chapter" id="s2-model">
+          <span className="report-number">29</span>
+          <h2>The Model — every number traces back to a named source</h2>
+          <p><code>data/evidence.js</code> is the single source of truth for every emission factor, framework, benchmark, precedent, and AI-grounded fact. It is imported by both the SPA and the Worker so the numbers the founder sees and the numbers the AI cites are the same numbers. The honesty rules in this file are not a coding convention — they are the product.</p>
 
-        <section className="report-chapter" id="feedback-process">
-          <span className="report-number">2</span>
-          <h2>Testing process</h2>
-          <p>After building the paper prototypes, the team ran five sessions and synthesized feedback across distinct perspectives:</p>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Participant</th><th>Background</th><th>What they brought</th></tr></thead>
-              <tbody>
-                {presentationParticipants.map(([name, role, note]) => (
-                  <tr key={name}><td>{name}</td><td>{role}</td><td>{note}</td></tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p>Sessions took place at the Superhuman office during a team visit and at a Monday coffee-connection event. Ted was the only actual startup founder; the other four stress-tested comprehension, investor logic, design clarity, and accessibility — which helped surface inclusive-design gaps the team might have missed with a founder-only sample.</p>
-          <p>For each major step, the team showed two variations and asked which felt better: Assessment A vs B, Report A vs B, then the dashboard. Participants moved start-to-finish through the journey, but with A/B choices embedded throughout the session rather than as two fully separated tracks.</p>
-        </section>
-
-        <section className="report-chapter" id="feedback-signal">
-          <span className="report-number">3</span>
-          <h2>What participants valued</h2>
-          <p>Despite friction in the sessions, the overall concept left a strong impression. Participants responded well to usability ideas and to the connection between environmental impact and everyday business decisions — seeing effects they had not previously considered.</p>
-          <p>A/B comparisons were especially productive. When a first variation missed, a second often landed: <em>“The first one didn’t quite land, but the second one did — this is what I was imagining.”</em> That pattern gave the team clearer evidence about which intake structure, report format, and visual hierarchy deserved another pass.</p>
-          <aside className="report-note report-note-yellow"><b>Signal to keep</b><p>Early paired testing worked. The next iteration should preserve comparison, but reduce cognitive load by presenting each track as a coherent whole.</p></aside>
-        </section>
-
-        <section className="report-chapter" id="feedback-friction">
-          <span className="report-number">4</span>
-          <h2>Where the sessions broke</h2>
-          <p>The team identified three self-inflicted problems in how the study was built and run:</p>
-          <ul>
-            <li><b>Too much in one sitting.</b> Two assessments, two reports, and a dashboard in a single session overwhelmed participants.</li>
-            <li><b>Complex prototype language.</b> Early copy was hard to follow for most role-played founders; only Ted, the actual founder, navigated it comfortably.</li>
-            <li><b>Uneven session setup.</b> Not every participant entered with the same mental model of the journey until the team added an internal walkthrough before showing screens.</li>
-          </ul>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Theme</th><th>What we heard</th><th>Implication</th></tr></thead>
-              <tbody>
-                {presentationTakeaways.map(([theme, heard, implication]) => (
-                  <tr key={theme}><td>{theme}</td><td>{heard}</td><td>{implication}</td></tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="report-chapter" id="feedback-question">
-          <span className="report-number">5</span>
-          <h2>The recurring question</h2>
-          <p className="report-lead">Across sessions, the most consistent pushback was not a layout detail. It was purpose.</p>
-          <blockquote className="report-quote">Why? What is the main purpose behind this product? Why would we want to use it?</blockquote>
-          <p>Participants liked the design direction but needed a sharper value proposition before they would invest attention — let alone documents — in the flow. The onboarding journey currently asks for information before delivering meaningful value. That sequencing showed up again in the detailed fieldwork findings as upload friction and an unclear product type.</p>
-          <p>If the next iteration answers <em>why</em> before <em>what to upload</em>, the same prototype structure becomes much easier to defend.</p>
-        </section>
-
-        <section className="report-chapter" id="feedback-mentor">
-          <span className="report-number">6</span>
-          <h2>Mentor feedback</h2>
-          <h3>Climate Brick outreach</h3>
-          <p>The team reached out through email, LinkedIn, and Instagram but did not receive a substantive reply beyond one positive expression of interest. Climate Brick remains a reference shelf, not a confirmed partnership.</p>
-          <h3>Stay on purpose</h3>
-          <p>The mentor treated the recurring <em>why</em> question as a useful gut check rather than a failure — a reminder to pause amid prototypes and pixels and restate what the product is actually trying to achieve.</p>
-          <h3>Reframe A/B testing</h3>
-          <p>When participants felt confused despite seeing the full journey, the mentor suspected the within-session A/B switching. Homework for the next round: group all of Track A into one complete experience and all of Track B into another, so messaging, flow, CTAs, and tone stay consistent inside each track.</p>
-          <aside className="report-note"><b>Mentor verdict</b><p>The latest iteration read as the strongest version so far. The team was encouraged to carry the feedback forward into the working prototype and the next founder-recruitment pass.</p></aside>
-        </section>
-
-        <section className="report-chapter" id="feedback-next">
-          <span className="report-number">7</span>
-          <h2>What changes next</h2>
-          <ul>
-            <li>Deliver value earlier in onboarding — before document upload and before the heaviest inputs.</li>
-            <li>Combine the strongest elements from Assessment A/B and Report A/B instead of treating them as isolated winners.</li>
-            <li>Add clearer guidance across onboarding, dashboard, and report materials; reduce unexplained complexity.</li>
-            <li>Address trust and privacy explicitly for very early-stage startups reluctant to share sensitive files.</li>
-            <li>Recruit more actual founders; five sessions are enough for prototype direction, not for hypothesis validation.</li>
-            <li>Update prototypes from these results and test again with a working build.</li>
-          </ul>
-          <div className="report-next-links">
-            <a href="/gtr/docs/fieldwork-report/">Open the fieldwork report <span>→</span></a>
-            <a href="/gtr/docs/fieldwork-report/slides/">Review fieldwork slides <span>→</span></a>
-          </div>
-        </section>
-      </div>
-    </section>
-  );
-}
-
-function FieldworkSlidePage() {
-  return (
-    <section className="gtr-slide-shell gtr-slide-shell--deck-only" id="fieldwork-slides">
-      <iframe
-        title={fieldworkSlide.label}
-        src={fieldworkSlideEmbedSrc()}
-        className="gtr-slide-embed"
-        loading="lazy"
-      />
-    </section>
-  );
-}
-
-function ModelPage() {
-  return (
-    <section className="report-section" id="stage-2-the-model">
-      <ChapterLabel number="2.1.7">Stage 2 PRD / The Model</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="The Model — the evidence library"
-          title="Every number in the product traces back to a named source"
-          summary="<code>data/evidence.js</code> is the single source of truth for every emission factor, framework, benchmark, precedent, and AI-grounded fact. It is imported by both the SPA and the Worker so the numbers the founder sees and the numbers the AI cites are the same numbers. The honesty rules in this file are not a coding convention — they are the product."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/report-a/", "Report A"],
-            ["/gtr/docs/stage-2/multi-sector/", "Modular Multi-Sector Reports"],
-            ["/gtr/docs/stage-2/foundation-model/", "Foundation-Model Handling"],
-          ]}
-        />
-
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>What the library contains</h2>
+          <h3>What the library contains</h3>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Name</th><th>What it provides</th></tr></thead>
@@ -1917,20 +1565,14 @@ function ModelPage() {
             </table>
           </div>
           <aside className="report-note"><b>Single source of truth</b><p>The SPA and the Worker both import from <code>data/evidence.js</code>. The founder-facing snapshot in the browser and the AI-grounded report from the Worker resolve the same emission factors, the same benchmark ranges, and the same precedent URLs. A change in <code>data/evidence.js</code> lands in both surfaces on the next deploy.</p></aside>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>The honesty rules</h2>
+          <h3>The honesty rules</h3>
           <p>The library is governed by a small set of rules. They are not aspirational — every entry in the file follows them, and the dashboards visibly surface any default that violates them.</p>
           <ul>
             {stage2HonestyRules.map((rule) => <li key={rule[0]} dangerouslySetInnerHTML={{ __html: `<b>${rule[0]}.</b> ${rule[1]}` }} />)}
           </ul>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>How a fact reaches the AI</h2>
+          <h3>How a fact reaches the AI</h3>
           <p>The path from a founder input to a cited AI claim is five steps. Every step is auditable in the Worker logs.</p>
           <ol>
             {stage2EvidenceFlow.map(([step, detail]) => (
@@ -1938,38 +1580,18 @@ function ModelPage() {
             ))}
           </ol>
           <p>The fact pack is the boundary the AI cannot cross. A founder who asks the briefing a question outside the fact pack gets a calibrated "I don't have evidence for that" rather than a confident invention.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>What lives where</h2>
+          <h3>What lives where</h3>
           <p>The library is split between <code>data/evidence.js</code> (the curated content) and <code>worker/snapshot.js</code> (the math that consumes it). The split is deliberate: the content changes when a methodology is updated; the math changes when the team size scaling rule or the foundation-model multiplier changes. Keeping them in separate files makes both reviewable.</p>
           <p>The activities database (<code>ACTIVITIES_DB</code>) lives in <code>worker/snapshot.js</code> because it is consumed by <code>computeSnapshot()</code>. Its <code>type: "modeled"</code> flag is what makes the honesty rule "modeled, never measured" enforceable: a measured input from the founder overrides the <code>defaultVal</code> in the dashboard, and the snapshot records the override.</p>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function AuthAccessPage() {
-  return (
-    <section className="report-section" id="stage-2-auth-and-access">
-      <ChapterLabel number="2.1.8">Stage 2 PRD / Auth, Accounts &amp; Access</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Auth, Accounts &amp; Access — who you are, what you can do"
-          title="The account gate sits after the report, not before it"
-          summary="PBKDF2 password hashing, HttpOnly / Secure / SameSite=Lax session cookies, and a D1-backed account schema run the signed-in product. Anonymous previews, the <code>?invite=</code> deep link, and the per-IP daily quota run the path that does not require an account. The two surfaces are deliberately independent — the same snapshot can be generated without an account and saved with one."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/the-model/", "The Model"],
-            ["/gtr/docs/stage-2/onboarding-a/", "Onboarding A"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-auth-access">
+          <span className="report-number">33</span>
+          <h2>Auth, Accounts &amp; Access — the account gate sits after the report, not before it</h2>
+          <p>PBKDF2 password hashing, HttpOnly / Secure / SameSite=Lax session cookies, and a D1-backed account schema run the signed-in product. Anonymous previews, the <code>?invite=</code> deep link, and the per-IP daily quota run the path that does not require an account. The two surfaces are deliberately independent — the same snapshot can be generated without an account and saved with one.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>Auth surface</h2>
+          <h3>Auth surface</h3>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Action</th><th>Endpoint</th></tr></thead>
@@ -1981,11 +1603,8 @@ function AuthAccessPage() {
             </table>
           </div>
           <p>PBKDF2 runs in the browser via the WebCrypto API at 100,000 iterations, over a per-user salt. The server stores only the hash and the salt; the password is never logged or persisted. The session cookie is the row id of a D1 row in <code>sessions</code>, looked up server-side on every authenticated request.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>The invite flow</h2>
+          <h3>The invite flow</h3>
           <p>Invite links grant the free assessment, never a direct drop into someone else's dashboard. The SPA detects <code>?invite=&lt;token&gt;</code> in <code>window.location.search</code> and forces the funnel to the onboarding step, regardless of whether the visitor is already signed in.</p>
           <ol>
             {stage2InviteFlow.map(([step, detail]) => (
@@ -1993,11 +1612,8 @@ function AuthAccessPage() {
             ))}
           </ol>
           <p>The invite path uses the same anonymous-quota path as a non-invited visitor. The invitation does not raise the per-IP daily cap. The invite does not auto-create an account — the founder decides whether to sign up after seeing the report.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>D1 schema</h2>
+          <h3>D1 schema</h3>
           <p>All persistence lives in a single D1 (SQLite) database. The schema is small and explicit — the Worker creates the tables on first read if they are missing.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -2009,40 +1625,19 @@ function AuthAccessPage() {
               </tbody>
             </table>
           </div>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>Anonymous previews</h2>
+          <h3>Anonymous previews</h3>
           <p>Logged-out visitors can generate a limited preview report. A daily quota is enforced per client IP in the <code>anonymous_report_limits</code> table — subject_hash is SHA-256(day + client IP), so the limit resets at UTC midnight and does not persist across days.</p>
           <p>The preview uses the same modeled snapshot path the post-login report uses. The difference is only whether the result persists: anonymous previews return the JSON in the response, signed-in users get the same JSON stored as a row in <code>report_history</code> via the save endpoint.</p>
           <aside className="report-note report-note-yellow"><b>Quota and AI cost</b><p>The anonymous preview path is the only place the AI runs without a logged-in account. The quota exists to keep Gemini spend predictable. If the limit is hit, the Worker returns a clear 429 with the reset time — the snapshot still renders, the AI briefing is just not generated.</p></aside>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function FoundationModelPage() {
-  return (
-    <section className="report-section" id="stage-2-foundation-model">
-      <ChapterLabel number="2.1.9">Stage 2 PRD / Foundation-Model Handling</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Foundation-Model Handling — a special case that earns its own page"
-          title="The per-FTE SaaS baseline mis-measures AI compute by ~1000x"
-          summary="Foundation-model and heavy-compute teams are the cohort where the per-FTE carbon baseline visibly fails. A team of 10 with 8.5 tCO2e/yr of modeled compute is not a SaaS startup — it is a frontier-model lab whose real footprint includes training runs, inference farms, and a distributed RLHF / data-annotation workforce. Stage 2 routes these teams through a separate math path with a 1000x compute multiplier and a 25,000 tCO2e/yr workforce baseline."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/the-model/", "The Model"],
-            ["/gtr/docs/stage-2/multi-sector/", "Modular Multi-Sector Reports"],
-            ["/gtr/docs/stage-2/onboarding-a/", "Onboarding A"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-foundation">
+          <span className="report-number">37</span>
+          <h2>Foundation-Model Handling — a special case that earns its own page</h2>
+          <p>Foundation-model and heavy-compute teams are the cohort where the per-FTE carbon baseline visibly fails. A team of 10 with 8.5 tCO2e/yr of modeled compute is not a SaaS startup — it is a frontier-model lab whose real footprint includes training runs, inference farms, and a distributed RLHF / data-annotation workforce. Stage 2 routes these teams through a separate math path with a 1000x compute multiplier and a 25,000 tCO2e/yr workforce baseline.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>The profile</h2>
+          <h3>The profile</h3>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Dimension</th><th>What it does</th></tr></thead>
@@ -2054,54 +1649,27 @@ function FoundationModelPage() {
             </table>
           </div>
           <p>The flag is <code>isFoundationModel</code> on the assessment. It is set when the founder selects "Foundation Model / Heavy Compute" in the business-model step, or when the system auto-detects heavy-compute signals from the input (large cloud spend, training-job cadence in the notes).</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Why the SaaS baseline fails here</h2>
-          <p>The SaaS benchmark band in <code>BENCHMARKS.sectors.SaaS</code> is 1.5–4.0 tCO2e/FTE/yr. A frontier-model team with 10 staff, 8 GPUs running 24/7, 3 large training jobs per quarter, and a 200-person RLHF contractor network sits at 5,000–20,000 tCO2e/yr — three orders of magnitude above the SaaS band. Without the special case, the per-FTE baseline would underreport by ~1000x, and the founder would receive a share page that says "you're at the bottom of your peer band" when the actual footprint is large and well-known.</p>
+          <h3>Why the SaaS baseline fails here</h3>
+          <p>The SaaS benchmark band in <code>BENCHMARKS.sectors.SaaS</code> is 1.5–4.0 tCO2e/FTE/yr. A frontier-model team with 10 staff, 8 GPUs running 24/3, 3 large training jobs per quarter, and a 200-person RLHF contractor network sits at 5,000–20,000 tCO2e/yr — three orders of magnitude above the SaaS band. Without the special case, the per-FTE baseline would underreport by ~1000x, and the founder would receive a share page that says "you're at the bottom of your peer band" when the actual footprint is large and well-known.</p>
           <p>The fix is not a better default. The fix is a separate path that admits the workload is different.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>What the 25,000 tCO2e/yr workforce baseline covers</h2>
+          <h3>What the 25,000 tCO2e/yr workforce baseline covers</h3>
           <p>RLHF and data-annotation workforces are typically distributed (vendors across multiple countries), often working from home or shared offices. The carbon footprint of this labor is not a per-FTE employee commuting number — it is a category-1 purchased-services line for the contractor vendor plus a smaller share of the contractor's own office energy. The 25,000 tCO2e/yr figure is a flat baseline, not a per-FTE number, and is injected as a separate footprint line on the snapshot so the founder sees it and can replace it with their own measured value.</p>
           <p>The 25,000 figure is conservative for large US/EU RLHF operations and on the low end for offshore-heavy workforces. It is the same order of magnitude cited in public RLHF footprint analyses; the dashboard labels it as an indicative default and invites replacement.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>What it does not change</h2>
+          <h3>What it does not change</h3>
           <p>The +/- separation stays. A foundation-model founder still has to defend the handprint side with baseline, displacement, and additionality gates — the 1000x multiplier is a footprint number, not a handprint number. The integrity gates on the avoided side (avoided-grid, avoided-transport, avoided-material) are unchanged.</p>
           <p>If the founder can supply measured token spend (kWh from a hyperscaler bill, training-job GPU-hours, RLHF-vendor invoices), the snapshot uses the measured value and the 1000x multiplier falls away. The model defaults are a fallback, not a ceiling.</p>
           <aside className="report-note report-note-yellow"><b>Honest uncertainty</b><p>The foundation-model snapshot has wider uncertainty bands than a SaaS snapshot, because the input space is larger and the supplier footprint depends on data-center region, cooling, and PUE. The report labels the +/- band explicitly so the founder (and any diligence reader) sees the margin.</p></aside>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function MultiSectorPage() {
-  return (
-    <section className="report-section" id="stage-2-multi-sector">
-      <ChapterLabel number="2.1.10">Stage 2 PRD / Modular Multi-Sector Reports</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Modular Multi-Sector Reports — the report adapts to the cohort"
-          title="The benchmark band changes when the business model changes"
-          summary="The report's peer benchmark is not a single number — it is selected from a library of sector-specific bands, then aggregated when the founder's operations cross sectors. SaaS, hardware, food, pet services, biotech, foundation model, and hybrid all have distinct defaults. The selection happens in <code>computeBenchmark()</code> from the business-model free-text; the result is shown on the report tile, the share card, and the AI briefing."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/the-model/", "The Model"],
-            ["/gtr/docs/stage-2/foundation-model/", "Foundation-Model Handling"],
-            ["/gtr/docs/stage-2/report-a/", "Report A"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-multisector">
+          <span className="report-number">41</span>
+          <h2>Modular Multi-Sector Reports — the benchmark band changes when the business model changes</h2>
+          <p>The report's peer benchmark is not a single number — it is selected from a library of sector-specific bands, then aggregated when the founder's operations cross sectors. SaaS, hardware, food, pet services, biotech, foundation model, and hybrid all have distinct defaults. The selection happens in <code>computeBenchmark()</code> from the business-model free-text; the result is shown on the report tile, the share card, and the AI briefing.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>Sector profiles</h2>
+          <h3>Sector profiles</h3>
           <p>Each sector has its own <code>BENCHMARKS.sectors</code> entry with low / high tCO2e/FTE/yr, a sourcing note, and a URL. The default units and methodology are consistent across sectors so the founder can read across.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -2113,11 +1681,8 @@ function MultiSectorPage() {
               </tbody>
             </table>
           </div>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Match rules</h2>
+          <h3>Match rules</h3>
           <p>The business-model free-text is scanned for keywords. Each match pushes a sector entry into <code>matchedSectors[]</code>; the empty case falls back to the generic per-FTE range.</p>
           <ol>
             {stage2HybridRules.map(([rule, detail]) => (
@@ -2125,11 +1690,8 @@ function MultiSectorPage() {
             ))}
           </ol>
           <p>The keyword match is deliberately loose — a founder who types "B2B SaaS for utility-scale solar O&amp;M" matches SaaS, hardware, and biotech-ish (lab) signals. The aggregation rule (max-rate, combined notes) is what makes the loose match defensible: the founder sees the upper bound of their cohort, not a lowball.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>Where the benchmark shows up</h2>
+          <h3>Where the benchmark shows up</h3>
           <p>The selected benchmark is rendered on three surfaces, and all three are kept in sync:</p>
           <ul>
             <li><b>Report tile.</b> A labelled band (low–high) on the peer-benchmark card, with the sector name and the source URL underneath. The founder can click through to the source.</li>
@@ -2137,39 +1699,19 @@ function MultiSectorPage() {
             <li><b>Share card.</b> The OG image shows the founder's grade and the band — never the raw numbers. The sector is in the alt text for accessibility.</li>
           </ul>
           <p>If the founder changes the business model in the dashboard, the report is recomputed and the three surfaces update on the next save. The benchmark is a derivation, not a stored field.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>Why the report is modular, not monolithic</h2>
+          <h3>Why the report is modular, not monolithic</h3>
           <p>A single "average startup" benchmark hides the cohort the founder cares about. The modular architecture — the sector library, the match rules, the aggregation rule — exists so the founder reads a benchmark against their actual peers, not against a category that does not describe them.</p>
           <p>The same modularity is what makes Phase F (the tailored intake) defensible. Tailoring the intake changes the snapshot; the modular report reads the snapshot against the matching sector. Two coupled systems, both keyed off the business model.</p>
           <aside className="report-note"><b>Future sectors</b><p>Adding a new sector is a single row in <code>BENCHMARKS.sectors</code> plus a keyword in the match rules. The benchmark rendering, the briefing narrative, and the share card pick it up automatically. The cost of a new sector is the cost of a good source URL — not a code change.</p></aside>
         </section>
-      </div>
-    </section>
-  );
-}
 
-function AdminPage() {
-  return (
-    <section className="report-section" id="stage-2-admin">
-      <ChapterLabel number="2.1.11">Stage 2 PRD / Admin &amp; Platform</ChapterLabel>
-      <div className="report-document">
-        <PageIntro
-          eyebrow="Admin &amp; Platform — the operator surface"
-          title="The admin view is observe-and-audit, never edit"
-          summary="The platform ships two admin endpoints for operator visibility: aggregate stats (user, workspace, document, report, token counts) and the recent AI token logs. Both are gated by an email-based admin check on the Worker. The SPA renders them as a read-only console. There is no user impersonation, no report editing, no destructive action from the admin view — that is by design."
-          links={[
-            ["/gtr/docs/stage-2/", "Stage 2 PRD overview"],
-            ["/gtr/docs/stage-2/auth-and-access/", "Auth, Accounts &amp; Access"],
-            ["/gtr/docs/stage-2/the-model/", "The Model"],
-          ]}
-        />
+        <section className="report-chapter" id="s2-admin">
+          <span className="report-number">45</span>
+          <h2>Admin &amp; Platform — the operator surface</h2>
+          <p>The platform ships two admin endpoints for operator visibility: aggregate stats (user, workspace, document, report, token counts) and the recent AI token logs. Both are gated by an email-based admin check on the Worker. The SPA renders them as a read-only console. There is no user impersonation, no report editing, no destructive action from the admin view — that is by design.</p>
 
-        <section className="report-chapter">
-          <span className="report-number">0</span>
-          <h2>Admin endpoints</h2>
+          <h3>Admin endpoints</h3>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Endpoint</th><th>Returns</th></tr></thead>
@@ -2181,11 +1723,8 @@ function AdminPage() {
             </table>
           </div>
           <p>Both endpoints are implemented in <code>worker/index.js</code> (<code>getAdminStats</code>, <code>getAdminTokenLogs</code>) and routed through the same session check as the user-facing endpoints. The auth flow is described below.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">1</span>
-          <h2>Auth</h2>
+          <h3>Auth</h3>
           <div className="report-table-scroll">
             <table className="report-table">
               <thead><tr><th>Layer</th><th>Rule</th></tr></thead>
@@ -2197,11 +1736,8 @@ function AdminPage() {
             </table>
           </div>
           <p>The email-based check is intentionally simple. It is not a role system; it does not have revoke, transfer, or audit hooks; it does not have a "make this user admin" UI. The check exists to gate two read-only endpoints, and the surface stays small on purpose.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">2</span>
-          <h2>What the metrics tell you</h2>
+          <h3>What the metrics tell you</h3>
           <p>The admin view surfaces five signals. Each maps to a question the operator needs to answer weekly.</p>
           <div className="report-table-scroll">
             <table className="report-table">
@@ -2214,11 +1750,8 @@ function AdminPage() {
             </table>
           </div>
           <p>The token logs are the operator's view of AI spend. A spike in a single user's tokens is the early-warning signal for either a successful founder doing many report generations or a runaway / leaked API key. The endpoint returns the most recent 100 rows joined to <code>users</code> so the operator can see who is driving cost.</p>
-        </section>
 
-        <section className="report-chapter">
-          <span className="report-number">3</span>
-          <h2>What is deliberately out of scope</h2>
+          <h3>What is deliberately out of scope</h3>
           <p>The admin view does not:</p>
           <ul>
             <li>Impersonate users. An admin never sees a founder's data through the founder's account. The admin endpoints return aggregate metrics; the per-user data is on the founder's own session.</li>
@@ -2267,7 +1800,6 @@ function App() {
   }
 
   let docsPage = null;
-  let docsSubPage = null;
   if (path.includes("/docs/fieldwork-report/slides")) {
     docsPage = fieldworkSlide.id;
   } else if (path.includes("/docs/fieldwork-report/feedback")) {
@@ -2276,39 +1808,6 @@ function App() {
     docsPage = "fieldwork-report";
   } else if (path.includes("/docs/stage-1")) {
     docsPage = "stage-1";
-  } else if (path.includes("/docs/stage-2/onboarding-a")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-onboarding-a";
-  } else if (path.includes("/docs/stage-2/onboarding-b")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-onboarding-b";
-  } else if (path.includes("/docs/stage-2/report-a")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-report-a";
-  } else if (path.includes("/docs/stage-2/dashboard-a")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-dashboard-a";
-  } else if (path.includes("/docs/stage-2/report-dashboard-b")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-report-dashboard-b";
-  } else if (path.includes("/docs/stage-2/insights")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-insights";
-  } else if (path.includes("/docs/stage-2/the-model")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-the-model";
-  } else if (path.includes("/docs/stage-2/auth-and-access")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-auth-and-access";
-  } else if (path.includes("/docs/stage-2/foundation-model")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-foundation-model";
-  } else if (path.includes("/docs/stage-2/multi-sector")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-multi-sector";
-  } else if (path.includes("/docs/stage-2/admin")) {
-    docsPage = "stage-2";
-    docsSubPage = "stage-2-admin";
   } else if (path.includes("/docs/stage-2")) {
     docsPage = "stage-2";
   }
@@ -2320,7 +1819,6 @@ function App() {
       <GTRSidebar
         active={activeChapter}
         subActive={docsPage}
-        subSubActive={docsSubPage}
       />
 
       <main>
@@ -2329,18 +1827,7 @@ function App() {
         {activeChapter === "first-prototype" && docsPage === "stage-1" && <Stage1Page />}
         {activeChapter === "first-prototype" && docsPage === fieldworkSlide.id && <FieldworkSlidePage />}
         {activeChapter === "first-prototype" && docsPage === fieldworkFeedback.id && <FieldworkFeedbackPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-onboarding-a" && <OnboardingAPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-onboarding-b" && <OnboardingBPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-report-a" && <ReportAPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-dashboard-a" && <DashboardAPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-report-dashboard-b" && <ReportDashboardBPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-insights" && <InsightsPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-the-model" && <ModelPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-auth-and-access" && <AuthAccessPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-foundation-model" && <FoundationModelPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-multi-sector" && <MultiSectorPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && docsSubPage === "stage-2-admin" && <AdminPage />}
-        {activeChapter === "second-prototype" && docsPage === "stage-2" && !docsSubPage && <Stage2OverviewPage />}
+        {activeChapter === "second-prototype" && docsPage === "stage-2" && <Stage2OverviewPage />}
       </main>
     </div>
   );

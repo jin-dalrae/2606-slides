@@ -14,19 +14,7 @@ export const secondPrototypeChildren = [
   ["stage-2", "2.1", "Stage 2 PRD", "/gtr/docs/stage-2/"],
 ];
 
-export const stage2PrdChildren = [
-  ["stage-2-onboarding-a", "2.1.1", "Onboarding A", "/gtr/docs/stage-2/onboarding-a/"],
-  ["stage-2-onboarding-b", "2.1.2", "Onboarding B (ChatGPT MCP)", "/gtr/docs/stage-2/onboarding-b/"],
-  ["stage-2-report-a", "2.1.3", "Report A", "/gtr/docs/stage-2/report-a/"],
-  ["stage-2-dashboard-a", "2.1.4", "Dashboard A", "/gtr/docs/stage-2/dashboard-a/"],
-  ["stage-2-report-dashboard-b", "2.1.5", "Report + Dashboard Connected (B)", "/gtr/docs/stage-2/report-dashboard-b/"],
-  ["stage-2-insights", "2.1.6", "Giving Actionable Insights", "/gtr/docs/stage-2/insights/"],
-  ["stage-2-the-model", "2.1.7", "The Model", "/gtr/docs/stage-2/the-model/"],
-  ["stage-2-auth-and-access", "2.1.8", "Auth, Accounts & Access", "/gtr/docs/stage-2/auth-and-access/"],
-  ["stage-2-foundation-model", "2.1.9", "Foundation-Model Handling", "/gtr/docs/stage-2/foundation-model/"],
-  ["stage-2-multi-sector", "2.1.10", "Modular Multi-Sector Reports", "/gtr/docs/stage-2/multi-sector/"],
-  ["stage-2-admin", "2.1.11", "Admin & Platform", "/gtr/docs/stage-2/admin/"],
-];
+export const stage2PrdChildren = [];
 
 export const fieldworkSlide = {
   id: "fieldwork-slides",
@@ -99,7 +87,6 @@ function loadSidebarState() {
     return {
       firstPrototype: !!parsed.firstPrototype,
       secondPrototype: !!parsed.secondPrototype,
-      stage2Prd: !!parsed.stage2Prd,
     };
   } catch {
     return null;
@@ -114,13 +101,12 @@ function saveSidebarState(state) {
   }
 }
 
-export function GTRSidebar({ active, subActive, subSubActive }) {
+export function GTRSidebar({ active, subActive }) {
   const [open, setOpen] = React.useState(() => {
     const stored = loadSidebarState();
     return stored ?? {
       firstPrototype: active === "first-prototype",
       secondPrototype: active === "second-prototype",
-      stage2Prd: active === "second-prototype",
     };
   });
 
@@ -134,7 +120,6 @@ export function GTRSidebar({ active, subActive, subSubActive }) {
     setOpen((prev) => ({
       firstPrototype: active === "first-prototype" || prev.firstPrototype,
       secondPrototype: active === "second-prototype" || prev.secondPrototype,
-      stage2Prd: active === "second-prototype" || prev.stage2Prd,
     }));
   }, [active]);
 
@@ -196,24 +181,12 @@ export function GTRSidebar({ active, subActive, subSubActive }) {
         </button>
         {open.secondPrototype && (
           <React.Fragment>
-            <button
-              type="button"
-              className={`rail-toggle rail-toggle--nested ${active === "second-prototype" && subActive === "stage-2" ? "active" : ""} ${open.stage2Prd ? "rail-toggle--open" : ""}`}
-              onClick={() => toggle("stage2Prd")}
-              aria-expanded={open.stage2Prd}
+            <a
+              className={`rail-item--depth-1 ${active === "second-prototype" && subActive === "stage-2" ? "active" : ""}`}
+              href="/gtr/docs/stage-2/"
             >
-              <span>2.1</span><b>Stage 2 PRD</b>
-              <span className="rail-toggle__chevron" aria-hidden="true">›</span>
-            </button>
-            {open.stage2Prd && stage2PrdChildren.map(([id, number, label, path]) => (
-              <a
-                key={id}
-                className={`rail-item--depth-2 ${active === "second-prototype" && subActive === "stage-2" && subSubActive === id ? "active" : ""}`}
-                href={path}
-              >
-                <span>{number}</span><b>{label}</b><i>→</i>
-              </a>
-            ))}
+              <span>2.1</span><b>Stage 2 PRD</b><i>→</i>
+            </a>
           </React.Fragment>
         )}
       </nav>
