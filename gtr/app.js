@@ -112,7 +112,16 @@
       /* @__PURE__ */ React.createElement("span", null, "1"),
       /* @__PURE__ */ React.createElement("b", null, "First Prototype"),
       /* @__PURE__ */ React.createElement("span", { className: "rail-toggle__chevron", "aria-hidden": "true" }, "\u203A")
-    ), open.firstPrototype && firstPrototypeChildren.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === "first-prototype" && subActive === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), id === "fieldwork-report" && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, fieldworkSubnav.map((item) => /* @__PURE__ */ React.createElement(
+    ), open.firstPrototype && firstPrototypeChildren.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        className: `rail-item--depth-1 ${active === "first-prototype" && subActive === id ? "active" : ""}`,
+        href: path
+      },
+      /* @__PURE__ */ React.createElement("span", null, number),
+      /* @__PURE__ */ React.createElement("b", null, label),
+      /* @__PURE__ */ React.createElement("i", null, "\u2192")
+    ), id === "fieldwork-report" && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, fieldworkSubnav.map((item) => /* @__PURE__ */ React.createElement(
       "a",
       {
         key: item.id,
@@ -148,7 +157,7 @@
       "a",
       {
         key: id,
-        className: active === "second-prototype" && subActive === "stage-2" && subSubActive === id ? "active" : "",
+        className: `rail-item--depth-2 ${active === "second-prototype" && subActive === "stage-2" && subSubActive === id ? "active" : ""}`,
         href: path
       },
       /* @__PURE__ */ React.createElement("span", null, number),

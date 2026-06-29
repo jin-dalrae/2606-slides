@@ -163,7 +163,10 @@ export function GTRSidebar({ active, subActive, subSubActive }) {
         </button>
         {open.firstPrototype && firstPrototypeChildren.map(([id, number, label, path]) => (
           <React.Fragment key={id}>
-            <a className={active === "first-prototype" && subActive === id ? "active" : ""} href={path}>
+            <a
+              className={`rail-item--depth-1 ${active === "first-prototype" && subActive === id ? "active" : ""}`}
+              href={path}
+            >
               <span>{number}</span><b>{label}</b><i>→</i>
             </a>
             {id === "fieldwork-report" && (
@@ -205,7 +208,7 @@ export function GTRSidebar({ active, subActive, subSubActive }) {
             {open.stage2Prd && stage2PrdChildren.map(([id, number, label, path]) => (
               <a
                 key={id}
-                className={active === "second-prototype" && subActive === "stage-2" && subSubActive === id ? "active" : ""}
+                className={`rail-item--depth-2 ${active === "second-prototype" && subActive === "stage-2" && subSubActive === id ? "active" : ""}`}
                 href={path}
               >
                 <span>{number}</span><b>{label}</b><i>→</i>

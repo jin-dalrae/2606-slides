@@ -170,6 +170,18 @@ body {
   padding-left: 24px;
 }
 
+.rail-item--depth-1 {
+  padding-left: 24px;
+}
+
+.rail-item--depth-2 {
+  padding-left: 36px;
+}
+
+.rail-subnav {
+  padding-left: 36px;
+}
+
 .gtr-slide-shell {
   display: flex;
   flex-direction: column;
