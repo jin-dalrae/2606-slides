@@ -101,7 +101,7 @@
       saveSidebarState(open);
     }, [open]);
     const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
-    return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "GTR archive" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("p", null, "Archive"), /* @__PURE__ */ React.createElement("h2", null, "GTR"), /* @__PURE__ */ React.createElement("span", null, "Docs for the climate goal platform work")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), /* @__PURE__ */ React.createElement("a", { className: active === "intro" ? "active" : "", href: "/gtr/" }, /* @__PURE__ */ React.createElement("span", null, "0"), /* @__PURE__ */ React.createElement("b", null, "Overview"), /* @__PURE__ */ React.createElement("i", null, "\u2192")), /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "GTR archive" }, /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), /* @__PURE__ */ React.createElement("a", { className: active === "intro" ? "active" : "", href: "/gtr/" }, /* @__PURE__ */ React.createElement("span", null, "0"), /* @__PURE__ */ React.createElement("b", null, "Overview"), /* @__PURE__ */ React.createElement("i", null, "\u2192")), /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",

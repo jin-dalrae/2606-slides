@@ -146,11 +146,6 @@ export function GTRSidebar({ active, subActive, subSubActive }) {
 
   return (
     <aside className="chapter-rail" aria-label="GTR archive">
-      <div className="rail-intro">
-        <p>Archive</p>
-        <h2>GTR</h2>
-        <span>Docs for the climate goal platform work</span>
-      </div>
       <nav>
         <p>Index</p>
         <a className={active === "intro" ? "active" : ""} href="/gtr/">
