@@ -53,7 +53,31 @@
     return /* @__PURE__ */ React.createElement("header", { className: "site-header" }, /* @__PURE__ */ React.createElement("a", { className: "wordmark", href: "/gtr/", "aria-label": "GTR home" }, /* @__PURE__ */ React.createElement(GTRMark, null), " GTR"), /* @__PURE__ */ React.createElement("button", { className: "menu-button", onClick: () => setOpen(!open), "aria-expanded": open }, "Menu"), /* @__PURE__ */ React.createElement("nav", { className: open ? "top-nav is-open" : "top-nav", "aria-label": "GTR navigation" }, gtrPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { href: path, onClick: () => setOpen(false) }, label), reportChildren[id]?.map(([subId, , subLabel, subPath]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: subId }, /* @__PURE__ */ React.createElement("a", { className: "top-nav-child", href: subPath, onClick: () => setOpen(false) }, "\u21B3 ", subLabel), reportGrandchildren[subId]?.map(([gsId, , gsLabel, gsPath]) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child top-nav-child--nested", key: gsId, href: gsPath, onClick: () => setOpen(false) }, "\u21B3 ", gsLabel)), subId === "fieldwork-report" && fieldworkSubnav.map((item) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child top-nav-child--nested", key: item.id, href: item.path, onClick: () => setOpen(false) }, "\u21B3 ", item.label))))))), /* @__PURE__ */ React.createElement("p", { className: "header-meta" }, meta));
   }
   function GTRSidebar({ active, subActive, subSubActive }) {
-    return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "GTR archive" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("p", null, "Archive"), /* @__PURE__ */ React.createElement("h2", null, "GTR"), /* @__PURE__ */ React.createElement("span", null, "Docs for the climate goal platform work")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), /* @__PURE__ */ React.createElement("a", { className: active === "intro" ? "active" : "", href: "/gtr/" }, /* @__PURE__ */ React.createElement("span", null, "0"), /* @__PURE__ */ React.createElement("b", null, "Overview"), /* @__PURE__ */ React.createElement("i", null, "\u2192")), /* @__PURE__ */ React.createElement("a", { className: active === "first-prototype" ? "active" : "", href: "/gtr/docs/stage-1/" }, /* @__PURE__ */ React.createElement("span", null, "1"), /* @__PURE__ */ React.createElement("b", null, "First Prototype"), /* @__PURE__ */ React.createElement("i", null, "\u2192")), firstPrototypeChildren.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === "first-prototype" && subActive === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), id === "fieldwork-report" && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav rail-subnav--always" }, fieldworkSubnav.map((item) => /* @__PURE__ */ React.createElement(
+    const [open, setOpen] = React.useState(() => ({
+      firstPrototype: active === "first-prototype",
+      secondPrototype: active === "second-prototype",
+      stage2Prd: active === "second-prototype"
+    }));
+    React.useEffect(() => {
+      setOpen((prev) => ({
+        firstPrototype: active === "first-prototype" || prev.firstPrototype,
+        secondPrototype: active === "second-prototype" || prev.secondPrototype,
+        stage2Prd: active === "second-prototype" || prev.stage2Prd
+      }));
+    }, [active]);
+    const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+    return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "GTR archive" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("p", null, "Archive"), /* @__PURE__ */ React.createElement("h2", null, "GTR"), /* @__PURE__ */ React.createElement("span", null, "Docs for the climate goal platform work")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), /* @__PURE__ */ React.createElement("a", { className: active === "intro" ? "active" : "", href: "/gtr/" }, /* @__PURE__ */ React.createElement("span", null, "0"), /* @__PURE__ */ React.createElement("b", null, "Overview"), /* @__PURE__ */ React.createElement("i", null, "\u2192")), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: `rail-toggle ${active === "first-prototype" ? "active" : ""} ${open.firstPrototype ? "rail-toggle--open" : ""}`,
+        onClick: () => toggle("firstPrototype"),
+        "aria-expanded": open.firstPrototype
+      },
+      /* @__PURE__ */ React.createElement("span", null, "1"),
+      /* @__PURE__ */ React.createElement("b", null, "First Prototype"),
+      /* @__PURE__ */ React.createElement("span", { className: "rail-toggle__chevron", "aria-hidden": "true" }, "\u203A")
+    ), open.firstPrototype && firstPrototypeChildren.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === "first-prototype" && subActive === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), id === "fieldwork-report" && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, fieldworkSubnav.map((item) => /* @__PURE__ */ React.createElement(
       "a",
       {
         key: item.id,
@@ -63,17 +87,39 @@
       /* @__PURE__ */ React.createElement("span", null, "\u21B3"),
       /* @__PURE__ */ React.createElement("b", null, item.label),
       /* @__PURE__ */ React.createElement("i", null, "\u2197")
-    ))))), /* @__PURE__ */ React.createElement("a", { className: active === "second-prototype" ? "active" : "", href: "/gtr/docs/stage-2/" }, /* @__PURE__ */ React.createElement("span", null, "2"), /* @__PURE__ */ React.createElement("b", null, "Second Prototype"), /* @__PURE__ */ React.createElement("i", null, "\u2192")), secondPrototypeChildren.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === "second-prototype" && subActive === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), id === "stage-2" && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav rail-subnav--always" }, stage2PrdChildren.map(([gsId, gsNumber, gsLabel, gsPath]) => /* @__PURE__ */ React.createElement(
+    ))))), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: `rail-toggle ${active === "second-prototype" ? "active" : ""} ${open.secondPrototype ? "rail-toggle--open" : ""}`,
+        onClick: () => toggle("secondPrototype"),
+        "aria-expanded": open.secondPrototype
+      },
+      /* @__PURE__ */ React.createElement("span", null, "2"),
+      /* @__PURE__ */ React.createElement("b", null, "Second Prototype"),
+      /* @__PURE__ */ React.createElement("span", { className: "rail-toggle__chevron", "aria-hidden": "true" }, "\u203A")
+    ), open.secondPrototype && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: `rail-toggle rail-toggle--nested ${active === "second-prototype" && subActive === "stage-2" ? "active" : ""} ${open.stage2Prd ? "rail-toggle--open" : ""}`,
+        onClick: () => toggle("stage2Prd"),
+        "aria-expanded": open.stage2Prd
+      },
+      /* @__PURE__ */ React.createElement("span", null, "2.1"),
+      /* @__PURE__ */ React.createElement("b", null, "Stage 2 PRD"),
+      /* @__PURE__ */ React.createElement("span", { className: "rail-toggle__chevron", "aria-hidden": "true" }, "\u203A")
+    ), open.stage2Prd && stage2PrdChildren.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(
       "a",
       {
-        key: gsId,
-        className: active === "second-prototype" && subActive === "stage-2" && subSubActive === gsId ? "active" : "",
-        href: gsPath
+        key: id,
+        className: active === "second-prototype" && subActive === "stage-2" && subSubActive === id ? "active" : "",
+        href: path
       },
-      /* @__PURE__ */ React.createElement("span", null, gsNumber),
-      /* @__PURE__ */ React.createElement("b", null, gsLabel),
-      /* @__PURE__ */ React.createElement("i", null, "\u2197")
-    )))))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " GTR archive ", /* @__PURE__ */ React.createElement("span", null, "2026")));
+      /* @__PURE__ */ React.createElement("span", null, number),
+      /* @__PURE__ */ React.createElement("b", null, label),
+      /* @__PURE__ */ React.createElement("i", null, "\u2192")
+    )))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " GTR archive ", /* @__PURE__ */ React.createElement("span", null, "2026")));
   }
 
   // gtr/app.jsx

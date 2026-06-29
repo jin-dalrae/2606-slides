@@ -88,6 +88,22 @@ export function GTRHeader({ meta = "Docs archive · 2026" }) {
 }
 
 export function GTRSidebar({ active, subActive, subSubActive }) {
+  const [open, setOpen] = React.useState(() => ({
+    firstPrototype: active === "first-prototype",
+    secondPrototype: active === "second-prototype",
+    stage2Prd: active === "second-prototype",
+  }));
+
+  React.useEffect(() => {
+    setOpen((prev) => ({
+      firstPrototype: active === "first-prototype" || prev.firstPrototype,
+      secondPrototype: active === "second-prototype" || prev.secondPrototype,
+      stage2Prd: active === "second-prototype" || prev.stage2Prd,
+    }));
+  }, [active]);
+
+  const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+
   return (
     <aside className="chapter-rail" aria-label="GTR archive">
       <div className="rail-intro">
@@ -100,16 +116,23 @@ export function GTRSidebar({ active, subActive, subSubActive }) {
         <a className={active === "intro" ? "active" : ""} href="/gtr/">
           <span>0</span><b>Overview</b><i>→</i>
         </a>
-        <a className={active === "first-prototype" ? "active" : ""} href="/gtr/docs/stage-1/">
-          <span>1</span><b>First Prototype</b><i>→</i>
-        </a>
-        {firstPrototypeChildren.map(([id, number, label, path]) => (
+
+        <button
+          type="button"
+          className={`rail-toggle ${active === "first-prototype" ? "active" : ""} ${open.firstPrototype ? "rail-toggle--open" : ""}`}
+          onClick={() => toggle("firstPrototype")}
+          aria-expanded={open.firstPrototype}
+        >
+          <span>1</span><b>First Prototype</b>
+          <span className="rail-toggle__chevron" aria-hidden="true">›</span>
+        </button>
+        {open.firstPrototype && firstPrototypeChildren.map(([id, number, label, path]) => (
           <React.Fragment key={id}>
             <a className={active === "first-prototype" && subActive === id ? "active" : ""} href={path}>
               <span>{number}</span><b>{label}</b><i>→</i>
             </a>
             {id === "fieldwork-report" && (
-              <div className="rail-subnav rail-subnav--always">
+              <div className="rail-subnav">
                 {fieldworkSubnav.map((item) => (
                   <a
                     key={item.id}
@@ -123,29 +146,38 @@ export function GTRSidebar({ active, subActive, subSubActive }) {
             )}
           </React.Fragment>
         ))}
-        <a className={active === "second-prototype" ? "active" : ""} href="/gtr/docs/stage-2/">
-          <span>2</span><b>Second Prototype</b><i>→</i>
-        </a>
-        {secondPrototypeChildren.map(([id, number, label, path]) => (
-          <React.Fragment key={id}>
-            <a className={active === "second-prototype" && subActive === id ? "active" : ""} href={path}>
-              <span>{number}</span><b>{label}</b><i>→</i>
-            </a>
-            {id === "stage-2" && (
-              <div className="rail-subnav rail-subnav--always">
-                {stage2PrdChildren.map(([gsId, gsNumber, gsLabel, gsPath]) => (
-                  <a
-                    key={gsId}
-                    className={active === "second-prototype" && subActive === "stage-2" && subSubActive === gsId ? "active" : ""}
-                    href={gsPath}
-                  >
-                    <span>{gsNumber}</span><b>{gsLabel}</b><i>↗</i>
-                  </a>
-                ))}
-              </div>
-            )}
+
+        <button
+          type="button"
+          className={`rail-toggle ${active === "second-prototype" ? "active" : ""} ${open.secondPrototype ? "rail-toggle--open" : ""}`}
+          onClick={() => toggle("secondPrototype")}
+          aria-expanded={open.secondPrototype}
+        >
+          <span>2</span><b>Second Prototype</b>
+          <span className="rail-toggle__chevron" aria-hidden="true">›</span>
+        </button>
+        {open.secondPrototype && (
+          <React.Fragment>
+            <button
+              type="button"
+              className={`rail-toggle rail-toggle--nested ${active === "second-prototype" && subActive === "stage-2" ? "active" : ""} ${open.stage2Prd ? "rail-toggle--open" : ""}`}
+              onClick={() => toggle("stage2Prd")}
+              aria-expanded={open.stage2Prd}
+            >
+              <span>2.1</span><b>Stage 2 PRD</b>
+              <span className="rail-toggle__chevron" aria-hidden="true">›</span>
+            </button>
+            {open.stage2Prd && stage2PrdChildren.map(([id, number, label, path]) => (
+              <a
+                key={id}
+                className={active === "second-prototype" && subActive === "stage-2" && subSubActive === id ? "active" : ""}
+                href={path}
+              >
+                <span>{number}</span><b>{label}</b><i>→</i>
+              </a>
+            ))}
           </React.Fragment>
-        ))}
+        )}
       </nav>
       <div className="rail-status"><i /> GTR archive <span>2026</span></div>
     </aside>
