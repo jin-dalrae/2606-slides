@@ -1,0 +1,29 @@
+Interview 04 — JD Suh
+Researcher: Rae
+Interviewee: JD Suh, Research Engineer
+Method: Semi-structured interview + conceptual critique
+Transcript Summary / Notes:
+
+1. Participant's Background & Tech Familiarity
+- VR/Smart Glasses Experience: The participant does not currently use VR in their daily life. They tried VR/smart glasses once about 10 years ago and experienced severe dizziness.
+- Current Devices & Needs: They wear prescription glasses. While they do not own smart glasses yet, they express a strong desire to buy a pair in the future.
+- Key Motivation for Smart Glasses: The participant is highly interested in smart glasses as a vehicle for a "personal AI intelligence" (likening it to Tony Stark's Jarvis) to receive ambient, real-time advice throughout the day.
+
+2. Social Media & Content Consumption Habits
+- Platforms Used: They primarily use X (formerly Twitter) and YouTube.
+- Scrolling Behavior: The participant typically scrolls for very short bursts of 5 to 10 minutes at a time. This brevity is because they usually have pressing tasks to get back to.
+- Longer Sessions: Extended scrolling or video consumption only occurs right before bed or on weekends when they have dedicated free time. Their YouTube behavior often involves scrolling through the "related videos" feed after watching a clip.
+
+3. Interviewer's Project Concept & Hypothesis
+- Project Premise: The interviewer is exploring the concept of "doom scrolling" within VR headsets. They shared their personal journey of owning a Meta Quest 2, selling it, and later buying a Quest 3.
+- The Core Hypothesis: The interviewer realized they don't spend as much time in VR as they do on their phone. They hypothesize that this is because it is currently too friction-heavy or difficult to naturally "doom scroll" long-form text/forums (like Reddit) in a VR environment.
+- Interviewer's Motivation: The interviewer admits to being someone who can easily spend 2 to 3 hours reading online discussion forums, analyzing different opinions and debates. They want to create a space or interaction model that makes long-form text/forum navigation seamless and highly engaging inside a headset.
+
+4. Participant's Reaction & Critical Feedback
+- Initial Reaction: When the interviewer introduced the idea of doom scrolling in VR, the participant's immediate reaction was, "Sounds dizzy."
+- Core Critique / Question: When asked for their honest opinion on the problem statement ("making it easier for people to doom scroll in VR"), the participant offered a direct and grounded piece of counter-feedback, questioning the ultimate value of the goal:
+  "I'm just curious, like, why do you want people to doom scroll easy on your headset? [...] Why do you want the experience of doom scrolling easier on VR headsets?"
+
+5. Interview Notes & Practical Details
+- Interview Dynamic: The conversation drifted slightly into a meta-discussion about interviewing techniques, with a brief mention of avoiding leading questions ("leading up with...").
+- Real-World Interruptions: The interview experienced some ambient interruptions at the end, including references to milk, a pretty pan, and a practical reminder about the necessity of prescription lenses/smart glass ordering friction for glasses wearers. The session wrapped up casually with a departure.

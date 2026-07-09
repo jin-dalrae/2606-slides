@@ -212,7 +212,7 @@ function ExpertQuestionnaire() {
   };
   let lastSection = "";
   return <section className="report-section questionnaire-page" id="expert-questionnaire">
-    <ChapterLabel number="03.4">Primary research / Remote method</ChapterLabel>
+    <ChapterLabel number="03.5">Primary research / Remote method</ChapterLabel>
     <div className="questionnaire-shell">
       <header className="questionnaire-intro">
         <p className="eyebrow">Remote expert questionnaire</p>
@@ -255,7 +255,7 @@ function ExpertQuestionnaire() {
 function Version1Review() {
   return (
     <section className="report-section interview-report" id="version1-review">
-      <ChapterLabel number="03.5">Primary research / Submission & Review</ChapterLabel>
+      <ChapterLabel number="03.6">Primary research / Submission & Review</ChapterLabel>
       <article className="report-document interview-document">
         <header className="report-page-intro interview-intro" style={{ borderBottom: "1px solid var(--navy)", paddingBottom: "32px", marginBottom: "32px" }}>
           <p className="eyebrow">SIGGRAPH 2026 Poster Submission & Peer Review</p>
@@ -559,6 +559,8 @@ function App() {
       ? "interview-yves"
       : window.location.pathname.includes("/primary/interview-johnny")
         ? "interview-johnny"
+      : window.location.pathname.includes("/primary/interview-jd-suh")
+        ? "interview-jd-suh"
       : window.location.pathname.includes("/primary/expert-questionnaire")
         ? "expert-questionnaire"
       : window.location.pathname.includes("/primary/version1-review")
@@ -1240,6 +1242,7 @@ function App() {
                   <tr><td><b>Interview 01 (Kris)</b></td><td>Software Engineer at BigTech; owns Quest 3; low routine XR use</td><td>Semi-structured walkthrough on web</td><td>Adoption convenience & text density limits</td></tr>
                   <tr><td><b>Interview 02 (Yves)</b></td><td>3D Artist; prior Unity XR developer; highly sensitive to motion</td><td>Concept walk & design critique</td><td>Physical comfort & spatial composition</td></tr>
                   <tr><td><b>Interview 03 (Johnny)</b></td><td>Graphic Designer; zero VR experience; frequent screen reader</td><td>Think-aloud walkthrough</td><td>Visual isolation, focus & source trust</td></tr>
+                  <tr><td><b>Interview 04 (JD Suh)</b></td><td>Research Engineer; wears prescription glasses; highly interested in smart glasses & ambient AI</td><td>Semi-structured interview & conceptual critique</td><td>Doom scrolling feasibility & critical value of headset scrolling</td></tr>
                   <tr><td><b>Expert Survey</b></td><td>UX, UI, XR practitioners and experienced VR readers</td><td>Remote structured questionnaire</td><td>Typographic criteria & input modalities</td></tr>
                 </tbody>
               </table></div>
@@ -1257,6 +1260,7 @@ function App() {
                   <tr><td><b>Physical Ergonomics</b></td><td>Headset fatigue limits productive reading sessions to 20–30 minutes.</td><td>Yves: Red marks, nose bridge pressure, makeup contamination, motion sickness.</td><td>Design for stationary, 20-minute focused review. Avoid continuous locomotion.</td></tr>
                   <tr><td><b>Information Structure</b></td><td>High-density text layouts in VR feel chaotic and visually overwhelming.</td><td>Kris: <i>“One of the biggest limitations is how many words there are.”</i></td><td>Use progressive peripheral disclosure; reduce background text; highlight one focus card.</td></tr>
                   <tr><td><b>Cognitive Trust</b></td><td>AI grouping and summaries provoke immediate skepticism about source validity.</td><td>Johnny: Refuses to trust synthesized threads without explicit source tracking.</td><td>Implement absolute provenance; let users trace every label back to raw text.</td></tr>
+                  <tr><td><b>Value Alignment</b></td><td>Mindless scrolling is an unhealthy mobile habit that shouldn't be friction-minimized in VR.</td><td>JD Suh: <i>“Why do you want the experience of doom scrolling easier on VR headsets?”</i></td><td>Pivot from "making scrolling easier" to "enabling high-value, structured research & sensemaking".</td></tr>
                 </tbody>
               </table></div>
             </section>
@@ -1331,8 +1335,9 @@ function App() {
                 <a className="report-subreport-link" href="/cosmos/primary/interview-kris/" style={{ margin: 0 }}><span>Detailed report 03.1</span><b>Think-Aloud Walkthrough: Software Engineer Kris</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/primary/interview-yves/" style={{ margin: 0 }}><span>Detailed report 03.2</span><b>Concept Critique: 3D Artist Yves</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/primary/interview-johnny/" style={{ margin: 0 }}><span>Detailed report 03.3</span><b>Visual Focus & Trust Walkthrough: Graphic Designer Johnny</b><i>Read analysis →</i></a>
-                <a className="report-subreport-link" href="/cosmos/primary/expert-questionnaire/" style={{ margin: 0 }}><span>Detailed report 03.4</span><b>Remote Expert Questionnaire Responses</b><i>Read analysis →</i></a>
-                <a className="report-subreport-link" href="/cosmos/primary/version1-review/" style={{ margin: 0 }}><span>Detailed report 03.5</span><b>Version 1 Architecture & SIGGRAPH Poster Peer Review</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/primary/interview-jd-suh/" style={{ margin: 0 }}><span>Detailed report 03.4</span><b>Critical Value & Ergonomics Interview: Research Engineer JD Suh</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/primary/expert-questionnaire/" style={{ margin: 0 }}><span>Detailed report 03.5</span><b>Remote Expert Questionnaire Responses</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/primary/version1-review/" style={{ margin: 0 }}><span>Detailed report 03.6</span><b>Version 1 Architecture & SIGGRAPH Poster Peer Review</b><i>Read analysis →</i></a>
               </div>
             </section>
           </article>
@@ -1814,6 +1819,140 @@ function App() {
               <h2>Full transcript</h2>
               <p>The source recording contains room announcements, interruptions, and ambiguous speaker transitions. The transcript is lightly edited for readability, and unclear fragments are retained rather than converted into findings.</p>
               <TranscriptAppendix src="/cosmos/primary/interview-johnny/transcript.txt" />
+            </section>
+          </article>
+        </section>}
+
+        {activeChapter === "primary" && primaryPage === "interview-jd-suh" && <section className="report-section interview-report" id="interview-jd-suh">
+          <ChapterLabel number="03.4">Primary research / Interview 04</ChapterLabel>
+          <article className="report-document interview-document">
+            <header className="report-page-intro interview-intro">
+              <p className="eyebrow">Semi-structured interview + conceptual critique</p>
+              <h1>JD Suh<br /><span>Research engineer</span></h1>
+              <p>JD Suh discussed smart glasses, personal AI intelligence, and scrolling habits. He offered a direct and grounded critique of the project's core hypothesis, questioning the ultimate value of making headset doom scrolling easier.</p>
+            </header>
+
+            <table className="report-table interview-meta">
+              <tbody>
+                <tr><th>Participant</th><td>JD Suh</td><th>Practice</th><td>Research engineering</td></tr>
+                <tr><th>Format</th><td>Semi-structured interview</td><th>Activity</th><td>Conceptual and hypothesis critique</td></tr>
+                <tr><th>Relevant habits</th><td>Primarily X (Twitter) and YouTube in 5–10 min bursts</td><th>Device context</th><td>Wears prescription glasses; highly interested in future smart glasses</td></tr>
+                <tr><th>Evidence status</th><td colSpan="3">One qualitative interview with direct concept counter-feedback. Key diagnostic pivot signal.</td></tr>
+              </tbody>
+            </table>
+
+            <nav className="report-contents" aria-label="Interview report contents">
+              <p>In this report</p>
+              <a href="#jd-summary"><span>0</span>Interview summary</a>
+              <a href="#jd-method"><span>1</span>Method and limits</a>
+              <a href="#jd-background"><span>2</span>Background & Tech Familiarity</a>
+              <a href="#jd-habits"><span>3</span>Content consumption habits</a>
+              <a href="#jd-reaction"><span>4</span>Reaction & Critical Feedback</a>
+              <a href="#jd-notes"><span>5</span>Practical notes and details</a>
+              <a href="#jd-transcript"><span>A</span>Full summary transcript</a>
+            </nav>
+
+            <section className="report-chapter" id="jd-summary">
+              <span className="report-number">0</span>
+              <h2>Interview summary</h2>
+              <p className="report-lead">JD Suh did not reject the potential of heads-up technology, but he forcefully challenged the premise of bringing "doom scrolling" into VR headsets.</p>
+              <p>His background as a research engineer and a glasses wearer shaped a highly practical perspective. While he doesn't use VR daily and experienced severe dizziness trying it a decade ago, he is extremely eager to adopt smart glasses—specifically as a host for a Jarvis-like ambient AI assistant that offers real-time contextual advice.</p>
+              <p>When presented with the concept of making it easier to navigate long-form text/forums in VR headsets to support "doom scrolling," his response was immediate and skeptical: "Sounds dizzy." More fundamentally, he questioned the desirability of the objective itself, asking why a developer would intentionally make a friction-filled, addictive behavior like doom scrolling easier to perform in an immersive headset. This feedback became a vital steering signal for the project's value proposition.</p>
+              <aside className="report-note"><b>Primary interpretation</b><p>The project should not aim to optimize "doom scrolling" or mimic passive feeds. JD Suh's critique confirms that VR text consumption must be framed around active, intentional information synthesis rather than lowering the friction of mindless scrolling.</p></aside>
+            </section>
+
+            <section className="report-chapter" id="jd-method">
+              <span className="report-number">1</span>
+              <h2>Method and limitations</h2>
+              <p>The session was a semi-structured interview covering the participant's background with smart devices, social media habits, and a critique of the interviewer's Quest-based forum browsing hypothesis. Due to the conceptual nature of the discussion and real-world ambient interruptions, the feedback focused on product positioning, ergonomics, and value-alignment.</p>
+              <h3>What the interview can support</h3>
+              <ul>
+                <li>Direct validation of optical/glasses-wearer friction for heads-up displays.</li>
+                <li>Grounded ethical and functional critique of "easy doom scrolling" in headsets.</li>
+                <li>Design parameters for future ambient smart-glasses integrations (AI Jarvis scenario).</li>
+              </ul>
+              <h3>What the interview cannot support</h3>
+              <ul>
+                <li>Physical prototype testing usability data, as the participant did not perform a direct WebXR walkthrough.</li>
+                <li>Generalizations about all research engineers or all glasses wearers.</li>
+              </ul>
+            </section>
+
+            <section className="report-chapter" id="jd-background">
+              <span className="report-number">2</span>
+              <h2>Background & Tech Familiarity: The smart glasses wedge</h2>
+              <p>JD Suh's profile highlights a critical dichotomy: he is highly skeptical of traditional, isolating VR headsets, yet extremely enthusiastic about the future of smart glasses.</p>
+              <table className="report-table">
+                <thead><tr><th>Dimension</th><th>Reported status</th><th>Product implication</th></tr></thead>
+                <tbody>
+                  <tr><td>VR Experience</td><td>Low routine use. Tried once 10 years ago; experienced severe motion sickness and dizziness.</td><td>Any immersive reading design must aggressively protect against visual and motion triggers.</td></tr>
+                  <tr><td>Optical Needs</td><td>Wears prescription lenses daily. No smart glasses owned yet.</td><td>Smart glasses must accommodate prescription lens integration seamlessly without adding ordering friction.</td></tr>
+                  <tr><td>Ambient Motivation</td><td>Strong desire to purchase future smart glasses to host an ambient "personal AI intelligence" (Jarvis model).</td><td>The smart glasses mode of Cosmos must focus on ambient, real-time advice and glanceable summaries, not deep reading.</td></tr>
+                </tbody>
+              </table>
+              <blockquote className="report-quote">“I want a personal AI intelligence—like Tony Stark’s Jarvis—to receive ambient, real-time advice throughout the day on my smart glasses.”</blockquote>
+            </section>
+
+            <section className="report-chapter" id="jd-habits">
+              <span className="report-number">3</span>
+              <h2>Content consumption habits: Short bursts and bedtime scrolls</h2>
+              <p>The participant's daily information diet is characterized by speed and focus, with longer passive sessions confined to highly specific times.</p>
+              <div className="steps-3" style={{ margin: "24px 0" }}>
+                <article><span className="steps-3__num">01</span><div><h3>Short bursts during active hours</h3><p>Scrolls X and YouTube for 5 to 10 minutes at a time. This brevity is enforced by pressing tasks and the need to get back to work immediately.</p></div></article>
+                <article><span className="steps-3__num">02</span><div><h3>Deep dive feeds</h3><p>Longer scrolling or video consumption occurs exclusively before bed or on weekends when there is dedicated free time.</p></div></article>
+                <article><span className="steps-3__num">03</span><div><h3>Algorithmic drift</h3><p>On YouTube, after watching a primary clip, his behavior is dominated by scrolling through the "related videos" feed, showing a reliance on contextual recommendations.</p></div></article>
+              </div>
+            </section>
+
+            <section className="report-chapter" id="jd-reaction">
+              <span className="report-number">4</span>
+              <h2>Reaction & Critical Feedback: Head-on value challenge</h2>
+              <p>JD Suh provided the most direct challenge of the research cycle. When the interviewer shared their Quest-based journey and the hypothesis that VR headsets are underused because "doom scrolling long-form forums is currently too difficult in headset," JD Suh questioned the desirability of the solution.</p>
+              <div className="focus-context-diagram" style={{ margin: "24px 0" }}>
+                <article style={{ width: "100%", maxWidth: "100%" }}>
+                  <span>Core Critique</span>
+                  <b>"Why do you want people to doom scroll easy on your headset?"</b>
+                  <p style={{ marginTop: "12px", color: "var(--pink)", fontWeight: "600" }}>
+                    "Why do you want the experience of doom scrolling easier on VR headsets?"
+                  </p>
+                  <p style={{ marginTop: "12px" }}>
+                    This counter-feedback cuts to the core of the Cosmos value proposition. It forces a clear distinction between <b>mindless, high-friction scrolling (slop)</b> and <b>high-value, structured research and comparison (sensemaking)</b>.
+                  </p>
+                </article>
+              </div>
+              <aside className="report-note report-note-yellow">
+                <b>The "Sounds Dizzy" Barrier</b>
+                <p>His immediate reaction to the idea of headset doom scrolling ("Sounds dizzy") highlights that motion sickness and physical fatigue remain absolute roadblocks for casual, non-essential headset tasks.</p>
+              </aside>
+            </section>
+
+            <section className="report-chapter" id="jd-notes">
+              <span className="report-number">5</span>
+              <h2>Practical notes & Details</h2>
+              <p>The interview session was dynamic, briefly shifting into a meta-discussion about qualitative research methods—specifically the importance of avoiding leading questions ("leading up with...") during user walkthroughs.</p>
+              <p>The latter portion of the session experienced ambient, real-world household interruptions, including references to milk and a pretty pan. It concluded with a discussion on the high ordering friction for prescription smart glasses lenses and a casual departure.</p>
+              <h3>Strategic Design Directives from JD Suh</h3>
+              <div className="implication-grid" style={{ marginTop: "24px" }}>
+                <article>
+                  <b>1. Reject Doom Scrolling</b>
+                  <p>Reposition Cosmos away from "making feed-scrolling easier" and toward structured, purposeful comparison workspaces.</p>
+                </article>
+                <article>
+                  <b>2. Guard Ergonomics</b>
+                  <p>Design specifically for zero-rotation, stationary, and comfortable layout models to prevent the "dizzy" response.</p>
+                </article>
+                <article>
+                  <b>3. Smart-Glasses Hook</b>
+                  <p>Map out an ambient glasses integration focused on real-time advice (the Jarvis model) rather than dense, multi-hour reading trees.</p>
+                </article>
+              </div>
+            </section>
+
+            <section className="report-chapter" id="jd-transcript">
+              <span className="report-number">A</span>
+              <h2>Full summary transcript</h2>
+              <p>The full interview summary, detailing background, habits, hypothesis critique, and practical notes, is preserved below.</p>
+              <TranscriptAppendix src="/cosmos/primary/interview-jd-suh/transcript.txt" />
             </section>
           </article>
         </section>}
