@@ -1425,7 +1425,7 @@ function App() {
               <p>Kris first noticed that the interface wrapped content around him as a spherical field. He then inspected individual cards, inferred possible relationships between color and topic, tested display controls, and attempted gaze, facial-gesture, drag, and posting interactions.</p>
               <figure className="interview-prototype-figure">
                 <div className="prototype-annotation">
-                  <img src="/assets/images/cosmos-sphere-browse.png" alt="The Cosmos spatial discussion prototype tested during Kris's interview" />
+                  <img src="/assets/images/cosmos-sphere-browse.webp" alt="The Cosmos spatial discussion prototype tested during Kris's interview" />
                   <span className="annotation-marker marker-1">1</span>
                   <span className="annotation-marker marker-2">2</span>
                   <span className="annotation-marker marker-3">3</span>

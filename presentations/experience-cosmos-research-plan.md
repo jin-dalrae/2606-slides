@@ -20,7 +20,7 @@ June 4, 2026
     <p>A lightweight agentic layer helps cluster, label, and surface posts without steering the conversation.</p>
     <p><a href="https://cosmosweb.web.app/web" target="_blank" rel="noreferrer">Try the prototype &rarr;</a></p>
   </div>
-  <img src="assets/images/cosmos-sphere-browse.png" alt="Cosmos interface showing discourse cards arranged inside a spherical spatial browser">
+  <img src="assets/images/cosmos-sphere-browse.webp" alt="Cosmos interface showing discourse cards arranged inside a spherical spatial browser">
 </div>
 
 ---

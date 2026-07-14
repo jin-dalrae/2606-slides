@@ -62,6 +62,40 @@ const fontOptions = {
   "source-serif": '"Source Serif 4", ui-serif, Georgia, serif'
 };
 
+// Lora + Inter ship in index.html. Other faces load only when a deck (or the
+// font picker) actually needs them — avoids downloading ~9 families up front.
+const fontStylesheetHrefs = {
+  roboto: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
+  playfair: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+  merriweather: "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+  montserrat: "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap",
+  poppins: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
+  "noto-sans": "https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap",
+  "source-serif": "https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&display=swap"
+};
+
+const loadedFonts = new Set(["lora", "inter"]);
+
+function ensureFontLoaded(fontKey) {
+  const key = fontOptions[fontKey] ? fontKey : "lora";
+  if (loadedFonts.has(key) || !fontStylesheetHrefs[key]) {
+    return Promise.resolve(key);
+  }
+
+  loadedFonts.add(key);
+  return new Promise((resolve) => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = fontStylesheetHrefs[key];
+    link.dataset.deckFont = key;
+    link.onload = () => resolve(key);
+    link.onerror = () => resolve(key);
+    document.head.append(link);
+  });
+}
+
+const animatedBackgroundModes = new Set(["shader", "cloudflare", "waves", "plasma"]);
+
 const appShell = document.querySelector(".app-shell");
 const stage = document.querySelector(".stage");
 const presentationList = document.querySelector("#presentationList");
@@ -244,9 +278,10 @@ function loadRevealPdfStylesheet() {
 function applyCurrentDeckFont() {
   const deckRoot = slide.querySelector(".deck-root");
   fontSelect.value = currentFont;
+  void ensureFontLoaded(currentFont);
 
   if (deckRoot) {
-    deckRoot.style.setProperty("--font-family", fontOptions[currentFont]);
+    deckRoot.style.setProperty("--font-family", fontOptions[currentFont] || fontOptions.lora);
   }
 }
 
@@ -730,11 +765,15 @@ async function preloadPresentationTitles() {
   renderPresentationList();
 }
 
-async function loadMarkdown(file) {
-  // Cache-bust so an edited deck always loads fresh (some browsers serve a
-  // stale copy even with cache:no-store).
-  const bust = `${file.includes("?") ? "&" : "?"}cb=${Date.now()}`;
-  const response = await fetch(`${file}${bust}`, { cache: "no-store" });
+async function loadMarkdown(file, { bustCache = false } = {}) {
+  // Prefer normal HTTP caching for static public markdown. Only force a bypass
+  // after an in-app edit (or when the caller opts in).
+  const url = bustCache
+    ? `${file}${file.includes("?") ? "&" : "?"}cb=${Date.now()}`
+    : file;
+  const response = await fetch(url, {
+    cache: bustCache ? "no-store" : "default"
+  });
 
   if (!response.ok) {
     throw new Error(`Could not load ${file}`);
@@ -1333,7 +1372,16 @@ function shaderFragmentMain(variant) {
 }
 
 function initShaderBackground(canvas, theme = "dark", variant = "shader") {
-  const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: false });
+  // Static backgrounds (plain / ivory / gray) hide the canvas in CSS — skip GL entirely.
+  if (!animatedBackgroundModes.has(variant) || printPdfMode) {
+    return () => {};
+  }
+
+  const gl = canvas.getContext("webgl", {
+    antialias: false,
+    premultipliedAlpha: false,
+    powerPreference: "low-power"
+  });
 
   if (!gl) {
     return () => {};
@@ -1423,53 +1471,90 @@ function initShaderBackground(canvas, theme = "dark", variant = "shader") {
   const uTime = gl.getUniformLocation(prog, "uTime");
   const uMouse = gl.getUniformLocation(prog, "uMouse");
   const mouse = { x: 0, y: 0 };
+  let raf = 0;
+  let running = false;
+  const start = performance.now();
+  // Cap pixel ratio on small/battery devices; full 2x is rarely worth the fill rate.
+  const maxDpr = window.matchMedia("(max-width: 900px), (prefers-reduced-motion: reduce)").matches
+    ? 1
+    : 1.5;
 
   function onMove(event) {
     const rect = canvas.getBoundingClientRect();
-    mouse.x = (event.clientX - rect.left) * window.devicePixelRatio;
-    mouse.y = (rect.height - (event.clientY - rect.top)) * window.devicePixelRatio;
+    const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+    mouse.x = (event.clientX - rect.left) * dpr;
+    mouse.y = (rect.height - (event.clientY - rect.top)) * dpr;
   }
 
   function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
     canvas.width = Math.max(1, Math.floor(canvas.clientWidth * dpr));
     canvas.height = Math.max(1, Math.floor(canvas.clientHeight * dpr));
     gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
-  window.addEventListener("mousemove", onMove);
-  window.addEventListener("resize", resize);
-  resize();
-
-  let raf = 0;
-  const start = performance.now();
-
-  function loop() {
+  function drawFrame() {
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform1f(uTime, (performance.now() - start) / 1000);
     gl.uniform2f(uMouse, mouse.x, mouse.y);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  function loop() {
+    if (!running) {
+      return;
+    }
+    drawFrame();
     raf = window.requestAnimationFrame(loop);
   }
 
-  loop();
+  function setRunning(shouldRun) {
+    if (shouldRun === running) {
+      return;
+    }
+    running = shouldRun;
+    if (running) {
+      raf = window.requestAnimationFrame(loop);
+    } else {
+      window.cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  }
+
+  function onVisibility() {
+    setRunning(document.visibilityState === "visible");
+  }
+
+  window.addEventListener("mousemove", onMove, { passive: true });
+  window.addEventListener("resize", resize);
+  document.addEventListener("visibilitychange", onVisibility);
+  resize();
+  setRunning(document.visibilityState === "visible");
 
   return () => {
-    window.cancelAnimationFrame(raf);
+    setRunning(false);
     window.removeEventListener("mousemove", onMove);
     window.removeEventListener("resize", resize);
+    document.removeEventListener("visibilitychange", onVisibility);
+    try {
+      const ext = gl.getExtension("WEBGL_lose_context");
+      ext?.loseContext();
+    } catch {
+      // ignore
+    }
   };
 }
 
 function restartShaderBackground() {
   const canvas = slide.querySelector(".slide-shader");
 
-  if (!canvas) {
-    return;
-  }
-
   if (cleanupShader) {
     cleanupShader();
+    cleanupShader = null;
+  }
+
+  if (!canvas || !animatedBackgroundModes.has(currentBackground) || printPdfMode) {
+    return;
   }
 
   cleanupShader = initShaderBackground(canvas, currentTheme, currentBackground);
@@ -1617,6 +1702,28 @@ function renderDeckShell(markdown) {
   restartShaderBackground();
 }
 
+// Defer off-screen slide images so opening a long deck (e.g. case study) does
+// not download every asset up front. First horizontal slide keeps eager load.
+function optimizeDeckMedia() {
+  const root = slide.querySelector(".deck-root");
+  if (!root) {
+    return;
+  }
+
+  const horizontal = root.querySelectorAll(".slides > section");
+  horizontal.forEach((section, index) => {
+    section.querySelectorAll("img").forEach((img) => {
+      img.decoding = "async";
+      if (index === 0) {
+        img.loading = "eager";
+        img.fetchPriority = "high";
+      } else {
+        img.loading = "lazy";
+      }
+    });
+  });
+}
+
 async function renderPresentation() {
   currentView = "presentation";
   stage.dataset.view = "presentation";
@@ -1678,6 +1785,8 @@ async function renderPresentation() {
       deckMeta.docTitle || deckMeta.sidebarTitle || deckMeta.resolvedTitle || deckMeta.title;
     renderPresentationList();
     currentSlide = 0;
+    // Ensure the deck's configured face is ready before first paint/layout.
+    await ensureFontLoaded(currentFont);
     renderDeckShell(markdown);
 
     if (!window.Reveal || !window.RevealMarkdown) {
@@ -1705,6 +1814,7 @@ async function renderPresentation() {
     });
 
     await deck.initialize();
+    optimizeDeckMedia();
     deck.layout();
     deck.on("slidechanged", (event) => {
       currentSlide = event.indexh;
@@ -1780,12 +1890,14 @@ function updateBackground(value) {
   broadcastPresentationState();
 }
 
-function updateFont(value) {
+async function updateFont(value) {
   currentFont = fontOptions[value] ? value : "lora";
   saveCurrentPresentationSettings();
+  await ensureFontLoaded(currentFont);
   applyCurrentDeckFont();
 
   if (deck) {
+    // Wait a frame after the stylesheet lands so metrics settle before re-layout.
     window.requestAnimationFrame(() => deck.layout());
   }
   broadcastPresentationState();

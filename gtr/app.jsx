@@ -747,7 +747,7 @@ function FieldworkReportPage() {
           <h3>1. Storyboard defined the experience</h3>
           <p><code>storyboard.jpeg</code> mapped the founder journey from initial awareness through assessment, instant results, dashboard use, team access, and longer-term use. It gave the sessions a shared scenario and determined which prototype moments needed to be built.</p>
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/user-journey-storyboard.jpg"
+            src="/assets/images/gtr/fieldwork/user-journey-storyboard.webp"
             alt="Eight-panel founder journey storyboard"
             caption="storyboard.jpeg: discovery at demo day → referral → mobile assessment → instant report → dashboard → team access → extended use."
             label="Storyboard"
@@ -773,31 +773,31 @@ function FieldworkReportPage() {
           <p>Paper and screen prototypes shown in sessions. Sample company in printed materials: pre-seed hardware and clean-energy startup.</p>
           <div className="prototype-grid">
             <FieldworkFigure
-              src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
+              src="/assets/images/gtr/fieldwork/onboarding-sheets.webp"
               alt="Continuous handwritten free impact assessment"
               caption="2A · Assessment 1 / assessment1.jpeg: continuous long-form assessment."
               label="Fig. 2A"
             />
             <FieldworkFigure
-              src="/assets/images/gtr/fieldwork/onboarding-flow-4up.jpg"
+              src="/assets/images/gtr/fieldwork/onboarding-flow-4up.webp"
               alt="Four hand-drawn screens for Assessment 2"
               caption="2B · Assessment 2 / assessment2-mobile.jpeg: four-screen mobile flow with progress, Back, and Next controls."
               label="Fig. 2B"
             />
             <FieldworkFigure
-              src="/assets/images/gtr/fieldwork/assessment-report-print.jpg"
+              src="/assets/images/gtr/fieldwork/assessment-report-print.webp"
               alt="Printed two-page instant impact assessment report"
               caption="3A · Report 1 / report1-information.jpeg: information-led result with footprint, handprint, hotspots, comparison, cost exposure, methodology, and share actions."
               label="Fig. 3A"
             />
             <FieldworkFigure
-              src="/assets/images/gtr/fieldwork/assessment-report-sketch.jpg"
+              src="/assets/images/gtr/fieldwork/assessment-report-sketch.webp"
               alt="Visual infographic instant impact report"
               caption="3B · Report 2 / report2-infographic.jpeg: infographic result with metric cards, gauge, and charts."
               label="Fig. 3B"
             />
             <FieldworkFigure
-              src="/assets/images/gtr/fieldwork/dashboard-sketch.jpg"
+              src="/assets/images/gtr/fieldwork/dashboard-sketch.webp"
               alt="Hand-drawn dashboard overview sketch"
               caption="4 · dashboard.jpeg: continued-use concept with footprint, handprint, derived net, maturity, goals, milestones, and projection."
               label="Fig. 4"
@@ -1038,7 +1038,7 @@ function FieldworkReportPage() {
           <h3>Journey storyboard — built first</h3>
           <p>The storyboard established the founder scenario before the interface variants were made. It connected discovery, assessment, instant results, dashboard use, team access, and extended use into one testable journey.</p>
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/user-journey-storyboard.jpg"
+            src="/assets/images/gtr/fieldwork/user-journey-storyboard.webp"
             alt="Hand-drawn eight-panel user journey storyboard from demo day awareness through assessment, report sharing, dashboard use, and extended use"
             caption="storyboard.jpeg: eight-stage founder journey used to define the Assessment 1/2, Report 1/2, and dashboard prototypes."
           />
@@ -1061,12 +1061,12 @@ function FieldworkReportPage() {
             ))}
           </div>
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/onboarding-flow-4up.jpg"
+            src="/assets/images/gtr/fieldwork/onboarding-flow-4up.webp"
             alt="Four hand-drawn screens for Assessment 2"
             caption="Assessment 2 / assessment2-mobile.jpeg: four screens for company profile, optional local documents, EMITS/AVOIDS activity selection, free-text description, and generate assessment."
           />
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/onboarding-sheets.jpg"
+            src="/assets/images/gtr/fieldwork/onboarding-sheets.webp"
             alt="Five handwritten paper sheets showing the free impact assessment intake flow"
             caption="Assessment 1 / assessment1.jpeg: continuous long-form layout with business model, team size, evidence prompts, activity selection, and generate-assessment CTA."
           />
@@ -1083,7 +1083,7 @@ function FieldworkReportPage() {
             </table>
           </div>
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/funding-stages.jpg"
+            src="/assets/images/gtr/fieldwork/funding-stages.webp"
             alt="Handwritten funding stage list: Pre-Seed, Seed, Series A, Series B plus"
             caption="Investment-stage choices in Assessment 1 (A)."
             label=""
@@ -1094,19 +1094,19 @@ function FieldworkReportPage() {
           <h3>Report 1 (A) / Report 2 (B)</h3>
           <p><b>Report 1</b> (<code>report1-information.jpeg</code>) was information-led: footprint and handprint values, ranked hotspot bars, peer range, cost exposure, methodology, impact beyond carbon, and share/account actions. <b>Report 2</b> (<code>report2-infographic.jpeg</code>) presented the same assessment as visual cards: handprint, maturity gauge, footprint, donut charts for hotspots, and energy/water/waste cards.</p>
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/assessment-report-print.jpg"
+            src="/assets/images/gtr/fieldwork/assessment-report-print.webp"
             alt="Printed two-page instant impact assessment report with footprint, handprint, hotspots, peer comparison, and methodology"
             caption="Report 1 / report1-information.jpeg: information-led assessment with footprint, handprint, hotspots, peer comparison, cost exposure, methodology, and share actions."
           />
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/assessment-report-sketch.jpg"
+            src="/assets/images/gtr/fieldwork/assessment-report-sketch.webp"
             alt="Pencil sketch of the instant impact assessment report layout"
             caption="Report 2 / report2-infographic.jpeg: infographic assessment with metric cards, maturity gauge, hotspot charts, and impact-beyond-carbon cards."
           />
           <h3>Dashboard concept</h3>
           <p>Dashboard sketch: footprint, handprint, derived net, maturity gauge, climate goals, milestones, impact projection. Sample values differ from instant report (footprint 42.6, handprint 108, net -65.4 tCO₂e on sketch vs 10.7 / ~20 on report). Participants asked to define impact projection, milestone diagram, net impact, and maturity levels.</p>
           <FieldworkFigure
-            src="/assets/images/gtr/fieldwork/dashboard-sketch.jpg"
+            src="/assets/images/gtr/fieldwork/dashboard-sketch.webp"
             alt="Hand-drawn dashboard overview sketch with footprint, handprint, net impact, maturity level, climate goals, milestones, and impact projection"
             caption="dashboard.jpeg: separate footprint and handprint, derived net, maturity, goals, milestones, and impact projection."
           />

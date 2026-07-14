@@ -49,7 +49,7 @@ Five founder-role walkthroughs support comprehension and structure decisions. Te
     <p><code>storyboard.jpeg</code> mapped discovery at demo day through referral, mobile assessment, instant report, dashboard use, team access, and extended use.</p>
     <p>Each prototype tested one decision inside that sequence — not a feature tour.</p>
   </div>
-  <img src="assets/images/gtr/fieldwork/user-journey-storyboard.jpg" alt="Eight-panel founder journey storyboard from demo day through assessment, report, dashboard, and extended use">
+  <img src="assets/images/gtr/fieldwork/user-journey-storyboard.webp" alt="Eight-panel founder journey storyboard from demo day through assessment, report, dashboard, and extended use">
 </div>
 
 ---
@@ -80,7 +80,7 @@ Five founder-role walkthroughs support comprehension and structure decisions. Te
       <article><h3>Assessment 2 (B)</h3><p>Four-screen mobile flow with progress, Back, and Next. Amali and Caroline preferred this guided structure.</p></article>
     </div>
   </div>
-  <img src="assets/images/gtr/fieldwork/onboarding-flow-4up.jpg" alt="Four hand-drawn screens for Assessment 2 mobile flow">
+  <img src="assets/images/gtr/fieldwork/onboarding-flow-4up.webp" alt="Four hand-drawn screens for Assessment 2 mobile flow">
 </div>
 
 <p class="slide-closing">Next prototype: hybrid — Assessment 2 guidance + Assessment 1 visibility and revisability.</p>
@@ -92,7 +92,7 @@ Five founder-role walkthroughs support comprehension and structure decisions. Te
 <p class="slide-ref">Report A/B</p>
 
 <div class="media-split">
-  <img src="assets/images/gtr/fieldwork/assessment-report-sketch.jpg" alt="Visual infographic instant impact report with metric cards and charts">
+  <img src="assets/images/gtr/fieldwork/assessment-report-sketch.webp" alt="Visual infographic instant impact report with metric cards and charts">
   <div>
     <div class="cards-2">
       <article><h3>Report 1 (A)</h3><p>Information-led: footprint, handprint, hotspots, peer range, methodology, and share actions.</p></article>
@@ -115,7 +115,7 @@ Five founder-role walkthroughs support comprehension and structure decisions. Te
     <p>Participants treated the instant report as the first result. The dashboard tested continued use: goals, milestones, maturity, and projection.</p>
     <p>Josh and Brian wanted a vertical hierarchy with goals and milestones grouped near the top. Amali could not interpret milestones or projection without explanation.</p>
   </div>
-  <img src="assets/images/gtr/fieldwork/dashboard-sketch.jpg" alt="Hand-drawn dashboard overview with footprint, handprint, goals, milestones, and projection">
+  <img src="assets/images/gtr/fieldwork/dashboard-sketch.webp" alt="Hand-drawn dashboard overview with footprint, handprint, goals, milestones, and projection">
 </div>
 
 ---
@@ -130,7 +130,7 @@ Five founder-role walkthroughs support comprehension and structure decisions. Te
   <article><span class="steps-3__num">03</span><div><h3>EMITS / AVOIDS</h3><p>Checkbox activities drive estimation scope. Footprint and handprint must stay separate and labeled.</p></div></article>
 </div>
 
-<img src="assets/images/gtr/fieldwork/onboarding-sheets.jpg" alt="Continuous handwritten free impact assessment paper prototype">
+<img src="assets/images/gtr/fieldwork/onboarding-sheets.webp" alt="Continuous handwritten free impact assessment paper prototype">
 
 ---
 
@@ -190,7 +190,7 @@ Five founder-role walkthroughs support comprehension and structure decisions. Te
       <article><h3>Cheap A/B comparison</h3><p>Paper artifacts made structural alternatives easy to compare and revise.</p></article>
     </div>
   </div>
-  <img src="assets/images/gtr/fieldwork/assessment-report-print.jpg" alt="Printed two-page instant impact assessment report used in sessions">
+  <img src="assets/images/gtr/fieldwork/assessment-report-print.webp" alt="Printed two-page instant impact assessment report used in sessions">
 </div>
 
 <p class="slide-closing">Testing Process conclusion: storyboard-first framing and low-fidelity A/B comparison worked; session scope and facilitator dependence did not.</p>

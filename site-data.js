@@ -81,7 +81,7 @@
       title: "GTR Partners",
       docTitle: "Team GTR climate awareness",
       project: "Social Lab",
-      date: "May 2026",
+      date: "May 1, 2026",
       file: "presentations/gtr-startups-climate-awareness.md",
       transition: "slide",
       public: true
@@ -92,7 +92,7 @@
       docTitle: "Team GTR prototype user testing",
       sidebarTitle: "GTR fieldwork week",
       project: "Social Lab",
-      date: "June 2026",
+      date: "June 1, 2026",
       file: "presentations/gtr-fieldwork-week.md",
       transition: "slide",
       background: "waves",

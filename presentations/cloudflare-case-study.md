@@ -99,7 +99,7 @@ Note: I'll go deep on two products. First, PeriCare — a private, on-device com
 
 ## AI-native support for perimenopause
 
-<img class="slide-image" src="assets/images/pericare/hero.jpg" alt="PeriCare — AI-native support for perimenopause">
+<img class="slide-image" src="assets/images/pericare/hero.webp" alt="PeriCare — AI-native support for perimenopause">
 
 Note: My first product is PeriCare, a native iOS and Apple Watch companion app built in Swift and Xcode, designed to provide AI-native support for women navigating perimenopause.
 
@@ -114,7 +114,7 @@ Note: My first product is PeriCare, a native iOS and Apple Watch companion app b
     <p>Native iOS and Apple Watch, built in Swift and Xcode. PeriCare builds an intelligent, predictive ecosystem on top of a user's own HealthKit data.</p>
     <p><strong>The shift is happening now:</strong> days ago at WWDC 2026, Apple announced native perimenopause tracking in its Health app. Midlife hormonal health is moving to the center, culturally and commercially.</p>
   </div>
-  <img src="assets/images/pericare/pericare-04.png" alt="PeriCare Digital Twin — a body map of five symptom groups watched together">
+  <img src="assets/images/pericare/pericare-04.webp" alt="PeriCare Digital Twin — a body map of five symptom groups watched together">
 </div>
 
 Note: PeriCare is a native iOS and Apple Watch companion app built utilizing Swift and Xcode. Culturally and commercially, we are seeing a massive shift toward midlife hormonal health. Even Apple, just days ago at WWDC 2026, announced native perimenopause tracking for its core Health app. My goal with PeriCare was to build an intelligent, predictive ecosystem on top of HealthKit data.
@@ -188,7 +188,7 @@ Note: And the existing tools fail exactly when they're needed most. 73% of women
     <p>I interviewed a user living with severe perimenopausal depression. Her doctor prescribed hormonal treatment — but subtle side effects, like localized swelling, went untracked, leaving her unsure whether she needed clinical intervention.</p>
     <p>That uncertainty was the real pain: not a lack of data, but no way to connect a treatment to its effect on her body.</p>
   </div>
-  <img src="assets/images/pericare/pericare-02.png" alt="PeriCare onboarding — a few optional fields, nothing leaves the phone">
+  <img src="assets/images/pericare/pericare-02.webp" alt="PeriCare onboarding — a few optional fields, nothing leaves the phone">
 </div>
 
 Note: To understand this deeply, I conducted extensive interviews with a user who had been experiencing severe perimenopausal depression. She shared a crucial pain point: her doctor prescribed hormonal treatments, but minor, subtle side effects like localized body swelling went untracked, leaving her uncertain whether she needed a clinical intervention. That uncertainty — not a lack of effort or data — was the real problem. It inspired the entire product architecture.
@@ -204,7 +204,7 @@ Note: To understand this deeply, I conducted extensive interviews with a user wh
     <p>PeriCare maps a user's unique symptoms into a personal <strong>digital twin</strong>. Continuous Apple Watch biometrics are the sensors; hormonal change is the disturbance; mood and energy are the variable being regulated.</p>
     <p>An on-device agent acts as the comparator — reading the gap between where she is and where she wants to be, then driving behavioral or medical advice.</p>
   </div>
-  <img src="assets/images/pericare/pericare-system-2.jpg" alt="Hand-drawn control-loop architecture: Apple Watch and iPhone sensors, hormonal disturbance, a mood/energy variable, a comparator against goals, and advice actuators with medical escalation">
+  <img src="assets/images/pericare/pericare-system-2.webp" alt="Hand-drawn control-loop architecture: Apple Watch and iPhone sensors, hormonal disturbance, a mood/energy variable, a comparator against goals, and advice actuators with medical escalation">
 </div>
 
 Note: This is the systems thinking made literal. I modeled the body as a control loop. The Apple Watch is the sensor — temperature, HRV, resting heart rate, fitness. Hormonal change is the disturbance. Mood and energy are the variable we're trying to regulate. An on-device agent is the comparator, reading the gap between her current state and her goal, then acting through two actuators: behavioral advice first, and an escalation path that checks whether things are improving and, if not, flags medical intervention.
@@ -239,7 +239,7 @@ Note: At the core are two cycles. The first is the irregular hormonal cycle — 
     <p>A personal-baseline radar across five axes — Mood, Energy, Sleep, Autonomic, Movement — normalized to her own 14- and 28-day baselines, not population averages.</p>
     <p>An HRV of 42ms is only "low" if it's low <em>for her</em>. That one decision makes the signal honest.</p>
   </div>
-  <img src="assets/images/pericare/pericare-08.png" alt="PeriCare insights — personal-baseline radar plus cluster trends for hot flashes, sleep, mood, body aches, and brain fog">
+  <img src="assets/images/pericare/pericare-08.webp" alt="PeriCare insights — personal-baseline radar plus cluster trends for hot flashes, sleep, mood, body aches, and brain fog">
 </div>
 
 Note: Every reading is interpreted against her own baseline, not a population goal. The radar has five axes — mood, energy, sleep, autonomic, and movement — each normalized to her own 14- and 28-day baselines. An HRV of 42 milliseconds is only bad if it's bad for her. It's a small feature with a huge felt difference: it makes the whole system honest instead of judgmental.
@@ -255,7 +255,7 @@ Note: Every reading is interpreted against her own baseline, not a population go
     <p>A curated, evidence-tagged intervention library of 22 options across movement, sleep, CBT, and nutrition. Each is tagged to NAMS, SWAN, or peer-reviewed RCTs.</p>
     <p><strong>The agent picks from the library — it never invents.</strong> Every suggestion is traceable, and the set narrows with her thumbs-up and thumbs-down.</p>
   </div>
-  <img src="assets/images/pericare/pericare-06.png" alt="PeriCare today tab — best moves for today, drawn from an evidence-tagged library">
+  <img src="assets/images/pericare/pericare-06.webp" alt="PeriCare today tab — best moves for today, drawn from an evidence-tagged library">
 </div>
 
 Note: The advice is not generated from thin air. There's a curated library of 22 interventions across movement, sleep, CBT, and nutrition, each tagged to NAMS, SWAN, or peer-reviewed RCTs. The on-device agent selects from that library — it never invents a recommendation. So every suggestion is traceable back to evidence, and the library narrows to what works for her through simple thumbs-up, thumbs-down feedback.
@@ -266,11 +266,11 @@ Note: The advice is not generated from thin air. There's a curated library of 22
 
 # The journey: onboarding
 
-<img class="slide-image" src="assets/images/pericare/pericare-01.png" alt="PeriCare onboarding — perimenopause is years of quiet rewiring; private, on your device, no accounts">
+<img class="slide-image" src="assets/images/pericare/pericare-01.webp" alt="PeriCare onboarding — perimenopause is years of quiet rewiring; private, on your device, no accounts">
 
-<img class="slide-image" src="assets/images/pericare/pericare-02.png" alt="PeriCare onboarding — a few optional fields, nothing leaves the phone">
+<img class="slide-image" src="assets/images/pericare/pericare-02.webp" alt="PeriCare onboarding — a few optional fields, nothing leaves the phone">
 
-<img class="slide-image" src="assets/images/pericare/pericare-12.png" alt="PeriCare onboarding — one gentle daily nudge, a single daily check-in">
+<img class="slide-image" src="assets/images/pericare/pericare-12.webp" alt="PeriCare onboarding — one gentle daily nudge, a single daily check-in">
 
 Note: Here's the native iOS journey. Onboarding is deliberately gentle and private — it names the experience honestly, asks only a few optional fields, and sets up a single daily nudge. The message from the first screen is that nothing leaves the phone and there are no accounts.
 
@@ -280,9 +280,9 @@ Note: Here's the native iOS journey. Onboarding is deliberately gentle and priva
 
 # A fifteen-second daily loop
 
-<img class="slide-image" src="assets/images/pericare/pericare-14.png" alt="PeriCare today tab — a single on-device suggestion framed by cycle phase, plus today's body signals">
+<img class="slide-image" src="assets/images/pericare/pericare-14.webp" alt="PeriCare today tab — a single on-device suggestion framed by cycle phase, plus today's body signals">
 
-<img class="slide-image" src="assets/images/pericare/pericare-15.png" alt="PeriCare log — a quick mood scale, common symptoms, optional period, and a note">
+<img class="slide-image" src="assets/images/pericare/pericare-15.webp" alt="PeriCare log — a quick mood scale, common symptoms, optional period, and a note">
 
 Note: The daily loop is intentionally light. The Today tab gives her where she is in the cycle, a single suggested move for the day, and her body signals at a glance. Logging is a fifteen-second interaction — a mood scale, a few common symptoms, an optional period entry. Low friction is the point: a tool she'll actually open every day.
 
@@ -297,7 +297,7 @@ Note: The daily loop is intentionally light. The Today tab gives her where she i
     <p>Five symptom groups, watched together. The twin frames her perimenopause as a control loop: <strong>goal → state → action → feedback</strong>.</p>
     <p>It surfaces what's in effect now, what the loop is trying to land, and how she's actually feeling against her baseline.</p>
   </div>
-  <img src="assets/images/pericare/pericare-05.png" alt="PeriCare digital twin detail — goal, current state, recommended moves, and feedback, with the active phase and medication">
+  <img src="assets/images/pericare/pericare-05.webp" alt="PeriCare digital twin detail — goal, current state, recommended moves, and feedback, with the active phase and medication">
 </div>
 
 Note: The Digital Twin tab is where the model becomes something she can see. It shows five symptom groups watched together, and it frames everything as a loop: the goal she set, her current state, the recommended action, and the feedback. It tells her what's in effect right now — her phase, her medication — what the loop is trying to land, like steady mood, and how she's actually feeling relative to her own baseline.
@@ -313,7 +313,7 @@ Note: The Digital Twin tab is where the model becomes something she can see. It 
     <p>Over time the twin surfaces real correlations: how her cycle length is changing, how a medication shifted her symptoms, and which signals move together.</p>
     <p>Cycles shortening by ~19 days across the last four — a classic early-transition pattern — becomes something she can see and bring to a doctor.</p>
   </div>
-  <img src="assets/images/pericare/pericare-07.png" alt="PeriCare cycle intelligence — check-ins, a medication-effect analysis, and a baseline radar">
+  <img src="assets/images/pericare/pericare-07.webp" alt="PeriCare cycle intelligence — check-ins, a medication-effect analysis, and a baseline radar">
 </div>
 
 Note: As she logs, the twin starts surfacing patterns she could never hold in her head. How her cycle length is changing — shortening cycles are one of the most common early signs of perimenopause. How a specific medication, like magnesium glycinate, shifted her symptoms over the following weeks. Which signals move together. This is the cycle intelligence that turns raw logs into something actionable.
@@ -329,7 +329,7 @@ Note: As she logs, the twin starts surfacing patterns she could never hold in he
     <p>On-device Apple Foundation Models synthesize the week into 2–4 findings and one focus for next week — with clinical red-flag detection when symptoms trend wrong for several weeks.</p>
     <p>A one-tap <strong>doctor-ready PDF</strong> turns the personal record into a clinical conversation — a bridge to care, not a substitute for it.</p>
   </div>
-  <img src="assets/images/pericare/pericare-10.png" alt="PeriCare weekly AI report — findings, a focus for next week, a clinician flag, and a doctor-ready PDF export">
+  <img src="assets/images/pericare/pericare-10.webp" alt="PeriCare weekly AI report — findings, a focus for next week, a clinician flag, and a doctor-ready PDF export">
 </div>
 
 Note: Once a week, an on-device model synthesizes everything into a short, structured report — two to four findings, a single focus for the next week, and a red-flag check that suggests seeing a clinician if hot flashes, sleep, and mood all trend the wrong way for several weeks. And she can export a doctor-ready one-page PDF: her staging, cycle context, vital changes, and active medications. It's explicitly a bridge to a clinical visit, not a replacement for one.
@@ -444,11 +444,11 @@ Note: The moat is real. The two-cycle digital twin is something no one else buil
 
 <div class="before-after">
   <figure>
-    <img src="assets/images/autoscape/hero-before.png" alt="A bare, unpolished backyard — the homeowner's own photo">
+    <img src="assets/images/autoscape/hero-before.webp" alt="A bare, unpolished backyard — the homeowner's own photo">
     <figcaption>Before — a single uploaded photo</figcaption>
   </figure>
   <figure>
-    <img src="assets/images/autoscape/hero-after.png" alt="The same backyard, fully redesigned with planting and hardscape">
+    <img src="assets/images/autoscape/hero-after.webp" alt="The same backyard, fully redesigned with planting and hardscape">
     <figcaption class="after">After — generated in under a minute</figcaption>
   </figure>
 </div>
@@ -526,9 +526,9 @@ Note: AutoScape collapses that entire workflow. You upload a photo and pick a st
 
 # An entirely automated pipeline
 
-<img class="slide-image" src="assets/images/autoscape/autoscape-07.png" alt="AutoScape upload — drop a photo and set location type and space size">
+<img class="slide-image" src="assets/images/autoscape/autoscape-07.webp" alt="AutoScape upload — drop a photo and set location type and space size">
 
-<img class="slide-image" src="assets/images/autoscape/autoscape-08.png" alt="AutoScape style picker — styles shown as real example photographs, not jargon">
+<img class="slide-image" src="assets/images/autoscape/autoscape-08.webp" alt="AutoScape style picker — styles shown as real example photographs, not jargon">
 
 Note: The input is deliberately simple — one photo, plus a few constraints like the kind of space and rough size. And we show styles as real example photographs rather than landscape jargon, because homeowners don't think in terms of "cottage" or "Mediterranean" — they see a picture and know if they like it. We kept the questions to a minimum so people actually reach the result before they bounce.
 
@@ -543,7 +543,7 @@ Note: The input is deliberately simple — one photo, plus a few constraints lik
     <p>The generative engine produces a photorealistic redesign — keeping the home's architecture intact and changing only the yard, so it feels like <em>their</em> place, not a generic stock image.</p>
     <p>An in-app before/after slider lets them drag between their photo and the new version, which is what makes it feel possible.</p>
   </div>
-  <img src="assets/images/autoscape/autoscape-11.png" alt="AutoScape result — photorealistic redesign with an in-app before/after slider, plan, and video tabs">
+  <img src="assets/images/autoscape/autoscape-11.webp" alt="AutoScape result — photorealistic redesign with an in-app before/after slider, plan, and video tabs">
 </div>
 
 Note: The render is the emotional core. The hard engineering was keeping the photographed architecture intact and changing only the vegetation and hardscape, so it reads as the user's actual yard rather than some generic AI picture. The before/after slider lets them drag between their real photo and the transformed version — a static image is easy to dismiss, but dragging between the two makes it feel achievable.
@@ -559,7 +559,7 @@ Note: The render is the emotional core. The hard engineering was keeping the pho
     <p>The system corrects the camera's spatial distortion to translate the flat photo into a precise, top-down 2D landscaping plan — something a contractor can actually build from.</p>
     <p>This is the step that turns an explorer into someone moving toward a real decision.</p>
   </div>
-  <img src="assets/images/autoscape/plan-2d.png" alt="AutoScape 2D top-down architectural landscape plan with placement and scale">
+  <img src="assets/images/autoscape/plan-2d.webp" alt="AutoScape 2D top-down architectural landscape plan with placement and scale">
 </div>
 
 Note: A beautiful image is not a handoff. AutoScape corrects the camera's spatial distortion to translate that flat image into a precise, top-down 2D landscaping plan with real placement and scale — something a landscaper can actually use for installation. A lot of the technical work lives here, converting the generative output into clean 2D documentation. It even builds a localized video walkthrough to make the exploration immersive.
@@ -577,7 +577,7 @@ Note: A beautiful image is not a handoff. AutoScape corrects the camera's spatia
     <p>The long-term vision is a marketplace. The MVP targets the highest-value pain point: the <strong>automated cost distribution report</strong>.</p>
     <p>Projects stall because homeowners fear hidden costs and sales pressure. AutoScape parses the render, isolates each component, and extracts an itemized breakdown of materials, regional plant costs, and labor hours.</p>
   </div>
-  <img src="assets/images/autoscape/estimate.png" alt="AutoScape itemized estimate — materials, quantities, directional prices, and per-item links">
+  <img src="assets/images/autoscape/estimate.webp" alt="AutoScape itemized estimate — materials, quantities, directional prices, and per-item links">
 </div>
 
 Note: While the long-term vision includes a full marketplace connecting homeowners with local professionals, the immediate MVP strategy focuses strictly on the highest-value pain point: the automated cost distribution report. Landscaping projects stall because people fear hidden costs and aggressive sales pitches. AutoScape acts as a zero-pressure exploration layer — it parses the generated image, isolates the design components, and extracts an itemized breakdown of materials, regional plant costs, and estimated labor hours. That gives the user total financial clarity before they ever speak to a landscaper.
@@ -593,7 +593,7 @@ Note: While the long-term vision includes a full marketplace connecting homeowne
     <p>There's no landscaping price API, so the costs come from a <strong>RAG pipeline</strong> over real product metadata — Freepik's asset library indexed in Qdrant — not hallucinated numbers.</p>
     <p>The uncertainty is made visible and usable: directional prices, regional variation, a starting point for a conversation, never a fake-precise quote.</p>
   </div>
-  <img src="assets/images/autoscape/pie-chart.png" alt="AutoScape cost-distribution donut chart with a clear directional-estimate disclaimer">
+  <img src="assets/images/autoscape/pie-chart.webp" alt="AutoScape cost-distribution donut chart with a clear directional-estimate disclaimer">
 </div>
 
 Note: This is the part I'd linger on. There is no real landscaping price API, so I built a retrieval-augmented pipeline over Freepik's real asset library, indexed in Qdrant, so the costs come from actual product metadata instead of made-up numbers. The design decision was about what not to promise: the prices are directional, they move with region and season, and they're a starting point for a conversation with a contractor. We made that honesty part of the interface — the pie chart and the line items carry the same message — so the trust earned in the render isn't immediately spent.
