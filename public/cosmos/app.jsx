@@ -197,14 +197,16 @@ function ChapterLabel({ number, children }) {
 
 function WavelineChart({ stages, activeId, onSelect }) {
   // Compact chart region only — explanation lives in the same 16:9 slide below.
+  // Wide side padding keeps peak/stage tags inside the SVG; plot band is narrower than the slide.
   const width = 1520;
   const height = 320;
-  const padL = 12;
-  const padR = 12;
-  const padT = 28;
+  const padL = 88;
+  const padR = 88;
+  const padT = 36;
   const padB = 58;
   const chartW = width - padL - padR;
   const chartH = height - padT - padB;
+  const peakLabelY = 22; // fixed row so all peak tags share one baseline
   const n = stages.length;
 
   const points = stages.map((stage, index) => {
@@ -267,7 +269,7 @@ function WavelineChart({ stages, activeId, onSelect }) {
             <circle cx={p.x} cy={p.y} r={active ? 5 : 3.5} fill="#f2f04f" />
             <text
               x={p.x}
-              y={Math.max(padT + 16, p.y - 20)}
+              y={peakLabelY}
               textAnchor="middle"
               className={active ? "is-active peak-label" : "peak-label"}
             >
