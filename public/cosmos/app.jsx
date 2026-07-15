@@ -305,24 +305,8 @@ function UserWavelinePage() {
           </p>
         </header>
 
-        <div className="waveline-frame__chart">
+        <div className="waveline-frame__chart" role="tablist" aria-label="Waveline stages">
           <WavelineChart stages={experienceWaveline} activeId={activeId} onSelect={setActiveId} />
-        </div>
-
-        <div className="waveline-frame__tabs" role="tablist" aria-label="Waveline stages">
-          {experienceWaveline.map((stage) => (
-            <button
-              key={stage.id}
-              type="button"
-              role="tab"
-              aria-selected={stage.id === activeId}
-              className={stage.id === activeId ? "is-active" : ""}
-              onClick={() => setActiveId(stage.id)}
-            >
-              <span>{stage.stage}</span>
-              {stage.name}
-            </button>
-          ))}
         </div>
 
         <div className="waveline-frame__detail" aria-live="polite">
@@ -356,7 +340,7 @@ function UserWavelinePage() {
       </div>
 
       <p className="waveline-share-hint">
-        Tip: close the left sidebar (‹) for a clean 16:9 share view. Click stages on the wave or the tabs.
+        Tip: close the left sidebar (‹) for a clean 16:9 share view. Click a stage on the wave to update the detail panel.
       </p>
 
       <div className="report-next-links">
