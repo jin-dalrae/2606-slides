@@ -232,11 +232,11 @@
   }
   function WavelineChart({ stages, activeId, onSelect }) {
     const width = 1520;
-    const height = 340;
-    const padL = 28;
-    const padR = 28;
-    const padT = 28;
-    const padB = 54;
+    const height = 300;
+    const padL = 16;
+    const padR = 16;
+    const padT = 22;
+    const padB = 48;
     const chartW = width - padL - padR;
     const chartH = height - padT - padB;
     const n = stages.length;
@@ -269,16 +269,16 @@
           strokeWidth: active ? 1.75 : 1,
           strokeDasharray: active ? "0" : "2 4"
         }
-      ), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 11 : 8, fill: active ? "#f14f9b" : "#111c4e", stroke: "#f7f4ed", strokeWidth: "2.5" }), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 4 : 2.5, fill: "#f2f04f" }), /* @__PURE__ */ React.createElement(
+      ), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 12 : 9, fill: active ? "#f14f9b" : "#111c4e", stroke: "#f7f4ed", strokeWidth: "2.5" }), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 4.5 : 3, fill: "#f2f04f" }), /* @__PURE__ */ React.createElement(
         "text",
         {
           x: p.x,
-          y: Math.max(padT + 12, p.y - 16),
+          y: Math.max(padT + 14, p.y - 18),
           textAnchor: "middle",
           className: active ? "is-active" : ""
         },
         p.peakLabel
-      ), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 18, textAnchor: "middle", className: "stage-num" }, p.stage), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 36, textAnchor: "middle", className: "stage-name" }, p.name));
+      ), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 20, textAnchor: "middle", className: "stage-num" }, p.stage), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 40, textAnchor: "middle", className: "stage-name" }, p.name));
     }));
   }
   function UserWavelinePage() {

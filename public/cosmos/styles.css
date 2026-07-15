@@ -572,18 +572,18 @@ blockquote footer { max-width: 580px; font-size: 13px; line-height: 1.6; opacity
 
 /* —— User experience waveline: one 16:9 slide (chart + explanation) —— */
 .waveline-page {
-  padding-top: 48px;
-  padding-bottom: 64px;
+  padding-top: 36px;
+  padding-bottom: 48px;
 }
 .waveline-frame {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto minmax(0, 1.15fr);
-  gap: 8px;
+  grid-template-rows: auto minmax(0, 0.95fr) auto minmax(0, 1.25fr);
+  gap: 6px;
   width: 100%;
-  max-width: min(1180px, 100%);
+  max-width: min(1240px, 100%);
   margin: 0 auto;
   aspect-ratio: 16 / 9;
-  padding: clamp(12px, 1.6vw, 20px) clamp(14px, 1.8vw, 24px);
+  padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.4vw, 18px);
   border: 1px solid var(--line);
   background: var(--paper);
   box-shadow: 0 16px 40px rgba(17, 28, 78, 0.07);
@@ -591,42 +591,42 @@ blockquote footer { max-width: 580px; font-size: 13px; line-height: 1.6; opacity
   container-type: size;
 }
 html[data-cosmos-rail="closed"] .waveline-frame {
-  max-width: min(1280px, 100%);
+  max-width: min(1360px, 100%);
 }
 .waveline-frame__head {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 12px 24px;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 8px 18px;
   align-items: end;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--line);
 }
 .waveline-kicker {
-  margin: 0 0 4px;
+  margin: 0 0 3px;
   color: var(--pink);
   font-family: var(--sans);
-  font-size: clamp(9px, 1.05cqi, 11px);
+  font-size: clamp(11px, 1.25cqi, 13px);
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: .11em;
   text-transform: uppercase;
 }
 .waveline-frame__head h1 {
   margin: 0;
   color: var(--navy);
   font-family: var(--serif);
-  font-size: clamp(17px, 2.4cqi, 26px);
+  font-size: clamp(22px, 3.1cqi, 34px);
   font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -.02em;
+  line-height: 1.08;
+  letter-spacing: -.025em;
 }
 .waveline-lede {
   margin: 0;
   color: var(--muted);
   font-family: var(--sans);
-  font-size: clamp(10px, 1.25cqi, 13px);
-  font-weight: 400;
-  line-height: 1.4;
-  max-width: 38ch;
+  font-size: clamp(13px, 1.55cqi, 16px);
+  font-weight: 500;
+  line-height: 1.35;
+  max-width: 34ch;
   justify-self: end;
 }
 .waveline-frame__chart {
@@ -643,37 +643,37 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 }
 .waveline-chart text {
   fill: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   font-family: var(--sans);
 }
 .waveline-chart text.is-active { fill: var(--pink); }
 .waveline-chart text.stage-num {
   fill: var(--pink);
   font-family: var(--serif);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
 }
 .waveline-chart text.stage-name {
   fill: var(--navy);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   font-family: var(--sans);
 }
 .waveline-frame__tabs {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 4px;
+  gap: 5px;
 }
 .waveline-frame__tabs button {
   min-width: 0;
-  padding: 5px 3px;
+  padding: 7px 4px;
   border: 1px solid var(--line);
   background: white;
   color: var(--muted);
   font-family: var(--sans);
-  font-size: clamp(9px, 1.05cqi, 11px);
-  font-weight: 600;
+  font-size: clamp(11px, 1.3cqi, 13px);
+  font-weight: 700;
   line-height: 1.15;
   text-align: center;
   cursor: pointer;
@@ -685,7 +685,7 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   display: block;
   color: var(--pink);
   font-family: var(--serif);
-  font-size: clamp(9px, 1cqi, 11px);
+  font-size: clamp(12px, 1.35cqi, 14px);
   font-weight: 600;
   margin-bottom: 1px;
 }
@@ -700,7 +700,7 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 6px;
-  padding: 8px 10px 7px;
+  padding: 10px 12px 8px;
   border: 1px solid var(--line);
   background: var(--paper-deep);
   overflow: hidden;
@@ -708,13 +708,13 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 .waveline-frame__detail-title {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 8px 10px;
+  gap: 8px 12px;
   align-items: center;
 }
 .waveline-frame__detail-title > span {
   color: var(--pink);
   font-family: var(--serif);
-  font-size: clamp(20px, 2.8cqi, 28px);
+  font-size: clamp(26px, 3.4cqi, 36px);
   font-weight: 600;
   line-height: 1;
 }
@@ -722,22 +722,22 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   margin: 0;
   color: var(--navy);
   font-family: var(--serif);
-  font-size: clamp(15px, 1.9cqi, 20px);
+  font-size: clamp(20px, 2.5cqi, 28px);
   font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -.01em;
+  line-height: 1.08;
+  letter-spacing: -.015em;
 }
 .waveline-frame__detail-title p {
-  margin: 1px 0 0;
+  margin: 2px 0 0;
   color: var(--muted);
   font-family: var(--sans);
-  font-size: clamp(10px, 1.15cqi, 12px);
-  font-weight: 500;
+  font-size: clamp(12px, 1.4cqi, 15px);
+  font-weight: 600;
 }
 .waveline-frame__cols {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 12px;
+  gap: 8px 14px;
   min-height: 0;
   overflow: hidden;
 }
@@ -747,21 +747,21 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 }
 .waveline-frame__cols b {
   display: block;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   color: var(--pink);
   font-family: var(--sans);
-  font-size: clamp(8px, 1cqi, 10px);
+  font-size: clamp(10px, 1.15cqi, 12px);
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   text-transform: uppercase;
 }
 .waveline-frame__cols p {
   margin: 0;
-  color: #39415f;
+  color: #2f3758;
   font-family: var(--sans);
-  font-size: clamp(10px, 1.2cqi, 12px);
-  font-weight: 400;
-  line-height: 1.4;
+  font-size: clamp(12.5px, 1.55cqi, 15.5px);
+  font-weight: 500;
+  line-height: 1.38;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
@@ -770,37 +770,37 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 .waveline-frame__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 5px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .waveline-frame__chips li {
   margin: 0;
-  padding: 2px 7px;
+  padding: 4px 9px;
   border: 1px solid var(--line);
   background: white;
   color: var(--navy);
   font-family: var(--sans);
-  font-size: clamp(9px, 1cqi, 11px);
-  font-weight: 600;
+  font-size: clamp(11px, 1.25cqi, 13px);
+  font-weight: 700;
 }
 .waveline-share-hint {
-  margin: 14px auto 0;
-  max-width: min(1180px, 100%);
+  margin: 12px auto 0;
+  max-width: min(1240px, 100%);
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 13px;
+  line-height: 1.4;
 }
 .report-next-links {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  max-width: min(1180px, 100%);
-  margin: 28px auto 0;
-  padding-top: 16px;
+  max-width: min(1240px, 100%);
+  margin: 22px auto 0;
+  padding-top: 14px;
   border-top: 1px solid var(--line);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 .report-next-links a { text-decoration: none; }
@@ -815,10 +815,10 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   }
   .waveline-frame__head { grid-template-columns: 1fr; }
   .waveline-lede { justify-self: start; max-width: none; }
-  .waveline-frame__chart { min-height: 200px; }
+  .waveline-frame__chart { min-height: 220px; }
   .waveline-frame__tabs { grid-template-columns: repeat(4, 1fr); }
   .waveline-frame__cols { grid-template-columns: 1fr; }
-  .waveline-frame__cols p { -webkit-line-clamp: 8; }
+  .waveline-frame__cols p { -webkit-line-clamp: 10; }
 }
 @media (max-width: 560px) {
   .waveline-frame__tabs { grid-template-columns: repeat(2, 1fr); }
