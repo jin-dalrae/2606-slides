@@ -288,251 +288,307 @@
     const active = experienceWaveline.find((s) => s.id === activeId) || experienceWaveline[0];
     return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Cosmos VR experience waveline, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User waveline \xB7 Cosmos VR"), /* @__PURE__ */ React.createElement("h1", null, "One session in the sphere")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Eight stages of using Cosmos VR \u2014 from first intrigue through contribution and return. Wave height is felt intensity.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__chart", role: "tablist", "aria-label": "Waveline stages" }, /* @__PURE__ */ React.createElement(WavelineChart, { stages: experienceWaveline, activeId, onSelect: setActiveId })), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", null, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, active.name), /* @__PURE__ */ React.createElement("p", null, active.short, " \xB7 peak: ", active.peakLabel))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, active.mechanics.map((m) => /* @__PURE__ */ React.createElement("li", { key: m }, m))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039) for a clean 16:9 share view. Click a stage on the wave to update the detail panel."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "Next: Stakeholder map \u2192")));
   }
-  var stakeholderGroups = [
+  var networkSides = [
     {
       id: "users",
-      label: "Users & Early Adopters",
+      number: "01",
+      name: "User Side",
       color: "#f14f9b",
       nodes: [
-        { id: "online-members", label: "Online Community Members", short: "Online community\nmembers" },
-        { id: "knowledge-seekers", label: "Knowledge Seekers (tired of doomscrolling)", short: "Knowledge seekers\n(tired of doomscrolling)" },
-        { id: "active-posters", label: "Active Posters", short: "Active posters" },
-        { id: "design-communities", label: "Design Communities", short: "Design\ncommunities" },
-        { id: "digital-minimalists", label: "Digital Minimalists", short: "Digital\nminimalists" }
+        { id: "knowledge-seekers", label: "Knowledge Seekers" },
+        { id: "casual-explorers", label: "Casual Explorers" },
+        { id: "anti-doomscrolling", label: "Anti-doomscrolling Users" },
+        { id: "niche-community", label: "Niche Community Members" }
+      ],
+      chains: [
+        "Knowledge Seekers \u2192 discover via Promoter Side \u2192 enter through Device Side \u2192 explore content from Writers Side inside App Side",
+        "Anti-doomscrolling Users \u2192 reject vertical feeds (X, Threads, YouTube) \u2192 seek spatial alternative \u2192 arrive via Promoter Side \u2192 stay in App Side",
+        "Casual Explorers \u2192 try via Device Side \u2192 get pulled deeper by Writers Side content \u2192 become regular Users"
       ]
     },
     {
-      id: "builders",
-      label: "Community Builders",
+      id: "writers",
+      number: "02",
+      name: "Writers Side (Content Creators)",
       color: "#111c4e",
       nodes: [
-        { id: "discord-owners", label: "Discord Server Owners", short: "Discord server\nowners" },
-        { id: "indie-hackers", label: "Indie Hackers", short: "Indie hackers" }
+        { id: "active-posters", label: "Active Posters" },
+        { id: "voice-contributors", label: "Voice Contributors" },
+        { id: "community-builders", label: "Community Builders" },
+        { id: "knowledge-sharers", label: "Knowledge Sharers" }
+      ],
+      chains: [
+        "Writers Side \u2192 create posts in App Side \u2192 content gets spatially organized \u2192 discovered by User Side",
+        "Writers Side \u2192 receive reactions & voice replies from User Side \u2192 increases posting activity \u2192 more content feeds back into App Side",
+        "Active Posters \u2192 promote their own posts via Promoter Side \u2192 attract new Users \u2192 new Users discover more Writers Side content"
       ]
     },
     {
-      id: "doomscroll",
-      label: "Vertical Doomscrolling Platforms (to replace)",
+      id: "promoters",
+      number: "03",
+      name: "Promoter Side (Marketer / Distribution / Ad)",
       color: "#c43b7a",
       nodes: [
-        { id: "x", label: "X", short: "X" },
-        { id: "threads", label: "Threads", short: "Threads" },
-        { id: "youtube-vertical", label: "YouTube (vertical feed)", short: "YouTube\n(vertical feed)" }
+        { id: "indie-hackers", label: "Indie Hackers" },
+        { id: "design-communities", label: "Design Communities" },
+        { id: "digital-minimalist", label: "Digital Minimalist Communities" },
+        { id: "discord-owners", label: "Discord Server Owners" },
+        { id: "vr-communities", label: "VR Communities" },
+        { id: "app-store-algo", label: "App Store / Platform Algorithms" }
+      ],
+      chains: [
+        "Promoter Side \u2192 surfaces App Side to User Side \u2192 User Side enters via Device Side",
+        "Indie Hackers + Design Communities \u2192 share App Side \u2192 attract Writers Side \u2192 Writers Side creates content \u2192 improves quality for User Side",
+        "Discord Server Owners \u2192 test App Side as alternative to Discord \u2192 bring their communities \u2192 increases Writers Side activity",
+        "Promoter Side \u2192 drives initial adoption \u2192 App Side improves \u2192 creates better stories for Promoter Side to share again (flywheel)"
       ]
     },
     {
-      id: "forums",
-      label: "Traditional Forum Platforms",
-      color: "#263169",
-      nodes: [
-        { id: "reddit", label: "Reddit", short: "Reddit" },
-        { id: "discord", label: "Discord", short: "Discord" },
-        { id: "discourse", label: "Discourse", short: "Discourse" }
-      ]
-    },
-    {
-      id: "enablers",
-      label: "Enablers",
+      id: "devices",
+      number: "04",
+      name: "Device Side",
       color: "#0a7a5c",
       nodes: [
-        { id: "embeddings", label: "Semantic Embedding Models", short: "Semantic embedding\nmodels" },
-        { id: "voice-systems", label: "Voice Systems (STT + playback)", short: "Voice systems\n(STT + playback)" },
-        { id: "vr-hardware", label: "VR Hardware Platforms (Quest, Vision Pro)", short: "VR hardware platforms\n(Quest, Vision Pro)" }
+        { id: "quest", label: "Meta Quest" },
+        { id: "vision-pro", label: "Apple Vision Pro" },
+        { id: "other-vr", label: "Other VR Headsets" },
+        { id: "vr-stores", label: "VR Platform Stores" }
+      ],
+      chains: [
+        "Device Side \u2192 enables access to App Side \u2192 User Side can enter the spatial experience",
+        "Device Side (Quest) \u2192 lowers barrier for casual Users \u2192 increases User Side volume \u2192 attracts more Writers Side",
+        "High-end Device Side (Vision Pro) \u2192 attracts quality-focused Users and Writers \u2192 raises overall content quality in App Side",
+        "Device Side limitations (motion sickness, price) \u2192 restricts User Side growth \u2192 puts pressure on App Side to optimize experience"
       ]
     },
     {
-      id: "other",
-      label: "Other Relevant Stakeholders",
-      color: "#66708b",
+      id: "app",
+      number: "05",
+      name: "App Side",
+      color: "#f2f04f",
+      ink: "#111c4e",
+      isHub: true,
       nodes: [
-        { id: "privacy-users", label: "Privacy-conscious Users", short: "Privacy-conscious\nusers" }
+        { id: "spatial-engine", label: "Spatial Engine (semantic positioning)" },
+        { id: "voice-system", label: "Voice System (creation + playback)" },
+        { id: "interaction-system", label: "Interaction System (grab, point, zoom, react)" },
+        { id: "content-org", label: "Content Organization Layer" },
+        { id: "onboarding", label: "Onboarding & First-time Experience" }
+      ],
+      chains: [
+        "App Side \u2192 receives content from Writers Side \u2192 spatially organizes it \u2192 delivers to User Side",
+        "App Side \u2192 provides voice playback & spatial context \u2192 increases emotional value for User Side \u2192 Users stay longer and engage more with Writers Side",
+        "App Side quality \u2192 determines retention of User Side \u2192 influences how Promoter Side talks about it",
+        "App Side \u2192 depends on Device Side performance \u2192 poor device experience hurts User Side perception",
+        "App Side \u2192 creates unique value (anti-vertical doomscrolling) \u2192 becomes easier for Promoter Side to market"
       ]
     }
   ];
-  var stakeholderCenter = {
-    id: "cosmos-vr",
-    label: "Cosmos VR",
-    subtitle: "The spatial VR community experience \u2014 positioned as an alternative to vertical doomscrolling",
-    short: "Cosmos VR"
-  };
-  var stakeholderLayout = {
-    "cosmos-vr": { x: 800, y: 455 },
-    // Left: vertical doomscrolling
-    x: { x: 145, y: 250 },
-    threads: { x: 145, y: 380 },
-    "youtube-vertical": { x: 145, y: 520 },
-    // Bottom-left: traditional forums
-    reddit: { x: 320, y: 700 },
-    discord: { x: 500, y: 740 },
-    discourse: { x: 680, y: 700 },
-    // Top / top-right: users & early adopters
-    "online-members": { x: 420, y: 145 },
-    "knowledge-seekers": { x: 640, y: 110 },
-    "active-posters": { x: 860, y: 110 },
-    "design-communities": { x: 1080, y: 145 },
-    "digital-minimalists": { x: 1260, y: 220 },
-    // Right: enablers
-    embeddings: { x: 1420, y: 340 },
-    "voice-systems": { x: 1420, y: 470 },
-    "vr-hardware": { x: 1420, y: 600 },
-    // Bottom-right: community builders + privacy
-    "discord-owners": { x: 1120, y: 740 },
-    "indie-hackers": { x: 1260, y: 360 },
-    "privacy-users": { x: 960, y: 760 }
-  };
-  var stakeholderEdges = [
-    { from: "cosmos-vr", to: "online-members", type: "Serves", notes: "Main users of the spatial experience", style: "direct" },
-    { from: "cosmos-vr", to: "knowledge-seekers", type: "Serves", notes: "People escaping vertical doomscrolling", style: "direct" },
-    { from: "cosmos-vr", to: "active-posters", type: "Serves", notes: "Users who create posts with voice", style: "direct" },
-    { from: "cosmos-vr", to: "design-communities", type: "Early Adopter", notes: "Visual/spatial thinkers likely to try first", style: "direct" },
-    { from: "cosmos-vr", to: "digital-minimalists", type: "Early Adopter", notes: "Strong alignment with anti-doomscrolling", style: "direct" },
-    { from: "cosmos-vr", to: "discord-owners", type: "Potential Power User", notes: "Heavy community managers who may test or migrate", style: "direct" },
-    { from: "cosmos-vr", to: "indie-hackers", type: "Distribution + Feedback", notes: "Key channel for solo-built tools", style: "direct" },
-    { from: "cosmos-vr", to: "x", type: "Replaces / Alternative", notes: "Vertical doomscrolling \u2192 spatial exploration", style: "direct" },
-    { from: "cosmos-vr", to: "threads", type: "Replaces / Alternative", notes: "Vertical chat scrolling \u2192 spatial conversation", style: "direct" },
-    { from: "cosmos-vr", to: "youtube-vertical", type: "Replaces / Alternative", notes: "Passive vertical consumption \u2192 active spatial discovery", style: "direct" },
-    { from: "cosmos-vr", to: "reddit", type: "Replaces / Improves", notes: "Linear threads \u2192 spatial semantic clusters", style: "direct" },
-    { from: "cosmos-vr", to: "discord", type: "Replaces / Improves", notes: "Flat channels \u2192 walkable spatial forum", style: "direct" },
-    { from: "cosmos-vr", to: "discourse", type: "Replaces / Improves", notes: "Traditional forum \u2192 embodied spatial experience", style: "direct" },
-    { from: "cosmos-vr", to: "embeddings", type: "Depends on", notes: "Powers spatial positioning of posts", style: "direct" },
-    { from: "cosmos-vr", to: "voice-systems", type: "Depends on", notes: "Voice posting + voice playback feature", style: "direct" },
-    { from: "cosmos-vr", to: "vr-hardware", type: "Depends on", notes: "Access to the experience", style: "direct" },
-    { from: "cosmos-vr", to: "privacy-users", type: "Must address", notes: "Voice data + spatial behavior tracking", style: "direct" },
-    { from: "online-members", to: "x", type: "Currently uses", notes: "Current vertical doomscrolling habit", style: "indirect" },
-    { from: "online-members", to: "threads", type: "Currently uses", notes: "Current vertical doomscrolling habit", style: "indirect" },
-    { from: "online-members", to: "youtube-vertical", type: "Currently uses", notes: "Current vertical doomscrolling habit", style: "indirect" },
-    { from: "knowledge-seekers", to: "x", type: "Currently uses", notes: "Frustrated with endless scrolling", style: "indirect" },
-    { from: "knowledge-seekers", to: "threads", type: "Currently uses", notes: "Frustrated with endless scrolling", style: "indirect" },
-    { from: "knowledge-seekers", to: "youtube-vertical", type: "Currently uses", notes: "Frustrated with endless scrolling", style: "indirect" },
-    { from: "discord-owners", to: "discord", type: "Currently manages", notes: "Runs communities on existing platforms", style: "indirect" },
-    { from: "indie-hackers", to: "cosmos-vr", type: "Can distribute & promote", notes: "Important discovery channel for solo projects", style: "indirect" }
+  var criticalChains = [
+    {
+      id: "adoption",
+      name: "Adoption Chain",
+      flow: ["promoters", "users", "devices", "app"],
+      kind: "acquisition",
+      steps: "Promoter Side \u2192 User Side \u2192 Device Side \u2192 App Side"
+    },
+    {
+      id: "content-flywheel",
+      name: "Content Flywheel",
+      flow: ["writers", "app", "users", "writers"],
+      kind: "content",
+      steps: "Writers Side \u2192 App Side \u2192 User Side \u2192 reactions & replies \u2192 Writers Side (more posting)"
+    },
+    {
+      id: "value-delivery",
+      name: "Value Delivery Chain",
+      flow: ["writers", "app", "users"],
+      kind: "content",
+      steps: "Writers Side \u2192 App Side (spatial + voice) \u2192 User Side (meaningful discovery instead of doomscrolling)"
+    },
+    {
+      id: "distribution",
+      name: "Distribution Chain",
+      flow: ["promoters", "users", "app", "promoters"],
+      kind: "acquisition",
+      steps: "Promoter Side (Indie Hackers + Design Communities) \u2192 User Side \u2192 App Side growth \u2192 better stories for Promoter Side"
+    },
+    {
+      id: "hardware",
+      name: "Hardware Dependency Chain",
+      flow: ["devices", "app", "users", "promoters"],
+      kind: "hardware",
+      steps: "Device Side \u2192 App Side experience quality \u2192 User Side satisfaction \u2192 retention & word-of-mouth back to Promoter Side"
+    }
   ];
-  var stakeholderNodeById = (() => {
-    const map = { [stakeholderCenter.id]: { ...stakeholderCenter, groupId: "center", groupLabel: "Center Node", color: "#f2f04f" } };
-    for (const group of stakeholderGroups) {
-      for (const node of group.nodes) {
-        map[node.id] = { ...node, groupId: group.id, groupLabel: group.label, color: group.color };
+  var sideColumnX = {
+    users: 155,
+    writers: 430,
+    app: 800,
+    promoters: 1170,
+    devices: 1445
+  };
+  function buildSideLayout(side) {
+    const x = sideColumnX[side.id];
+    const top = side.isHub ? 175 : 195;
+    const gap = side.isHub ? 68 : 72;
+    const nodes = side.nodes.map((node, i) => ({
+      ...node,
+      sideId: side.id,
+      x,
+      y: top + i * gap
+    }));
+    return {
+      ...side,
+      headerY: side.isHub ? 118 : 138,
+      nodes
+    };
+  }
+  var laidOutSides = networkSides.map(buildSideLayout);
+  var sideById = Object.fromEntries(laidOutSides.map((s) => [s.id, s]));
+  var networkNodeById = (() => {
+    const map = {};
+    for (const side of laidOutSides) {
+      for (const node of side.nodes) {
+        map[node.id] = { ...node, sideId: side.id, sideName: side.name, color: side.color, ink: side.ink };
       }
     }
     return map;
   })();
   function StakeholderMapPage() {
-    const [activeId, setActiveId] = useState("cosmos-vr");
+    const [activeSideId, setActiveSideId] = useState("app");
+    const [activeChainId, setActiveChainId] = useState("adoption");
     const width = 1600;
     const height = 900;
-    const active = stakeholderNodeById[activeId] || stakeholderNodeById["cosmos-vr"];
-    const relatedEdges = stakeholderEdges.filter((e) => e.from === activeId || e.to === activeId);
-    const connectedIds = /* @__PURE__ */ new Set([activeId]);
-    relatedEdges.forEach((e) => {
-      connectedIds.add(e.from);
-      connectedIds.add(e.to);
+    const activeSide = sideById[activeSideId] || sideById.app;
+    const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
+    const flowSides = activeChain.flow;
+    const chainSideSet = new Set(flowSides);
+    const chainPoints = flowSides.map((sid, index) => {
+      const side = sideById[sid];
+      const x = sideColumnX[sid];
+      const y = 78 + index % 2 * 10;
+      return { sid, x, y, side };
     });
-    const groupLabelPositions = [
-      { id: "doomscroll", x: 145, y: 175, anchor: "middle" },
-      { id: "forums", x: 500, y: 640, anchor: "middle" },
-      { id: "users", x: 800, y: 48, anchor: "middle" },
-      { id: "enablers", x: 1420, y: 285, anchor: "middle" },
-      { id: "builders", x: 1190, y: 680, anchor: "middle" },
-      { id: "other", x: 960, y: 820, anchor: "middle" }
-    ];
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame", "aria-label": "Cosmos VR stakeholder map, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Stakeholder map \xB7 Cosmos VR"), /* @__PURE__ */ React.createElement("h1", null, "Who Cosmos sits with")), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, "Center node: Cosmos VR \u2014 the spatial VR community experience, positioned as an alternative to vertical doomscrolling. Click a node for every relationship line and note.")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__map" }, /* @__PURE__ */ React.createElement("svg", { className: "stakeholder-map", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("marker", { id: "arrow-direct", viewBox: "0 0 10 10", refX: "9", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }, /* @__PURE__ */ React.createElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#111c4e", opacity: "0.45" })), /* @__PURE__ */ React.createElement("marker", { id: "arrow-active", viewBox: "0 0 10 10", refX: "9", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" }, /* @__PURE__ */ React.createElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#f14f9b" }))), groupLabelPositions.map((g) => {
-      const group = stakeholderGroups.find((x) => x.id === g.id);
-      if (!group) return null;
-      return /* @__PURE__ */ React.createElement(
-        "text",
-        {
-          key: g.id,
-          x: g.x,
-          y: g.y,
-          textAnchor: g.anchor,
-          className: "stakeholder-map__group-label",
-          fill: group.color
-        },
-        group.label
-      );
-    }), stakeholderEdges.map((edge, i) => {
-      const a = stakeholderLayout[edge.from];
-      const b = stakeholderLayout[edge.to];
-      if (!a || !b) return null;
-      const isActive = edge.from === activeId || edge.to === activeId;
-      const dimmed = activeId && !isActive;
-      const mx = (a.x + b.x) / 2;
-      const my = (a.y + b.y) / 2;
-      const cx = mx + (mx - 800) * 0.08;
-      const cy = my + (my - 455) * 0.08;
-      const d = `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame stakeholder-frame--network", "aria-label": "Cosmos VR stakeholder network, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Stakeholder network \xB7 Cosmos VR"), /* @__PURE__ */ React.createElement("h1", null, "Five sides, one product system")), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, "User \xB7 Writers \xB7 Promoter \xB7 Device \xB7 App. App Side is the hub. Click a side for its nodes and relationship chains; click a critical chain to draw the main multi-step flow.")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__map" }, /* @__PURE__ */ React.createElement("svg", { className: "stakeholder-map", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("marker", { id: "chain-arrow", viewBox: "0 0 10 10", refX: "9", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" }, /* @__PURE__ */ React.createElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#f14f9b" }))), chainPoints.slice(0, -1).map((pt, i) => {
+      const next = chainPoints[i + 1];
+      const midX = (pt.x + next.x) / 2;
+      const midY = Math.min(pt.y, next.y) - 18;
+      const d = `M ${pt.x} ${pt.y + 18} Q ${midX} ${midY} ${next.x} ${next.y + 18}`;
       return /* @__PURE__ */ React.createElement(
         "path",
         {
-          key: `${edge.from}-${edge.to}-${i}`,
+          key: `chain-seg-${i}`,
           d,
-          className: [
-            "stakeholder-map__edge",
-            edge.style === "indirect" ? "is-indirect" : "is-direct",
-            isActive ? "is-active" : "",
-            dimmed ? "is-dimmed" : ""
-          ].filter(Boolean).join(" "),
+          className: `stakeholder-map__chain-edge is-${activeChain.kind}`,
           fill: "none",
-          markerEnd: isActive ? "url(#arrow-active)" : "url(#arrow-direct)"
+          markerEnd: "url(#chain-arrow)"
         }
       );
-    }), Object.keys(stakeholderLayout).map((id) => {
-      const pos = stakeholderLayout[id];
-      const node = stakeholderNodeById[id];
-      if (!node || !pos) return null;
-      const isCenter = id === "cosmos-vr";
-      const isActive = id === activeId;
-      const isConnected = connectedIds.has(id);
-      const dimmed = activeId && !isConnected;
-      const lines = (node.short || node.label).split("\n");
-      const rw = isCenter ? 118 : 92;
-      const rh = isCenter ? 72 : lines.length > 1 ? 56 : 44;
+    }), /* @__PURE__ */ React.createElement("text", { x: 800, y: 42, textAnchor: "middle", className: "stakeholder-map__chain-caption" }, activeChain.name, ": ", activeChain.steps), laidOutSides.map((side) => {
+      const isActive = side.id === activeSideId;
+      const inChain = chainSideSet.has(side.id);
+      const dimmed = !isActive && !inChain;
+      const colW = side.isHub ? 210 : 180;
+      const colH = 48 + side.nodes.length * (side.isHub ? 68 : 72) + 20;
+      const colTop = side.headerY - 36;
       return /* @__PURE__ */ React.createElement(
         "g",
         {
-          key: id,
+          key: side.id,
           className: [
-            "stakeholder-map__node",
-            isCenter ? "is-center" : "",
+            "stakeholder-map__side",
             isActive ? "is-active" : "",
-            dimmed ? "is-dimmed" : ""
+            inChain ? "is-in-chain" : "",
+            dimmed ? "is-dimmed" : "",
+            side.isHub ? "is-hub" : ""
           ].filter(Boolean).join(" "),
-          transform: `translate(${pos.x}, ${pos.y})`,
-          onClick: () => setActiveId(id),
+          onClick: () => setActiveSideId(side.id),
           style: { cursor: "pointer" }
         },
         /* @__PURE__ */ React.createElement(
           "rect",
           {
-            x: -rw / 2,
-            y: -rh / 2,
-            width: rw,
-            height: rh,
-            rx: isCenter ? 16 : 10,
-            fill: isCenter ? "#f2f04f" : "#f7f4ed",
-            stroke: isActive ? "#f14f9b" : isCenter ? "#111c4e" : node.color,
-            strokeWidth: isActive || isCenter ? 2.5 : 1.75
+            x: sideColumnX[side.id] - colW / 2,
+            y: colTop,
+            width: colW,
+            height: colH,
+            rx: 14,
+            className: "stakeholder-map__side-bg",
+            fill: side.isHub ? "rgba(242,240,79,0.28)" : "rgba(247,244,237,0.9)",
+            stroke: isActive ? "#f14f9b" : side.color,
+            strokeWidth: isActive || side.isHub ? 2.5 : 1.5
           }
         ),
-        lines.map((line, li) => /* @__PURE__ */ React.createElement(
+        /* @__PURE__ */ React.createElement(
           "text",
           {
-            key: li,
-            x: 0,
-            y: (li - (lines.length - 1) / 2) * 14,
+            x: sideColumnX[side.id],
+            y: side.headerY - 10,
             textAnchor: "middle",
-            dominantBaseline: "middle",
-            className: isCenter ? "is-center-label" : ""
+            className: "stakeholder-map__side-num",
+            fill: side.isHub ? "#111c4e" : side.color
           },
-          line
-        ))
+          side.number
+        ),
+        /* @__PURE__ */ React.createElement(
+          "text",
+          {
+            x: sideColumnX[side.id],
+            y: side.headerY + 12,
+            textAnchor: "middle",
+            className: "stakeholder-map__side-name",
+            fill: side.isHub ? "#111c4e" : side.color
+          },
+          side.name.replace(/ \(.+\)$/, "")
+        ),
+        side.nodes.map((node) => {
+          const lines = node.label.length > 22 ? (() => {
+            const words = node.label.split(" ");
+            const mid = Math.ceil(words.length / 2);
+            return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+          })() : [node.label];
+          const rw = side.isHub ? 188 : 158;
+          const rh = lines.length > 1 ? 46 : 36;
+          return /* @__PURE__ */ React.createElement("g", { key: node.id, transform: `translate(${node.x}, ${node.y})` }, /* @__PURE__ */ React.createElement(
+            "rect",
+            {
+              x: -rw / 2,
+              y: -rh / 2,
+              width: rw,
+              height: rh,
+              rx: 8,
+              fill: side.isHub ? "#f2f04f" : "#fffef9",
+              stroke: side.isHub ? "#111c4e" : side.color,
+              strokeWidth: 1.5
+            }
+          ), lines.map((line, li) => /* @__PURE__ */ React.createElement(
+            "text",
+            {
+              key: li,
+              x: 0,
+              y: (li - (lines.length - 1) / 2) * 13,
+              textAnchor: "middle",
+              dominantBaseline: "middle",
+              className: "stakeholder-map__node-label",
+              fill: "#111c4e"
+            },
+            line
+          )));
+        })
       );
-    }))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-frame__swatch", style: { background: active.color || "#f2f04f" } }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__group" }, active.groupLabel), /* @__PURE__ */ React.createElement("h2", null, active.label), active.subtitle && /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__sub" }, active.subtitle)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__count" }, relatedEdges.length, " connection", relatedEdges.length === 1 ? "" : "s")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__edges" }, relatedEdges.length === 0 ? /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__empty" }, "No plotted connections for this node.") : relatedEdges.map((edge, i) => {
-      const otherId = edge.from === activeId ? edge.to : edge.from;
-      const other = stakeholderNodeById[otherId];
-      const direction = edge.from === activeId ? "\u2192" : "\u2190";
-      return /* @__PURE__ */ React.createElement("article", { key: `${edge.from}-${edge.to}-${i}` }, /* @__PURE__ */ React.createElement("b", null, edge.type), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => setActiveId(otherId) }, direction, " ", other?.label || otherId)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__notes" }, edge.notes));
-    })), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__legend" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-direct" }), " Solid = direct relationship with Cosmos VR"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-indirect" }), " Dashed = indirect / competitive relationship"), /* @__PURE__ */ React.createElement("span", null, "Groups: Users & Early Adopters \xB7 Community Builders \xB7 Vertical Doomscrolling Platforms (to replace) \xB7 Traditional Forum Platforms \xB7 Enablers \xB7 Other Relevant Stakeholders")))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039) for a clean 16:9 share view. Every node and connection from the prep doc is plotted \u2014 click a node to read full relationship notes."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/user-waveline/" }, "\u2190 User waveline"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
+    }))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail stakeholder-frame__detail--network", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs", role: "tablist", "aria-label": "Critical multi-step chains" }, criticalChains.map((chain) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: chain.id,
+        type: "button",
+        role: "tab",
+        "aria-selected": chain.id === activeChainId,
+        className: chain.id === activeChainId ? "is-active" : "",
+        onClick: () => setActiveChainId(chain.id)
+      },
+      chain.name
+    ))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-frame__swatch", style: { background: activeSide.color } }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__group" }, activeSide.number, " \xB7 ", activeSide.name), /* @__PURE__ */ React.createElement("h2", null, activeSide.name)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__count" }, activeSide.nodes.length, " nodes \xB7 ", activeSide.chains.length, " chains")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__network-body" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__nodes-list" }, /* @__PURE__ */ React.createElement("b", null, "Nodes"), /* @__PURE__ */ React.createElement("ul", null, activeSide.nodes.map((n) => /* @__PURE__ */ React.createElement("li", { key: n.id }, n.label)))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chains-list" }, /* @__PURE__ */ React.createElement("b", null, "Key relationship chains"), /* @__PURE__ */ React.createElement("ol", null, activeSide.chains.map((chain, i) => /* @__PURE__ */ React.createElement("li", { key: i }, chain)))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__critical-list" }, /* @__PURE__ */ React.createElement("b", null, "Selected critical chain"), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__critical-name" }, activeChain.name), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__notes" }, activeChain.steps), /* @__PURE__ */ React.createElement("b", { className: "stakeholder-frame__critical-label" }, "All five critical multi-step chains"), /* @__PURE__ */ React.createElement("ol", null, criticalChains.map((c) => /* @__PURE__ */ React.createElement("li", { key: c.id }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => setActiveChainId(c.id) }, c.name), " \u2014 ", c.steps))))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__legend" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-content" }), " Content flow (Writers \u2192 App \u2192 Users)"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-acquisition" }), " Discovery / acquisition (Promoters \u2192 Users)"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-hardware" }), " Hardware dependency (Device \u2194 App)"), /* @__PURE__ */ React.createElement("span", null, "Columns: User \xB7 Writers \xB7 App (hub) \xB7 Promoter \xB7 Device")))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039) for a clean 16:9 share view. Every side, node, side chain, and critical multi-step chain from the prep doc is on this page."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/user-waveline/" }, "\u2190 User waveline"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
   }
   function TranscriptAppendix({ src }) {
     const [transcript, setTranscript] = useState("Loading transcript\u2026");

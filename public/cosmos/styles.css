@@ -1045,3 +1045,150 @@ html[data-cosmos-rail="closed"] .stakeholder-frame {
   .stakeholder-frame__detail-title { grid-template-columns: auto 1fr; }
   .stakeholder-frame__count { grid-column: 1 / -1; justify-self: start; }
 }
+
+
+/* —— Stakeholder network v2 (5 sides) —— */
+.stakeholder-frame--network {
+  grid-template-rows: auto minmax(0, 1.2fr) minmax(0, 1.05fr);
+}
+.stakeholder-map__side-bg {
+  transition: stroke .15s ease, opacity .15s ease, fill .15s ease;
+}
+.stakeholder-map__side.is-dimmed {
+  opacity: 0.38;
+}
+.stakeholder-map__side.is-active .stakeholder-map__side-bg,
+.stakeholder-map__side.is-in-chain .stakeholder-map__side-bg {
+  filter: drop-shadow(0 1px 0 rgba(241, 79, 155, 0.15));
+}
+.stakeholder-map__side-num {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+.stakeholder-map__side-name {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.stakeholder-map__node-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.stakeholder-map__chain-edge {
+  stroke: #f14f9b;
+  stroke-width: 2.6;
+  fill: none;
+}
+.stakeholder-map__chain-edge.is-content { stroke: #111c4e; }
+.stakeholder-map__chain-edge.is-acquisition { stroke: #f14f9b; }
+.stakeholder-map__chain-edge.is-hardware { stroke: #0a7a5c; stroke-dasharray: 6 4; }
+.stakeholder-map__chain-caption {
+  fill: var(--navy);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+}
+.stakeholder-frame__detail--network {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 6px;
+}
+.stakeholder-frame__chain-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+}
+.stakeholder-frame__chain-tabs button {
+  min-width: 0;
+  padding: 6px 4px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: clamp(10px, 1.15cqi, 12px);
+  font-weight: 700;
+  line-height: 1.15;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stakeholder-frame__chain-tabs button.is-active,
+.stakeholder-frame__chain-tabs button:hover {
+  color: var(--navy);
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+.stakeholder-frame__network-body {
+  display: grid;
+  grid-template-columns: 0.85fr 1.25fr 1.35fr;
+  gap: 8px 12px;
+  min-height: 0;
+  overflow: hidden;
+}
+.stakeholder-frame__nodes-list,
+.stakeholder-frame__chains-list,
+.stakeholder-frame__critical-list {
+  min-height: 0;
+  overflow: auto;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.stakeholder-frame__nodes-list b,
+.stakeholder-frame__chains-list b,
+.stakeholder-frame__critical-list b {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--pink);
+  font-size: clamp(10px, 1.1cqi, 11px);
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.stakeholder-frame__nodes-list ul,
+.stakeholder-frame__chains-list ol,
+.stakeholder-frame__critical-list ol {
+  margin: 0;
+  padding-left: 16px;
+  color: #2f3758;
+  font-size: clamp(11px, 1.3cqi, 13px);
+  line-height: 1.4;
+}
+.stakeholder-frame__nodes-list li,
+.stakeholder-frame__chains-list li,
+.stakeholder-frame__critical-list li {
+  margin-bottom: 4px;
+}
+.stakeholder-frame__critical-name {
+  margin: 0 0 4px;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: clamp(14px, 1.7cqi, 17px);
+  font-weight: 600;
+}
+.stakeholder-frame__critical-label {
+  margin-top: 8px !important;
+}
+.stakeholder-frame__legend i.is-content {
+  border-top-color: #111c4e;
+  border-top-style: solid;
+}
+.stakeholder-frame__legend i.is-acquisition {
+  border-top-color: #f14f9b;
+  border-top-style: solid;
+}
+.stakeholder-frame__legend i.is-hardware {
+  border-top-color: #0a7a5c;
+  border-top-style: dashed;
+}
+
+@media (max-width: 900px) {
+  .stakeholder-frame__chain-tabs { grid-template-columns: repeat(2, 1fr); }
+  .stakeholder-frame__network-body { grid-template-columns: 1fr; }
+}
