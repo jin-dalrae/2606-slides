@@ -568,77 +568,189 @@ function pickBridgeNode(sideId, towardSideId) {
 }
 
 function StakeholderMapPage() {
+  // Focus one part at a time: pan/zoom the network so the active side or chain
+  // sits in the center. Detail panel shows only that part (no clipped scroll stack).
+  const [focusMode, setFocusMode] = useState("chain"); // "overview" | "chain" | "side"
   const [activeChainId, setActiveChainId] = useState("adoption");
-  const [activeSideId, setActiveSideId] = useState(null);
+  const [activeSideId, setActiveSideId] = useState("app");
   const [activeNodeId, setActiveNodeId] = useState(null);
+
   const width = 1600;
   const height = 900;
-
   const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
-  const chainSet = new Set(activeChain.flow);
-  const chainPairs = activeChain.flow.slice(0, -1).map((from, i) => ({
-    from,
-    to: activeChain.flow[i + 1],
-  }));
-
-  const activeSide = activeSideId ? sideById[activeSideId] : null;
+  const activeSide = sideById[activeSideId] || sideById.app;
   const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
 
-  // Base mesh: edges between nearest bridge nodes of structural pairs
+  const focusSideIds =
+    focusMode === "side"
+      ? [activeSideId]
+      : focusMode === "chain"
+        ? activeChain.flow
+        : networkGraph.map((s) => s.id);
+  const focusSet = new Set(focusSideIds);
+
+  const chainPairs =
+    focusMode === "chain" || focusMode === "overview"
+      ? activeChain.flow.slice(0, -1).map((from, i) => ({ from, to: activeChain.flow[i + 1] }))
+      : [];
+
+  // Bounding box of focused sides → pan/zoom so that region fills the map center
+  const focusBounds = (() => {
+    const pts = [];
+    for (const sid of focusSideIds) {
+      const side = sideById[sid];
+      if (!side) continue;
+      pts.push(side.anchor);
+      side.nodes.forEach((n) => pts.push(n));
+    }
+    if (!pts.length) return { cx: 800, cy: 430, scale: 1 };
+    const xs = pts.map((p) => p.x);
+    const ys = pts.map((p) => p.y);
+    const minX = Math.min(...xs) - 140;
+    const maxX = Math.max(...xs) + 140;
+    const minY = Math.min(...ys) - 120;
+    const maxY = Math.max(...ys) + 100;
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+    const bw = Math.max(maxX - minX, 280);
+    const bh = Math.max(maxY - minY, 240);
+    // Leave room for chrome inside map area
+    const scale = Math.min(width / bw, height / bh, focusMode === "overview" ? 1 : 1.55) * (focusMode === "side" ? 1.35 : focusMode === "chain" ? 1.12 : 0.92);
+    return { cx, cy, scale: Math.min(scale, 1.85) };
+  })();
+
+  const viewTransform = `translate(${width / 2}, ${height / 2 - 10}) scale(${focusBounds.scale}) translate(${-focusBounds.cx}, ${-focusBounds.cy})`;
+
   const meshEdges = structuralEdges.map((edge, i) => {
     const a = pickBridgeNode(edge.from, edge.to);
     const b = pickBridgeNode(edge.to, edge.from);
     const onChain = chainPairs.some((p) => p.from === edge.from && p.to === edge.to)
       || chainPairs.some((p) => p.from === edge.to && p.to === edge.from);
-    return { ...edge, i, a, b, onChain };
+    const involvesFocus = focusSet.has(edge.from) && focusSet.has(edge.to);
+    return { ...edge, i, a, b, onChain, involvesFocus };
   });
 
-  // Intra-cluster links (network texture inside each side)
   const clusterEdges = networkGraph.flatMap((side) => {
     const edges = [];
     for (let i = 0; i < side.nodes.length; i += 1) {
       const a = side.nodes[i];
       const b = side.nodes[(i + 1) % side.nodes.length];
-      edges.push({ a, b, sideId: side.id, inChain: chainSet.has(side.id) });
+      edges.push({ a, b, sideId: side.id, inFocus: focusSet.has(side.id) });
     }
     return edges;
   });
 
-  function selectSide(sideId) {
+  function goOverview() {
+    setFocusMode("overview");
+    setActiveNodeId(null);
+  }
+
+  function goChain(chainId) {
+    setFocusMode("chain");
+    setActiveChainId(chainId);
+    setActiveNodeId(null);
+  }
+
+  function goSide(sideId) {
+    setFocusMode("side");
     setActiveSideId(sideId);
     setActiveNodeId(null);
   }
 
-  function selectNode(nodeId, sideId) {
-    setActiveNodeId(nodeId);
+  function goNode(nodeId, sideId) {
+    setFocusMode("side");
     setActiveSideId(sideId);
+    setActiveNodeId(nodeId);
   }
 
-  const detailTitle = activeNode
-    ? activeNode.label
-    : activeSide
-      ? activeSide.name
-      : activeChain.name;
-  const detailGroup = activeNode
-    ? activeNode.sideName
-    : activeSide
-      ? `${activeSide.number} · Side`
-      : "Critical multi-step chain";
+  const sideIndex = networkGraph.findIndex((s) => s.id === activeSideId);
+  const chainIndex = criticalChains.findIndex((c) => c.id === activeChainId);
+
+  function stepPart(delta) {
+    if (focusMode === "side") {
+      const next = networkGraph[(sideIndex + delta + networkGraph.length) % networkGraph.length];
+      goSide(next.id);
+      return;
+    }
+    const next = criticalChains[(chainIndex + delta + criticalChains.length) % criticalChains.length];
+    goChain(next.id);
+  }
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
-      <div className="stakeholder-frame stakeholder-frame--network" aria-label="Cosmos VR stakeholder network, 16 by 9">
+      <div className="stakeholder-frame stakeholder-frame--focus" aria-label="Cosmos VR stakeholder network, focused parts">
         <header className="stakeholder-frame__head">
           <div>
             <p className="stakeholder-kicker">05 · Stakeholder network · Cosmos VR</p>
-            <h1>A product network, not a list</h1>
+            <h1>
+              {focusMode === "side"
+                ? activeSide.shortName
+                : focusMode === "chain"
+                  ? activeChain.name
+                  : "Full network"}
+            </h1>
           </div>
           <p className="stakeholder-lede">
-            Five sides linked by multi-step flows. Select a critical chain to light the path; click a cluster or node for full chains from the prep doc.
+            {focusMode === "side"
+              ? activeSide.name
+              : focusMode === "chain"
+                ? activeChain.steps
+                : "Step through critical chains or sides. The map centers on the active part so nothing important is clipped in a scroll."}
           </p>
         </header>
 
-        <div className="stakeholder-frame__map">
+        <div className="stakeholder-frame__toolbar">
+          <div className="stakeholder-frame__mode-tabs" role="tablist" aria-label="Focus mode">
+            <button type="button" className={focusMode === "overview" ? "is-active" : ""} onClick={goOverview}>Overview</button>
+            <button type="button" className={focusMode === "chain" ? "is-active" : ""} onClick={() => goChain(activeChainId)}>Critical chains</button>
+            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>Sides</button>
+          </div>
+          <div className="stakeholder-frame__stepper">
+            <button type="button" onClick={() => stepPart(-1)} aria-label="Previous part">←</button>
+            <span>
+              {focusMode === "side"
+                ? `${sideIndex + 1} / ${networkGraph.length} sides`
+                : focusMode === "chain"
+                  ? `${chainIndex + 1} / ${criticalChains.length} chains`
+                  : "Whole graph"}
+            </span>
+            <button type="button" onClick={() => stepPart(1)} aria-label="Next part">→</button>
+          </div>
+        </div>
+
+        {(focusMode === "chain" || focusMode === "overview") && (
+          <div className="stakeholder-frame__chain-tabs" role="tablist" aria-label="Critical multi-step chains">
+            {criticalChains.map((chain) => (
+              <button
+                key={chain.id}
+                type="button"
+                role="tab"
+                aria-selected={chain.id === activeChainId}
+                className={chain.id === activeChainId ? "is-active" : ""}
+                onClick={() => goChain(chain.id)}
+              >
+                {chain.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {focusMode === "side" && (
+          <div className="stakeholder-frame__side-tabs stakeholder-frame__side-tabs--bar" role="tablist" aria-label="Sides">
+            {networkGraph.map((side) => (
+              <button
+                key={side.id}
+                type="button"
+                className={activeSideId === side.id ? "is-active" : ""}
+                onClick={() => goSide(side.id)}
+              >
+                {side.number} · {side.shortName}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="stakeholder-frame__map stakeholder-frame__map--focus">
           <svg className="stakeholder-map" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
             <defs>
               <marker id="net-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -659,280 +771,245 @@ function StakeholderMapPage() {
               </filter>
             </defs>
 
-            {/* faint cluster fields */}
-            {networkGraph.map((side) => (
-              <circle
-                key={`field-${side.id}`}
-                cx={side.anchor.x}
-                cy={side.anchor.y}
-                r={side.isHub ? 168 : 128}
-                className={[
-                  "stakeholder-map__field",
-                  chainSet.has(side.id) ? "is-in-chain" : "",
-                  activeSideId === side.id ? "is-active" : "",
-                ].filter(Boolean).join(" ")}
-                fill={side.isHub ? "rgba(242,240,79,0.2)" : `${side.color}14`}
-                stroke={side.color}
-                onClick={() => selectSide(side.id)}
-                style={{ cursor: "pointer" }}
-              />
-            ))}
-
-            {/* intra-cluster mesh */}
-            {clusterEdges.map((edge, i) => (
-              <line
-                key={`cluster-${edge.sideId}-${i}`}
-                x1={edge.a.x}
-                y1={edge.a.y}
-                x2={edge.b.x}
-                y2={edge.b.y}
-                className={`stakeholder-map__mesh ${edge.inChain ? "is-in-chain" : ""}`}
-              />
-            ))}
-
-            {/* structural inter-side mesh */}
-            {meshEdges.map((edge) => {
-              const mx = (edge.a.x + edge.b.x) / 2;
-              const my = (edge.a.y + edge.b.y) / 2;
-              const cx = mx + (800 - mx) * 0.12;
-              const cy = my + (430 - my) * 0.08;
-              const d = `M ${edge.a.x} ${edge.a.y} Q ${cx} ${cy} ${edge.b.x} ${edge.b.y}`;
-              return (
-                <path
-                  key={`mesh-${edge.i}`}
-                  d={d}
+            <g className="stakeholder-map__camera" style={{ transition: "transform 0.45s ease" }} transform={viewTransform}>
+              {networkGraph.map((side) => (
+                <circle
+                  key={`field-${side.id}`}
+                  cx={side.anchor.x}
+                  cy={side.anchor.y}
+                  r={side.isHub ? 168 : 128}
                   className={[
-                    "stakeholder-map__link",
-                    `is-${edge.kind}`,
-                    edge.onChain ? "is-chain-lit" : "is-base",
-                  ].join(" ")}
-                  fill="none"
+                    "stakeholder-map__field",
+                    focusSet.has(side.id) ? "is-in-chain" : "",
+                    activeSideId === side.id && focusMode === "side" ? "is-active" : "",
+                  ].filter(Boolean).join(" ")}
+                  fill={side.isHub ? "rgba(242,240,79,0.22)" : `${side.color}16`}
+                  stroke={side.color}
+                  opacity={focusSet.has(side.id) ? 1 : 0.18}
+                  onClick={() => goSide(side.id)}
+                  style={{ cursor: "pointer" }}
                 />
-              );
-            })}
+              ))}
 
-            {/* emphasized critical-chain path through bridge nodes */}
-            {chainPairs.map((pair, i) => {
-              const a = pickBridgeNode(pair.from, pair.to);
-              const b = pickBridgeNode(pair.to, pair.from);
-              const mx = (a.x + b.x) / 2;
-              const my = (a.y + b.y) / 2 - 24;
-              const d = `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
-              const marker =
-                activeChain.kind === "content"
-                  ? "url(#net-arrow-content)"
-                  : activeChain.kind === "hardware"
-                    ? "url(#net-arrow-hw)"
-                    : "url(#net-arrow)";
-              return (
-                <g key={`flow-${i}`}>
+              {clusterEdges.map((edge, i) => (
+                <line
+                  key={`cluster-${edge.sideId}-${i}`}
+                  x1={edge.a.x}
+                  y1={edge.a.y}
+                  x2={edge.b.x}
+                  y2={edge.b.y}
+                  className={`stakeholder-map__mesh ${edge.inFocus ? "is-in-chain" : ""}`}
+                  opacity={edge.inFocus ? 1 : 0.12}
+                />
+              ))}
+
+              {meshEdges.map((edge) => {
+                const mx = (edge.a.x + edge.b.x) / 2;
+                const my = (edge.a.y + edge.b.y) / 2;
+                const cx = mx + (800 - mx) * 0.12;
+                const cy = my + (430 - my) * 0.08;
+                const d = `M ${edge.a.x} ${edge.a.y} Q ${cx} ${cy} ${edge.b.x} ${edge.b.y}`;
+                return (
                   <path
+                    key={`mesh-${edge.i}`}
                     d={d}
-                    className={`stakeholder-map__flow is-${activeChain.kind}`}
+                    className={[
+                      "stakeholder-map__link",
+                      `is-${edge.kind}`,
+                      edge.onChain ? "is-chain-lit" : "is-base",
+                    ].join(" ")}
                     fill="none"
-                    markerEnd={marker}
-                    filter="url(#soft-glow)"
+                    opacity={edge.involvesFocus || edge.onChain ? (edge.onChain ? 0.7 : 0.35) : 0.06}
                   />
-                  <text x={mx} y={my - 8} textAnchor="middle" className="stakeholder-map__flow-label">
-                    {i + 1}
-                  </text>
-                </g>
-              );
-            })}
+                );
+              })}
 
-            {/* side labels */}
-            {networkGraph.map((side) => (
-              <g
-                key={`label-${side.id}`}
-                className={`stakeholder-map__side-label ${chainSet.has(side.id) ? "is-in-chain" : ""}`}
-                onClick={() => selectSide(side.id)}
-                style={{ cursor: "pointer" }}
-              >
+              {chainPairs.map((pair, i) => {
+                const a = pickBridgeNode(pair.from, pair.to);
+                const b = pickBridgeNode(pair.to, pair.from);
+                const mx = (a.x + b.x) / 2;
+                const my = (a.y + b.y) / 2 - 24;
+                const d = `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
+                const marker =
+                  activeChain.kind === "content"
+                    ? "url(#net-arrow-content)"
+                    : activeChain.kind === "hardware"
+                      ? "url(#net-arrow-hw)"
+                      : "url(#net-arrow)";
+                return (
+                  <g key={`flow-${i}`}>
+                    <path
+                      d={d}
+                      className={`stakeholder-map__flow is-${activeChain.kind}`}
+                      fill="none"
+                      markerEnd={marker}
+                      filter="url(#soft-glow)"
+                    />
+                    <text x={mx} y={my - 8} textAnchor="middle" className="stakeholder-map__flow-label">
+                      {i + 1}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {networkGraph.map((side) => (
                 <text
+                  key={`label-${side.id}`}
                   x={side.anchor.x}
                   y={side.anchor.y + (side.isHub ? -178 : -142)}
                   textAnchor="middle"
                   fill={side.isHub ? "#111c4e" : side.color}
+                  className="stakeholder-map__side-label-text"
+                  opacity={focusSet.has(side.id) ? 1 : 0.2}
+                  onClick={() => goSide(side.id)}
+                  style={{ cursor: "pointer" }}
                 >
                   {side.number} · {side.shortName}
                 </text>
-              </g>
-            ))}
+              ))}
 
-            {/* nodes */}
-            {networkGraph.flatMap((side) =>
-              side.nodes.map((node) => {
-                const isActive = node.id === activeNodeId;
-                const sideActive = side.id === activeSideId;
-                const inChain = chainSet.has(side.id);
-                const dimmed = !inChain && !sideActive && !isActive;
-                const lines =
-                  node.label.length > 20
-                    ? (() => {
-                        const words = node.label.split(" ");
-                        const mid = Math.ceil(words.length / 2);
-                        return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-                      })()
-                    : [node.label];
-                const rw = Math.max(108, ...lines.map((l) => l.length * 7.2 + 18));
-                const rh = lines.length > 1 ? 40 : 30;
-                return (
-                  <g
-                    key={node.id}
-                    className={[
-                      "stakeholder-map__node",
-                      isActive ? "is-active" : "",
-                      inChain ? "is-in-chain" : "",
-                      dimmed ? "is-dimmed" : "",
-                      side.isHub ? "is-hub" : "",
-                    ].filter(Boolean).join(" ")}
-                    transform={`translate(${node.x}, ${node.y})`}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      selectNode(node.id, side.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <rect
-                      x={-rw / 2}
-                      y={-rh / 2}
-                      width={rw}
-                      height={rh}
-                      rx={999}
-                      fill={side.isHub ? "#f2f04f" : "#fffef9"}
-                      stroke={isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color}
-                      strokeWidth={isActive ? 2.5 : 1.6}
-                    />
-                    {lines.map((line, li) => (
-                      <text
-                        key={li}
-                        x={0}
-                        y={(li - (lines.length - 1) / 2) * 11}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className="stakeholder-map__node-label"
-                      >
-                        {line}
-                      </text>
-                    ))}
-                  </g>
-                );
-              })
-            )}
-
-            <text x={800} y={868} textAnchor="middle" className="stakeholder-map__chain-caption">
-              {activeChain.name}: {activeChain.steps}
-            </text>
+              {networkGraph.flatMap((side) =>
+                side.nodes.map((node) => {
+                  const isActive = node.id === activeNodeId;
+                  const inFocus = focusSet.has(side.id);
+                  const lines =
+                    node.label.length > 20
+                      ? (() => {
+                          const words = node.label.split(" ");
+                          const mid = Math.ceil(words.length / 2);
+                          return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+                        })()
+                      : [node.label];
+                  const rw = Math.max(108, ...lines.map((l) => l.length * 7.2 + 18));
+                  const rh = lines.length > 1 ? 40 : 30;
+                  return (
+                    <g
+                      key={node.id}
+                      className={[
+                        "stakeholder-map__node",
+                        isActive ? "is-active" : "",
+                        inFocus ? "is-in-chain" : "",
+                        !inFocus ? "is-dimmed" : "",
+                      ].filter(Boolean).join(" ")}
+                      transform={`translate(${node.x}, ${node.y})`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        goNode(node.id, side.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <rect
+                        x={-rw / 2}
+                        y={-rh / 2}
+                        width={rw}
+                        height={rh}
+                        rx={999}
+                        fill={side.isHub ? "#f2f04f" : "#fffef9"}
+                        stroke={isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color}
+                        strokeWidth={isActive ? 2.5 : 1.6}
+                      />
+                      {lines.map((line, li) => (
+                        <text
+                          key={li}
+                          x={0}
+                          y={(li - (lines.length - 1) / 2) * 11}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          className="stakeholder-map__node-label"
+                        >
+                          {line}
+                        </text>
+                      ))}
+                    </g>
+                  );
+                })
+              )}
+            </g>
           </svg>
         </div>
 
-        <div className="stakeholder-frame__detail stakeholder-frame__detail--network" aria-live="polite">
-          <div className="stakeholder-frame__chain-tabs" role="tablist" aria-label="Critical multi-step chains">
-            {criticalChains.map((chain) => (
-              <button
-                key={chain.id}
-                type="button"
-                role="tab"
-                aria-selected={chain.id === activeChainId}
-                className={chain.id === activeChainId ? "is-active" : ""}
-                onClick={() => {
-                  setActiveChainId(chain.id);
-                }}
-              >
-                {chain.name}
-              </button>
-            ))}
-          </div>
-
-          <div className="stakeholder-frame__detail-title">
-            <span
-              className="stakeholder-frame__swatch"
-              style={{ background: activeSide?.color || activeNode?.color || "#f14f9b" }}
-            />
-            <div>
-              <p className="stakeholder-frame__group">{detailGroup}</p>
-              <h2>{detailTitle}</h2>
-              {!activeSide && !activeNode && (
-                <p className="stakeholder-frame__sub">{activeChain.steps}</p>
-              )}
-            </div>
-            <div className="stakeholder-frame__side-tabs" role="tablist" aria-label="Sides">
-              {networkGraph.map((side) => (
-                <button
-                  key={side.id}
-                  type="button"
-                  className={activeSideId === side.id ? "is-active" : ""}
-                  onClick={() => selectSide(side.id)}
-                >
-                  {side.shortName}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="stakeholder-frame__network-body">
-            <div className="stakeholder-frame__nodes-list">
-              <b>{activeSide ? `${activeSide.shortName} nodes` : "Sides in this chain"}</b>
-              <ul>
-                {activeSide
-                  ? activeSide.nodes.map((n) => (
-                      <li key={n.id}>
-                        <button type="button" className="stakeholder-frame__link" onClick={() => selectNode(n.id, activeSide.id)}>
+        <div className="stakeholder-frame__detail stakeholder-frame__detail--focus" aria-live="polite">
+          {focusMode === "side" ? (
+            <>
+              <div className="stakeholder-frame__detail-title">
+                <span className="stakeholder-frame__swatch" style={{ background: activeSide.color }} />
+                <div>
+                  <p className="stakeholder-frame__group">{activeSide.number} · {activeSide.name}</p>
+                  <h2>{activeNode ? activeNode.label : activeSide.shortName}</h2>
+                </div>
+                <p className="stakeholder-frame__count">{activeSide.nodes.length} nodes · {activeSide.chains.length} chains</p>
+              </div>
+              <div className="stakeholder-frame__focus-body">
+                <div className="stakeholder-frame__focus-nodes">
+                  <b>Nodes</b>
+                  <ul>
+                    {activeSide.nodes.map((n) => (
+                      <li key={n.id} className={n.id === activeNodeId ? "is-active" : ""}>
+                        <button type="button" className="stakeholder-frame__link" onClick={() => goNode(n.id, activeSide.id)}>
                           {n.label}
                         </button>
                       </li>
-                    ))
-                  : activeChain.flow.map((sid, i) => (
+                    ))}
+                  </ul>
+                </div>
+                <div className="stakeholder-frame__focus-chains">
+                  <b>Key relationship chains</b>
+                  <ol>
+                    {activeSide.chains.map((chain, i) => (
+                      <li key={i}>{chain}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="stakeholder-frame__detail-title">
+                <span className="stakeholder-frame__swatch" style={{ background: "#f14f9b" }} />
+                <div>
+                  <p className="stakeholder-frame__group">Critical multi-step chain</p>
+                  <h2>{activeChain.name}</h2>
+                  <p className="stakeholder-frame__sub">{activeChain.steps}</p>
+                </div>
+                <p className="stakeholder-frame__count">{activeChain.flow.length} sides in path</p>
+              </div>
+              <div className="stakeholder-frame__focus-body stakeholder-frame__focus-body--chain">
+                <div className="stakeholder-frame__focus-path">
+                  <b>Path</b>
+                  <ol className="stakeholder-frame__path-steps">
+                    {activeChain.flow.map((sid, i) => (
                       <li key={`${sid}-${i}`}>
-                        <button type="button" className="stakeholder-frame__link" onClick={() => selectSide(sid)}>
-                          {i + 1}. {sideById[sid].name}
+                        <button type="button" className="stakeholder-frame__path-chip" onClick={() => goSide(sid)}>
+                          <span>{i + 1}</span>
+                          {sideById[sid].shortName}
                         </button>
+                        {i < activeChain.flow.length - 1 && <i aria-hidden="true">→</i>}
                       </li>
                     ))}
-              </ul>
-            </div>
-            <div className="stakeholder-frame__chains-list">
-              <b>{activeSide ? "Key relationship chains" : "Selected critical chain"}</b>
-              {activeSide ? (
-                <ol>
-                  {activeSide.chains.map((chain, i) => (
-                    <li key={i}>{chain}</li>
-                  ))}
-                </ol>
-              ) : (
-                <>
-                  <p className="stakeholder-frame__critical-name">{activeChain.name}</p>
-                  <p className="stakeholder-frame__notes">{activeChain.steps}</p>
-                </>
-              )}
-            </div>
-            <div className="stakeholder-frame__critical-list">
-              <b>All five critical multi-step chains</b>
-              <ol>
-                {criticalChains.map((c) => (
-                  <li key={c.id}>
-                    <button type="button" className="stakeholder-frame__link" onClick={() => setActiveChainId(c.id)}>
-                      {c.name}
-                    </button>
-                    {" — "}
-                    {c.steps}
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-
-          <div className="stakeholder-frame__legend">
-            <span><i className="is-content" /> Content flow (Writers → App → Users)</span>
-            <span><i className="is-acquisition" /> Discovery / acquisition (Promoters → Users)</span>
-            <span><i className="is-hardware" /> Hardware dependency (Device ↔ App)</span>
-            <span>Hub: App Side · Outer clusters: Users · Writers · Promoters · Devices</span>
-          </div>
+                  </ol>
+                </div>
+                <div className="stakeholder-frame__focus-chains">
+                  <b>All five critical multi-step chains</b>
+                  <ol>
+                    {criticalChains.map((c) => (
+                      <li key={c.id} className={c.id === activeChainId ? "is-active" : ""}>
+                        <button type="button" className="stakeholder-frame__link" onClick={() => goChain(c.id)}>
+                          {c.name}
+                        </button>
+                        {" — "}
+                        {c.steps}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       <p className="waveline-share-hint">
-        Tip: close the left sidebar (‹) for a clean 16:9 share view. Chain tabs light the multi-step path; click a cluster or node for the full prep chains on that side.
+        Tip: close the left sidebar (‹). Use ← → or the tabs to move the map center through chains and sides — one part fills the frame at a time.
       </p>
 
       <div className="report-next-links">
