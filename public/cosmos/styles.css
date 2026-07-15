@@ -643,20 +643,24 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 }
 .waveline-chart text {
   fill: var(--muted);
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
   font-family: var(--sans);
+}
+.waveline-chart text.peak-label {
+  font-size: 17px;
+  letter-spacing: 0.02em;
 }
 .waveline-chart text.is-active { fill: var(--pink); }
 .waveline-chart text.stage-num {
   fill: var(--pink);
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
 }
 .waveline-chart text.stage-name {
   fill: var(--navy);
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 700;
   font-family: var(--sans);
 }
