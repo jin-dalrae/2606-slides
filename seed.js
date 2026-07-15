@@ -23,10 +23,11 @@ const vm = require("vm");
 const { execSync } = require("child_process");
 
 const ROOT = __dirname;
+const PUBLIC_ROOT = path.join(ROOT, "public");
 const DB_NAME = "rae-slides";
 
 function loadSiteData() {
-  const code = fs.readFileSync(path.join(ROOT, "site-data.js"), "utf8");
+  const code = fs.readFileSync(path.join(PUBLIC_ROOT, "site-data.js"), "utf8");
   const sandbox = { window: {} };
   vm.createContext(sandbox);
   vm.runInContext(code, sandbox);
@@ -42,16 +43,39 @@ function generateId() {
 
 const sqlStr = (value) => "'" + String(value).replace(/'/g, "''") + "'";
 
-// Resolve an item's source file to a repo-root-relative path.
-// Slide `file`s are relative to the repo root; doc `file`s are relative to docs/.
-function repoRelativeFile(item, kind) {
-  const base = kind === "doc" ? path.join(ROOT, "docs") : ROOT;
-  const abs = path.resolve(base, item.file);
-  return path.relative(ROOT, abs).split(path.sep).join("/");
+// Resolve an item's source file on disk.
+// Slide `file`s are relative to public/; doc `file`s are relative to public/docs/.
+// Repo-root fallbacks (e.g. README.md) are allowed for docs that point outside public/.
+function resolveSourceAbs(item, kind) {
+  if (kind === "doc") {
+    const fromDocs = path.resolve(PUBLIC_ROOT, "docs", item.file);
+    if (fs.existsSync(fromDocs)) return fromDocs;
+    const fromPublic = path.resolve(PUBLIC_ROOT, item.file.replace(/^\.\.\//, ""));
+    if (fs.existsSync(fromPublic)) return fromPublic;
+    const fromRoot = path.resolve(ROOT, item.file.replace(/^\.\.\//, ""));
+    if (fs.existsSync(fromRoot)) return fromRoot;
+    return fromDocs;
+  }
+  return path.join(PUBLIC_ROOT, item.file);
+}
+
+// Path as served by the Worker assets binding (no `public/` prefix).
+function assetRelativeFile(absPath) {
+  const relPublic = path.relative(PUBLIC_ROOT, absPath).split(path.sep).join("/");
+  if (relPublic && !relPublic.startsWith("..") && !path.isAbsolute(relPublic)) {
+    return relPublic;
+  }
+  return path.relative(ROOT, absPath).split(path.sep).join("/");
+}
+
+// Path inside the git tree (includes `public/` when the file lives there).
+function gitRelativeFile(absPath) {
+  return path.relative(ROOT, absPath).split(path.sep).join("/");
 }
 
 function gitVersionsFor(relPath) {
   // Returns [{hash, dateIso, message, markdown}] oldest-first is not required.
+  // Follow renames so history survives the public/ move (and earlier path moves).
   let log;
   try {
     log = execSync(`git log --follow --pretty=format:"%h|%aI|%s" -- "${relPath}"`, {
@@ -95,24 +119,25 @@ function buildSql(site, nowIso) {
     if (!slug) continue;
     knownSlugs.push(slug);
 
-    const relPath = repoRelativeFile(item, item.kind);
-    const absPath = path.join(ROOT, relPath);
+    const absPath = resolveSourceAbs(item, item.kind);
+    const assetPath = assetRelativeFile(absPath);
+    const gitPath = gitRelativeFile(absPath);
     if (!fs.existsSync(absPath)) {
-      console.warn(`  ! missing source file for ${slug}: ${relPath}`);
+      console.warn(`  ! missing source file for ${slug}: ${gitPath}`);
       continue;
     }
     const markdown = fs.readFileSync(absPath, "utf8");
 
     if (item.public) {
       publicSlugs.push(slug);
-      if (!publicFiles.includes(relPath)) publicFiles.push(relPath);
+      if (!publicFiles.includes(assetPath)) publicFiles.push(assetPath);
     }
 
     // Base content (source of truth) — refresh to match the repo file.
     sql += `INSERT INTO decks (slug, markdown, updated_at) VALUES (${sqlStr(slug)}, ${sqlStr(markdown)}, ${sqlStr(nowIso)}) ON CONFLICT(slug) DO UPDATE SET markdown = excluded.markdown, updated_at = excluded.updated_at;\n`;
 
     // Re-import base version history from git (clear prior base versions first).
-    const versions = gitVersionsFor(relPath);
+    const versions = gitVersionsFor(gitPath);
     sql += `DELETE FROM deck_versions WHERE slug = ${sqlStr(slug)} AND user_id IS NULL;\n`;
     for (const v of versions) {
       sql += `INSERT INTO deck_versions (id, slug, user_id, markdown, created_at, version_name) VALUES (${sqlStr(generateId())}, ${sqlStr(slug)}, NULL, ${sqlStr(v.markdown)}, ${sqlStr(v.dateIso)}, ${sqlStr(v.message || "Version")});\n`;

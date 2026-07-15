@@ -2,8 +2,10 @@ name = "rae"
 compatibility_date = "2026-06-06"
 main = "src/index.js"
 
+# Only the public/ tree is served as static assets (not the whole repo).
+# Worker source, migrations, seed scripts, and .wrangler stay off the asset root.
 [assets]
-directory = "."
+directory = "public"
 binding = "ASSETS"
 run_worker_first = [ "/*.md", "/docs/*.md", "/presentations/*.md" ]
 

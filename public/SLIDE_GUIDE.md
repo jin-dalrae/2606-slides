@@ -5,7 +5,7 @@ Use this guide when turning raw notes into decks for the slide system.
 ## Deck Workflow
 
 1. Create a Markdown file in `presentations/`.
-2. Add the deck to the `presentations` array in `script.js`.
+2. Add the deck to the `slides` array in `site-data.js`.
 3. Use `---` between horizontal slides.
 4. Use the layout patterns below based on the content structure.
 

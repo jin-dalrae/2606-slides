@@ -2,10 +2,14 @@
   "name": "2606-slides",
   "version": "1.0.0",
   "private": true,
-  "description": "Rae Jin Slides — a static presentation library. The GTR sub-app uses esbuild to compile app.jsx + shell.jsx into a single app.js bundle for browser delivery.",
+  "description": "Rae Jin Slides — static presentation library under public/, Worker in src/. Client is ES modules in public/js/.",
   "scripts": {
-    "build:gtr": "esbuild gtr/app.jsx --bundle --format=iife --outfile=gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment",
-    "watch:gtr": "esbuild gtr/app.jsx --bundle --format=iife --outfile=gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment --watch"
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy",
+    "seed": "node seed.js --local",
+    "seed:remote": "node seed.js --remote",
+    "build:gtr": "esbuild public/gtr/app.jsx --bundle --format=iife --outfile=public/gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment",
+    "watch:gtr": "esbuild public/gtr/app.jsx --bundle --format=iife --outfile=public/gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment --watch"
   },
   "devDependencies": {
     "esbuild": "^0.28.1"

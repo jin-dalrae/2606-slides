@@ -23,7 +23,7 @@ A static presentation library for Rae Jin's 2026 Summer MDes IxD CCA work.
 - Orbital triad and vertical step layouts that break the three-card monotony and fit the cosmic theme.
 - Real-title resolution: the chrome always reflects what the deck actually says, not a placeholder label.
 - Animated shader background gives every deck atmosphere without a single hero image.
-- Markdown-first authoring — a new deck is a single `.md` file plus one line in `script.js`.
+- Markdown-first authoring — a new deck is a single `.md` file plus one entry in `public/site-data.js`.
 - Zero-build static deploy, even with theme toggle, custom layouts, speaker notes, exports, and live shader.
 
 ## What We're Working On
@@ -35,18 +35,31 @@ A static presentation library for Rae Jin's 2026 Summer MDes IxD CCA work.
 - Mobile chrome pass — sidebar, header, and controls feel tight at narrow widths.
 - Accessibility audit: keyboard focus rings, contrast over the shader, screen-reader labels.
 
+## Layout
+
+- `public/` — static site (HTML, CSS, ES modules in `public/js/`, decks, assets, sub-apps)
+- `src/` — Cloudflare Worker (API, auth, D1)
+- `migrations/` — D1 schema
+- `seed.js` — seeds D1 from `public/site-data.js`
+
 ## Local Preview
 
-Reveal loads Markdown decks over HTTP, so preview with a local server:
+Prefer the Worker so `/api/*` works:
 
 ```sh
-python3 -m http.server 8000
+npm run dev
+```
+
+Or static-only from the asset root:
+
+```sh
+python3 -m http.server 8000 --directory public
 ```
 
 Open:
 
 ```txt
-http://localhost:8000
+http://localhost:8787
 ```
 
 ## Export
@@ -74,13 +87,15 @@ Decks live in `presentations/` and are written in Markdown.
 
 ## Add A Deck
 
-1. Add a Markdown file to `presentations/`.
-2. Register it in the `presentations` array in `script.js`:
+1. Add a Markdown file to `public/presentations/`.
+2. Register it in the `slides` array in `public/site-data.js`:
 
 ```js
 {
+  slug: "my-deck",
   title: "Presentation Title",
   date: "June 4, 2026",
-  file: "presentations/file-name.md"
+  file: "presentations/file-name.md",
+  public: true
 }
 ```
