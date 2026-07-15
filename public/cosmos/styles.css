@@ -792,8 +792,8 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 
 /* —— Stakeholder map: 16:9 plot + full relationship detail —— */
 .stakeholder-page {
-  padding-top: 36px;
-  padding-bottom: 48px;
+  padding-top: 28px;
+  padding-bottom: 56px;
 }
 .stakeholder-frame {
   display: grid;
@@ -1049,12 +1049,15 @@ html[data-cosmos-rail="closed"] .stakeholder-frame {
 /* —— Stakeholder network graph (chain-first, part-focused camera) —— */
 .stakeholder-frame--focus {
   display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1.4fr) auto;
-  gap: 6px;
+  /* Header / tools / tabs stay compact; map gets most of the height. */
+  grid-template-rows: auto auto auto minmax(420px, 1.9fr) auto;
+  gap: 8px;
   width: 100%;
   max-width: min(1240px, 100%);
   margin: 0 auto;
-  aspect-ratio: 16 / 9;
+  /* Taller than 16:9 so the graph has room without clipping detail. */
+  aspect-ratio: 16 / 12;
+  min-height: min(92vh, 980px);
   padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.4vw, 18px);
   border: 1px solid var(--line);
   background: var(--paper);
@@ -1064,6 +1067,7 @@ html[data-cosmos-rail="closed"] .stakeholder-frame {
 }
 html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
   max-width: min(1360px, 100%);
+  min-height: min(94vh, 1040px);
 }
 .stakeholder-frame__toolbar {
   display: flex;
@@ -1148,7 +1152,8 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
   border-color: var(--yellow);
 }
 .stakeholder-frame__map--focus {
-  min-height: 0;
+  min-height: 420px;
+  height: 100%;
   border: 1px solid var(--line);
   background: #fbfaf6;
   overflow: hidden;
@@ -1314,10 +1319,11 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
 @media (max-width: 900px) {
   .stakeholder-frame--focus {
     aspect-ratio: auto;
+    min-height: 0;
     height: auto;
-    grid-template-rows: auto;
+    grid-template-rows: auto auto auto minmax(380px, auto) auto;
   }
-  .stakeholder-frame__map--focus { min-height: 360px; }
+  .stakeholder-frame__map--focus { min-height: 420px; }
   .stakeholder-frame__focus-body,
   .stakeholder-frame__focus-body--chain { grid-template-columns: 1fr; }
   .stakeholder-frame--focus .stakeholder-frame__chain-tabs,
