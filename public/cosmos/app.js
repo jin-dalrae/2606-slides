@@ -426,26 +426,38 @@
     }
   ];
   var sideAnchors = {
-    app: { x: 800, y: 430 },
-    users: { x: 250, y: 220 },
-    writers: { x: 250, y: 640 },
-    promoters: { x: 1350, y: 220 },
-    devices: { x: 1350, y: 640 }
+    app: { x: 800, y: 520 },
+    users: { x: 220, y: 240 },
+    writers: { x: 220, y: 800 },
+    promoters: { x: 1380, y: 260 },
+    devices: { x: 1380, y: 800 }
   };
+  var NODE_GAP_Y = 78;
+  var HUB_RADIUS = 190;
   function placeCluster(side) {
     const anchor = sideAnchors[side.id];
     const n = side.nodes.length;
-    const radius = side.isHub ? 108 : 78;
-    const nodes = side.nodes.map((node, i) => {
-      const angle = side.isHub ? -Math.PI / 2 + i / n * Math.PI * 2 : -0.9 + i / Math.max(n - 1, 1) * 1.8;
-      return {
-        ...node,
-        sideId: side.id,
-        x: anchor.x + Math.cos(angle) * radius,
-        y: anchor.y + Math.sin(angle) * (side.isHub ? radius : radius * 0.95)
-      };
-    });
-    return { ...side, anchor, nodes };
+    if (side.isHub) {
+      const nodes2 = side.nodes.map((node, i) => {
+        const angle = -Math.PI / 2 + i / n * Math.PI * 2;
+        return {
+          ...node,
+          sideId: side.id,
+          x: anchor.x + Math.cos(angle) * HUB_RADIUS,
+          y: anchor.y + Math.sin(angle) * HUB_RADIUS
+        };
+      });
+      return { ...side, anchor, fieldR: HUB_RADIUS + 90, nodes: nodes2 };
+    }
+    const startY = anchor.y - (n - 1) * NODE_GAP_Y / 2;
+    const nodes = side.nodes.map((node, i) => ({
+      ...node,
+      sideId: side.id,
+      x: anchor.x,
+      y: startY + i * NODE_GAP_Y
+    }));
+    const stackHalf = (n - 1) * NODE_GAP_Y / 2 + 56;
+    return { ...side, anchor, fieldR: Math.max(120, stackHalf + 24), nodes };
   }
   var networkGraph = networkSides.map(placeCluster);
   var sideById = Object.fromEntries(networkGraph.map((s) => [s.id, s]));
@@ -492,7 +504,7 @@
     const [activeSideId, setActiveSideId] = useState("app");
     const [activeNodeId, setActiveNodeId] = useState(null);
     const width = 1600;
-    const height = 1100;
+    const height = 1200;
     const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
     const activeSide = sideById[activeSideId] || sideById.app;
     const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
@@ -611,19 +623,19 @@
         key: `field-${side.id}`,
         cx: side.anchor.x,
         cy: side.anchor.y,
-        r: side.isHub ? 168 : 128,
+        r: side.fieldR || (side.isHub ? 280 : 160),
         className: [
           "stakeholder-map__field",
           focusSet.has(side.id) ? "is-in-chain" : "",
           activeSideId === side.id && focusMode === "side" ? "is-active" : ""
         ].filter(Boolean).join(" "),
-        fill: side.isHub ? "rgba(242,240,79,0.22)" : `${side.color}16`,
+        fill: side.isHub ? "rgba(242,240,79,0.18)" : `${side.color}14`,
         stroke: side.color,
-        opacity: focusSet.has(side.id) ? 1 : 0.16,
+        opacity: focusSet.has(side.id) ? 1 : 0.14,
         onClick: () => goSide(side.id),
         style: { cursor: "pointer" }
       }
-    )), clusterEdges.map((edge, i) => /* @__PURE__ */ React.createElement(
+    )), clusterEdges.filter((edge) => sideById[edge.sideId]?.isHub).map((edge, i) => /* @__PURE__ */ React.createElement(
       "line",
       {
         key: `cluster-${edge.sideId}-${i}`,
@@ -677,7 +689,7 @@
       {
         key: `label-${side.id}`,
         x: side.anchor.x,
-        y: side.anchor.y + (side.isHub ? -178 : -142),
+        y: side.anchor.y - (side.fieldR || 160) - 18,
         textAnchor: "middle",
         fill: side.isHub ? "#111c4e" : side.color,
         className: "stakeholder-map__side-label-text",
@@ -692,13 +704,13 @@
       (side) => side.nodes.map((node) => {
         const isActive = node.id === activeNodeId;
         const inFocus = focusSet.has(side.id);
-        const lines = node.label.length > 20 ? (() => {
+        const lines = node.label.length > 22 ? (() => {
           const words = node.label.split(" ");
           const mid = Math.ceil(words.length / 2);
           return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
         })() : [node.label];
-        const rw = Math.max(112, ...lines.map((l) => l.length * 7.4 + 20));
-        const rh = lines.length > 1 ? 42 : 32;
+        const rw = Math.min(200, Math.max(118, ...lines.map((l) => l.length * 7.1 + 22)));
+        const rh = lines.length > 1 ? 40 : 34;
         return /* @__PURE__ */ React.createElement(
           "g",
           {
