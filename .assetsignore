@@ -1,4 +1,3 @@
-# Extra exclusions inside public/ (asset root is public/ via wrangler.toml).
 .DS_Store
 **/.DS_Store
 .omo
