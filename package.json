@@ -9,7 +9,8 @@
     "seed": "node seed.js --local",
     "seed:remote": "node seed.js --remote",
     "build:gtr": "esbuild public/gtr/app.jsx --bundle --format=iife --outfile=public/gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment",
-    "watch:gtr": "esbuild public/gtr/app.jsx --bundle --format=iife --outfile=public/gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment --watch"
+    "watch:gtr": "esbuild public/gtr/app.jsx --bundle --format=iife --outfile=public/gtr/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment --watch",
+    "build:cosmos": "esbuild public/cosmos/app.jsx --bundle --format=iife --outfile=public/cosmos/app.js --loader:.jsx=jsx --jsx-factory=React.createElement --jsx-fragment=React.Fragment"
   },
   "devDependencies": {
     "esbuild": "^0.28.1"

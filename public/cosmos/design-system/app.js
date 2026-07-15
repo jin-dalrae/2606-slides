@@ -1,22 +1,28 @@
 (() => {
-  // cosmos/shell.jsx
+  // public/cosmos/shell.jsx
   var cosmosPages = [
     ["intro", "01", "Introduction", "/cosmos/"],
     ["secondary", "02", "Secondary research", "/cosmos/secondary/"],
     ["primary", "03", "Primary research", "/cosmos/primary/"],
-    ["making", "04", "Making Cosmos", "/cosmos/making/"],
-    ["design", "05", "Design system", "/cosmos/design-system/"]
+    ["user-waveline", "04", "User waveline", "/cosmos/user-waveline/"],
+    ["making", "05", "Making Cosmos", "/cosmos/making/"],
+    ["design", "06", "Design system", "/cosmos/design-system/"]
   ];
   var secondaryReports = [
     ["overview", "2.0", "Overview", "/cosmos/secondary/"],
-    ["spatial-audio", "2.1", "Spatial communications", "/cosmos/secondary/spatial-communications/"]
+    ["spatial-audio", "2.1", "Spatial communications", "/cosmos/secondary/spatial-communications/"],
+    ["memory-pods", "2.2", "MemoryPods (arXiv)", "/cosmos/secondary/memory-pods/"],
+    ["socially-late", "2.3", "Asynchronous social VR", "/cosmos/secondary/socially-late/"],
+    ["vr-reading", "2.4", "Customizing VR reading", "/cosmos/secondary/vr-reading/"]
   ];
   var primaryReports = [
     ["overview", "3.0", "Overview", "/cosmos/primary/"],
     ["interview-kris", "3.1", "Interview 01 \xB7 Kris", "/cosmos/primary/interview-kris/"],
     ["interview-yves", "3.2", "Interview 02 \xB7 Yves", "/cosmos/primary/interview-yves/"],
     ["interview-johnny", "3.3", "Interview 03 \xB7 Johnny", "/cosmos/primary/interview-johnny/"],
-    ["expert-questionnaire", "3.4", "Remote expert questionnaire", "/cosmos/primary/expert-questionnaire/"]
+    ["interview-jd-suh", "3.4", "Interview 04 \xB7 JD Suh", "/cosmos/primary/interview-jd-suh/"],
+    ["expert-questionnaire", "3.5", "Remote expert questionnaire", "/cosmos/primary/expert-questionnaire/"],
+    ["version1-review", "3.6", "Version 1 & review", "/cosmos/primary/version1-review/"]
   ];
   var reportChildren = {
     secondary: secondaryReports,
@@ -27,16 +33,13 @@
   }
   function CosmosHeader({ meta = "Research report \xB7 2026" }) {
     const [open, setOpen] = React.useState(false);
-    return /* @__PURE__ */ React.createElement("header", { className: "site-header" }, /* @__PURE__ */ React.createElement("a", { className: "wordmark", href: "/cosmos/", "aria-label": "Cosmos home" }, /* @__PURE__ */ React.createElement(CosmosMark, null), " COSMOS"), /* @__PURE__ */ React.createElement("button", { className: "menu-button", onClick: () => setOpen(!open), "aria-expanded": open }, "Menu"), /* @__PURE__ */ React.createElement("nav", { className: open ? "top-nav is-open" : "top-nav", "aria-label": "Cosmos navigation" }, cosmosPages.map(([id, number, label, path]) => {
-      var _a;
-      return /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { href: path, onClick: () => setOpen(false) }, label), (_a = reportChildren[id]) == null ? void 0 : _a.slice(1).map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child", key: subId, href: subPath, onClick: () => setOpen(false) }, "\u21B3 ", subLabel)));
-    })), /* @__PURE__ */ React.createElement("p", { className: "header-meta" }, meta));
+    return /* @__PURE__ */ React.createElement("header", { className: "site-header" }, /* @__PURE__ */ React.createElement("a", { className: "wordmark", href: "/cosmos/", "aria-label": "Cosmos home" }, /* @__PURE__ */ React.createElement(CosmosMark, null), " COSMOS"), /* @__PURE__ */ React.createElement("button", { className: "menu-button", onClick: () => setOpen(!open), "aria-expanded": open }, "Menu"), /* @__PURE__ */ React.createElement("nav", { className: open ? "top-nav is-open" : "top-nav", "aria-label": "Cosmos navigation" }, cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { href: path, onClick: () => setOpen(false) }, label), reportChildren[id]?.slice(1).map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child", key: subId, href: subPath, onClick: () => setOpen(false) }, "\u21B3 ", subLabel))))), /* @__PURE__ */ React.createElement("p", { className: "header-meta" }, meta));
   }
   function CosmosSidebar({ active, subActive }) {
     return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "Cosmos reports" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("p", null, "Research library"), /* @__PURE__ */ React.createElement("h2", null, "Cosmos"), /* @__PURE__ */ React.createElement("span", null, "Spatializing asynchronous community")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), reportChildren[id] && active === id && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: subActive === subId ? "active" : "", key: subId, href: subPath }, /* @__PURE__ */ React.createElement("span", null, subNumber), /* @__PURE__ */ React.createElement("b", null, subLabel), /* @__PURE__ */ React.createElement("i", null, "\u2197"))))))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " Cosmos archive ", /* @__PURE__ */ React.createElement("span", null, "2026")));
   }
 
-  // cosmos/design-system/app.jsx
+  // public/cosmos/design-system/app.jsx
   var { useState } = React;
   var colors = [
     ["Cosmos Navy", "#111C4E", "Primary ink, dark surfaces", "navy"],
@@ -49,8 +52,7 @@
   function App() {
     const [copied, setCopied] = useState("");
     const copy = async (value) => {
-      var _a;
-      await ((_a = navigator.clipboard) == null ? void 0 : _a.writeText(value));
+      await navigator.clipboard?.writeText(value);
       setCopied(value);
       setTimeout(() => setCopied(""), 1200);
     };

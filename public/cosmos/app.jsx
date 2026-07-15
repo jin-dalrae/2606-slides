@@ -33,6 +33,108 @@ const methods = [
   { number: "02", label: "Wall observations", note: "Physical community surfaces" },
 ];
 
+// Experience waveline (not a classic customer-journey funnel): stages × emotional
+// intensity curve for one Cosmos VR session. Service design often calls this an
+// experience map / emotional journey; the drawn form is a waveline.
+const experienceWaveline = [
+  {
+    id: "entice",
+    stage: "01",
+    name: "Entice",
+    short: "Awareness & intrigue",
+    intensity: 0.38,
+    peakLabel: "intrigue",
+    behavior: "Sees a demo or trailer: someone speaking a post into existence, a post glowing with color, or walking up to a note and hearing the original voice while text appears.",
+    feelings: "Intrigue + emotional pull — more human and alive than text-only forums.",
+    achievements: "Expects a multimodal, embodied community (voice + space + touch).",
+    mechanics: ["Voice trailer", "Color glow", "Proximity playback"],
+  },
+  {
+    id: "enter",
+    stage: "02",
+    name: "Enter",
+    short: "First entry into the sphere",
+    intensity: 0.72,
+    peakLabel: "awe",
+    behavior: "Enters the center of the sphere. Sees color-coded post-its of different sizes and depths. Onboarding: walk or sit, point to zoom, grab with hands, or speak to post.",
+    feelings: "Awe at the living, colorful space. Curiosity about voice and touch layers.",
+    achievements: "Understands Cosmos is not only visual — voice, color, and direct manipulation.",
+    mechanics: ["Sphere entry", "Color coding", "Onboarding gestures"],
+  },
+  {
+    id: "orient",
+    stage: "03",
+    name: "Orient",
+    short: "Learning the spatial language",
+    intensity: 0.84,
+    peakLabel: "delight",
+    behavior: "Points to zoom a post, grabs and shifts it, walks closer for faint voice playback, notices color themes, speaks a short test post into the right place.",
+    feelings: "Empowerment and small wow moments — “I can just grab it… and it speaks when I get close.”",
+    achievements: "Color = theme/mood; proximity = voice + detail; hands = manipulate; voice = create.",
+    mechanics: ["Point-to-zoom", "Hand grab", "Voice test post"],
+  },
+  {
+    id: "explore",
+    stage: "04",
+    name: "Explore",
+    short: "High-level scanning & wandering",
+    intensity: 0.52,
+    peakLabel: "calm scan",
+    behavior: "Walks or pans across color clusters. Older posts sit slightly behind. Points from a distance to preview; walks closer for soft voice snippets without full zoom.",
+    feelings: "Calm exploration with sensory richness. Voice fragments add emotional texture while browsing.",
+    achievements: "Quick visual + auditory overview of the community’s mood and themes.",
+    mechanics: ["Color clusters", "Depth = age", "Soft proximity audio"],
+  },
+  {
+    id: "discover",
+    stage: "05",
+    name: "Discover",
+    short: "Serendipitous + intentional finding",
+    intensity: 0.8,
+    peakLabel: "aha",
+    behavior: "Follows color gradients and clusters. Closer approach reveals tone in original voice. Points to zoom full text + reactions; grabs a post for personal inspection, then releases it.",
+    feelings: "Strong aha moments — hearing actual voice makes posts feel real and human.",
+    achievements: "Finds content with emotional and contextual nuance text-only browsing misses.",
+    mechanics: ["Voice approach", "Point-to-zoom", "Grab inspect"],
+  },
+  {
+    id: "immerse",
+    stage: "06",
+    name: "Immerse",
+    short: "Deep reading & sense-making",
+    intensity: 0.96,
+    peakLabel: "presence",
+    behavior: "Stays in a cluster. Points posts forward one by one, or grabs a small personal reading circle. Full voice + text; emoji reactions; color and proximity show theme evolution.",
+    feelings: "Deep focus + intimacy — “It feels like the person is here with me.”",
+    achievements: "Empathetic understanding combining text, voice tone, space, and social reactions.",
+    mechanics: ["Reading circle", "Full voice", "Emoji reactions"],
+  },
+  {
+    id: "interact",
+    stage: "07",
+    name: "Interact",
+    short: "Active participation",
+    intensity: 0.92,
+    peakLabel: "agency",
+    behavior: "Speaks to post (color-coded note appears by meaning). Replies by pointing/grabbing then speaking. Gestures emoji reactions. Grabs to re-position, group, or show others.",
+    feelings: "Agency and belonging. Voice creation is expressive and low-friction; posts feel like mine.",
+    achievements: "Contributes multimodal, spatially organized content; space feels like a living knowledge sculpture.",
+    mechanics: ["Speak to post", "Voice reply", "React", "Hand rearrange"],
+  },
+  {
+    id: "exit",
+    stage: "08",
+    name: "Exit & extend",
+    short: "Closure + long-term relationship",
+    intensity: 0.58,
+    peakLabel: "linger",
+    behavior: "Zooms out; releases grabbed posts. May bookmark a cluster with a voice note. After headset off, notifications on nearby replies. Returns to evolved space.",
+    feelings: "Satisfied closure with lingering resonance. Ongoing connection as the space keeps growing.",
+    achievements: "Intellectual insight + emotional memory; habit of return because contributions stay alive.",
+    mechanics: ["Zoom out", "Bookmark + voice note", "Return path"],
+  },
+];
+
 const phases = [
   {
     phase: "01",
@@ -93,6 +195,208 @@ function Progress() {
 
 function ChapterLabel({ number, children }) {
   return <div className="chapter-label"><span>{number}</span><p>{children}</p></div>;
+}
+
+function ExperienceWavelineSlide({ stages, activeId, onSelect }) {
+  const width = 1600;
+  const height = 900;
+  const padL = 72;
+  const padR = 72;
+  const padT = 110;
+  const padB = 210;
+  const chartW = width - padL - padR;
+  const chartH = height - padT - padB;
+  const n = stages.length;
+
+  const points = stages.map((stage, index) => {
+    const x = padL + (index / (n - 1)) * chartW;
+    const y = padT + chartH * (1 - stage.intensity);
+    return { ...stage, x, y, index };
+  });
+
+  const lineD = points
+    .map((p, i) => {
+      if (i === 0) return `M ${p.x} ${p.y}`;
+      const prev = points[i - 1];
+      const cpx = (prev.x + p.x) / 2;
+      return `C ${cpx} ${prev.y}, ${cpx} ${p.y}, ${p.x} ${p.y}`;
+    })
+    .join(" ");
+
+  const areaD = `${lineD} L ${points[n - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`;
+  const baselineY = padT + chartH;
+
+  return (
+    <div className="waveline-slide" role="img" aria-label="Eight-stage Cosmos VR experience waveline in 16 by 9">
+      <svg className="waveline-slide__svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#f14f9b" stopOpacity="0.42" />
+            <stop offset="55%" stopColor="#f2f04f" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#111c4e" stopOpacity="0.04" />
+          </linearGradient>
+          <linearGradient id="waveStroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#f14f9b" />
+            <stop offset="45%" stopColor="#111c4e" />
+            <stop offset="100%" stopColor="#f14f9b" />
+          </linearGradient>
+        </defs>
+
+        <rect x="0" y="0" width={width} height={height} fill="#f7f4ed" />
+        <rect x="28" y="28" width={width - 56} height={height - 56} fill="none" stroke="rgba(17,28,78,0.14)" strokeWidth="1.5" />
+
+        <text x={padL} y="68" fill="#f14f9b" fontFamily="Fraunces, Georgia, serif" fontSize="15" letterSpacing="3">
+          EXPERIENCE WAVELINE · COSMOS VR
+        </text>
+        <text x={padL} y="100" fill="#111c4e" fontFamily="Fraunces, Georgia, serif" fontSize="36" fontWeight="600">
+          From intrigue to return — one embodied session
+        </text>
+        <text x={width - padR} y="72" textAnchor="end" fill="#66708b" fontFamily="DM Sans, Arial, sans-serif" fontSize="14">
+          16:9 · 8 stages · emotional intensity over time
+        </text>
+
+        {/* soft grid */}
+        {[0.25, 0.5, 0.75, 1].map((t) => {
+          const y = padT + chartH * (1 - t);
+          return (
+            <g key={t}>
+              <line x1={padL} y1={y} x2={width - padR} y2={y} stroke="rgba(17,28,78,0.08)" strokeDasharray="4 6" />
+              <text x={padL - 12} y={y + 4} textAnchor="end" fill="#66708b" fontSize="11" fontFamily="DM Sans, Arial, sans-serif">
+                {t === 1 ? "peak" : t === 0.5 ? "mid" : ""}
+              </text>
+            </g>
+          );
+        })}
+
+        <line x1={padL} y1={baselineY} x2={width - padR} y2={baselineY} stroke="rgba(17,28,78,0.22)" strokeWidth="1.5" />
+
+        <path d={areaD} fill="url(#waveFill)" />
+        <path d={lineD} fill="none" stroke="url(#waveStroke)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+
+        {points.map((p) => {
+          const active = p.id === activeId;
+          return (
+            <g key={p.id} className="waveline-node" style={{ cursor: "pointer" }} onClick={() => onSelect(p.id)}>
+              <line x1={p.x} y1={p.y} x2={p.x} y2={baselineY} stroke={active ? "#f14f9b" : "rgba(17,28,78,0.12)"} strokeWidth={active ? 2 : 1} strokeDasharray={active ? "0" : "3 5"} />
+              <circle cx={p.x} cy={p.y} r={active ? 14 : 10} fill={active ? "#f14f9b" : "#111c4e"} stroke="#f7f4ed" strokeWidth="3" />
+              <circle cx={p.x} cy={p.y} r={active ? 5 : 3.5} fill="#f2f04f" />
+              <text x={p.x} y={p.y - 22} textAnchor="middle" fill={active ? "#f14f9b" : "#66708b"} fontSize="12" fontFamily="DM Sans, Arial, sans-serif" fontWeight="700">
+                {p.peakLabel}
+              </text>
+              <text x={p.x} y={baselineY + 28} textAnchor="middle" fill="#f14f9b" fontFamily="Fraunces, Georgia, serif" fontSize="13">
+                {p.stage}
+              </text>
+              <text x={p.x} y={baselineY + 52} textAnchor="middle" fill="#111c4e" fontFamily="DM Sans, Arial, sans-serif" fontSize="15" fontWeight="700">
+                {p.name}
+              </text>
+              <text x={p.x} y={baselineY + 74} textAnchor="middle" fill="#66708b" fontFamily="DM Sans, Arial, sans-serif" fontSize="11">
+                {p.short.length > 22 ? `${p.short.slice(0, 20)}…` : p.short}
+              </text>
+            </g>
+          );
+        })}
+
+        <text x={padL} y={height - 48} fill="#66708b" fontFamily="DM Sans, Arial, sans-serif" fontSize="13">
+          Not a conversion funnel — an experience map: stages on X, felt intensity on Y. Peaks at Orient → Immerse → Interact from voice + hands.
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+function UserWavelinePage() {
+  const [activeId, setActiveId] = useState("immerse");
+  const active = experienceWaveline.find((s) => s.id === activeId) || experienceWaveline[0];
+
+  return (
+    <section className="report-section waveline-page" id="user-waveline">
+      <ChapterLabel number="04">User waveline</ChapterLabel>
+      <div className="section-heading">
+        <h2>Experience waveline,<br /><em>not a funnel.</em></h2>
+        <p>
+          A customer journey maps stages of buying. This is closer to an{" "}
+          <strong>experience map</strong> (or emotional journey): one Cosmos VR session
+          plotted as a <strong>waveline</strong> — stages across time, intensity of
+          feeling as the curve. Voice, hands, color, and proximity lift the peaks.
+        </p>
+      </div>
+
+      <ExperienceWavelineSlide stages={experienceWaveline} activeId={activeId} onSelect={setActiveId} />
+
+      <div className="waveline-stage-panel" aria-live="polite">
+        <header>
+          <span className="waveline-stage-panel__num">{active.stage}</span>
+          <div>
+            <p className="eyebrow">{active.short}</p>
+            <h3>{active.name}</h3>
+          </div>
+          <p className="waveline-stage-panel__peak">Wave peak · {active.peakLabel}</p>
+        </header>
+        <div className="waveline-stage-panel__grid">
+          <article>
+            <b>Behavior</b>
+            <p>{active.behavior}</p>
+          </article>
+          <article>
+            <b>Feelings</b>
+            <p>{active.feelings}</p>
+          </article>
+          <article>
+            <b>Achievements</b>
+            <p>{active.achievements}</p>
+          </article>
+        </div>
+        <ul className="waveline-mechanics">
+          {active.mechanics.map((m) => (
+            <li key={m}>{m}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="waveline-stage-rail" role="tablist" aria-label="Waveline stages">
+        {experienceWaveline.map((stage) => (
+          <button
+            key={stage.id}
+            type="button"
+            role="tab"
+            aria-selected={stage.id === activeId}
+            className={stage.id === activeId ? "is-active" : ""}
+            onClick={() => setActiveId(stage.id)}
+          >
+            <span>{stage.stage}</span>
+            <b>{stage.name}</b>
+          </button>
+        ))}
+      </div>
+
+      <div className="waveline-strengths">
+        <h3>How the new mechanics shape the wave</h3>
+        <div className="cards-2-like">
+          <article>
+            <b>Voice create + playback</b>
+            <p>Highest emotional peaks in Immerse and Interact — posts become living echoes, not static notes.</p>
+          </article>
+          <article>
+            <b>Hand grab + point-to-zoom</b>
+            <p>Agency and physical ownership in Orient through Interact; raises the middle of the wave.</p>
+          </article>
+          <article>
+            <b>Emoji reactions</b>
+            <p>Visible social warmth and feedback loops so the sphere feels actively alive.</p>
+          </article>
+          <article>
+            <b>Color coding</b>
+            <p>Faster scan and navigation; softens overwhelm so Explore → Discover stays fluid.</p>
+          </article>
+        </div>
+      </div>
+
+      <div className="report-next-links" style={{ marginTop: 48 }}>
+        <a href="/cosmos/primary/version1-review/">← Version 1 &amp; review</a>
+        <a href="/cosmos/making/">Next: Making Cosmos →</a>
+      </div>
+    </section>
+  );
 }
 
 function TranscriptAppendix({ src }) {
@@ -534,7 +838,7 @@ function Version1Review() {
           
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "48px", borderTop: "1px solid var(--navy)", paddingTop: "24px" }}>
             <a href="/cosmos/primary/expert-questionnaire/" className="text-link" style={{ fontSize: "14px" }}>← Previous: Expert questionnaire</a>
-            <a href="/cosmos/making/" className="text-link" style={{ fontSize: "14px" }}>Next: Making Cosmos →</a>
+            <a href="/cosmos/user-waveline/" className="text-link" style={{ fontSize: "14px" }}>Next: User waveline →</a>
           </div>
         </section>
       </article>
@@ -570,9 +874,11 @@ function App() {
     ? "secondary"
     : window.location.pathname.includes("/primary")
       ? "primary"
-      : window.location.pathname.includes("/making")
-        ? "making"
-        : "intro";
+      : window.location.pathname.includes("/user-waveline")
+        ? "user-waveline"
+        : window.location.pathname.includes("/making")
+          ? "making"
+          : "intro";
   return (
     <div id="top">
       <Progress />
@@ -582,6 +888,7 @@ function App() {
       <main>
         {activeChapter === "primary" && primaryPage === "expert-questionnaire" && <ExpertQuestionnaire />}
         {activeChapter === "primary" && primaryPage === "version1-review" && <Version1Review />}
+        {activeChapter === "user-waveline" && <UserWavelinePage />}
         {activeChapter === "intro" && <section className="hero" id="intro">
           <div className="hero-kicker"><span>Independent research</span><span>June 2026</span></div>
           <div className="hero-grid">
@@ -1958,7 +2265,7 @@ function App() {
         </section>}
 
         {activeChapter === "making" && <section className="report-section making" id="making">
-          <ChapterLabel number="04">Making Cosmos</ChapterLabel>
+          <ChapterLabel number="05">Making Cosmos</ChapterLabel>
           <div className="section-heading">
             <h2>Prove the wall first.<br /><em>Earn the platform later.</em></h2>
             <p>A phased plan keeps the research honest. Each layer is added only after the previous one creates measurable value.</p>

@@ -2,8 +2,9 @@ export const cosmosPages = [
   ["intro", "01", "Introduction", "/cosmos/"],
   ["secondary", "02", "Secondary research", "/cosmos/secondary/"],
   ["primary", "03", "Primary research", "/cosmos/primary/"],
-  ["making", "04", "Making Cosmos", "/cosmos/making/"],
-  ["design", "05", "Design system", "/cosmos/design-system/"],
+  ["user-waveline", "04", "User waveline", "/cosmos/user-waveline/"],
+  ["making", "05", "Making Cosmos", "/cosmos/making/"],
+  ["design", "06", "Design system", "/cosmos/design-system/"],
 ];
 
 export const secondaryReports = [
