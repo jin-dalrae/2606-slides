@@ -56,31 +56,72 @@ export function CosmosHeader({ meta = "Research report · 2026" }) {
 }
 
 export function CosmosSidebar({ active, subActive }) {
+  const [open, setOpen] = React.useState(() => {
+    try {
+      return window.localStorage.getItem("cosmos-rail") !== "closed";
+    } catch {
+      return true;
+    }
+  });
+
+  React.useEffect(() => {
+    document.documentElement.dataset.cosmosRail = open ? "open" : "closed";
+    try {
+      window.localStorage.setItem("cosmos-rail", open ? "open" : "closed");
+    } catch {
+      // ignore
+    }
+  }, [open]);
+
   return (
-    <aside className="chapter-rail" aria-label="Cosmos reports">
-      <div className="rail-intro">
-        <p>Research library</p>
-        <h2>Cosmos</h2>
-        <span>Spatializing asynchronous community</span>
-      </div>
-      <nav>
-        <p>Index</p>
-        {cosmosPages.map(([id, number, label, path]) => (
-          <React.Fragment key={id}>
-            <a className={active === id ? "active" : ""} href={path}>
-              <span>{number}</span><b>{label}</b><i>→</i>
-            </a>
-            {reportChildren[id] && active === id && <div className="rail-subnav">
-              {reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => (
-                <a className={subActive === subId ? "active" : ""} key={subId} href={subPath}>
-                  <span>{subNumber}</span><b>{subLabel}</b><i>↗</i>
-                </a>
-              ))}
-            </div>}
-          </React.Fragment>
-        ))}
-      </nav>
-      <div className="rail-status"><i /> Cosmos archive <span>2026</span></div>
-    </aside>
+    <>
+      <aside className="chapter-rail" aria-label="Cosmos reports" hidden={!open}>
+        <div className="rail-intro">
+          <div className="rail-intro__top">
+            <p>Research library</p>
+            <button
+              type="button"
+              className="rail-close"
+              onClick={() => setOpen(false)}
+              aria-label="Close chapter sidebar"
+              title="Close sidebar"
+            >
+              ‹
+            </button>
+          </div>
+          <h2>Cosmos</h2>
+          <span>Spatializing asynchronous community</span>
+        </div>
+        <nav>
+          <p>Index</p>
+          {cosmosPages.map(([id, number, label, path]) => (
+            <React.Fragment key={id}>
+              <a className={active === id ? "active" : ""} href={path}>
+                <span>{number}</span><b>{label}</b><i>→</i>
+              </a>
+              {reportChildren[id] && active === id && <div className="rail-subnav">
+                {reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => (
+                  <a className={subActive === subId ? "active" : ""} key={subId} href={subPath}>
+                    <span>{subNumber}</span><b>{subLabel}</b><i>↗</i>
+                  </a>
+                ))}
+              </div>}
+            </React.Fragment>
+          ))}
+        </nav>
+        <div className="rail-status"><i /> Cosmos archive <span>2026</span></div>
+      </aside>
+      {!open && (
+        <button
+          type="button"
+          className="rail-reopen"
+          onClick={() => setOpen(true)}
+          aria-label="Open chapter sidebar"
+          title="Open sidebar"
+        >
+          ☰
+        </button>
+      )}
+    </>
   );
 }

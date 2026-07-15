@@ -36,7 +36,41 @@
     return /* @__PURE__ */ React.createElement("header", { className: "site-header" }, /* @__PURE__ */ React.createElement("a", { className: "wordmark", href: "/cosmos/", "aria-label": "Cosmos home" }, /* @__PURE__ */ React.createElement(CosmosMark, null), " COSMOS"), /* @__PURE__ */ React.createElement("button", { className: "menu-button", onClick: () => setOpen(!open), "aria-expanded": open }, "Menu"), /* @__PURE__ */ React.createElement("nav", { className: open ? "top-nav is-open" : "top-nav", "aria-label": "Cosmos navigation" }, cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { href: path, onClick: () => setOpen(false) }, label), reportChildren[id]?.slice(1).map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child", key: subId, href: subPath, onClick: () => setOpen(false) }, "\u21B3 ", subLabel))))), /* @__PURE__ */ React.createElement("p", { className: "header-meta" }, meta));
   }
   function CosmosSidebar({ active, subActive }) {
-    return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "Cosmos reports" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("p", null, "Research library"), /* @__PURE__ */ React.createElement("h2", null, "Cosmos"), /* @__PURE__ */ React.createElement("span", null, "Spatializing asynchronous community")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), reportChildren[id] && active === id && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: subActive === subId ? "active" : "", key: subId, href: subPath }, /* @__PURE__ */ React.createElement("span", null, subNumber), /* @__PURE__ */ React.createElement("b", null, subLabel), /* @__PURE__ */ React.createElement("i", null, "\u2197"))))))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " Cosmos archive ", /* @__PURE__ */ React.createElement("span", null, "2026")));
+    const [open, setOpen] = React.useState(() => {
+      try {
+        return window.localStorage.getItem("cosmos-rail") !== "closed";
+      } catch {
+        return true;
+      }
+    });
+    React.useEffect(() => {
+      document.documentElement.dataset.cosmosRail = open ? "open" : "closed";
+      try {
+        window.localStorage.setItem("cosmos-rail", open ? "open" : "closed");
+      } catch {
+      }
+    }, [open]);
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "Cosmos reports", hidden: !open }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro__top" }, /* @__PURE__ */ React.createElement("p", null, "Research library"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-close",
+        onClick: () => setOpen(false),
+        "aria-label": "Close chapter sidebar",
+        title: "Close sidebar"
+      },
+      "\u2039"
+    )), /* @__PURE__ */ React.createElement("h2", null, "Cosmos"), /* @__PURE__ */ React.createElement("span", null, "Spatializing asynchronous community")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), reportChildren[id] && active === id && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: subActive === subId ? "active" : "", key: subId, href: subPath }, /* @__PURE__ */ React.createElement("span", null, subNumber), /* @__PURE__ */ React.createElement("b", null, subLabel), /* @__PURE__ */ React.createElement("i", null, "\u2197"))))))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " Cosmos archive ", /* @__PURE__ */ React.createElement("span", null, "2026"))), !open && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-reopen",
+        onClick: () => setOpen(true),
+        "aria-label": "Open chapter sidebar",
+        title: "Open sidebar"
+      },
+      "\u2630"
+    ));
   }
 
   // public/cosmos/app.jsx
@@ -196,20 +230,20 @@
   function ChapterLabel({ number, children }) {
     return /* @__PURE__ */ React.createElement("div", { className: "chapter-label" }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("p", null, children));
   }
-  function ExperienceWavelineSlide({ stages, activeId, onSelect }) {
-    const width = 1600;
-    const height = 900;
-    const padL = 72;
-    const padR = 72;
-    const padT = 110;
-    const padB = 210;
+  function WavelineChart({ stages, activeId, onSelect }) {
+    const width = 1520;
+    const height = 340;
+    const padL = 28;
+    const padR = 28;
+    const padT = 28;
+    const padB = 54;
     const chartW = width - padL - padR;
     const chartH = height - padT - padB;
     const n = stages.length;
     const points = stages.map((stage, index) => {
       const x = padL + index / (n - 1) * chartW;
       const y = padT + chartH * (1 - stage.intensity);
-      return { ...stage, x, y, index };
+      return { ...stage, x, y };
     });
     const lineD = points.map((p, i) => {
       if (i === 0) return `M ${p.x} ${p.y}`;
@@ -219,18 +253,38 @@
     }).join(" ");
     const areaD = `${lineD} L ${points[n - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`;
     const baselineY = padT + chartH;
-    return /* @__PURE__ */ React.createElement("div", { className: "waveline-slide", role: "img", "aria-label": "Eight-stage Cosmos VR experience waveline in 16 by 9" }, /* @__PURE__ */ React.createElement("svg", { className: "waveline-slide__svg", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: "waveFill", x1: "0", y1: "0", x2: "0", y2: "1" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: "#f14f9b", stopOpacity: "0.42" }), /* @__PURE__ */ React.createElement("stop", { offset: "55%", stopColor: "#f2f04f", stopOpacity: "0.18" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: "#111c4e", stopOpacity: "0.04" })), /* @__PURE__ */ React.createElement("linearGradient", { id: "waveStroke", x1: "0", y1: "0", x2: "1", y2: "0" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: "#f14f9b" }), /* @__PURE__ */ React.createElement("stop", { offset: "45%", stopColor: "#111c4e" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: "#f14f9b" }))), /* @__PURE__ */ React.createElement("rect", { x: "0", y: "0", width, height, fill: "#f7f4ed" }), /* @__PURE__ */ React.createElement("rect", { x: "28", y: "28", width: width - 56, height: height - 56, fill: "none", stroke: "rgba(17,28,78,0.14)", strokeWidth: "1.5" }), /* @__PURE__ */ React.createElement("text", { x: padL, y: "68", fill: "#f14f9b", fontFamily: "Fraunces, Georgia, serif", fontSize: "15", letterSpacing: "3" }, "EXPERIENCE WAVELINE \xB7 COSMOS VR"), /* @__PURE__ */ React.createElement("text", { x: padL, y: "100", fill: "#111c4e", fontFamily: "Fraunces, Georgia, serif", fontSize: "36", fontWeight: "600" }, "From intrigue to return \u2014 one embodied session"), /* @__PURE__ */ React.createElement("text", { x: width - padR, y: "72", textAnchor: "end", fill: "#66708b", fontFamily: "DM Sans, Arial, sans-serif", fontSize: "14" }, "16:9 \xB7 8 stages \xB7 emotional intensity over time"), [0.25, 0.5, 0.75, 1].map((t) => {
+    return /* @__PURE__ */ React.createElement("svg", { className: "waveline-chart", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: "waveFill", x1: "0", y1: "0", x2: "0", y2: "1" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: "#f14f9b", stopOpacity: "0.38" }), /* @__PURE__ */ React.createElement("stop", { offset: "70%", stopColor: "#f2f04f", stopOpacity: "0.12" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: "#111c4e", stopOpacity: "0.03" })), /* @__PURE__ */ React.createElement("linearGradient", { id: "waveStroke", x1: "0", y1: "0", x2: "1", y2: "0" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: "#f14f9b" }), /* @__PURE__ */ React.createElement("stop", { offset: "50%", stopColor: "#111c4e" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: "#f14f9b" }))), [0.5, 1].map((t) => {
       const y = padT + chartH * (1 - t);
-      return /* @__PURE__ */ React.createElement("g", { key: t }, /* @__PURE__ */ React.createElement("line", { x1: padL, y1: y, x2: width - padR, y2: y, stroke: "rgba(17,28,78,0.08)", strokeDasharray: "4 6" }), /* @__PURE__ */ React.createElement("text", { x: padL - 12, y: y + 4, textAnchor: "end", fill: "#66708b", fontSize: "11", fontFamily: "DM Sans, Arial, sans-serif" }, t === 1 ? "peak" : t === 0.5 ? "mid" : ""));
-    }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: baselineY, x2: width - padR, y2: baselineY, stroke: "rgba(17,28,78,0.22)", strokeWidth: "1.5" }), /* @__PURE__ */ React.createElement("path", { d: areaD, fill: "url(#waveFill)" }), /* @__PURE__ */ React.createElement("path", { d: lineD, fill: "none", stroke: "url(#waveStroke)", strokeWidth: "4.5", strokeLinecap: "round", strokeLinejoin: "round" }), points.map((p) => {
+      return /* @__PURE__ */ React.createElement("line", { key: t, x1: padL, y1: y, x2: width - padR, y2: y, stroke: "rgba(17,28,78,0.08)", strokeDasharray: "3 5" });
+    }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: baselineY, x2: width - padR, y2: baselineY, stroke: "rgba(17,28,78,0.16)", strokeWidth: "1.25" }), /* @__PURE__ */ React.createElement("path", { d: areaD, fill: "url(#waveFill)" }), /* @__PURE__ */ React.createElement("path", { d: lineD, fill: "none", stroke: "url(#waveStroke)", strokeWidth: "3.5", strokeLinecap: "round", strokeLinejoin: "round" }), points.map((p) => {
       const active = p.id === activeId;
-      return /* @__PURE__ */ React.createElement("g", { key: p.id, className: "waveline-node", style: { cursor: "pointer" }, onClick: () => onSelect(p.id) }, /* @__PURE__ */ React.createElement("line", { x1: p.x, y1: p.y, x2: p.x, y2: baselineY, stroke: active ? "#f14f9b" : "rgba(17,28,78,0.12)", strokeWidth: active ? 2 : 1, strokeDasharray: active ? "0" : "3 5" }), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 14 : 10, fill: active ? "#f14f9b" : "#111c4e", stroke: "#f7f4ed", strokeWidth: "3" }), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 5 : 3.5, fill: "#f2f04f" }), /* @__PURE__ */ React.createElement("text", { x: p.x, y: p.y - 22, textAnchor: "middle", fill: active ? "#f14f9b" : "#66708b", fontSize: "12", fontFamily: "DM Sans, Arial, sans-serif", fontWeight: "700" }, p.peakLabel), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 28, textAnchor: "middle", fill: "#f14f9b", fontFamily: "Fraunces, Georgia, serif", fontSize: "13" }, p.stage), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 52, textAnchor: "middle", fill: "#111c4e", fontFamily: "DM Sans, Arial, sans-serif", fontSize: "15", fontWeight: "700" }, p.name), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 74, textAnchor: "middle", fill: "#66708b", fontFamily: "DM Sans, Arial, sans-serif", fontSize: "11" }, p.short.length > 22 ? `${p.short.slice(0, 20)}\u2026` : p.short));
-    }), /* @__PURE__ */ React.createElement("text", { x: padL, y: height - 48, fill: "#66708b", fontFamily: "DM Sans, Arial, sans-serif", fontSize: "13" }, "Not a conversion funnel \u2014 an experience map: stages on X, felt intensity on Y. Peaks at Orient \u2192 Immerse \u2192 Interact from voice + hands.")));
+      return /* @__PURE__ */ React.createElement("g", { key: p.id, className: "waveline-node", onClick: () => onSelect(p.id), style: { cursor: "pointer" } }, /* @__PURE__ */ React.createElement(
+        "line",
+        {
+          x1: p.x,
+          y1: p.y,
+          x2: p.x,
+          y2: baselineY,
+          stroke: active ? "#f14f9b" : "rgba(17,28,78,0.1)",
+          strokeWidth: active ? 1.75 : 1,
+          strokeDasharray: active ? "0" : "2 4"
+        }
+      ), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 11 : 8, fill: active ? "#f14f9b" : "#111c4e", stroke: "#f7f4ed", strokeWidth: "2.5" }), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 4 : 2.5, fill: "#f2f04f" }), /* @__PURE__ */ React.createElement(
+        "text",
+        {
+          x: p.x,
+          y: Math.max(padT + 12, p.y - 16),
+          textAnchor: "middle",
+          className: active ? "is-active" : ""
+        },
+        p.peakLabel
+      ), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 18, textAnchor: "middle", className: "stage-num" }, p.stage), /* @__PURE__ */ React.createElement("text", { x: p.x, y: baselineY + 36, textAnchor: "middle", className: "stage-name" }, p.name));
+    }));
   }
   function UserWavelinePage() {
     const [activeId, setActiveId] = useState("immerse");
     const active = experienceWaveline.find((s) => s.id === activeId) || experienceWaveline[0];
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement(ChapterLabel, { number: "04" }, "User waveline"), /* @__PURE__ */ React.createElement("div", { className: "section-heading" }, /* @__PURE__ */ React.createElement("h2", null, "Experience waveline,", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("em", null, "not a funnel.")), /* @__PURE__ */ React.createElement("p", null, "A customer journey maps stages of buying. This is closer to an", " ", /* @__PURE__ */ React.createElement("strong", null, "experience map"), " (or emotional journey): one Cosmos VR session plotted as a ", /* @__PURE__ */ React.createElement("strong", null, "waveline"), " \u2014 stages across time, intensity of feeling as the curve. Voice, hands, color, and proximity lift the peaks.")), /* @__PURE__ */ React.createElement(ExperienceWavelineSlide, { stages: experienceWaveline, activeId, onSelect: setActiveId }), /* @__PURE__ */ React.createElement("div", { className: "waveline-stage-panel", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", { className: "waveline-stage-panel__num" }, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "eyebrow" }, active.short), /* @__PURE__ */ React.createElement("h3", null, active.name)), /* @__PURE__ */ React.createElement("p", { className: "waveline-stage-panel__peak" }, "Wave peak \xB7 ", active.peakLabel)), /* @__PURE__ */ React.createElement("div", { className: "waveline-stage-panel__grid" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-mechanics" }, active.mechanics.map((m) => /* @__PURE__ */ React.createElement("li", { key: m }, m)))), /* @__PURE__ */ React.createElement("div", { className: "waveline-stage-rail", role: "tablist", "aria-label": "Waveline stages" }, experienceWaveline.map((stage) => /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Cosmos VR experience waveline, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User waveline \xB7 Cosmos VR"), /* @__PURE__ */ React.createElement("h1", null, "Experience map \u2014 not a conversion funnel")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Stages on X, felt intensity on Y. One embodied session: voice, hands, color, proximity.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__chart" }, /* @__PURE__ */ React.createElement(WavelineChart, { stages: experienceWaveline, activeId, onSelect: setActiveId })), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__tabs", role: "tablist", "aria-label": "Waveline stages" }, experienceWaveline.map((stage) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: stage.id,
@@ -241,8 +295,8 @@
         onClick: () => setActiveId(stage.id)
       },
       /* @__PURE__ */ React.createElement("span", null, stage.stage),
-      /* @__PURE__ */ React.createElement("b", null, stage.name)
-    ))), /* @__PURE__ */ React.createElement("div", { className: "waveline-strengths" }, /* @__PURE__ */ React.createElement("h3", null, "How the new mechanics shape the wave"), /* @__PURE__ */ React.createElement("div", { className: "cards-2-like" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Voice create + playback"), /* @__PURE__ */ React.createElement("p", null, "Highest emotional peaks in Immerse and Interact \u2014 posts become living echoes, not static notes.")), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Hand grab + point-to-zoom"), /* @__PURE__ */ React.createElement("p", null, "Agency and physical ownership in Orient through Interact; raises the middle of the wave.")), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Emoji reactions"), /* @__PURE__ */ React.createElement("p", null, "Visible social warmth and feedback loops so the sphere feels actively alive.")), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Color coding"), /* @__PURE__ */ React.createElement("p", null, "Faster scan and navigation; softens overwhelm so Explore \u2192 Discover stays fluid.")))), /* @__PURE__ */ React.createElement("div", { className: "report-next-links", style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
+      stage.name
+    ))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", null, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, active.name), /* @__PURE__ */ React.createElement("p", null, active.short, " \xB7 peak: ", active.peakLabel))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, active.mechanics.map((m) => /* @__PURE__ */ React.createElement("li", { key: m }, m))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039) for a clean 16:9 share view. Click stages on the wave or the tabs."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
   }
   function TranscriptAppendix({ src }) {
     const [transcript, setTranscript] = useState("Loading transcript\u2026");

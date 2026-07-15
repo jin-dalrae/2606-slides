@@ -36,7 +36,41 @@
     return /* @__PURE__ */ React.createElement("header", { className: "site-header" }, /* @__PURE__ */ React.createElement("a", { className: "wordmark", href: "/cosmos/", "aria-label": "Cosmos home" }, /* @__PURE__ */ React.createElement(CosmosMark, null), " COSMOS"), /* @__PURE__ */ React.createElement("button", { className: "menu-button", onClick: () => setOpen(!open), "aria-expanded": open }, "Menu"), /* @__PURE__ */ React.createElement("nav", { className: open ? "top-nav is-open" : "top-nav", "aria-label": "Cosmos navigation" }, cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { href: path, onClick: () => setOpen(false) }, label), reportChildren[id]?.slice(1).map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: "top-nav-child", key: subId, href: subPath, onClick: () => setOpen(false) }, "\u21B3 ", subLabel))))), /* @__PURE__ */ React.createElement("p", { className: "header-meta" }, meta));
   }
   function CosmosSidebar({ active, subActive }) {
-    return /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "Cosmos reports" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("p", null, "Research library"), /* @__PURE__ */ React.createElement("h2", null, "Cosmos"), /* @__PURE__ */ React.createElement("span", null, "Spatializing asynchronous community")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), reportChildren[id] && active === id && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: subActive === subId ? "active" : "", key: subId, href: subPath }, /* @__PURE__ */ React.createElement("span", null, subNumber), /* @__PURE__ */ React.createElement("b", null, subLabel), /* @__PURE__ */ React.createElement("i", null, "\u2197"))))))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " Cosmos archive ", /* @__PURE__ */ React.createElement("span", null, "2026")));
+    const [open, setOpen] = React.useState(() => {
+      try {
+        return window.localStorage.getItem("cosmos-rail") !== "closed";
+      } catch {
+        return true;
+      }
+    });
+    React.useEffect(() => {
+      document.documentElement.dataset.cosmosRail = open ? "open" : "closed";
+      try {
+        window.localStorage.setItem("cosmos-rail", open ? "open" : "closed");
+      } catch {
+      }
+    }, [open]);
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("aside", { className: "chapter-rail", "aria-label": "Cosmos reports", hidden: !open }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro" }, /* @__PURE__ */ React.createElement("div", { className: "rail-intro__top" }, /* @__PURE__ */ React.createElement("p", null, "Research library"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-close",
+        onClick: () => setOpen(false),
+        "aria-label": "Close chapter sidebar",
+        title: "Close sidebar"
+      },
+      "\u2039"
+    )), /* @__PURE__ */ React.createElement("h2", null, "Cosmos"), /* @__PURE__ */ React.createElement("span", null, "Spatializing asynchronous community")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), reportChildren[id] && active === id && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: subActive === subId ? "active" : "", key: subId, href: subPath }, /* @__PURE__ */ React.createElement("span", null, subNumber), /* @__PURE__ */ React.createElement("b", null, subLabel), /* @__PURE__ */ React.createElement("i", null, "\u2197"))))))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " Cosmos archive ", /* @__PURE__ */ React.createElement("span", null, "2026"))), !open && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-reopen",
+        onClick: () => setOpen(true),
+        "aria-label": "Open chapter sidebar",
+        title: "Open sidebar"
+      },
+      "\u2630"
+    ));
   }
 
   // public/cosmos/design-system/app.jsx

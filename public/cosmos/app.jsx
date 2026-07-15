@@ -197,13 +197,14 @@ function ChapterLabel({ number, children }) {
   return <div className="chapter-label"><span>{number}</span><p>{children}</p></div>;
 }
 
-function ExperienceWavelineSlide({ stages, activeId, onSelect }) {
-  const width = 1600;
-  const height = 900;
-  const padL = 72;
-  const padR = 72;
-  const padT = 110;
-  const padB = 210;
+function WavelineChart({ stages, activeId, onSelect }) {
+  // Compact chart region only — explanation lives in the same 16:9 slide below.
+  const width = 1520;
+  const height = 340;
+  const padL = 28;
+  const padR = 28;
+  const padT = 28;
+  const padB = 54;
   const chartW = width - padL - padR;
   const chartH = height - padT - padB;
   const n = stages.length;
@@ -211,7 +212,7 @@ function ExperienceWavelineSlide({ stages, activeId, onSelect }) {
   const points = stages.map((stage, index) => {
     const x = padL + (index / (n - 1)) * chartW;
     const y = padT + chartH * (1 - stage.intensity);
-    return { ...stage, x, y, index };
+    return { ...stage, x, y };
   });
 
   const lineD = points
@@ -227,80 +228,63 @@ function ExperienceWavelineSlide({ stages, activeId, onSelect }) {
   const baselineY = padT + chartH;
 
   return (
-    <div className="waveline-slide" role="img" aria-label="Eight-stage Cosmos VR experience waveline in 16 by 9">
-      <svg className="waveline-slide__svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f14f9b" stopOpacity="0.42" />
-            <stop offset="55%" stopColor="#f2f04f" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#111c4e" stopOpacity="0.04" />
-          </linearGradient>
-          <linearGradient id="waveStroke" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#f14f9b" />
-            <stop offset="45%" stopColor="#111c4e" />
-            <stop offset="100%" stopColor="#f14f9b" />
-          </linearGradient>
-        </defs>
+    <svg className="waveline-chart" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f14f9b" stopOpacity="0.38" />
+          <stop offset="70%" stopColor="#f2f04f" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#111c4e" stopOpacity="0.03" />
+        </linearGradient>
+        <linearGradient id="waveStroke" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#f14f9b" />
+          <stop offset="50%" stopColor="#111c4e" />
+          <stop offset="100%" stopColor="#f14f9b" />
+        </linearGradient>
+      </defs>
 
-        <rect x="0" y="0" width={width} height={height} fill="#f7f4ed" />
-        <rect x="28" y="28" width={width - 56} height={height - 56} fill="none" stroke="rgba(17,28,78,0.14)" strokeWidth="1.5" />
+      {[0.5, 1].map((t) => {
+        const y = padT + chartH * (1 - t);
+        return (
+          <line key={t} x1={padL} y1={y} x2={width - padR} y2={y} stroke="rgba(17,28,78,0.08)" strokeDasharray="3 5" />
+        );
+      })}
+      <line x1={padL} y1={baselineY} x2={width - padR} y2={baselineY} stroke="rgba(17,28,78,0.16)" strokeWidth="1.25" />
+      <path d={areaD} fill="url(#waveFill)" />
+      <path d={lineD} fill="none" stroke="url(#waveStroke)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
 
-        <text x={padL} y="68" fill="#f14f9b" fontFamily="Fraunces, Georgia, serif" fontSize="15" letterSpacing="3">
-          EXPERIENCE WAVELINE · COSMOS VR
-        </text>
-        <text x={padL} y="100" fill="#111c4e" fontFamily="Fraunces, Georgia, serif" fontSize="36" fontWeight="600">
-          From intrigue to return — one embodied session
-        </text>
-        <text x={width - padR} y="72" textAnchor="end" fill="#66708b" fontFamily="DM Sans, Arial, sans-serif" fontSize="14">
-          16:9 · 8 stages · emotional intensity over time
-        </text>
-
-        {/* soft grid */}
-        {[0.25, 0.5, 0.75, 1].map((t) => {
-          const y = padT + chartH * (1 - t);
-          return (
-            <g key={t}>
-              <line x1={padL} y1={y} x2={width - padR} y2={y} stroke="rgba(17,28,78,0.08)" strokeDasharray="4 6" />
-              <text x={padL - 12} y={y + 4} textAnchor="end" fill="#66708b" fontSize="11" fontFamily="DM Sans, Arial, sans-serif">
-                {t === 1 ? "peak" : t === 0.5 ? "mid" : ""}
-              </text>
-            </g>
-          );
-        })}
-
-        <line x1={padL} y1={baselineY} x2={width - padR} y2={baselineY} stroke="rgba(17,28,78,0.22)" strokeWidth="1.5" />
-
-        <path d={areaD} fill="url(#waveFill)" />
-        <path d={lineD} fill="none" stroke="url(#waveStroke)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-
-        {points.map((p) => {
-          const active = p.id === activeId;
-          return (
-            <g key={p.id} className="waveline-node" style={{ cursor: "pointer" }} onClick={() => onSelect(p.id)}>
-              <line x1={p.x} y1={p.y} x2={p.x} y2={baselineY} stroke={active ? "#f14f9b" : "rgba(17,28,78,0.12)"} strokeWidth={active ? 2 : 1} strokeDasharray={active ? "0" : "3 5"} />
-              <circle cx={p.x} cy={p.y} r={active ? 14 : 10} fill={active ? "#f14f9b" : "#111c4e"} stroke="#f7f4ed" strokeWidth="3" />
-              <circle cx={p.x} cy={p.y} r={active ? 5 : 3.5} fill="#f2f04f" />
-              <text x={p.x} y={p.y - 22} textAnchor="middle" fill={active ? "#f14f9b" : "#66708b"} fontSize="12" fontFamily="DM Sans, Arial, sans-serif" fontWeight="700">
-                {p.peakLabel}
-              </text>
-              <text x={p.x} y={baselineY + 28} textAnchor="middle" fill="#f14f9b" fontFamily="Fraunces, Georgia, serif" fontSize="13">
-                {p.stage}
-              </text>
-              <text x={p.x} y={baselineY + 52} textAnchor="middle" fill="#111c4e" fontFamily="DM Sans, Arial, sans-serif" fontSize="15" fontWeight="700">
-                {p.name}
-              </text>
-              <text x={p.x} y={baselineY + 74} textAnchor="middle" fill="#66708b" fontFamily="DM Sans, Arial, sans-serif" fontSize="11">
-                {p.short.length > 22 ? `${p.short.slice(0, 20)}…` : p.short}
-              </text>
-            </g>
-          );
-        })}
-
-        <text x={padL} y={height - 48} fill="#66708b" fontFamily="DM Sans, Arial, sans-serif" fontSize="13">
-          Not a conversion funnel — an experience map: stages on X, felt intensity on Y. Peaks at Orient → Immerse → Interact from voice + hands.
-        </text>
-      </svg>
-    </div>
+      {points.map((p) => {
+        const active = p.id === activeId;
+        return (
+          <g key={p.id} className="waveline-node" onClick={() => onSelect(p.id)} style={{ cursor: "pointer" }}>
+            <line
+              x1={p.x}
+              y1={p.y}
+              x2={p.x}
+              y2={baselineY}
+              stroke={active ? "#f14f9b" : "rgba(17,28,78,0.1)"}
+              strokeWidth={active ? 1.75 : 1}
+              strokeDasharray={active ? "0" : "2 4"}
+            />
+            <circle cx={p.x} cy={p.y} r={active ? 11 : 8} fill={active ? "#f14f9b" : "#111c4e"} stroke="#f7f4ed" strokeWidth="2.5" />
+            <circle cx={p.x} cy={p.y} r={active ? 4 : 2.5} fill="#f2f04f" />
+            <text
+              x={p.x}
+              y={Math.max(padT + 12, p.y - 16)}
+              textAnchor="middle"
+              className={active ? "is-active" : ""}
+            >
+              {p.peakLabel}
+            </text>
+            <text x={p.x} y={baselineY + 18} textAnchor="middle" className="stage-num">
+              {p.stage}
+            </text>
+            <text x={p.x} y={baselineY + 36} textAnchor="middle" className="stage-name">
+              {p.name}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
   );
 }
 
@@ -310,88 +294,72 @@ function UserWavelinePage() {
 
   return (
     <section className="report-section waveline-page" id="user-waveline">
-      <ChapterLabel number="04">User waveline</ChapterLabel>
-      <div className="section-heading">
-        <h2>Experience waveline,<br /><em>not a funnel.</em></h2>
-        <p>
-          A customer journey maps stages of buying. This is closer to an{" "}
-          <strong>experience map</strong> (or emotional journey): one Cosmos VR session
-          plotted as a <strong>waveline</strong> — stages across time, intensity of
-          feeling as the curve. Voice, hands, color, and proximity lift the peaks.
-        </p>
-      </div>
-
-      <ExperienceWavelineSlide stages={experienceWaveline} activeId={activeId} onSelect={setActiveId} />
-
-      <div className="waveline-stage-panel" aria-live="polite">
-        <header>
-          <span className="waveline-stage-panel__num">{active.stage}</span>
+      <div className="waveline-frame" aria-label="Cosmos VR experience waveline, 16 by 9">
+        <header className="waveline-frame__head">
           <div>
-            <p className="eyebrow">{active.short}</p>
-            <h3>{active.name}</h3>
+            <p className="waveline-kicker">04 · User waveline · Cosmos VR</p>
+            <h1>Experience map — not a conversion funnel</h1>
           </div>
-          <p className="waveline-stage-panel__peak">Wave peak · {active.peakLabel}</p>
+          <p className="waveline-lede">
+            Stages on X, felt intensity on Y. One embodied session: voice, hands, color, proximity.
+          </p>
         </header>
-        <div className="waveline-stage-panel__grid">
-          <article>
-            <b>Behavior</b>
-            <p>{active.behavior}</p>
-          </article>
-          <article>
-            <b>Feelings</b>
-            <p>{active.feelings}</p>
-          </article>
-          <article>
-            <b>Achievements</b>
-            <p>{active.achievements}</p>
-          </article>
+
+        <div className="waveline-frame__chart">
+          <WavelineChart stages={experienceWaveline} activeId={activeId} onSelect={setActiveId} />
         </div>
-        <ul className="waveline-mechanics">
-          {active.mechanics.map((m) => (
-            <li key={m}>{m}</li>
+
+        <div className="waveline-frame__tabs" role="tablist" aria-label="Waveline stages">
+          {experienceWaveline.map((stage) => (
+            <button
+              key={stage.id}
+              type="button"
+              role="tab"
+              aria-selected={stage.id === activeId}
+              className={stage.id === activeId ? "is-active" : ""}
+              onClick={() => setActiveId(stage.id)}
+            >
+              <span>{stage.stage}</span>
+              {stage.name}
+            </button>
           ))}
-        </ul>
-      </div>
+        </div>
 
-      <div className="waveline-stage-rail" role="tablist" aria-label="Waveline stages">
-        {experienceWaveline.map((stage) => (
-          <button
-            key={stage.id}
-            type="button"
-            role="tab"
-            aria-selected={stage.id === activeId}
-            className={stage.id === activeId ? "is-active" : ""}
-            onClick={() => setActiveId(stage.id)}
-          >
-            <span>{stage.stage}</span>
-            <b>{stage.name}</b>
-          </button>
-        ))}
-      </div>
-
-      <div className="waveline-strengths">
-        <h3>How the new mechanics shape the wave</h3>
-        <div className="cards-2-like">
-          <article>
-            <b>Voice create + playback</b>
-            <p>Highest emotional peaks in Immerse and Interact — posts become living echoes, not static notes.</p>
-          </article>
-          <article>
-            <b>Hand grab + point-to-zoom</b>
-            <p>Agency and physical ownership in Orient through Interact; raises the middle of the wave.</p>
-          </article>
-          <article>
-            <b>Emoji reactions</b>
-            <p>Visible social warmth and feedback loops so the sphere feels actively alive.</p>
-          </article>
-          <article>
-            <b>Color coding</b>
-            <p>Faster scan and navigation; softens overwhelm so Explore → Discover stays fluid.</p>
-          </article>
+        <div className="waveline-frame__detail" aria-live="polite">
+          <div className="waveline-frame__detail-title">
+            <span>{active.stage}</span>
+            <div>
+              <h2>{active.name}</h2>
+              <p>{active.short} · peak: {active.peakLabel}</p>
+            </div>
+          </div>
+          <div className="waveline-frame__cols">
+            <article>
+              <b>Behavior</b>
+              <p>{active.behavior}</p>
+            </article>
+            <article>
+              <b>Feelings</b>
+              <p>{active.feelings}</p>
+            </article>
+            <article>
+              <b>Achievements</b>
+              <p>{active.achievements}</p>
+            </article>
+          </div>
+          <ul className="waveline-frame__chips">
+            {active.mechanics.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      <div className="report-next-links" style={{ marginTop: 48 }}>
+      <p className="waveline-share-hint">
+        Tip: close the left sidebar (‹) for a clean 16:9 share view. Click stages on the wave or the tabs.
+      </p>
+
+      <div className="report-next-links">
         <a href="/cosmos/primary/version1-review/">← Version 1 &amp; review</a>
         <a href="/cosmos/making/">Next: Making Cosmos →</a>
       </div>
