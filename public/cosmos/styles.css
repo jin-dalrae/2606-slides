@@ -791,6 +791,7 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 }
 
 /* —— Stakeholder map: 16:9 plot + full relationship detail —— */
+.stakeholder-page.report-section,
 .stakeholder-page {
   padding-top: 28px;
   padding-bottom: 56px;
@@ -1046,28 +1047,59 @@ html[data-cosmos-rail="closed"] .stakeholder-frame {
   .stakeholder-frame__count { grid-column: 1 / -1; justify-self: start; }
 }
 
-/* —— Stakeholder network graph (chain-first, part-focused camera) —— */
-.stakeholder-frame--focus {
-  display: grid;
-  /* Header / tools / tabs stay compact; map gets most of the height. */
-  grid-template-rows: auto auto auto minmax(420px, 1.9fr) auto;
-  gap: 8px;
-  width: 100%;
-  max-width: min(1240px, 100%);
-  margin: 0 auto;
-  /* Taller than 16:9 so the graph has room without clipping detail. */
-  aspect-ratio: 16 / 12;
-  min-height: min(92vh, 980px);
-  padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.4vw, 18px);
-  border: 1px solid var(--line);
-  background: var(--paper);
-  box-shadow: 0 16px 40px rgba(17, 28, 78, 0.07);
-  overflow: hidden;
-  container-type: size;
+.report-section.stakeholder-page {
+  padding-top: 28px;
+  padding-bottom: 56px;
 }
-html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
-  max-width: min(1360px, 100%);
-  min-height: min(94vh, 1040px);
+/* —— Stakeholder network: tall map + open detail (no aspect-ratio clip) —— */
+.stakeholder-page {
+  padding-top: 28px;
+  padding-bottom: 64px;
+}
+.stakeholder-shell {
+  width: 100%;
+  max-width: min(1280px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+html[data-cosmos-rail="closed"] .stakeholder-shell {
+  max-width: min(1400px, 100%);
+}
+.stakeholder-shell .stakeholder-frame__head {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 10px 20px;
+  align-items: end;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.stakeholder-shell .stakeholder-kicker {
+  margin: 0 0 4px;
+  color: var(--pink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.stakeholder-shell .stakeholder-frame__head h1 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+.stakeholder-shell .stakeholder-lede {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 42ch;
+  justify-self: end;
 }
 .stakeholder-frame__toolbar {
   display: flex;
@@ -1083,11 +1115,11 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
 }
 .stakeholder-frame__mode-tabs button,
 .stakeholder-frame__stepper button {
-  padding: 6px 10px;
+  padding: 7px 12px;
   border: 1px solid var(--line);
   background: white;
   color: var(--muted);
-  font-size: clamp(11px, 1.25cqi, 13px);
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -1099,68 +1131,59 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
   border-color: var(--yellow);
 }
 .stakeholder-frame__stepper span {
-  min-width: 7.5rem;
+  min-width: 8rem;
   text-align: center;
   color: var(--navy);
-  font-size: clamp(11px, 1.25cqi, 13px);
+  font-size: 13px;
   font-weight: 700;
 }
-.stakeholder-frame--focus .stakeholder-frame__chain-tabs {
+.stakeholder-shell .stakeholder-frame__chain-tabs,
+.stakeholder-frame__side-tabs--bar {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 4px;
+  gap: 5px;
 }
-.stakeholder-frame--focus .stakeholder-frame__chain-tabs button {
+.stakeholder-shell .stakeholder-frame__chain-tabs button,
+.stakeholder-frame__side-tabs--bar button {
   min-width: 0;
-  padding: 7px 4px;
+  padding: 8px 6px;
   border: 1px solid var(--line);
   background: white;
   color: var(--muted);
-  font-size: clamp(10px, 1.2cqi, 12px);
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.stakeholder-frame--focus .stakeholder-frame__chain-tabs button.is-active,
-.stakeholder-frame--focus .stakeholder-frame__chain-tabs button:hover {
-  background: var(--yellow);
-  color: var(--navy);
-  border-color: var(--yellow);
-}
-.stakeholder-frame__side-tabs--bar {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 4px;
-  max-width: none;
-  justify-content: stretch;
-}
-.stakeholder-frame__side-tabs--bar button {
-  padding: 7px 6px;
-  border: 1px solid var(--line);
-  background: white;
-  color: var(--muted);
-  font-size: clamp(11px, 1.25cqi, 13px);
-  font-weight: 700;
-  cursor: pointer;
-}
+.stakeholder-shell .stakeholder-frame__chain-tabs button.is-active,
+.stakeholder-shell .stakeholder-frame__chain-tabs button:hover,
 .stakeholder-frame__side-tabs--bar button.is-active,
 .stakeholder-frame__side-tabs--bar button:hover {
   background: var(--yellow);
   color: var(--navy);
   border-color: var(--yellow);
 }
+
+/* Tall map pane — not constrained by aspect-ratio or detail height */
 .stakeholder-frame__map--focus {
-  min-height: 420px;
-  height: 100%;
+  width: 100%;
+  height: min(72vh, 820px);
+  min-height: 560px;
   border: 1px solid var(--line);
   background: #fbfaf6;
   overflow: hidden;
 }
+.stakeholder-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .stakeholder-map__camera {
-  transform-box: fill-box;
-  transform-origin: center;
+  transform-box: view-box;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 .stakeholder-map__field {
   stroke-width: 1.25;
@@ -1185,9 +1208,7 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
 .stakeholder-map__link.is-base.is-content { stroke: #111c4e; }
 .stakeholder-map__link.is-base.is-acquisition { stroke: #f14f9b; }
 .stakeholder-map__link.is-base.is-hardware { stroke: #0a7a5c; stroke-dasharray: 4 4; }
-.stakeholder-map__link.is-chain-lit {
-  stroke-width: 2.1;
-}
+.stakeholder-map__link.is-chain-lit { stroke-width: 2.1; }
 .stakeholder-map__flow {
   fill: none;
   stroke-width: 3.5;
@@ -1199,7 +1220,7 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
 .stakeholder-map__flow-label {
   fill: #f14f9b;
   font-family: var(--serif);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 .stakeholder-map__side-label-text {
@@ -1213,37 +1234,69 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
 .stakeholder-map__node.is-in-chain { opacity: 1; }
 .stakeholder-map__node-label {
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   fill: #111c4e;
   pointer-events: none;
 }
-.stakeholder-frame__detail--focus {
-  min-height: 0;
+
+/* Detail under the map — natural height, no overflow clip */
+.stakeholder-frame__detail--open {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 6px;
-  padding: 8px 10px;
+  gap: 10px;
+  padding: 14px 16px 16px;
   border: 1px solid var(--line);
   background: var(--paper-deep);
-  overflow: hidden;
+}
+.stakeholder-frame__detail--open .stakeholder-frame__detail-title {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px 14px;
+  align-items: start;
+}
+.stakeholder-frame__detail--open .stakeholder-frame__group {
+  margin: 0 0 3px;
+  color: var(--pink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.stakeholder-frame__detail--open h2 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: 600;
+  line-height: 1.1;
+}
+.stakeholder-frame__detail--open .stakeholder-frame__sub {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.stakeholder-frame__detail--open .stakeholder-frame__count {
+  margin: 0;
+  padding: 6px 10px;
+  background: var(--yellow);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .stakeholder-frame__focus-body {
   display: grid;
   grid-template-columns: 0.85fr 1.4fr;
-  gap: 10px;
-  min-height: 0;
-  overflow: hidden;
+  gap: 12px;
 }
 .stakeholder-frame__focus-body--chain {
-  grid-template-columns: 0.9fr 1.4fr;
+  grid-template-columns: 0.95fr 1.3fr;
 }
 .stakeholder-frame__focus-nodes,
 .stakeholder-frame__focus-chains,
 .stakeholder-frame__focus-path {
-  min-height: 0;
-  overflow: auto;
-  padding: 6px 8px;
+  padding: 12px 14px;
   border: 1px solid var(--line);
   background: white;
 }
@@ -1251,36 +1304,48 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
 .stakeholder-frame__focus-chains b,
 .stakeholder-frame__focus-path b {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   color: var(--pink);
-  font-size: clamp(10px, 1.15cqi, 12px);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .07em;
+  letter-spacing: .08em;
   text-transform: uppercase;
 }
 .stakeholder-frame__focus-nodes ul,
 .stakeholder-frame__focus-chains ol {
   margin: 0;
-  padding-left: 1.1rem;
+  padding-left: 1.15rem;
   color: #2f3758;
-  font-size: clamp(12px, 1.4cqi, 14px);
-  line-height: 1.4;
+  font-size: 14px;
+  line-height: 1.45;
 }
 .stakeholder-frame__focus-nodes li,
 .stakeholder-frame__focus-chains li {
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
-.stakeholder-frame__focus-nodes li.is-active,
-.stakeholder-frame__focus-chains li.is-active {
+.stakeholder-frame__focus-nodes li.is-active {
   background: rgba(242, 240, 79, 0.45);
   margin-left: -4px;
-  padding: 2px 4px;
+  padding: 2px 6px;
+}
+.stakeholder-frame__notes--full {
+  margin: 0 0 10px;
+  color: #2f3758;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.stakeholder-frame__hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
 }
 .stakeholder-frame__path-steps {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1295,11 +1360,11 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--line);
   background: #fffef9;
   color: var(--navy);
-  font-size: clamp(12px, 1.35cqi, 14px);
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -1307,9 +1372,7 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
   color: var(--pink);
   font-family: var(--serif);
 }
-.stakeholder-frame__path-chip:hover {
-  background: var(--yellow);
-}
+.stakeholder-frame__path-chip:hover { background: var(--yellow); }
 .stakeholder-frame__path-steps i {
   color: var(--pink);
   font-style: normal;
@@ -1317,16 +1380,19 @@ html[data-cosmos-rail="closed"] .stakeholder-frame--focus {
 }
 
 @media (max-width: 900px) {
-  .stakeholder-frame--focus {
-    aspect-ratio: auto;
-    min-height: 0;
-    height: auto;
-    grid-template-rows: auto auto auto minmax(380px, auto) auto;
-  }
-  .stakeholder-frame__map--focus { min-height: 420px; }
+  .stakeholder-shell .stakeholder-frame__head { grid-template-columns: 1fr; }
+  .stakeholder-shell .stakeholder-lede { justify-self: start; max-width: none; }
+  .stakeholder-frame__map--focus { height: 480px; min-height: 420px; }
   .stakeholder-frame__focus-body,
   .stakeholder-frame__focus-body--chain { grid-template-columns: 1fr; }
-  .stakeholder-frame--focus .stakeholder-frame__chain-tabs,
+  .stakeholder-shell .stakeholder-frame__chain-tabs,
   .stakeholder-frame__side-tabs--bar { grid-template-columns: repeat(2, 1fr); }
   .stakeholder-frame__toolbar { flex-direction: column; align-items: stretch; }
+  .stakeholder-frame__detail--open .stakeholder-frame__detail-title {
+    grid-template-columns: auto 1fr;
+  }
+  .stakeholder-frame__detail--open .stakeholder-frame__count {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
 }

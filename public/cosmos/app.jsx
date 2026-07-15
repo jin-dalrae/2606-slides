@@ -568,15 +568,15 @@ function pickBridgeNode(sideId, towardSideId) {
 }
 
 function StakeholderMapPage() {
-  // Focus one part at a time: pan/zoom the network so the active side or chain
-  // sits in the center. Detail panel shows only that part (no clipped scroll stack).
+  // One part at a time: camera pans to the active chain/side; detail sits below
+  // the map (not inside a clipped aspect-ratio box) and only shows that part.
   const [focusMode, setFocusMode] = useState("chain"); // "overview" | "chain" | "side"
   const [activeChainId, setActiveChainId] = useState("adoption");
   const [activeSideId, setActiveSideId] = useState("app");
   const [activeNodeId, setActiveNodeId] = useState(null);
 
   const width = 1600;
-  const height = 900;
+  const height = 1100; // taller logical canvas so map fills tall map pane
   const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
   const activeSide = sideById[activeSideId] || sideById.app;
   const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
@@ -585,16 +585,19 @@ function StakeholderMapPage() {
     focusMode === "side"
       ? [activeSideId]
       : focusMode === "chain"
-        ? activeChain.flow
+        ? [...new Set(activeChain.flow)]
         : networkGraph.map((s) => s.id);
   const focusSet = new Set(focusSideIds);
 
   const chainPairs =
     focusMode === "chain" || focusMode === "overview"
-      ? activeChain.flow.slice(0, -1).map((from, i) => ({ from, to: activeChain.flow[i + 1] }))
+      ? activeChain.flow.slice(0, -1).map((from, i) => ({
+          from,
+          to: activeChain.flow[i + 1],
+          isReturn: activeChain.flow[i + 1] === activeChain.flow[0] && i === activeChain.flow.length - 2,
+        }))
       : [];
 
-  // Bounding box of focused sides → pan/zoom so that region fills the map center
   const focusBounds = (() => {
     const pts = [];
     for (const sid of focusSideIds) {
@@ -603,29 +606,36 @@ function StakeholderMapPage() {
       pts.push(side.anchor);
       side.nodes.forEach((n) => pts.push(n));
     }
-    if (!pts.length) return { cx: 800, cy: 430, scale: 1 };
+    if (!pts.length) return { cx: 800, cy: 500, scale: 1 };
     const xs = pts.map((p) => p.x);
     const ys = pts.map((p) => p.y);
-    const minX = Math.min(...xs) - 140;
-    const maxX = Math.max(...xs) + 140;
-    const minY = Math.min(...ys) - 120;
-    const maxY = Math.max(...ys) + 100;
+    const pad = focusMode === "side" ? 160 : 180;
+    const minX = Math.min(...xs) - pad;
+    const maxX = Math.max(...xs) + pad;
+    const minY = Math.min(...ys) - pad;
+    const maxY = Math.max(...ys) + pad;
     const cx = (minX + maxX) / 2;
     const cy = (minY + maxY) / 2;
-    const bw = Math.max(maxX - minX, 280);
-    const bh = Math.max(maxY - minY, 240);
-    // Leave room for chrome inside map area
-    const scale = Math.min(width / bw, height / bh, focusMode === "overview" ? 1 : 1.55) * (focusMode === "side" ? 1.35 : focusMode === "chain" ? 1.12 : 0.92);
-    return { cx, cy, scale: Math.min(scale, 1.85) };
+    const bw = Math.max(maxX - minX, 320);
+    const bh = Math.max(maxY - minY, 280);
+    const fit = Math.min(width / bw, height / bh);
+    const bias = focusMode === "side" ? 1.28 : focusMode === "chain" ? 1.08 : 0.9;
+    return { cx, cy, scale: Math.min(fit * bias, 1.9) };
   })();
 
-  const viewTransform = `translate(${width / 2}, ${height / 2 - 10}) scale(${focusBounds.scale}) translate(${-focusBounds.cx}, ${-focusBounds.cy})`;
+  // CSS transform (not SVG attribute) so pan/zoom can animate.
+  const cameraStyle = {
+    transform: `translate(${width / 2}px, ${height / 2}px) scale(${focusBounds.scale}) translate(${-focusBounds.cx}px, ${-focusBounds.cy}px)`,
+    transformOrigin: "0px 0px",
+    transition: "transform 0.45s ease",
+  };
 
   const meshEdges = structuralEdges.map((edge, i) => {
     const a = pickBridgeNode(edge.from, edge.to);
     const b = pickBridgeNode(edge.to, edge.from);
-    const onChain = chainPairs.some((p) => p.from === edge.from && p.to === edge.to)
-      || chainPairs.some((p) => p.from === edge.to && p.to === edge.from);
+    const onChain =
+      chainPairs.some((p) => p.from === edge.from && p.to === edge.to) ||
+      chainPairs.some((p) => p.from === edge.to && p.to === edge.from);
     const involvesFocus = focusSet.has(edge.from) && focusSet.has(edge.to);
     return { ...edge, i, a, b, onChain, involvesFocus };
   });
@@ -667,6 +677,12 @@ function StakeholderMapPage() {
   const chainIndex = criticalChains.findIndex((c) => c.id === activeChainId);
 
   function stepPart(delta) {
+    if (focusMode === "overview") {
+      // Overview: step the highlighted chain without leaving overview.
+      const next = criticalChains[(chainIndex + delta + criticalChains.length) % criticalChains.length];
+      setActiveChainId(next.id);
+      return;
+    }
     if (focusMode === "side") {
       const next = networkGraph[(sideIndex + delta + networkGraph.length) % networkGraph.length];
       goSide(next.id);
@@ -678,7 +694,7 @@ function StakeholderMapPage() {
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
-      <div className="stakeholder-frame stakeholder-frame--focus" aria-label="Cosmos VR stakeholder network, focused parts">
+      <div className="stakeholder-shell" aria-label="Cosmos VR stakeholder network">
         <header className="stakeholder-frame__head">
           <div>
             <p className="stakeholder-kicker">05 · Stakeholder network · Cosmos VR</p>
@@ -695,7 +711,7 @@ function StakeholderMapPage() {
               ? activeSide.name
               : focusMode === "chain"
                 ? activeChain.steps
-                : "Step through critical chains or sides. The map centers on the active part so nothing important is clipped in a scroll."}
+                : "Whole graph. Use tabs or ← → to center a critical chain; open Sides to inspect one cluster."}
           </p>
         </header>
 
@@ -710,9 +726,7 @@ function StakeholderMapPage() {
             <span>
               {focusMode === "side"
                 ? `${sideIndex + 1} / ${networkGraph.length} sides`
-                : focusMode === "chain"
-                  ? `${chainIndex + 1} / ${criticalChains.length} chains`
-                  : "Whole graph"}
+                : `${chainIndex + 1} / ${criticalChains.length} chains`}
             </span>
             <button type="button" onClick={() => stepPart(1)} aria-label="Next part">→</button>
           </div>
@@ -727,7 +741,7 @@ function StakeholderMapPage() {
                 role="tab"
                 aria-selected={chain.id === activeChainId}
                 className={chain.id === activeChainId ? "is-active" : ""}
-                onClick={() => goChain(chain.id)}
+                onClick={() => (focusMode === "overview" ? setActiveChainId(chain.id) : goChain(chain.id))}
               >
                 {chain.name}
               </button>
@@ -771,7 +785,7 @@ function StakeholderMapPage() {
               </filter>
             </defs>
 
-            <g className="stakeholder-map__camera" style={{ transition: "transform 0.45s ease" }} transform={viewTransform}>
+            <g className="stakeholder-map__camera" style={cameraStyle}>
               {networkGraph.map((side) => (
                 <circle
                   key={`field-${side.id}`}
@@ -785,7 +799,7 @@ function StakeholderMapPage() {
                   ].filter(Boolean).join(" ")}
                   fill={side.isHub ? "rgba(242,240,79,0.22)" : `${side.color}16`}
                   stroke={side.color}
-                  opacity={focusSet.has(side.id) ? 1 : 0.18}
+                  opacity={focusSet.has(side.id) ? 1 : 0.16}
                   onClick={() => goSide(side.id)}
                   style={{ cursor: "pointer" }}
                 />
@@ -799,7 +813,7 @@ function StakeholderMapPage() {
                   x2={edge.b.x}
                   y2={edge.b.y}
                   className={`stakeholder-map__mesh ${edge.inFocus ? "is-in-chain" : ""}`}
-                  opacity={edge.inFocus ? 1 : 0.12}
+                  opacity={edge.inFocus ? 1 : 0.1}
                 />
               ))}
 
@@ -807,7 +821,7 @@ function StakeholderMapPage() {
                 const mx = (edge.a.x + edge.b.x) / 2;
                 const my = (edge.a.y + edge.b.y) / 2;
                 const cx = mx + (800 - mx) * 0.12;
-                const cy = my + (430 - my) * 0.08;
+                const cy = my + (500 - my) * 0.08;
                 const d = `M ${edge.a.x} ${edge.a.y} Q ${cx} ${cy} ${edge.b.x} ${edge.b.y}`;
                 return (
                   <path
@@ -819,7 +833,7 @@ function StakeholderMapPage() {
                       edge.onChain ? "is-chain-lit" : "is-base",
                     ].join(" ")}
                     fill="none"
-                    opacity={edge.involvesFocus || edge.onChain ? (edge.onChain ? 0.7 : 0.35) : 0.06}
+                    opacity={edge.involvesFocus || edge.onChain ? (edge.onChain ? 0.7 : 0.32) : 0.05}
                   />
                 );
               })}
@@ -828,7 +842,9 @@ function StakeholderMapPage() {
                 const a = pickBridgeNode(pair.from, pair.to);
                 const b = pickBridgeNode(pair.to, pair.from);
                 const mx = (a.x + b.x) / 2;
-                const my = (a.y + b.y) / 2 - 24;
+                // Return edges swing outward so cycles don't sit on the outbound path
+                const lift = pair.isReturn ? 70 : -28;
+                const my = (a.y + b.y) / 2 + lift;
                 const d = `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
                 const marker =
                   activeChain.kind === "content"
@@ -845,7 +861,7 @@ function StakeholderMapPage() {
                       markerEnd={marker}
                       filter="url(#soft-glow)"
                     />
-                    <text x={mx} y={my - 8} textAnchor="middle" className="stakeholder-map__flow-label">
+                    <text x={mx} y={my + (pair.isReturn ? 18 : -10)} textAnchor="middle" className="stakeholder-map__flow-label">
                       {i + 1}
                     </text>
                   </g>
@@ -860,7 +876,7 @@ function StakeholderMapPage() {
                   textAnchor="middle"
                   fill={side.isHub ? "#111c4e" : side.color}
                   className="stakeholder-map__side-label-text"
-                  opacity={focusSet.has(side.id) ? 1 : 0.2}
+                  opacity={focusSet.has(side.id) ? 1 : 0.18}
                   onClick={() => goSide(side.id)}
                   style={{ cursor: "pointer" }}
                 >
@@ -880,8 +896,8 @@ function StakeholderMapPage() {
                           return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
                         })()
                       : [node.label];
-                  const rw = Math.max(108, ...lines.map((l) => l.length * 7.2 + 18));
-                  const rh = lines.length > 1 ? 40 : 30;
+                  const rw = Math.max(112, ...lines.map((l) => l.length * 7.4 + 20));
+                  const rh = lines.length > 1 ? 42 : 32;
                   return (
                     <g
                       key={node.id}
@@ -912,7 +928,7 @@ function StakeholderMapPage() {
                         <text
                           key={li}
                           x={0}
-                          y={(li - (lines.length - 1) / 2) * 11}
+                          y={(li - (lines.length - 1) / 2) * 12}
                           textAnchor="middle"
                           dominantBaseline="middle"
                           className="stakeholder-map__node-label"
@@ -928,7 +944,8 @@ function StakeholderMapPage() {
           </svg>
         </div>
 
-        <div className="stakeholder-frame__detail stakeholder-frame__detail--focus" aria-live="polite">
+        {/* Detail lives outside the map height lock so it never clips the graph */}
+        <div className="stakeholder-frame__detail stakeholder-frame__detail--open" aria-live="polite">
           {focusMode === "side" ? (
             <>
               <div className="stakeholder-frame__detail-title">
@@ -971,7 +988,7 @@ function StakeholderMapPage() {
                   <h2>{activeChain.name}</h2>
                   <p className="stakeholder-frame__sub">{activeChain.steps}</p>
                 </div>
-                <p className="stakeholder-frame__count">{activeChain.flow.length} sides in path</p>
+                <p className="stakeholder-frame__count">{activeChain.flow.length} steps in path</p>
               </div>
               <div className="stakeholder-frame__focus-body stakeholder-frame__focus-body--chain">
                 <div className="stakeholder-frame__focus-path">
@@ -989,18 +1006,9 @@ function StakeholderMapPage() {
                   </ol>
                 </div>
                 <div className="stakeholder-frame__focus-chains">
-                  <b>All five critical multi-step chains</b>
-                  <ol>
-                    {criticalChains.map((c) => (
-                      <li key={c.id} className={c.id === activeChainId ? "is-active" : ""}>
-                        <button type="button" className="stakeholder-frame__link" onClick={() => goChain(c.id)}>
-                          {c.name}
-                        </button>
-                        {" — "}
-                        {c.steps}
-                      </li>
-                    ))}
-                  </ol>
+                  <b>What this chain means</b>
+                  <p className="stakeholder-frame__notes stakeholder-frame__notes--full">{activeChain.steps}</p>
+                  <p className="stakeholder-frame__hint">Other chains: use the tabs above. Opening a side chip switches to that cluster’s full node list and relationship chains.</p>
                 </div>
               </div>
             </>
@@ -1009,7 +1017,7 @@ function StakeholderMapPage() {
       </div>
 
       <p className="waveline-share-hint">
-        Tip: close the left sidebar (‹). Use ← → or the tabs to move the map center through chains and sides — one part fills the frame at a time.
+        Tip: close the left sidebar (‹). The map is tall and free of a locked 16:9 box; detail sits under it and only shows the active chain or side.
       </p>
 
       <div className="report-next-links">
