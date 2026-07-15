@@ -788,3 +788,259 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   .waveline-frame__cols { grid-template-columns: 1fr; }
   .waveline-frame__cols p { -webkit-line-clamp: 10; }
 }
+
+/* —— Stakeholder map: 16:9 plot + full relationship detail —— */
+.stakeholder-page {
+  padding-top: 36px;
+  padding-bottom: 48px;
+}
+.stakeholder-frame {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1.35fr) minmax(0, 0.9fr);
+  gap: 8px;
+  width: 100%;
+  max-width: min(1240px, 100%);
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.4vw, 18px);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 16px 40px rgba(17, 28, 78, 0.07);
+  overflow: hidden;
+  container-type: size;
+}
+html[data-cosmos-rail="closed"] .stakeholder-frame {
+  max-width: min(1360px, 100%);
+}
+.stakeholder-frame__head {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 8px 18px;
+  align-items: end;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.stakeholder-kicker {
+  margin: 0 0 3px;
+  color: var(--pink);
+  font-family: var(--sans);
+  font-size: clamp(11px, 1.25cqi, 13px);
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.stakeholder-frame__head h1 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: clamp(22px, 3.1cqi, 34px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+.stakeholder-lede {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: clamp(12px, 1.45cqi, 15px);
+  font-weight: 500;
+  line-height: 1.35;
+  justify-self: end;
+  max-width: 42ch;
+}
+.stakeholder-frame__map {
+  min-height: 0;
+  border: 1px solid var(--line);
+  background: #fbfaf6;
+  overflow: hidden;
+}
+.stakeholder-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.stakeholder-map__group-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.stakeholder-map__edge {
+  stroke: rgba(17, 28, 78, 0.22);
+  stroke-width: 1.5;
+  transition: stroke .15s ease, opacity .15s ease, stroke-width .15s ease;
+}
+.stakeholder-map__edge.is-indirect {
+  stroke-dasharray: 5 5;
+  stroke: rgba(17, 28, 78, 0.18);
+}
+.stakeholder-map__edge.is-active {
+  stroke: #f14f9b;
+  stroke-width: 2.4;
+  opacity: 1;
+}
+.stakeholder-map__edge.is-dimmed {
+  opacity: 0.08;
+}
+.stakeholder-map__node text {
+  fill: var(--navy);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.stakeholder-map__node text.is-center-label {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+}
+.stakeholder-map__node.is-dimmed {
+  opacity: 0.28;
+}
+.stakeholder-map__node.is-active rect {
+  filter: drop-shadow(0 2px 0 #f14f9b);
+}
+.stakeholder-frame__detail {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 6px;
+  padding: 8px 10px 7px;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+  overflow: hidden;
+}
+.stakeholder-frame__detail-title {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px 12px;
+  align-items: start;
+}
+.stakeholder-frame__swatch {
+  width: 14px;
+  height: 14px;
+  margin-top: 6px;
+  border: 1px solid rgba(17, 28, 78, 0.2);
+  border-radius: 3px;
+}
+.stakeholder-frame__group {
+  margin: 0 0 2px;
+  color: var(--pink);
+  font-size: clamp(10px, 1.15cqi, 12px);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.stakeholder-frame__detail-title h2 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: clamp(16px, 2.1cqi, 22px);
+  font-weight: 600;
+  line-height: 1.1;
+}
+.stakeholder-frame__sub {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: clamp(11px, 1.25cqi, 13px);
+  line-height: 1.35;
+}
+.stakeholder-frame__count {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(11px, 1.2cqi, 13px);
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--yellow);
+  padding: 5px 8px;
+}
+.stakeholder-frame__edges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 10px;
+  min-height: 0;
+  overflow: auto;
+}
+.stakeholder-frame__edges article {
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.stakeholder-frame__edges b {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--pink);
+  font-size: clamp(10px, 1.1cqi, 11px);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.stakeholder-frame__edges p {
+  margin: 0;
+  color: #2f3758;
+  font-size: clamp(11px, 1.3cqi, 13px);
+  line-height: 1.35;
+}
+.stakeholder-frame__notes {
+  margin-top: 3px !important;
+  color: var(--muted) !important;
+  font-weight: 500;
+}
+.stakeholder-frame__link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--navy);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.stakeholder-frame__link:hover { color: var(--pink); }
+.stakeholder-frame__empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.stakeholder-frame__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  color: var(--muted);
+  font-size: clamp(10px, 1.15cqi, 12px);
+  font-weight: 600;
+}
+.stakeholder-frame__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.stakeholder-frame__legend i {
+  display: inline-block;
+  width: 22px;
+  height: 0;
+  border-top: 2px solid var(--navy);
+  opacity: 0.55;
+}
+.stakeholder-frame__legend i.is-indirect {
+  border-top-style: dashed;
+}
+
+@media (max-width: 900px) {
+  .stakeholder-frame {
+    aspect-ratio: auto;
+    height: auto;
+    grid-template-rows: auto auto auto;
+  }
+  .stakeholder-frame__head { grid-template-columns: 1fr; }
+  .stakeholder-lede { justify-self: start; max-width: none; }
+  .stakeholder-frame__map { min-height: 420px; }
+  .stakeholder-frame__edges { grid-template-columns: 1fr; }
+  .stakeholder-frame__detail-title { grid-template-columns: auto 1fr; }
+  .stakeholder-frame__count { grid-column: 1 / -1; justify-self: start; }
+}

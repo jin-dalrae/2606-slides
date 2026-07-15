@@ -345,6 +345,341 @@ function UserWavelinePage() {
 
       <div className="report-next-links">
         <a href="/cosmos/primary/version1-review/">← Version 1 &amp; review</a>
+        <a href="/cosmos/stakeholder-map/">Next: Stakeholder map →</a>
+      </div>
+    </section>
+  );
+}
+
+// —— Stakeholder map (full prep material, no omissions) ——
+const stakeholderGroups = [
+  {
+    id: "users",
+    label: "Users & Early Adopters",
+    color: "#f14f9b",
+    nodes: [
+      { id: "online-members", label: "Online Community Members", short: "Online community\nmembers" },
+      { id: "knowledge-seekers", label: "Knowledge Seekers (tired of doomscrolling)", short: "Knowledge seekers\n(tired of doomscrolling)" },
+      { id: "active-posters", label: "Active Posters", short: "Active posters" },
+      { id: "design-communities", label: "Design Communities", short: "Design\ncommunities" },
+      { id: "digital-minimalists", label: "Digital Minimalists", short: "Digital\nminimalists" },
+    ],
+  },
+  {
+    id: "builders",
+    label: "Community Builders",
+    color: "#111c4e",
+    nodes: [
+      { id: "discord-owners", label: "Discord Server Owners", short: "Discord server\nowners" },
+      { id: "indie-hackers", label: "Indie Hackers", short: "Indie hackers" },
+    ],
+  },
+  {
+    id: "doomscroll",
+    label: "Vertical Doomscrolling Platforms (to replace)",
+    color: "#c43b7a",
+    nodes: [
+      { id: "x", label: "X", short: "X" },
+      { id: "threads", label: "Threads", short: "Threads" },
+      { id: "youtube-vertical", label: "YouTube (vertical feed)", short: "YouTube\n(vertical feed)" },
+    ],
+  },
+  {
+    id: "forums",
+    label: "Traditional Forum Platforms",
+    color: "#263169",
+    nodes: [
+      { id: "reddit", label: "Reddit", short: "Reddit" },
+      { id: "discord", label: "Discord", short: "Discord" },
+      { id: "discourse", label: "Discourse", short: "Discourse" },
+    ],
+  },
+  {
+    id: "enablers",
+    label: "Enablers",
+    color: "#0a7a5c",
+    nodes: [
+      { id: "embeddings", label: "Semantic Embedding Models", short: "Semantic embedding\nmodels" },
+      { id: "voice-systems", label: "Voice Systems (STT + playback)", short: "Voice systems\n(STT + playback)" },
+      { id: "vr-hardware", label: "VR Hardware Platforms (Quest, Vision Pro)", short: "VR hardware platforms\n(Quest, Vision Pro)" },
+    ],
+  },
+  {
+    id: "other",
+    label: "Other Relevant Stakeholders",
+    color: "#66708b",
+    nodes: [
+      { id: "privacy-users", label: "Privacy-conscious Users", short: "Privacy-conscious\nusers" },
+    ],
+  },
+];
+
+const stakeholderCenter = {
+  id: "cosmos-vr",
+  label: "Cosmos VR",
+  subtitle: "The spatial VR community experience — positioned as an alternative to vertical doomscrolling",
+  short: "Cosmos VR",
+};
+
+// Positions in 1600×900 canvas (center + prep layout groups)
+const stakeholderLayout = {
+  "cosmos-vr": { x: 800, y: 455 },
+  // Left: vertical doomscrolling
+  x: { x: 145, y: 250 },
+  threads: { x: 145, y: 380 },
+  "youtube-vertical": { x: 145, y: 520 },
+  // Bottom-left: traditional forums
+  reddit: { x: 320, y: 700 },
+  discord: { x: 500, y: 740 },
+  discourse: { x: 680, y: 700 },
+  // Top / top-right: users & early adopters
+  "online-members": { x: 420, y: 145 },
+  "knowledge-seekers": { x: 640, y: 110 },
+  "active-posters": { x: 860, y: 110 },
+  "design-communities": { x: 1080, y: 145 },
+  "digital-minimalists": { x: 1260, y: 220 },
+  // Right: enablers
+  embeddings: { x: 1420, y: 340 },
+  "voice-systems": { x: 1420, y: 470 },
+  "vr-hardware": { x: 1420, y: 600 },
+  // Bottom-right: community builders + privacy
+  "discord-owners": { x: 1120, y: 740 },
+  "indie-hackers": { x: 1260, y: 360 },
+  "privacy-users": { x: 960, y: 760 },
+};
+
+const stakeholderEdges = [
+  { from: "cosmos-vr", to: "online-members", type: "Serves", notes: "Main users of the spatial experience", style: "direct" },
+  { from: "cosmos-vr", to: "knowledge-seekers", type: "Serves", notes: "People escaping vertical doomscrolling", style: "direct" },
+  { from: "cosmos-vr", to: "active-posters", type: "Serves", notes: "Users who create posts with voice", style: "direct" },
+  { from: "cosmos-vr", to: "design-communities", type: "Early Adopter", notes: "Visual/spatial thinkers likely to try first", style: "direct" },
+  { from: "cosmos-vr", to: "digital-minimalists", type: "Early Adopter", notes: "Strong alignment with anti-doomscrolling", style: "direct" },
+  { from: "cosmos-vr", to: "discord-owners", type: "Potential Power User", notes: "Heavy community managers who may test or migrate", style: "direct" },
+  { from: "cosmos-vr", to: "indie-hackers", type: "Distribution + Feedback", notes: "Key channel for solo-built tools", style: "direct" },
+  { from: "cosmos-vr", to: "x", type: "Replaces / Alternative", notes: "Vertical doomscrolling → spatial exploration", style: "direct" },
+  { from: "cosmos-vr", to: "threads", type: "Replaces / Alternative", notes: "Vertical chat scrolling → spatial conversation", style: "direct" },
+  { from: "cosmos-vr", to: "youtube-vertical", type: "Replaces / Alternative", notes: "Passive vertical consumption → active spatial discovery", style: "direct" },
+  { from: "cosmos-vr", to: "reddit", type: "Replaces / Improves", notes: "Linear threads → spatial semantic clusters", style: "direct" },
+  { from: "cosmos-vr", to: "discord", type: "Replaces / Improves", notes: "Flat channels → walkable spatial forum", style: "direct" },
+  { from: "cosmos-vr", to: "discourse", type: "Replaces / Improves", notes: "Traditional forum → embodied spatial experience", style: "direct" },
+  { from: "cosmos-vr", to: "embeddings", type: "Depends on", notes: "Powers spatial positioning of posts", style: "direct" },
+  { from: "cosmos-vr", to: "voice-systems", type: "Depends on", notes: "Voice posting + voice playback feature", style: "direct" },
+  { from: "cosmos-vr", to: "vr-hardware", type: "Depends on", notes: "Access to the experience", style: "direct" },
+  { from: "cosmos-vr", to: "privacy-users", type: "Must address", notes: "Voice data + spatial behavior tracking", style: "direct" },
+  { from: "online-members", to: "x", type: "Currently uses", notes: "Current vertical doomscrolling habit", style: "indirect" },
+  { from: "online-members", to: "threads", type: "Currently uses", notes: "Current vertical doomscrolling habit", style: "indirect" },
+  { from: "online-members", to: "youtube-vertical", type: "Currently uses", notes: "Current vertical doomscrolling habit", style: "indirect" },
+  { from: "knowledge-seekers", to: "x", type: "Currently uses", notes: "Frustrated with endless scrolling", style: "indirect" },
+  { from: "knowledge-seekers", to: "threads", type: "Currently uses", notes: "Frustrated with endless scrolling", style: "indirect" },
+  { from: "knowledge-seekers", to: "youtube-vertical", type: "Currently uses", notes: "Frustrated with endless scrolling", style: "indirect" },
+  { from: "discord-owners", to: "discord", type: "Currently manages", notes: "Runs communities on existing platforms", style: "indirect" },
+  { from: "indie-hackers", to: "cosmos-vr", type: "Can distribute & promote", notes: "Important discovery channel for solo projects", style: "indirect" },
+];
+
+const stakeholderNodeById = (() => {
+  const map = { [stakeholderCenter.id]: { ...stakeholderCenter, groupId: "center", groupLabel: "Center Node", color: "#f2f04f" } };
+  for (const group of stakeholderGroups) {
+    for (const node of group.nodes) {
+      map[node.id] = { ...node, groupId: group.id, groupLabel: group.label, color: group.color };
+    }
+  }
+  return map;
+})();
+
+function StakeholderMapPage() {
+  const [activeId, setActiveId] = useState("cosmos-vr");
+  const width = 1600;
+  const height = 900;
+  const active = stakeholderNodeById[activeId] || stakeholderNodeById["cosmos-vr"];
+
+  const relatedEdges = stakeholderEdges.filter((e) => e.from === activeId || e.to === activeId);
+  const connectedIds = new Set([activeId]);
+  relatedEdges.forEach((e) => {
+    connectedIds.add(e.from);
+    connectedIds.add(e.to);
+  });
+
+  const groupLabelPositions = [
+    { id: "doomscroll", x: 145, y: 175, anchor: "middle" },
+    { id: "forums", x: 500, y: 640, anchor: "middle" },
+    { id: "users", x: 800, y: 48, anchor: "middle" },
+    { id: "enablers", x: 1420, y: 285, anchor: "middle" },
+    { id: "builders", x: 1190, y: 680, anchor: "middle" },
+    { id: "other", x: 960, y: 820, anchor: "middle" },
+  ];
+
+  return (
+    <section className="report-section stakeholder-page" id="stakeholder-map">
+      <div className="stakeholder-frame" aria-label="Cosmos VR stakeholder map, 16 by 9">
+        <header className="stakeholder-frame__head">
+          <div>
+            <p className="stakeholder-kicker">05 · Stakeholder map · Cosmos VR</p>
+            <h1>Who Cosmos sits with</h1>
+          </div>
+          <p className="stakeholder-lede">
+            Center node: Cosmos VR — the spatial VR community experience, positioned as an alternative to vertical doomscrolling.
+            Click a node for every relationship line and note.
+          </p>
+        </header>
+
+        <div className="stakeholder-frame__map">
+          <svg className="stakeholder-map" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <marker id="arrow-direct" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#111c4e" opacity="0.45" />
+              </marker>
+              <marker id="arrow-active" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#f14f9b" />
+              </marker>
+            </defs>
+
+            {/* Group region labels */}
+            {groupLabelPositions.map((g) => {
+              const group = stakeholderGroups.find((x) => x.id === g.id);
+              if (!group) return null;
+              return (
+                <text
+                  key={g.id}
+                  x={g.x}
+                  y={g.y}
+                  textAnchor={g.anchor}
+                  className="stakeholder-map__group-label"
+                  fill={group.color}
+                >
+                  {group.label}
+                </text>
+              );
+            })}
+
+            {/* Edges */}
+            {stakeholderEdges.map((edge, i) => {
+              const a = stakeholderLayout[edge.from];
+              const b = stakeholderLayout[edge.to];
+              if (!a || !b) return null;
+              const isActive = edge.from === activeId || edge.to === activeId;
+              const dimmed = activeId && !isActive;
+              const mx = (a.x + b.x) / 2;
+              const my = (a.y + b.y) / 2;
+              // Slight curve away from center so spokes don't stack
+              const cx = mx + (mx - 800) * 0.08;
+              const cy = my + (my - 455) * 0.08;
+              const d = `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+              return (
+                <path
+                  key={`${edge.from}-${edge.to}-${i}`}
+                  d={d}
+                  className={[
+                    "stakeholder-map__edge",
+                    edge.style === "indirect" ? "is-indirect" : "is-direct",
+                    isActive ? "is-active" : "",
+                    dimmed ? "is-dimmed" : "",
+                  ].filter(Boolean).join(" ")}
+                  fill="none"
+                  markerEnd={isActive ? "url(#arrow-active)" : "url(#arrow-direct)"}
+                />
+              );
+            })}
+
+            {/* Nodes */}
+            {Object.keys(stakeholderLayout).map((id) => {
+              const pos = stakeholderLayout[id];
+              const node = stakeholderNodeById[id];
+              if (!node || !pos) return null;
+              const isCenter = id === "cosmos-vr";
+              const isActive = id === activeId;
+              const isConnected = connectedIds.has(id);
+              const dimmed = activeId && !isConnected;
+              const lines = (node.short || node.label).split("\n");
+              const rw = isCenter ? 118 : 92;
+              const rh = isCenter ? 72 : lines.length > 1 ? 56 : 44;
+
+              return (
+                <g
+                  key={id}
+                  className={[
+                    "stakeholder-map__node",
+                    isCenter ? "is-center" : "",
+                    isActive ? "is-active" : "",
+                    dimmed ? "is-dimmed" : "",
+                  ].filter(Boolean).join(" ")}
+                  transform={`translate(${pos.x}, ${pos.y})`}
+                  onClick={() => setActiveId(id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <rect
+                    x={-rw / 2}
+                    y={-rh / 2}
+                    width={rw}
+                    height={rh}
+                    rx={isCenter ? 16 : 10}
+                    fill={isCenter ? "#f2f04f" : "#f7f4ed"}
+                    stroke={isActive ? "#f14f9b" : isCenter ? "#111c4e" : node.color}
+                    strokeWidth={isActive || isCenter ? 2.5 : 1.75}
+                  />
+                  {lines.map((line, li) => (
+                    <text
+                      key={li}
+                      x={0}
+                      y={(li - (lines.length - 1) / 2) * 14}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className={isCenter ? "is-center-label" : ""}
+                    >
+                      {line}
+                    </text>
+                  ))}
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+
+        <div className="stakeholder-frame__detail" aria-live="polite">
+          <div className="stakeholder-frame__detail-title">
+            <span className="stakeholder-frame__swatch" style={{ background: active.color || "#f2f04f" }} />
+            <div>
+              <p className="stakeholder-frame__group">{active.groupLabel}</p>
+              <h2>{active.label}</h2>
+              {active.subtitle && <p className="stakeholder-frame__sub">{active.subtitle}</p>}
+            </div>
+            <p className="stakeholder-frame__count">{relatedEdges.length} connection{relatedEdges.length === 1 ? "" : "s"}</p>
+          </div>
+          <div className="stakeholder-frame__edges">
+            {relatedEdges.length === 0 ? (
+              <p className="stakeholder-frame__empty">No plotted connections for this node.</p>
+            ) : (
+              relatedEdges.map((edge, i) => {
+                const otherId = edge.from === activeId ? edge.to : edge.from;
+                const other = stakeholderNodeById[otherId];
+                const direction = edge.from === activeId ? "→" : "←";
+                return (
+                  <article key={`${edge.from}-${edge.to}-${i}`}>
+                    <b>{edge.type}</b>
+                    <p>
+                      <button type="button" className="stakeholder-frame__link" onClick={() => setActiveId(otherId)}>
+                        {direction} {other?.label || otherId}
+                      </button>
+                    </p>
+                    <p className="stakeholder-frame__notes">{edge.notes}</p>
+                  </article>
+                );
+              })
+            )}
+          </div>
+          <div className="stakeholder-frame__legend">
+            <span><i className="is-direct" /> Solid = direct relationship with Cosmos VR</span>
+            <span><i className="is-indirect" /> Dashed = indirect / competitive relationship</span>
+            <span>Groups: Users &amp; Early Adopters · Community Builders · Vertical Doomscrolling Platforms (to replace) · Traditional Forum Platforms · Enablers · Other Relevant Stakeholders</span>
+          </div>
+        </div>
+      </div>
+
+      <p className="waveline-share-hint">
+        Tip: close the left sidebar (‹) for a clean 16:9 share view. Every node and connection from the prep doc is plotted — click a node to read full relationship notes.
+      </p>
+
+      <div className="report-next-links">
+        <a href="/cosmos/user-waveline/">← User waveline</a>
         <a href="/cosmos/making/">Next: Making Cosmos →</a>
       </div>
     </section>
@@ -828,9 +1163,11 @@ function App() {
       ? "primary"
       : window.location.pathname.includes("/user-waveline")
         ? "user-waveline"
-        : window.location.pathname.includes("/making")
-          ? "making"
-          : "intro";
+        : window.location.pathname.includes("/stakeholder-map")
+          ? "stakeholder-map"
+          : window.location.pathname.includes("/making")
+            ? "making"
+            : "intro";
   return (
     <div id="top">
       <Progress />
@@ -841,6 +1178,7 @@ function App() {
         {activeChapter === "primary" && primaryPage === "expert-questionnaire" && <ExpertQuestionnaire />}
         {activeChapter === "primary" && primaryPage === "version1-review" && <Version1Review />}
         {activeChapter === "user-waveline" && <UserWavelinePage />}
+        {activeChapter === "stakeholder-map" && <StakeholderMapPage />}
         {activeChapter === "intro" && <section className="hero" id="intro">
           <div className="hero-kicker"><span>Independent research</span><span>June 2026</span></div>
           <div className="hero-grid">
@@ -2217,7 +2555,7 @@ function App() {
         </section>}
 
         {activeChapter === "making" && <section className="report-section making" id="making">
-          <ChapterLabel number="05">Making Cosmos</ChapterLabel>
+          <ChapterLabel number="06">Making Cosmos</ChapterLabel>
           <div className="section-heading">
             <h2>Prove the wall first.<br /><em>Earn the platform later.</em></h2>
             <p>A phased plan keeps the research honest. Each layer is added only after the previous one creates measurable value.</p>

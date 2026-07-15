@@ -5,8 +5,9 @@
     ["secondary", "02", "Secondary research", "/cosmos/secondary/"],
     ["primary", "03", "Primary research", "/cosmos/primary/"],
     ["user-waveline", "04", "User waveline", "/cosmos/user-waveline/"],
-    ["making", "05", "Making Cosmos", "/cosmos/making/"],
-    ["design", "06", "Design system", "/cosmos/design-system/"]
+    ["stakeholder-map", "05", "Stakeholder map", "/cosmos/stakeholder-map/"],
+    ["making", "06", "Making Cosmos", "/cosmos/making/"],
+    ["design", "07", "Design system", "/cosmos/design-system/"]
   ];
   var secondaryReports = [
     ["overview", "2.0", "Overview", "/cosmos/secondary/"],
