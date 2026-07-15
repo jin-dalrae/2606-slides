@@ -351,12 +351,13 @@ function UserWavelinePage() {
   );
 }
 
-// —— Stakeholder network (5 sides + chains, full prep material) ——
+// —— Stakeholder network: chain-first graph (full prep material) ——
 const networkSides = [
   {
     id: "users",
     number: "01",
     name: "User Side",
+    shortName: "Users",
     color: "#f14f9b",
     nodes: [
       { id: "knowledge-seekers", label: "Knowledge Seekers" },
@@ -374,6 +375,7 @@ const networkSides = [
     id: "writers",
     number: "02",
     name: "Writers Side (Content Creators)",
+    shortName: "Writers",
     color: "#111c4e",
     nodes: [
       { id: "active-posters", label: "Active Posters" },
@@ -391,6 +393,7 @@ const networkSides = [
     id: "promoters",
     number: "03",
     name: "Promoter Side (Marketer / Distribution / Ad)",
+    shortName: "Promoters",
     color: "#c43b7a",
     nodes: [
       { id: "indie-hackers", label: "Indie Hackers" },
@@ -411,6 +414,7 @@ const networkSides = [
     id: "devices",
     number: "04",
     name: "Device Side",
+    shortName: "Devices",
     color: "#0a7a5c",
     nodes: [
       { id: "quest", label: "Meta Quest" },
@@ -429,8 +433,8 @@ const networkSides = [
     id: "app",
     number: "05",
     name: "App Side",
-    color: "#f2f04f",
-    ink: "#111c4e",
+    shortName: "App",
+    color: "#d4b200",
     isHub: true,
     nodes: [
       { id: "spatial-engine", label: "Spatial Engine (semantic positioning)" },
@@ -453,96 +457,173 @@ const criticalChains = [
   {
     id: "adoption",
     name: "Adoption Chain",
-    flow: ["promoters", "users", "devices", "app"],
     kind: "acquisition",
+    flow: ["promoters", "users", "devices", "app"],
     steps: "Promoter Side → User Side → Device Side → App Side",
   },
   {
     id: "content-flywheel",
     name: "Content Flywheel",
-    flow: ["writers", "app", "users", "writers"],
     kind: "content",
+    flow: ["writers", "app", "users", "writers"],
     steps: "Writers Side → App Side → User Side → reactions & replies → Writers Side (more posting)",
   },
   {
     id: "value-delivery",
     name: "Value Delivery Chain",
-    flow: ["writers", "app", "users"],
     kind: "content",
+    flow: ["writers", "app", "users"],
     steps: "Writers Side → App Side (spatial + voice) → User Side (meaningful discovery instead of doomscrolling)",
   },
   {
     id: "distribution",
     name: "Distribution Chain",
-    flow: ["promoters", "users", "app", "promoters"],
     kind: "acquisition",
+    flow: ["promoters", "users", "app", "promoters"],
     steps: "Promoter Side (Indie Hackers + Design Communities) → User Side → App Side growth → better stories for Promoter Side",
   },
   {
     id: "hardware",
     name: "Hardware Dependency Chain",
-    flow: ["devices", "app", "users", "promoters"],
     kind: "hardware",
+    flow: ["devices", "app", "users", "promoters"],
     steps: "Device Side → App Side experience quality → User Side satisfaction → retention & word-of-mouth back to Promoter Side",
   },
 ];
 
-// Column layout: Users | Writers | App (hub) | Promoters | Devices
-const sideColumnX = {
-  users: 155,
-  writers: 430,
-  app: 800,
-  promoters: 1170,
-  devices: 1445,
+// Network anchors: App hub at center, four sides orbit.
+const sideAnchors = {
+  app: { x: 800, y: 430 },
+  users: { x: 250, y: 220 },
+  writers: { x: 250, y: 640 },
+  promoters: { x: 1350, y: 220 },
+  devices: { x: 1350, y: 640 },
 };
 
-function buildSideLayout(side) {
-  const x = sideColumnX[side.id];
-  const top = side.isHub ? 175 : 195;
-  const gap = side.isHub ? 68 : 72;
-  const nodes = side.nodes.map((node, i) => ({
-    ...node,
-    sideId: side.id,
-    x,
-    y: top + i * gap,
-  }));
-  return {
-    ...side,
-    headerY: side.isHub ? 118 : 138,
-    nodes,
-  };
+function placeCluster(side) {
+  const anchor = sideAnchors[side.id];
+  const n = side.nodes.length;
+  // App hub: tight ring; outer sides: small fan around anchor
+  const radius = side.isHub ? 108 : 78;
+  const nodes = side.nodes.map((node, i) => {
+    const angle = side.isHub
+      ? -Math.PI / 2 + (i / n) * Math.PI * 2
+      : -0.9 + (i / Math.max(n - 1, 1)) * 1.8;
+    return {
+      ...node,
+      sideId: side.id,
+      x: anchor.x + Math.cos(angle) * radius,
+      y: anchor.y + Math.sin(angle) * (side.isHub ? radius : radius * 0.95),
+    };
+  });
+  return { ...side, anchor, nodes };
 }
 
-const laidOutSides = networkSides.map(buildSideLayout);
-const sideById = Object.fromEntries(laidOutSides.map((s) => [s.id, s]));
-const networkNodeById = (() => {
+const networkGraph = networkSides.map(placeCluster);
+const sideById = Object.fromEntries(networkGraph.map((s) => [s.id, s]));
+const nodeById = (() => {
   const map = {};
-  for (const side of laidOutSides) {
+  for (const side of networkGraph) {
     for (const node of side.nodes) {
-      map[node.id] = { ...node, sideId: side.id, sideName: side.name, color: side.color, ink: side.ink };
+      map[node.id] = { ...node, sideId: side.id, sideName: side.name, color: side.color };
     }
   }
   return map;
 })();
 
+// Structural network edges (side-to-side flows from prep). Used as base mesh.
+const structuralEdges = [
+  { from: "promoters", to: "users", kind: "acquisition", label: "surfaces / discovers" },
+  { from: "users", to: "devices", kind: "acquisition", label: "enter via" },
+  { from: "devices", to: "app", kind: "hardware", label: "enables access" },
+  { from: "promoters", to: "app", kind: "acquisition", label: "shares / markets" },
+  { from: "writers", to: "app", kind: "content", label: "create posts" },
+  { from: "app", to: "users", kind: "content", label: "delivers spatially" },
+  { from: "users", to: "writers", kind: "content", label: "reactions & replies" },
+  { from: "writers", to: "promoters", kind: "acquisition", label: "promote posts" },
+  { from: "promoters", to: "writers", kind: "acquisition", label: "attract creators" },
+  { from: "devices", to: "users", kind: "hardware", label: "barrier / access" },
+  { from: "app", to: "promoters", kind: "acquisition", label: "stories to share" },
+  { from: "users", to: "app", kind: "content", label: "stay & engage" },
+];
+
+function centroidForSide(sideId) {
+  const side = sideById[sideId];
+  return side.anchor;
+}
+
+function pickBridgeNode(sideId, towardSideId) {
+  const side = sideById[sideId];
+  const toward = sideById[towardSideId].anchor;
+  let best = side.nodes[0];
+  let bestD = Infinity;
+  for (const node of side.nodes) {
+    const d = (node.x - toward.x) ** 2 + (node.y - toward.y) ** 2;
+    if (d < bestD) {
+      bestD = d;
+      best = node;
+    }
+  }
+  return best;
+}
+
 function StakeholderMapPage() {
-  const [activeSideId, setActiveSideId] = useState("app");
   const [activeChainId, setActiveChainId] = useState("adoption");
+  const [activeSideId, setActiveSideId] = useState(null);
+  const [activeNodeId, setActiveNodeId] = useState(null);
   const width = 1600;
   const height = 900;
-  const activeSide = sideById[activeSideId] || sideById.app;
-  const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
-  const flowSides = activeChain.flow;
-  const chainSideSet = new Set(flowSides);
 
-  // Polyline through column headers for the selected critical chain
-  const chainPoints = flowSides.map((sid, index) => {
-    const side = sideById[sid];
-    const x = sideColumnX[sid];
-    // slight vertical stagger so loop-back edges stay readable
-    const y = 78 + (index % 2) * 10;
-    return { sid, x, y, side };
+  const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
+  const chainSet = new Set(activeChain.flow);
+  const chainPairs = activeChain.flow.slice(0, -1).map((from, i) => ({
+    from,
+    to: activeChain.flow[i + 1],
+  }));
+
+  const activeSide = activeSideId ? sideById[activeSideId] : null;
+  const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
+
+  // Base mesh: edges between nearest bridge nodes of structural pairs
+  const meshEdges = structuralEdges.map((edge, i) => {
+    const a = pickBridgeNode(edge.from, edge.to);
+    const b = pickBridgeNode(edge.to, edge.from);
+    const onChain = chainPairs.some((p) => p.from === edge.from && p.to === edge.to)
+      || chainPairs.some((p) => p.from === edge.to && p.to === edge.from);
+    return { ...edge, i, a, b, onChain };
   });
+
+  // Intra-cluster links (network texture inside each side)
+  const clusterEdges = networkGraph.flatMap((side) => {
+    const edges = [];
+    for (let i = 0; i < side.nodes.length; i += 1) {
+      const a = side.nodes[i];
+      const b = side.nodes[(i + 1) % side.nodes.length];
+      edges.push({ a, b, sideId: side.id, inChain: chainSet.has(side.id) });
+    }
+    return edges;
+  });
+
+  function selectSide(sideId) {
+    setActiveSideId(sideId);
+    setActiveNodeId(null);
+  }
+
+  function selectNode(nodeId, sideId) {
+    setActiveNodeId(nodeId);
+    setActiveSideId(sideId);
+  }
+
+  const detailTitle = activeNode
+    ? activeNode.label
+    : activeSide
+      ? activeSide.name
+      : activeChain.name;
+  const detailGroup = activeNode
+    ? activeNode.sideName
+    : activeSide
+      ? `${activeSide.number} · Side`
+      : "Critical multi-step chain";
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
@@ -550,133 +631,198 @@ function StakeholderMapPage() {
         <header className="stakeholder-frame__head">
           <div>
             <p className="stakeholder-kicker">05 · Stakeholder network · Cosmos VR</p>
-            <h1>Five sides, one product system</h1>
+            <h1>A product network, not a list</h1>
           </div>
           <p className="stakeholder-lede">
-            User · Writers · Promoter · Device · App. App Side is the hub. Click a side for its nodes and relationship chains; click a critical chain to draw the main multi-step flow.
+            Five sides linked by multi-step flows. Select a critical chain to light the path; click a cluster or node for full chains from the prep doc.
           </p>
         </header>
 
         <div className="stakeholder-frame__map">
           <svg className="stakeholder-map" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
             <defs>
-              <marker id="chain-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#f14f9b" />
+              <marker id="net-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 8 5 L 0 9 z" fill="#f14f9b" />
               </marker>
+              <marker id="net-arrow-content" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 8 5 L 0 9 z" fill="#111c4e" />
+              </marker>
+              <marker id="net-arrow-hw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 8 5 L 0 9 z" fill="#0a7a5c" />
+              </marker>
+              <filter id="soft-glow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="4" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
             </defs>
 
-            {/* Critical chain path across sides */}
-            {chainPoints.slice(0, -1).map((pt, i) => {
-              const next = chainPoints[i + 1];
-              const midX = (pt.x + next.x) / 2;
-              const midY = Math.min(pt.y, next.y) - 18;
-              const d = `M ${pt.x} ${pt.y + 18} Q ${midX} ${midY} ${next.x} ${next.y + 18}`;
+            {/* faint cluster fields */}
+            {networkGraph.map((side) => (
+              <circle
+                key={`field-${side.id}`}
+                cx={side.anchor.x}
+                cy={side.anchor.y}
+                r={side.isHub ? 168 : 128}
+                className={[
+                  "stakeholder-map__field",
+                  chainSet.has(side.id) ? "is-in-chain" : "",
+                  activeSideId === side.id ? "is-active" : "",
+                ].filter(Boolean).join(" ")}
+                fill={side.isHub ? "rgba(242,240,79,0.2)" : `${side.color}14`}
+                stroke={side.color}
+                onClick={() => selectSide(side.id)}
+                style={{ cursor: "pointer" }}
+              />
+            ))}
+
+            {/* intra-cluster mesh */}
+            {clusterEdges.map((edge, i) => (
+              <line
+                key={`cluster-${edge.sideId}-${i}`}
+                x1={edge.a.x}
+                y1={edge.a.y}
+                x2={edge.b.x}
+                y2={edge.b.y}
+                className={`stakeholder-map__mesh ${edge.inChain ? "is-in-chain" : ""}`}
+              />
+            ))}
+
+            {/* structural inter-side mesh */}
+            {meshEdges.map((edge) => {
+              const mx = (edge.a.x + edge.b.x) / 2;
+              const my = (edge.a.y + edge.b.y) / 2;
+              const cx = mx + (800 - mx) * 0.12;
+              const cy = my + (430 - my) * 0.08;
+              const d = `M ${edge.a.x} ${edge.a.y} Q ${cx} ${cy} ${edge.b.x} ${edge.b.y}`;
               return (
                 <path
-                  key={`chain-seg-${i}`}
+                  key={`mesh-${edge.i}`}
                   d={d}
-                  className={`stakeholder-map__chain-edge is-${activeChain.kind}`}
+                  className={[
+                    "stakeholder-map__link",
+                    `is-${edge.kind}`,
+                    edge.onChain ? "is-chain-lit" : "is-base",
+                  ].join(" ")}
                   fill="none"
-                  markerEnd="url(#chain-arrow)"
                 />
               );
             })}
-            <text x={800} y={42} textAnchor="middle" className="stakeholder-map__chain-caption">
-              {activeChain.name}: {activeChain.steps}
-            </text>
 
-            {laidOutSides.map((side) => {
-              const isActive = side.id === activeSideId;
-              const inChain = chainSideSet.has(side.id);
-              const dimmed = !isActive && !inChain;
-              const colW = side.isHub ? 210 : 180;
-              const colH = 48 + side.nodes.length * (side.isHub ? 68 : 72) + 20;
-              const colTop = side.headerY - 36;
-
+            {/* emphasized critical-chain path through bridge nodes */}
+            {chainPairs.map((pair, i) => {
+              const a = pickBridgeNode(pair.from, pair.to);
+              const b = pickBridgeNode(pair.to, pair.from);
+              const mx = (a.x + b.x) / 2;
+              const my = (a.y + b.y) / 2 - 24;
+              const d = `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
+              const marker =
+                activeChain.kind === "content"
+                  ? "url(#net-arrow-content)"
+                  : activeChain.kind === "hardware"
+                    ? "url(#net-arrow-hw)"
+                    : "url(#net-arrow)";
               return (
-                <g
-                  key={side.id}
-                  className={[
-                    "stakeholder-map__side",
-                    isActive ? "is-active" : "",
-                    inChain ? "is-in-chain" : "",
-                    dimmed ? "is-dimmed" : "",
-                    side.isHub ? "is-hub" : "",
-                  ].filter(Boolean).join(" ")}
-                  onClick={() => setActiveSideId(side.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <rect
-                    x={sideColumnX[side.id] - colW / 2}
-                    y={colTop}
-                    width={colW}
-                    height={colH}
-                    rx={14}
-                    className="stakeholder-map__side-bg"
-                    fill={side.isHub ? "rgba(242,240,79,0.28)" : "rgba(247,244,237,0.9)"}
-                    stroke={isActive ? "#f14f9b" : side.color}
-                    strokeWidth={isActive || side.isHub ? 2.5 : 1.5}
+                <g key={`flow-${i}`}>
+                  <path
+                    d={d}
+                    className={`stakeholder-map__flow is-${activeChain.kind}`}
+                    fill="none"
+                    markerEnd={marker}
+                    filter="url(#soft-glow)"
                   />
-                  <text
-                    x={sideColumnX[side.id]}
-                    y={side.headerY - 10}
-                    textAnchor="middle"
-                    className="stakeholder-map__side-num"
-                    fill={side.isHub ? "#111c4e" : side.color}
-                  >
-                    {side.number}
+                  <text x={mx} y={my - 8} textAnchor="middle" className="stakeholder-map__flow-label">
+                    {i + 1}
                   </text>
-                  <text
-                    x={sideColumnX[side.id]}
-                    y={side.headerY + 12}
-                    textAnchor="middle"
-                    className="stakeholder-map__side-name"
-                    fill={side.isHub ? "#111c4e" : side.color}
-                  >
-                    {side.name.replace(/ \(.+\)$/, "")}
-                  </text>
-
-                  {side.nodes.map((node) => {
-                    const lines = node.label.length > 22
-                      ? (() => {
-                          const words = node.label.split(" ");
-                          const mid = Math.ceil(words.length / 2);
-                          return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-                        })()
-                      : [node.label];
-                    const rw = side.isHub ? 188 : 158;
-                    const rh = lines.length > 1 ? 46 : 36;
-                    return (
-                      <g key={node.id} transform={`translate(${node.x}, ${node.y})`}>
-                        <rect
-                          x={-rw / 2}
-                          y={-rh / 2}
-                          width={rw}
-                          height={rh}
-                          rx={8}
-                          fill={side.isHub ? "#f2f04f" : "#fffef9"}
-                          stroke={side.isHub ? "#111c4e" : side.color}
-                          strokeWidth={1.5}
-                        />
-                        {lines.map((line, li) => (
-                          <text
-                            key={li}
-                            x={0}
-                            y={(li - (lines.length - 1) / 2) * 13}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="stakeholder-map__node-label"
-                            fill="#111c4e"
-                          >
-                            {line}
-                          </text>
-                        ))}
-                      </g>
-                    );
-                  })}
                 </g>
               );
             })}
+
+            {/* side labels */}
+            {networkGraph.map((side) => (
+              <g
+                key={`label-${side.id}`}
+                className={`stakeholder-map__side-label ${chainSet.has(side.id) ? "is-in-chain" : ""}`}
+                onClick={() => selectSide(side.id)}
+                style={{ cursor: "pointer" }}
+              >
+                <text
+                  x={side.anchor.x}
+                  y={side.anchor.y + (side.isHub ? -178 : -142)}
+                  textAnchor="middle"
+                  fill={side.isHub ? "#111c4e" : side.color}
+                >
+                  {side.number} · {side.shortName}
+                </text>
+              </g>
+            ))}
+
+            {/* nodes */}
+            {networkGraph.flatMap((side) =>
+              side.nodes.map((node) => {
+                const isActive = node.id === activeNodeId;
+                const sideActive = side.id === activeSideId;
+                const inChain = chainSet.has(side.id);
+                const dimmed = !inChain && !sideActive && !isActive;
+                const lines =
+                  node.label.length > 20
+                    ? (() => {
+                        const words = node.label.split(" ");
+                        const mid = Math.ceil(words.length / 2);
+                        return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+                      })()
+                    : [node.label];
+                const rw = Math.max(108, ...lines.map((l) => l.length * 7.2 + 18));
+                const rh = lines.length > 1 ? 40 : 30;
+                return (
+                  <g
+                    key={node.id}
+                    className={[
+                      "stakeholder-map__node",
+                      isActive ? "is-active" : "",
+                      inChain ? "is-in-chain" : "",
+                      dimmed ? "is-dimmed" : "",
+                      side.isHub ? "is-hub" : "",
+                    ].filter(Boolean).join(" ")}
+                    transform={`translate(${node.x}, ${node.y})`}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      selectNode(node.id, side.id);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <rect
+                      x={-rw / 2}
+                      y={-rh / 2}
+                      width={rw}
+                      height={rh}
+                      rx={999}
+                      fill={side.isHub ? "#f2f04f" : "#fffef9"}
+                      stroke={isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color}
+                      strokeWidth={isActive ? 2.5 : 1.6}
+                    />
+                    {lines.map((line, li) => (
+                      <text
+                        key={li}
+                        x={0}
+                        y={(li - (lines.length - 1) / 2) * 11}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        className="stakeholder-map__node-label"
+                      >
+                        {line}
+                      </text>
+                    ))}
+                  </g>
+                );
+              })
+            )}
+
+            <text x={800} y={868} textAnchor="middle" className="stakeholder-map__chain-caption">
+              {activeChain.name}: {activeChain.steps}
+            </text>
           </svg>
         </div>
 
@@ -689,7 +835,9 @@ function StakeholderMapPage() {
                 role="tab"
                 aria-selected={chain.id === activeChainId}
                 className={chain.id === activeChainId ? "is-active" : ""}
-                onClick={() => setActiveChainId(chain.id)}
+                onClick={() => {
+                  setActiveChainId(chain.id);
+                }}
               >
                 {chain.name}
               </button>
@@ -697,36 +845,69 @@ function StakeholderMapPage() {
           </div>
 
           <div className="stakeholder-frame__detail-title">
-            <span className="stakeholder-frame__swatch" style={{ background: activeSide.color }} />
+            <span
+              className="stakeholder-frame__swatch"
+              style={{ background: activeSide?.color || activeNode?.color || "#f14f9b" }}
+            />
             <div>
-              <p className="stakeholder-frame__group">{activeSide.number} · {activeSide.name}</p>
-              <h2>{activeSide.name}</h2>
+              <p className="stakeholder-frame__group">{detailGroup}</p>
+              <h2>{detailTitle}</h2>
+              {!activeSide && !activeNode && (
+                <p className="stakeholder-frame__sub">{activeChain.steps}</p>
+              )}
             </div>
-            <p className="stakeholder-frame__count">{activeSide.nodes.length} nodes · {activeSide.chains.length} chains</p>
+            <div className="stakeholder-frame__side-tabs" role="tablist" aria-label="Sides">
+              {networkGraph.map((side) => (
+                <button
+                  key={side.id}
+                  type="button"
+                  className={activeSideId === side.id ? "is-active" : ""}
+                  onClick={() => selectSide(side.id)}
+                >
+                  {side.shortName}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="stakeholder-frame__network-body">
             <div className="stakeholder-frame__nodes-list">
-              <b>Nodes</b>
+              <b>{activeSide ? `${activeSide.shortName} nodes` : "Sides in this chain"}</b>
               <ul>
-                {activeSide.nodes.map((n) => (
-                  <li key={n.id}>{n.label}</li>
-                ))}
+                {activeSide
+                  ? activeSide.nodes.map((n) => (
+                      <li key={n.id}>
+                        <button type="button" className="stakeholder-frame__link" onClick={() => selectNode(n.id, activeSide.id)}>
+                          {n.label}
+                        </button>
+                      </li>
+                    ))
+                  : activeChain.flow.map((sid, i) => (
+                      <li key={`${sid}-${i}`}>
+                        <button type="button" className="stakeholder-frame__link" onClick={() => selectSide(sid)}>
+                          {i + 1}. {sideById[sid].name}
+                        </button>
+                      </li>
+                    ))}
               </ul>
             </div>
             <div className="stakeholder-frame__chains-list">
-              <b>Key relationship chains</b>
-              <ol>
-                {activeSide.chains.map((chain, i) => (
-                  <li key={i}>{chain}</li>
-                ))}
-              </ol>
+              <b>{activeSide ? "Key relationship chains" : "Selected critical chain"}</b>
+              {activeSide ? (
+                <ol>
+                  {activeSide.chains.map((chain, i) => (
+                    <li key={i}>{chain}</li>
+                  ))}
+                </ol>
+              ) : (
+                <>
+                  <p className="stakeholder-frame__critical-name">{activeChain.name}</p>
+                  <p className="stakeholder-frame__notes">{activeChain.steps}</p>
+                </>
+              )}
             </div>
             <div className="stakeholder-frame__critical-list">
-              <b>Selected critical chain</b>
-              <p className="stakeholder-frame__critical-name">{activeChain.name}</p>
-              <p className="stakeholder-frame__notes">{activeChain.steps}</p>
-              <b className="stakeholder-frame__critical-label">All five critical multi-step chains</b>
+              <b>All five critical multi-step chains</b>
               <ol>
                 {criticalChains.map((c) => (
                   <li key={c.id}>
@@ -745,13 +926,13 @@ function StakeholderMapPage() {
             <span><i className="is-content" /> Content flow (Writers → App → Users)</span>
             <span><i className="is-acquisition" /> Discovery / acquisition (Promoters → Users)</span>
             <span><i className="is-hardware" /> Hardware dependency (Device ↔ App)</span>
-            <span>Columns: User · Writers · App (hub) · Promoter · Device</span>
+            <span>Hub: App Side · Outer clusters: Users · Writers · Promoters · Devices</span>
           </div>
         </div>
       </div>
 
       <p className="waveline-share-hint">
-        Tip: close the left sidebar (‹) for a clean 16:9 share view. Every side, node, side chain, and critical multi-step chain from the prep doc is on this page.
+        Tip: close the left sidebar (‹) for a clean 16:9 share view. Chain tabs light the multi-step path; click a cluster or node for the full prep chains on that side.
       </p>
 
       <div className="report-next-links">

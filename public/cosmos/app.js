@@ -293,6 +293,7 @@
       id: "users",
       number: "01",
       name: "User Side",
+      shortName: "Users",
       color: "#f14f9b",
       nodes: [
         { id: "knowledge-seekers", label: "Knowledge Seekers" },
@@ -310,6 +311,7 @@
       id: "writers",
       number: "02",
       name: "Writers Side (Content Creators)",
+      shortName: "Writers",
       color: "#111c4e",
       nodes: [
         { id: "active-posters", label: "Active Posters" },
@@ -327,6 +329,7 @@
       id: "promoters",
       number: "03",
       name: "Promoter Side (Marketer / Distribution / Ad)",
+      shortName: "Promoters",
       color: "#c43b7a",
       nodes: [
         { id: "indie-hackers", label: "Indie Hackers" },
@@ -347,6 +350,7 @@
       id: "devices",
       number: "04",
       name: "Device Side",
+      shortName: "Devices",
       color: "#0a7a5c",
       nodes: [
         { id: "quest", label: "Meta Quest" },
@@ -365,8 +369,8 @@
       id: "app",
       number: "05",
       name: "App Side",
-      color: "#f2f04f",
-      ink: "#111c4e",
+      shortName: "App",
+      color: "#d4b200",
       isHub: true,
       nodes: [
         { id: "spatial-engine", label: "Spatial Engine (semantic positioning)" },
@@ -388,196 +392,281 @@
     {
       id: "adoption",
       name: "Adoption Chain",
-      flow: ["promoters", "users", "devices", "app"],
       kind: "acquisition",
+      flow: ["promoters", "users", "devices", "app"],
       steps: "Promoter Side \u2192 User Side \u2192 Device Side \u2192 App Side"
     },
     {
       id: "content-flywheel",
       name: "Content Flywheel",
-      flow: ["writers", "app", "users", "writers"],
       kind: "content",
+      flow: ["writers", "app", "users", "writers"],
       steps: "Writers Side \u2192 App Side \u2192 User Side \u2192 reactions & replies \u2192 Writers Side (more posting)"
     },
     {
       id: "value-delivery",
       name: "Value Delivery Chain",
-      flow: ["writers", "app", "users"],
       kind: "content",
+      flow: ["writers", "app", "users"],
       steps: "Writers Side \u2192 App Side (spatial + voice) \u2192 User Side (meaningful discovery instead of doomscrolling)"
     },
     {
       id: "distribution",
       name: "Distribution Chain",
-      flow: ["promoters", "users", "app", "promoters"],
       kind: "acquisition",
+      flow: ["promoters", "users", "app", "promoters"],
       steps: "Promoter Side (Indie Hackers + Design Communities) \u2192 User Side \u2192 App Side growth \u2192 better stories for Promoter Side"
     },
     {
       id: "hardware",
       name: "Hardware Dependency Chain",
-      flow: ["devices", "app", "users", "promoters"],
       kind: "hardware",
+      flow: ["devices", "app", "users", "promoters"],
       steps: "Device Side \u2192 App Side experience quality \u2192 User Side satisfaction \u2192 retention & word-of-mouth back to Promoter Side"
     }
   ];
-  var sideColumnX = {
-    users: 155,
-    writers: 430,
-    app: 800,
-    promoters: 1170,
-    devices: 1445
+  var sideAnchors = {
+    app: { x: 800, y: 430 },
+    users: { x: 250, y: 220 },
+    writers: { x: 250, y: 640 },
+    promoters: { x: 1350, y: 220 },
+    devices: { x: 1350, y: 640 }
   };
-  function buildSideLayout(side) {
-    const x = sideColumnX[side.id];
-    const top = side.isHub ? 175 : 195;
-    const gap = side.isHub ? 68 : 72;
-    const nodes = side.nodes.map((node, i) => ({
-      ...node,
-      sideId: side.id,
-      x,
-      y: top + i * gap
-    }));
-    return {
-      ...side,
-      headerY: side.isHub ? 118 : 138,
-      nodes
-    };
+  function placeCluster(side) {
+    const anchor = sideAnchors[side.id];
+    const n = side.nodes.length;
+    const radius = side.isHub ? 108 : 78;
+    const nodes = side.nodes.map((node, i) => {
+      const angle = side.isHub ? -Math.PI / 2 + i / n * Math.PI * 2 : -0.9 + i / Math.max(n - 1, 1) * 1.8;
+      return {
+        ...node,
+        sideId: side.id,
+        x: anchor.x + Math.cos(angle) * radius,
+        y: anchor.y + Math.sin(angle) * (side.isHub ? radius : radius * 0.95)
+      };
+    });
+    return { ...side, anchor, nodes };
   }
-  var laidOutSides = networkSides.map(buildSideLayout);
-  var sideById = Object.fromEntries(laidOutSides.map((s) => [s.id, s]));
-  var networkNodeById = (() => {
+  var networkGraph = networkSides.map(placeCluster);
+  var sideById = Object.fromEntries(networkGraph.map((s) => [s.id, s]));
+  var nodeById = (() => {
     const map = {};
-    for (const side of laidOutSides) {
+    for (const side of networkGraph) {
       for (const node of side.nodes) {
-        map[node.id] = { ...node, sideId: side.id, sideName: side.name, color: side.color, ink: side.ink };
+        map[node.id] = { ...node, sideId: side.id, sideName: side.name, color: side.color };
       }
     }
     return map;
   })();
+  var structuralEdges = [
+    { from: "promoters", to: "users", kind: "acquisition", label: "surfaces / discovers" },
+    { from: "users", to: "devices", kind: "acquisition", label: "enter via" },
+    { from: "devices", to: "app", kind: "hardware", label: "enables access" },
+    { from: "promoters", to: "app", kind: "acquisition", label: "shares / markets" },
+    { from: "writers", to: "app", kind: "content", label: "create posts" },
+    { from: "app", to: "users", kind: "content", label: "delivers spatially" },
+    { from: "users", to: "writers", kind: "content", label: "reactions & replies" },
+    { from: "writers", to: "promoters", kind: "acquisition", label: "promote posts" },
+    { from: "promoters", to: "writers", kind: "acquisition", label: "attract creators" },
+    { from: "devices", to: "users", kind: "hardware", label: "barrier / access" },
+    { from: "app", to: "promoters", kind: "acquisition", label: "stories to share" },
+    { from: "users", to: "app", kind: "content", label: "stay & engage" }
+  ];
+  function pickBridgeNode(sideId, towardSideId) {
+    const side = sideById[sideId];
+    const toward = sideById[towardSideId].anchor;
+    let best = side.nodes[0];
+    let bestD = Infinity;
+    for (const node of side.nodes) {
+      const d = (node.x - toward.x) ** 2 + (node.y - toward.y) ** 2;
+      if (d < bestD) {
+        bestD = d;
+        best = node;
+      }
+    }
+    return best;
+  }
   function StakeholderMapPage() {
-    const [activeSideId, setActiveSideId] = useState("app");
     const [activeChainId, setActiveChainId] = useState("adoption");
+    const [activeSideId, setActiveSideId] = useState(null);
+    const [activeNodeId, setActiveNodeId] = useState(null);
     const width = 1600;
     const height = 900;
-    const activeSide = sideById[activeSideId] || sideById.app;
     const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
-    const flowSides = activeChain.flow;
-    const chainSideSet = new Set(flowSides);
-    const chainPoints = flowSides.map((sid, index) => {
-      const side = sideById[sid];
-      const x = sideColumnX[sid];
-      const y = 78 + index % 2 * 10;
-      return { sid, x, y, side };
+    const chainSet = new Set(activeChain.flow);
+    const chainPairs = activeChain.flow.slice(0, -1).map((from, i) => ({
+      from,
+      to: activeChain.flow[i + 1]
+    }));
+    const activeSide = activeSideId ? sideById[activeSideId] : null;
+    const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
+    const meshEdges = structuralEdges.map((edge, i) => {
+      const a = pickBridgeNode(edge.from, edge.to);
+      const b = pickBridgeNode(edge.to, edge.from);
+      const onChain = chainPairs.some((p) => p.from === edge.from && p.to === edge.to) || chainPairs.some((p) => p.from === edge.to && p.to === edge.from);
+      return { ...edge, i, a, b, onChain };
     });
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame stakeholder-frame--network", "aria-label": "Cosmos VR stakeholder network, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Stakeholder network \xB7 Cosmos VR"), /* @__PURE__ */ React.createElement("h1", null, "Five sides, one product system")), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, "User \xB7 Writers \xB7 Promoter \xB7 Device \xB7 App. App Side is the hub. Click a side for its nodes and relationship chains; click a critical chain to draw the main multi-step flow.")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__map" }, /* @__PURE__ */ React.createElement("svg", { className: "stakeholder-map", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("marker", { id: "chain-arrow", viewBox: "0 0 10 10", refX: "9", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" }, /* @__PURE__ */ React.createElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#f14f9b" }))), chainPoints.slice(0, -1).map((pt, i) => {
-      const next = chainPoints[i + 1];
-      const midX = (pt.x + next.x) / 2;
-      const midY = Math.min(pt.y, next.y) - 18;
-      const d = `M ${pt.x} ${pt.y + 18} Q ${midX} ${midY} ${next.x} ${next.y + 18}`;
+    const clusterEdges = networkGraph.flatMap((side) => {
+      const edges = [];
+      for (let i = 0; i < side.nodes.length; i += 1) {
+        const a = side.nodes[i];
+        const b = side.nodes[(i + 1) % side.nodes.length];
+        edges.push({ a, b, sideId: side.id, inChain: chainSet.has(side.id) });
+      }
+      return edges;
+    });
+    function selectSide(sideId) {
+      setActiveSideId(sideId);
+      setActiveNodeId(null);
+    }
+    function selectNode(nodeId, sideId) {
+      setActiveNodeId(nodeId);
+      setActiveSideId(sideId);
+    }
+    const detailTitle = activeNode ? activeNode.label : activeSide ? activeSide.name : activeChain.name;
+    const detailGroup = activeNode ? activeNode.sideName : activeSide ? `${activeSide.number} \xB7 Side` : "Critical multi-step chain";
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame stakeholder-frame--network", "aria-label": "Cosmos VR stakeholder network, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Stakeholder network \xB7 Cosmos VR"), /* @__PURE__ */ React.createElement("h1", null, "A product network, not a list")), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, "Five sides linked by multi-step flows. Select a critical chain to light the path; click a cluster or node for full chains from the prep doc.")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__map" }, /* @__PURE__ */ React.createElement("svg", { className: "stakeholder-map", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("marker", { id: "net-arrow", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }, /* @__PURE__ */ React.createElement("path", { d: "M 0 1 L 8 5 L 0 9 z", fill: "#f14f9b" })), /* @__PURE__ */ React.createElement("marker", { id: "net-arrow-content", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }, /* @__PURE__ */ React.createElement("path", { d: "M 0 1 L 8 5 L 0 9 z", fill: "#111c4e" })), /* @__PURE__ */ React.createElement("marker", { id: "net-arrow-hw", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }, /* @__PURE__ */ React.createElement("path", { d: "M 0 1 L 8 5 L 0 9 z", fill: "#0a7a5c" })), /* @__PURE__ */ React.createElement("filter", { id: "soft-glow", x: "-40%", y: "-40%", width: "180%", height: "180%" }, /* @__PURE__ */ React.createElement("feGaussianBlur", { stdDeviation: "4", result: "b" }), /* @__PURE__ */ React.createElement("feMerge", null, /* @__PURE__ */ React.createElement("feMergeNode", { in: "b" }), /* @__PURE__ */ React.createElement("feMergeNode", { in: "SourceGraphic" })))), networkGraph.map((side) => /* @__PURE__ */ React.createElement(
+      "circle",
+      {
+        key: `field-${side.id}`,
+        cx: side.anchor.x,
+        cy: side.anchor.y,
+        r: side.isHub ? 168 : 128,
+        className: [
+          "stakeholder-map__field",
+          chainSet.has(side.id) ? "is-in-chain" : "",
+          activeSideId === side.id ? "is-active" : ""
+        ].filter(Boolean).join(" "),
+        fill: side.isHub ? "rgba(242,240,79,0.2)" : `${side.color}14`,
+        stroke: side.color,
+        onClick: () => selectSide(side.id),
+        style: { cursor: "pointer" }
+      }
+    )), clusterEdges.map((edge, i) => /* @__PURE__ */ React.createElement(
+      "line",
+      {
+        key: `cluster-${edge.sideId}-${i}`,
+        x1: edge.a.x,
+        y1: edge.a.y,
+        x2: edge.b.x,
+        y2: edge.b.y,
+        className: `stakeholder-map__mesh ${edge.inChain ? "is-in-chain" : ""}`
+      }
+    )), meshEdges.map((edge) => {
+      const mx = (edge.a.x + edge.b.x) / 2;
+      const my = (edge.a.y + edge.b.y) / 2;
+      const cx = mx + (800 - mx) * 0.12;
+      const cy = my + (430 - my) * 0.08;
+      const d = `M ${edge.a.x} ${edge.a.y} Q ${cx} ${cy} ${edge.b.x} ${edge.b.y}`;
       return /* @__PURE__ */ React.createElement(
         "path",
         {
-          key: `chain-seg-${i}`,
+          key: `mesh-${edge.i}`,
           d,
-          className: `stakeholder-map__chain-edge is-${activeChain.kind}`,
-          fill: "none",
-          markerEnd: "url(#chain-arrow)"
+          className: [
+            "stakeholder-map__link",
+            `is-${edge.kind}`,
+            edge.onChain ? "is-chain-lit" : "is-base"
+          ].join(" "),
+          fill: "none"
         }
       );
-    }), /* @__PURE__ */ React.createElement("text", { x: 800, y: 42, textAnchor: "middle", className: "stakeholder-map__chain-caption" }, activeChain.name, ": ", activeChain.steps), laidOutSides.map((side) => {
-      const isActive = side.id === activeSideId;
-      const inChain = chainSideSet.has(side.id);
-      const dimmed = !isActive && !inChain;
-      const colW = side.isHub ? 210 : 180;
-      const colH = 48 + side.nodes.length * (side.isHub ? 68 : 72) + 20;
-      const colTop = side.headerY - 36;
-      return /* @__PURE__ */ React.createElement(
-        "g",
+    }), chainPairs.map((pair, i) => {
+      const a = pickBridgeNode(pair.from, pair.to);
+      const b = pickBridgeNode(pair.to, pair.from);
+      const mx = (a.x + b.x) / 2;
+      const my = (a.y + b.y) / 2 - 24;
+      const d = `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
+      const marker = activeChain.kind === "content" ? "url(#net-arrow-content)" : activeChain.kind === "hardware" ? "url(#net-arrow-hw)" : "url(#net-arrow)";
+      return /* @__PURE__ */ React.createElement("g", { key: `flow-${i}` }, /* @__PURE__ */ React.createElement(
+        "path",
         {
-          key: side.id,
-          className: [
-            "stakeholder-map__side",
-            isActive ? "is-active" : "",
-            inChain ? "is-in-chain" : "",
-            dimmed ? "is-dimmed" : "",
-            side.isHub ? "is-hub" : ""
-          ].filter(Boolean).join(" "),
-          onClick: () => setActiveSideId(side.id),
-          style: { cursor: "pointer" }
+          d,
+          className: `stakeholder-map__flow is-${activeChain.kind}`,
+          fill: "none",
+          markerEnd: marker,
+          filter: "url(#soft-glow)"
+        }
+      ), /* @__PURE__ */ React.createElement("text", { x: mx, y: my - 8, textAnchor: "middle", className: "stakeholder-map__flow-label" }, i + 1));
+    }), networkGraph.map((side) => /* @__PURE__ */ React.createElement(
+      "g",
+      {
+        key: `label-${side.id}`,
+        className: `stakeholder-map__side-label ${chainSet.has(side.id) ? "is-in-chain" : ""}`,
+        onClick: () => selectSide(side.id),
+        style: { cursor: "pointer" }
+      },
+      /* @__PURE__ */ React.createElement(
+        "text",
+        {
+          x: side.anchor.x,
+          y: side.anchor.y + (side.isHub ? -178 : -142),
+          textAnchor: "middle",
+          fill: side.isHub ? "#111c4e" : side.color
         },
-        /* @__PURE__ */ React.createElement(
-          "rect",
+        side.number,
+        " \xB7 ",
+        side.shortName
+      )
+    )), networkGraph.flatMap(
+      (side) => side.nodes.map((node) => {
+        const isActive = node.id === activeNodeId;
+        const sideActive = side.id === activeSideId;
+        const inChain = chainSet.has(side.id);
+        const dimmed = !inChain && !sideActive && !isActive;
+        const lines = node.label.length > 20 ? (() => {
+          const words = node.label.split(" ");
+          const mid = Math.ceil(words.length / 2);
+          return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+        })() : [node.label];
+        const rw = Math.max(108, ...lines.map((l) => l.length * 7.2 + 18));
+        const rh = lines.length > 1 ? 40 : 30;
+        return /* @__PURE__ */ React.createElement(
+          "g",
           {
-            x: sideColumnX[side.id] - colW / 2,
-            y: colTop,
-            width: colW,
-            height: colH,
-            rx: 14,
-            className: "stakeholder-map__side-bg",
-            fill: side.isHub ? "rgba(242,240,79,0.28)" : "rgba(247,244,237,0.9)",
-            stroke: isActive ? "#f14f9b" : side.color,
-            strokeWidth: isActive || side.isHub ? 2.5 : 1.5
-          }
-        ),
-        /* @__PURE__ */ React.createElement(
-          "text",
-          {
-            x: sideColumnX[side.id],
-            y: side.headerY - 10,
-            textAnchor: "middle",
-            className: "stakeholder-map__side-num",
-            fill: side.isHub ? "#111c4e" : side.color
+            key: node.id,
+            className: [
+              "stakeholder-map__node",
+              isActive ? "is-active" : "",
+              inChain ? "is-in-chain" : "",
+              dimmed ? "is-dimmed" : "",
+              side.isHub ? "is-hub" : ""
+            ].filter(Boolean).join(" "),
+            transform: `translate(${node.x}, ${node.y})`,
+            onClick: (event) => {
+              event.stopPropagation();
+              selectNode(node.id, side.id);
+            },
+            style: { cursor: "pointer" }
           },
-          side.number
-        ),
-        /* @__PURE__ */ React.createElement(
-          "text",
-          {
-            x: sideColumnX[side.id],
-            y: side.headerY + 12,
-            textAnchor: "middle",
-            className: "stakeholder-map__side-name",
-            fill: side.isHub ? "#111c4e" : side.color
-          },
-          side.name.replace(/ \(.+\)$/, "")
-        ),
-        side.nodes.map((node) => {
-          const lines = node.label.length > 22 ? (() => {
-            const words = node.label.split(" ");
-            const mid = Math.ceil(words.length / 2);
-            return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-          })() : [node.label];
-          const rw = side.isHub ? 188 : 158;
-          const rh = lines.length > 1 ? 46 : 36;
-          return /* @__PURE__ */ React.createElement("g", { key: node.id, transform: `translate(${node.x}, ${node.y})` }, /* @__PURE__ */ React.createElement(
+          /* @__PURE__ */ React.createElement(
             "rect",
             {
               x: -rw / 2,
               y: -rh / 2,
               width: rw,
               height: rh,
-              rx: 8,
+              rx: 999,
               fill: side.isHub ? "#f2f04f" : "#fffef9",
-              stroke: side.isHub ? "#111c4e" : side.color,
-              strokeWidth: 1.5
+              stroke: isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color,
+              strokeWidth: isActive ? 2.5 : 1.6
             }
-          ), lines.map((line, li) => /* @__PURE__ */ React.createElement(
+          ),
+          lines.map((line, li) => /* @__PURE__ */ React.createElement(
             "text",
             {
               key: li,
               x: 0,
-              y: (li - (lines.length - 1) / 2) * 13,
+              y: (li - (lines.length - 1) / 2) * 11,
               textAnchor: "middle",
               dominantBaseline: "middle",
-              className: "stakeholder-map__node-label",
-              fill: "#111c4e"
+              className: "stakeholder-map__node-label"
             },
             line
-          )));
-        })
-      );
-    }))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail stakeholder-frame__detail--network", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs", role: "tablist", "aria-label": "Critical multi-step chains" }, criticalChains.map((chain) => /* @__PURE__ */ React.createElement(
+          ))
+        );
+      })
+    ), /* @__PURE__ */ React.createElement("text", { x: 800, y: 868, textAnchor: "middle", className: "stakeholder-map__chain-caption" }, activeChain.name, ": ", activeChain.steps))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail stakeholder-frame__detail--network", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs", role: "tablist", "aria-label": "Critical multi-step chains" }, criticalChains.map((chain) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: chain.id,
@@ -585,10 +674,27 @@
         role: "tab",
         "aria-selected": chain.id === activeChainId,
         className: chain.id === activeChainId ? "is-active" : "",
-        onClick: () => setActiveChainId(chain.id)
+        onClick: () => {
+          setActiveChainId(chain.id);
+        }
       },
       chain.name
-    ))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-frame__swatch", style: { background: activeSide.color } }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__group" }, activeSide.number, " \xB7 ", activeSide.name), /* @__PURE__ */ React.createElement("h2", null, activeSide.name)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__count" }, activeSide.nodes.length, " nodes \xB7 ", activeSide.chains.length, " chains")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__network-body" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__nodes-list" }, /* @__PURE__ */ React.createElement("b", null, "Nodes"), /* @__PURE__ */ React.createElement("ul", null, activeSide.nodes.map((n) => /* @__PURE__ */ React.createElement("li", { key: n.id }, n.label)))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chains-list" }, /* @__PURE__ */ React.createElement("b", null, "Key relationship chains"), /* @__PURE__ */ React.createElement("ol", null, activeSide.chains.map((chain, i) => /* @__PURE__ */ React.createElement("li", { key: i }, chain)))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__critical-list" }, /* @__PURE__ */ React.createElement("b", null, "Selected critical chain"), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__critical-name" }, activeChain.name), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__notes" }, activeChain.steps), /* @__PURE__ */ React.createElement("b", { className: "stakeholder-frame__critical-label" }, "All five critical multi-step chains"), /* @__PURE__ */ React.createElement("ol", null, criticalChains.map((c) => /* @__PURE__ */ React.createElement("li", { key: c.id }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => setActiveChainId(c.id) }, c.name), " \u2014 ", c.steps))))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__legend" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-content" }), " Content flow (Writers \u2192 App \u2192 Users)"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-acquisition" }), " Discovery / acquisition (Promoters \u2192 Users)"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-hardware" }), " Hardware dependency (Device \u2194 App)"), /* @__PURE__ */ React.createElement("span", null, "Columns: User \xB7 Writers \xB7 App (hub) \xB7 Promoter \xB7 Device")))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039) for a clean 16:9 share view. Every side, node, side chain, and critical multi-step chain from the prep doc is on this page."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/user-waveline/" }, "\u2190 User waveline"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
+    ))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail-title" }, /* @__PURE__ */ React.createElement(
+      "span",
+      {
+        className: "stakeholder-frame__swatch",
+        style: { background: activeSide?.color || activeNode?.color || "#f14f9b" }
+      }
+    ), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__group" }, detailGroup), /* @__PURE__ */ React.createElement("h2", null, detailTitle), !activeSide && !activeNode && /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__sub" }, activeChain.steps)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__side-tabs", role: "tablist", "aria-label": "Sides" }, networkGraph.map((side) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: side.id,
+        type: "button",
+        className: activeSideId === side.id ? "is-active" : "",
+        onClick: () => selectSide(side.id)
+      },
+      side.shortName
+    )))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__network-body" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__nodes-list" }, /* @__PURE__ */ React.createElement("b", null, activeSide ? `${activeSide.shortName} nodes` : "Sides in this chain"), /* @__PURE__ */ React.createElement("ul", null, activeSide ? activeSide.nodes.map((n) => /* @__PURE__ */ React.createElement("li", { key: n.id }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => selectNode(n.id, activeSide.id) }, n.label))) : activeChain.flow.map((sid, i) => /* @__PURE__ */ React.createElement("li", { key: `${sid}-${i}` }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => selectSide(sid) }, i + 1, ". ", sideById[sid].name))))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chains-list" }, /* @__PURE__ */ React.createElement("b", null, activeSide ? "Key relationship chains" : "Selected critical chain"), activeSide ? /* @__PURE__ */ React.createElement("ol", null, activeSide.chains.map((chain, i) => /* @__PURE__ */ React.createElement("li", { key: i }, chain))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__critical-name" }, activeChain.name), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__notes" }, activeChain.steps))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__critical-list" }, /* @__PURE__ */ React.createElement("b", null, "All five critical multi-step chains"), /* @__PURE__ */ React.createElement("ol", null, criticalChains.map((c) => /* @__PURE__ */ React.createElement("li", { key: c.id }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => setActiveChainId(c.id) }, c.name), " \u2014 ", c.steps))))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__legend" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-content" }), " Content flow (Writers \u2192 App \u2192 Users)"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-acquisition" }), " Discovery / acquisition (Promoters \u2192 Users)"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "is-hardware" }), " Hardware dependency (Device \u2194 App)"), /* @__PURE__ */ React.createElement("span", null, "Hub: App Side \xB7 Outer clusters: Users \xB7 Writers \xB7 Promoters \xB7 Devices")))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039) for a clean 16:9 share view. Chain tabs light the multi-step path; click a cluster or node for the full prep chains on that side."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/user-waveline/" }, "\u2190 User waveline"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
   }
   function TranscriptAppendix({ src }) {
     const [transcript, setTranscript] = useState("Loading transcript\u2026");
