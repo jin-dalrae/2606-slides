@@ -33,9 +33,7 @@ const methods = [
   { number: "02", label: "Wall observations", note: "Physical community surfaces" },
 ];
 
-// Experience waveline (not a classic customer-journey funnel): stages × emotional
-// intensity curve for one Cosmos VR session. Service design often calls this an
-// experience map / emotional journey; the drawn form is a waveline.
+// Experience waveline: stages × felt intensity for one Cosmos VR session.
 const experienceWaveline = [
   {
     id: "entice",
@@ -298,10 +296,10 @@ function UserWavelinePage() {
         <header className="waveline-frame__head">
           <div>
             <p className="waveline-kicker">04 · User waveline · Cosmos VR</p>
-            <h1>Experience map — not a conversion funnel</h1>
+            <h1>One session in the sphere</h1>
           </div>
           <p className="waveline-lede">
-            Stages on X, felt intensity on Y. One embodied session: voice, hands, color, proximity.
+            Eight stages of using Cosmos VR — from first intrigue through contribution and return. Wave height is felt intensity.
           </p>
         </header>
 
