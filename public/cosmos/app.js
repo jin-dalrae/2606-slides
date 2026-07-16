@@ -76,102 +76,330 @@
 
   // public/cosmos/app.jsx
   var { useEffect, useState } = React;
-  var experienceWaveline = [
+  var experienceWaves = [
     {
-      id: "entice",
-      stage: "01",
-      name: "Entice",
-      short: "Awareness & intrigue",
-      intensity: 0.38,
-      peakLabel: "intrigue",
-      behavior: "Sees a demo or trailer: someone speaking a post into existence, a post glowing with color, or walking up to a note and hearing the original voice while text appears.",
-      feelings: "Intrigue + emotional pull \u2014 more human and alive than text-only forums.",
-      achievements: "Expects a multimodal, embodied community (voice + space + touch).",
-      mechanics: ["Voice trailer", "Color glow", "Proximity playback"]
+      id: "cosmos",
+      label: "Cosmos VR",
+      kicker: "04 \xB7 User waveline \xB7 Cosmos VR",
+      title: "One session in the sphere",
+      lede: "Eight stages of using Cosmos VR \u2014 from first intrigue through contribution and return. Wave height is felt intensity.",
+      stroke: "#f14f9b",
+      fill: "#f14f9b",
+      defaultStage: "immerse",
+      stages: [
+        {
+          id: "entice",
+          stage: "01",
+          name: "Entice",
+          short: "Awareness & intrigue",
+          intensity: 0.38,
+          peakLabel: "intrigue",
+          behavior: "Sees a demo or trailer: someone speaking a post into existence, a post glowing with color, or walking up to a note and hearing the original voice while text appears.",
+          feelings: "Intrigue + emotional pull \u2014 more human and alive than text-only forums.",
+          achievements: "Expects a multimodal, embodied community (voice + space + touch).",
+          mechanics: ["Voice trailer", "Color glow", "Proximity playback"]
+        },
+        {
+          id: "enter",
+          stage: "02",
+          name: "Enter",
+          short: "First entry into the sphere",
+          intensity: 0.72,
+          peakLabel: "awe",
+          behavior: "Enters the center of the sphere. Sees color-coded post-its of different sizes and depths. Onboarding: walk or sit, point to zoom, grab with hands, or speak to post.",
+          feelings: "Awe at the living, colorful space. Curiosity about voice and touch layers.",
+          achievements: "Understands Cosmos is not only visual \u2014 voice, color, and direct manipulation.",
+          mechanics: ["Sphere entry", "Color coding", "Onboarding gestures"]
+        },
+        {
+          id: "orient",
+          stage: "03",
+          name: "Orient",
+          short: "Learning the spatial language",
+          intensity: 0.84,
+          peakLabel: "delight",
+          behavior: "Points to zoom a post, grabs and shifts it, walks closer for faint voice playback, notices color themes, speaks a short test post into the right place.",
+          feelings: "Empowerment and small wow moments \u2014 \u201CI can just grab it\u2026 and it speaks when I get close.\u201D",
+          achievements: "Color = theme/mood; proximity = voice + detail; hands = manipulate; voice = create.",
+          mechanics: ["Point-to-zoom", "Hand grab", "Voice test post"]
+        },
+        {
+          id: "explore",
+          stage: "04",
+          name: "Explore",
+          short: "High-level scanning & wandering",
+          intensity: 0.52,
+          peakLabel: "calm scan",
+          behavior: "Walks or pans across color clusters. Older posts sit slightly behind. Points from a distance to preview; walks closer for soft voice snippets without full zoom.",
+          feelings: "Calm exploration with sensory richness. Voice fragments add emotional texture while browsing.",
+          achievements: "Quick visual + auditory overview of the community\u2019s mood and themes.",
+          mechanics: ["Color clusters", "Depth = age", "Soft proximity audio"]
+        },
+        {
+          id: "discover",
+          stage: "05",
+          name: "Discover",
+          short: "Serendipitous + intentional finding",
+          intensity: 0.8,
+          peakLabel: "aha",
+          behavior: "Follows color gradients and clusters. Closer approach reveals tone in original voice. Points to zoom full text + reactions; grabs a post for personal inspection, then releases it.",
+          feelings: "Strong aha moments \u2014 hearing actual voice makes posts feel real and human.",
+          achievements: "Finds content with emotional and contextual nuance text-only browsing misses.",
+          mechanics: ["Voice approach", "Point-to-zoom", "Grab inspect"]
+        },
+        {
+          id: "immerse",
+          stage: "06",
+          name: "Immerse",
+          short: "Deep reading & sense-making",
+          intensity: 0.96,
+          peakLabel: "presence",
+          behavior: "Stays in a cluster. Points posts forward one by one, or grabs a small personal reading circle. Full voice + text; emoji reactions; color and proximity show theme evolution.",
+          feelings: "Deep focus + intimacy \u2014 \u201CIt feels like the person is here with me.\u201D",
+          achievements: "Empathetic understanding combining text, voice tone, space, and social reactions.",
+          mechanics: ["Reading circle", "Full voice", "Emoji reactions"]
+        },
+        {
+          id: "interact",
+          stage: "07",
+          name: "Interact",
+          short: "Active participation",
+          intensity: 0.92,
+          peakLabel: "agency",
+          behavior: "Speaks to post (color-coded note appears by meaning). Replies by pointing/grabbing then speaking. Gestures emoji reactions. Grabs to re-position, group, or show others.",
+          feelings: "Agency and belonging. Voice creation is expressive and low-friction; posts feel like mine.",
+          achievements: "Contributes multimodal, spatially organized content; space feels like a living knowledge sculpture.",
+          mechanics: ["Speak to post", "Voice reply", "React", "Hand rearrange"]
+        },
+        {
+          id: "exit",
+          stage: "08",
+          name: "Exit & extend",
+          short: "Closure + long-term relationship",
+          intensity: 0.58,
+          peakLabel: "linger",
+          behavior: "Zooms out; releases grabbed posts. May bookmark a cluster with a voice note. After headset off, notifications on nearby replies. Returns to evolved space.",
+          feelings: "Satisfied closure with lingering resonance. Ongoing connection as the space keeps growing.",
+          achievements: "Intellectual insight + emotional memory; habit of return because contributions stay alive.",
+          mechanics: ["Zoom out", "Bookmark + voice note", "Return path"]
+        }
+      ]
     },
     {
-      id: "enter",
-      stage: "02",
-      name: "Enter",
-      short: "First entry into the sphere",
-      intensity: 0.72,
-      peakLabel: "awe",
-      behavior: "Enters the center of the sphere. Sees color-coded post-its of different sizes and depths. Onboarding: walk or sit, point to zoom, grab with hands, or speak to post.",
-      feelings: "Awe at the living, colorful space. Curiosity about voice and touch layers.",
-      achievements: "Understands Cosmos is not only visual \u2014 voice, color, and direct manipulation.",
-      mechanics: ["Sphere entry", "Color coding", "Onboarding gestures"]
+      id: "reddit",
+      label: "Feed social (e.g. Reddit)",
+      kicker: "04 \xB7 User waveline \xB7 Feed platforms",
+      title: "One session in the feed",
+      lede: "Eight stages of using a ranking-driven social platform (Reddit-like). Wave height is felt intensity \u2014 spikes early, then flattens into scroll fatigue.",
+      stroke: "#ff4500",
+      fill: "#ff4500",
+      defaultStage: "explore",
+      stages: [
+        {
+          id: "entice",
+          stage: "01",
+          name: "Entice",
+          short: "Notification or habit pull",
+          intensity: 0.7,
+          peakLabel: "pull",
+          behavior: "Opens the app from a notification, a shared link, or muscle memory. Home/feed is already ranking posts for engagement.",
+          feelings: "Immediate curiosity and mild FOMO \u2014 \u201Cwhat did I miss?\u201D",
+          achievements: "Enters with a low-friction promise of novelty, not a clear reading goal.",
+          mechanics: ["Push notification", "Home feed", "Hot / Best ranking"]
+        },
+        {
+          id: "enter",
+          stage: "02",
+          name: "Enter",
+          short: "Land on the feed",
+          intensity: 0.62,
+          peakLabel: "open",
+          behavior: "Sees a vertical stack of posts, thumbnails, vote counts, and comment tallies. May switch subreddit or sort mode.",
+          feelings: "Slight stimulation; the UI is familiar and dense.",
+          achievements: "Locates a starting stream quickly, but orientation is algorithmic rather than spatial.",
+          mechanics: ["Infinite feed", "Subreddit switch", "Sort controls"]
+        },
+        {
+          id: "orient",
+          stage: "03",
+          name: "Orient",
+          short: "Learn the local norms",
+          intensity: 0.48,
+          peakLabel: "skim",
+          behavior: "Skims titles and flair, checks vote ratios, opens a few threads to see how people argue. Figures out what \u201Cbelongs\u201D here.",
+          feelings: "Mild competence mixed with noise \u2014 lots of signals, little structure beyond rank.",
+          achievements: "Can predict what will rise, not necessarily what will reward deep attention.",
+          mechanics: ["Votes", "Flair", "Thread nesting"]
+        },
+        {
+          id: "explore",
+          stage: "04",
+          name: "Explore",
+          short: "Scroll & sample",
+          intensity: 0.78,
+          peakLabel: "scroll high",
+          behavior: "Scrolls continuously. Opens posts, peeks at comments, jumps back to feed. Cross-posts and related threads pull sideways.",
+          feelings: "High stimulation, low depth \u2014 dopamine of novelty without a map of the whole conversation.",
+          achievements: "Consumes volume; loses track of where ideas sit relative to each other.",
+          mechanics: ["Infinite scroll", "Comment preview", "Related / next"]
+        },
+        {
+          id: "discover",
+          stage: "05",
+          name: "Discover",
+          short: "Rabbit hole or search",
+          intensity: 0.66,
+          peakLabel: "rabbit hole",
+          behavior: "Follows a heated thread, a meme chain, or a search into an adjacent subreddit. May open multiple tabs.",
+          feelings: "Brief aha, then fragmentation \u2014 discovery feels accidental and hard to relocate later.",
+          achievements: "Finds interesting bits; place memory is weak (history/search, not a place).",
+          mechanics: ["Search", "Cross-post", "Multi-tab threads"]
+        },
+        {
+          id: "immerse",
+          stage: "06",
+          name: "Immerse",
+          short: "Deep thread or long scroll",
+          intensity: 0.34,
+          peakLabel: "fatigue",
+          behavior: "Tries to read a long comment tree or stay on one topic; notifications and the next post keep interrupting. Time blurs.",
+          feelings: "Fatigue, mild guilt, glassy focus \u2014 immersed in the feed, not in understanding.",
+          achievements: "High dwell time with low sense-making; hard to summarize what was learned.",
+          mechanics: ["Nested comments", "Auto-refresh", "Ads / promotions"]
+        },
+        {
+          id: "interact",
+          stage: "07",
+          name: "Interact",
+          short: "Vote, comment, post",
+          intensity: 0.44,
+          peakLabel: "status anxiety",
+          behavior: "Upvotes, writes a comment, maybe posts. Watches score. May delete or rewrite under social pressure.",
+          feelings: "Performance anxiety and intermittent reward \u2014 validation is public and ranked.",
+          achievements: "Contributes text into a ranking machine; voice, body, and place are absent.",
+          mechanics: ["Upvote / downvote", "Comment box", "Karma / score"]
+        },
+        {
+          id: "exit",
+          stage: "08",
+          name: "Exit",
+          short: "Close app, residual pull",
+          intensity: 0.28,
+          peakLabel: "residue",
+          behavior: "Locks phone or switches apps. Often reopens \u201Cjust to check.\u201D Rarely leaves with a saved place in the discussion.",
+          feelings: "Empty closure, residual itch to scroll again.",
+          achievements: "Session ends without a durable spatial memory; return habit is compulsive more than purposeful.",
+          mechanics: ["App switch", "History", "Notifications re-pull"]
+        }
+      ]
     },
     {
-      id: "orient",
-      stage: "03",
-      name: "Orient",
-      short: "Learning the spatial language",
-      intensity: 0.84,
-      peakLabel: "delight",
-      behavior: "Points to zoom a post, grabs and shifts it, walks closer for faint voice playback, notices color themes, speaks a short test post into the right place.",
-      feelings: "Empowerment and small wow moments \u2014 \u201CI can just grab it\u2026 and it speaks when I get close.\u201D",
-      achievements: "Color = theme/mood; proximity = voice + detail; hands = manipulate; voice = create.",
-      mechanics: ["Point-to-zoom", "Hand grab", "Voice test post"]
-    },
-    {
-      id: "explore",
-      stage: "04",
-      name: "Explore",
-      short: "High-level scanning & wandering",
-      intensity: 0.52,
-      peakLabel: "calm scan",
-      behavior: "Walks or pans across color clusters. Older posts sit slightly behind. Points from a distance to preview; walks closer for soft voice snippets without full zoom.",
-      feelings: "Calm exploration with sensory richness. Voice fragments add emotional texture while browsing.",
-      achievements: "Quick visual + auditory overview of the community\u2019s mood and themes.",
-      mechanics: ["Color clusters", "Depth = age", "Soft proximity audio"]
-    },
-    {
-      id: "discover",
-      stage: "05",
-      name: "Discover",
-      short: "Serendipitous + intentional finding",
-      intensity: 0.8,
-      peakLabel: "aha",
-      behavior: "Follows color gradients and clusters. Closer approach reveals tone in original voice. Points to zoom full text + reactions; grabs a post for personal inspection, then releases it.",
-      feelings: "Strong aha moments \u2014 hearing actual voice makes posts feel real and human.",
-      achievements: "Finds content with emotional and contextual nuance text-only browsing misses.",
-      mechanics: ["Voice approach", "Point-to-zoom", "Grab inspect"]
-    },
-    {
-      id: "immerse",
-      stage: "06",
-      name: "Immerse",
-      short: "Deep reading & sense-making",
-      intensity: 0.96,
-      peakLabel: "presence",
-      behavior: "Stays in a cluster. Points posts forward one by one, or grabs a small personal reading circle. Full voice + text; emoji reactions; color and proximity show theme evolution.",
-      feelings: "Deep focus + intimacy \u2014 \u201CIt feels like the person is here with me.\u201D",
-      achievements: "Empathetic understanding combining text, voice tone, space, and social reactions.",
-      mechanics: ["Reading circle", "Full voice", "Emoji reactions"]
-    },
-    {
-      id: "interact",
-      stage: "07",
-      name: "Interact",
-      short: "Active participation",
-      intensity: 0.92,
-      peakLabel: "agency",
-      behavior: "Speaks to post (color-coded note appears by meaning). Replies by pointing/grabbing then speaking. Gestures emoji reactions. Grabs to re-position, group, or show others.",
-      feelings: "Agency and belonging. Voice creation is expressive and low-friction; posts feel like mine.",
-      achievements: "Contributes multimodal, spatially organized content; space feels like a living knowledge sculpture.",
-      mechanics: ["Speak to post", "Voice reply", "React", "Hand rearrange"]
-    },
-    {
-      id: "exit",
-      stage: "08",
-      name: "Exit & extend",
-      short: "Closure + long-term relationship",
-      intensity: 0.58,
-      peakLabel: "linger",
-      behavior: "Zooms out; releases grabbed posts. May bookmark a cluster with a voice note. After headset off, notifications on nearby replies. Returns to evolved space.",
-      feelings: "Satisfied closure with lingering resonance. Ongoing connection as the space keeps growing.",
-      achievements: "Intellectual insight + emotional memory; habit of return because contributions stay alive.",
-      mechanics: ["Zoom out", "Bookmark + voice note", "Return path"]
+      id: "vr-browse",
+      label: "VR browsing (non-game)",
+      kicker: "04 \xB7 User waveline \xB7 VR without a game loop",
+      title: "One session trying to browse in VR",
+      lede: "Eight stages for someone who wants headset time that isn\u2019t a game \u2014 and finds browsing hard to enjoy. Wave height is felt intensity (comfort + fulfillment).",
+      stroke: "#5b6cff",
+      fill: "#5b6cff",
+      defaultStage: "orient",
+      stages: [
+        {
+          id: "entice",
+          stage: "01",
+          name: "Entice",
+          short: "Want non-game VR time",
+          intensity: 0.64,
+          peakLabel: "hope",
+          behavior: "Puts on a Quest / Vision Pro hoping to browse, read forums, or catch up on the web \u2014 not to launch a shooter or fitness game.",
+          feelings: "Hopeful curiosity \u2014 \u201Cthis could be my calm digital place.\u201D",
+          achievements: "Arrives with intent to use VR as a reading / social surface, not as a game console.",
+          mechanics: ["Headset on", "Home environment", "Browser / panel apps"]
+        },
+        {
+          id: "enter",
+          stage: "02",
+          name: "Enter",
+          short: "Boot into panels",
+          intensity: 0.42,
+          peakLabel: "setup drag",
+          behavior: "Adjusts IPD, guardians, brightness. Opens a browser or social app as floating panels. Controllers or hand tracking must be re-learned each session.",
+          feelings: "Friction and self-consciousness \u2014 entry cost is high before any content arrives.",
+          achievements: "Gets a window open, but the body is already managing hardware before the mind can browse.",
+          mechanics: ["Boundary setup", "Floating windows", "Controller / hand tracking"]
+        },
+        {
+          id: "orient",
+          stage: "03",
+          name: "Orient",
+          short: "Fight the interface",
+          intensity: 0.3,
+          peakLabel: "clumsy",
+          behavior: "Tries to scroll, select, resize panels, and type. Laser pointer overshoots; virtual keyboard is slow; text is small or shimmering.",
+          feelings: "Frustration and cognitive load \u2014 orientation is about surviving UI, not learning a community.",
+          achievements: "Can perform basic navigation, but confidence stays low.",
+          mechanics: ["Laser cursor", "Virtual keyboard", "Panel resize / reparent"]
+        },
+        {
+          id: "explore",
+          stage: "04",
+          name: "Explore",
+          short: "Browse while managing body",
+          intensity: 0.36,
+          peakLabel: "unease",
+          behavior: "Scrolls feeds or tabs while standing/sitting carefully. Turns head to multi-panel layouts; may feel mild nausea or eye strain. Avoids large motion.",
+          feelings: "Uneasy multitasking \u2014 half attention on content, half on comfort and balance.",
+          achievements: "Samples content, but exploration is shallow because comfort budgets everything.",
+          mechanics: ["Head-locked / world-locked panels", "Scroll gesture", "Comfort vignette"]
+        },
+        {
+          id: "discover",
+          stage: "05",
+          name: "Discover",
+          short: "Find something worth reading",
+          intensity: 0.5,
+          peakLabel: "brief win",
+          behavior: "Finally lands on a long article or discussion that seems worth it. Tries to pin the window and settle in.",
+          feelings: "Short relief and interest \u2014 then the medium starts fighting the content again.",
+          achievements: "Discovers something promising; cannot yet trust the session will support deep attention.",
+          mechanics: ["Search", "Pin window", "Passthrough toggle"]
+        },
+        {
+          id: "immerse",
+          stage: "06",
+          name: "Immerse",
+          short: "Attempt deep reading",
+          intensity: 0.22,
+          peakLabel: "strain",
+          behavior: "Tries to read carefully. Text blurs, resolution limits, neck fatigue, or motion discomfort force breaks. May sit down or remove headset briefly.",
+          feelings: "Strain and disappointment \u2014 wants immersion in ideas, gets immersion in hardware limits.",
+          achievements: "Deep sense-making fails more often than it succeeds; session quality collapses mid-read.",
+          mechanics: ["Fixed distance text", "Reprojection artifacts", "Break reminders"]
+        },
+        {
+          id: "interact",
+          stage: "07",
+          name: "Interact",
+          short: "Comment / share (if at all)",
+          intensity: 0.26,
+          peakLabel: "abandon",
+          behavior: "Considers posting or replying; typing is painful. Often switches to phone for the actual reply, or skips interaction entirely.",
+          feelings: "Defeat about participation \u2014 presence without easy expression.",
+          achievements: "Lurking dominates; contribution migrates off-headset or doesn\u2019t happen.",
+          mechanics: ["Dictation (error-prone)", "Controller typing", "Phone companion"]
+        },
+        {
+          id: "exit",
+          stage: "08",
+          name: "Exit",
+          short: "Headset off with relief",
+          intensity: 0.4,
+          peakLabel: "relief",
+          behavior: "Removes headset. Eyes adjust. May finish the same content on a phone/laptop. Hesitates to put the headset back on for \u201Cjust browsing.\u201D",
+          feelings: "Physical relief stronger than intellectual closure. Residual belief that VR \u201Cshould\u201D be better for this.",
+          achievements: "Learns that non-game browsing in VR is possible but rarely enjoyable; weak habit of return for reading.",
+          mechanics: ["Power off / sleep", "Continue on flat screen", "Comfort recovery"]
+        }
+      ]
     }
   ];
   var phases = [
@@ -231,7 +459,7 @@
   function ChapterLabel({ number, children }) {
     return /* @__PURE__ */ React.createElement("div", { className: "chapter-label" }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("p", null, children));
   }
-  function WavelineChart({ stages, activeId, onSelect }) {
+  function WavelineChart({ stages, activeId, onSelect, stroke = "#f14f9b", fill = "#f14f9b", gradId = "wave" }) {
     const width = 1520;
     const height = 320;
     const padL = 88;
@@ -242,6 +470,8 @@
     const chartH = height - padT - padB;
     const peakLabelY = 22;
     const n = stages.length;
+    const fillId = `${gradId}-fill`;
+    const strokeId = `${gradId}-stroke`;
     const points = stages.map((stage, index) => {
       const x = padL + index / (n - 1) * chartW;
       const y = padT + chartH * (1 - stage.intensity);
@@ -255,10 +485,10 @@
     }).join(" ");
     const areaD = `${lineD} L ${points[n - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`;
     const baselineY = padT + chartH;
-    return /* @__PURE__ */ React.createElement("svg", { className: "waveline-chart", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: "waveFill", x1: "0", y1: "0", x2: "0", y2: "1" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: "#f14f9b", stopOpacity: "0.38" }), /* @__PURE__ */ React.createElement("stop", { offset: "70%", stopColor: "#f2f04f", stopOpacity: "0.12" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: "#111c4e", stopOpacity: "0.03" })), /* @__PURE__ */ React.createElement("linearGradient", { id: "waveStroke", x1: "0", y1: "0", x2: "1", y2: "0" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: "#f14f9b" }), /* @__PURE__ */ React.createElement("stop", { offset: "50%", stopColor: "#111c4e" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: "#f14f9b" }))), [0.5, 1].map((t) => {
+    return /* @__PURE__ */ React.createElement("svg", { className: "waveline-chart", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: fillId, x1: "0", y1: "0", x2: "0", y2: "1" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: fill, stopOpacity: "0.38" }), /* @__PURE__ */ React.createElement("stop", { offset: "70%", stopColor: fill, stopOpacity: "0.1" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: "#111c4e", stopOpacity: "0.03" })), /* @__PURE__ */ React.createElement("linearGradient", { id: strokeId, x1: "0", y1: "0", x2: "1", y2: "0" }, /* @__PURE__ */ React.createElement("stop", { offset: "0%", stopColor: stroke }), /* @__PURE__ */ React.createElement("stop", { offset: "50%", stopColor: "#111c4e" }), /* @__PURE__ */ React.createElement("stop", { offset: "100%", stopColor: stroke }))), [0.5, 1].map((t) => {
       const y = padT + chartH * (1 - t);
       return /* @__PURE__ */ React.createElement("line", { key: t, x1: padL, y1: y, x2: width - padR, y2: y, stroke: "rgba(17,28,78,0.08)", strokeDasharray: "3 5" });
-    }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: baselineY, x2: width - padR, y2: baselineY, stroke: "rgba(17,28,78,0.16)", strokeWidth: "1.25" }), /* @__PURE__ */ React.createElement("path", { d: areaD, fill: "url(#waveFill)" }), /* @__PURE__ */ React.createElement("path", { d: lineD, fill: "none", stroke: "url(#waveStroke)", strokeWidth: "3.5", strokeLinecap: "round", strokeLinejoin: "round" }), points.map((p) => {
+    }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: baselineY, x2: width - padR, y2: baselineY, stroke: "rgba(17,28,78,0.16)", strokeWidth: "1.25" }), /* @__PURE__ */ React.createElement("path", { d: areaD, fill: `url(#${fillId})` }), /* @__PURE__ */ React.createElement("path", { d: lineD, fill: "none", stroke: `url(#${strokeId})`, strokeWidth: "3.5", strokeLinecap: "round", strokeLinejoin: "round" }), points.map((p) => {
       const active = p.id === activeId;
       return /* @__PURE__ */ React.createElement("g", { key: p.id, className: "waveline-node", onClick: () => onSelect(p.id), style: { cursor: "pointer" } }, /* @__PURE__ */ React.createElement(
         "line",
@@ -267,11 +497,11 @@
           y1: p.y,
           x2: p.x,
           y2: baselineY,
-          stroke: active ? "#f14f9b" : "rgba(17,28,78,0.1)",
+          stroke: active ? stroke : "rgba(17,28,78,0.1)",
           strokeWidth: active ? 1.75 : 1,
           strokeDasharray: active ? "0" : "2 4"
         }
-      ), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 13 : 10, fill: active ? "#f14f9b" : "#111c4e", stroke: "#f7f4ed", strokeWidth: "2.5" }), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 5 : 3.5, fill: "#f2f04f" }), /* @__PURE__ */ React.createElement(
+      ), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 13 : 10, fill: active ? stroke : "#111c4e", stroke: "#f7f4ed", strokeWidth: "2.5" }), /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: active ? 5 : 3.5, fill: "#f2f04f" }), /* @__PURE__ */ React.createElement(
         "text",
         {
           x: p.x,
@@ -284,9 +514,40 @@
     }));
   }
   function UserWavelinePage() {
-    const [activeId, setActiveId] = useState("immerse");
-    const active = experienceWaveline.find((s) => s.id === activeId) || experienceWaveline[0];
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Cosmos VR experience waveline, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User waveline \xB7 Cosmos VR"), /* @__PURE__ */ React.createElement("h1", null, "One session in the sphere")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Eight stages of using Cosmos VR \u2014 from first intrigue through contribution and return. Wave height is felt intensity.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__chart", role: "tablist", "aria-label": "Waveline stages" }, /* @__PURE__ */ React.createElement(WavelineChart, { stages: experienceWaveline, activeId, onSelect: setActiveId })), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", null, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, active.name), /* @__PURE__ */ React.createElement("p", null, active.short, " \xB7 peak: ", active.peakLabel))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, active.mechanics.map((m) => /* @__PURE__ */ React.createElement("li", { key: m }, m))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039) for a clean 16:9 share view. Click a stage on the wave to update the detail panel."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "Next: Stakeholder map \u2192")));
+    const [waveId, setWaveId] = useState("cosmos");
+    const wave = experienceWaves.find((w) => w.id === waveId) || experienceWaves[0];
+    const [activeId, setActiveId] = useState(wave.defaultStage || wave.stages[0].id);
+    function selectWave(nextId) {
+      const next = experienceWaves.find((w) => w.id === nextId) || experienceWaves[0];
+      setWaveId(next.id);
+      const keep = next.stages.some((s) => s.id === activeId);
+      setActiveId(keep ? activeId : next.defaultStage || next.stages[0].id);
+    }
+    const active = wave.stages.find((s) => s.id === activeId) || wave.stages[0];
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": `${wave.label} experience waveline, 16 by 9` }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, wave.kicker), /* @__PURE__ */ React.createElement("h1", null, wave.title)), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, wave.lede)), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__wave-tabs", role: "tablist", "aria-label": "Experience wavelines" }, experienceWaves.map((w) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: w.id,
+        type: "button",
+        role: "tab",
+        "aria-selected": w.id === waveId,
+        className: w.id === waveId ? "is-active" : "",
+        style: w.id === waveId ? { borderColor: w.stroke, color: w.stroke } : void 0,
+        onClick: () => selectWave(w.id)
+      },
+      w.label
+    ))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__chart", role: "tablist", "aria-label": "Waveline stages" }, /* @__PURE__ */ React.createElement(
+      WavelineChart,
+      {
+        key: wave.id,
+        stages: wave.stages,
+        activeId,
+        onSelect: setActiveId,
+        stroke: wave.stroke,
+        fill: wave.fill,
+        gradId: `wave-${wave.id}`
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", null, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, active.name), /* @__PURE__ */ React.createElement("p", null, active.short, " \xB7 peak: ", active.peakLabel))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, active.mechanics.map((m) => /* @__PURE__ */ React.createElement("li", { key: m }, m))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039). Switch wavelines to compare Cosmos VR vs feed social vs hard VR browsing; click a stage for Behavior / Feelings / Achievements."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "Next: Stakeholder map \u2192")));
   }
   var networkSides = [
     {

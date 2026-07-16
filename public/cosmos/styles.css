@@ -578,7 +578,7 @@ blockquote footer { max-width: 580px; font-size: 13px; line-height: 1.6; opacity
 }
 .waveline-frame {
   display: grid;
-  grid-template-rows: auto minmax(0, 1.05fr) minmax(0, 1.2fr);
+  grid-template-rows: auto auto minmax(0, 1.05fr) minmax(0, 1.2fr);
   gap: 8px;
   width: 100%;
   max-width: min(1240px, 100%);
@@ -629,6 +629,33 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   line-height: 1.35;
   max-width: 34ch;
   justify-self: end;
+}
+.waveline-frame__wave-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.waveline-frame__wave-tabs button {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: clamp(11px, 1.35cqi, 13px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.waveline-frame__wave-tabs button.is-active {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 -2px 0 currentColor;
+}
+.waveline-frame__wave-tabs button:hover {
+  background: var(--yellow);
+  color: var(--navy);
+  border-color: var(--yellow);
 }
 .waveline-frame__chart {
   min-height: 0;
@@ -785,6 +812,7 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   }
   .waveline-frame__head { grid-template-columns: 1fr; }
   .waveline-lede { justify-self: start; max-width: none; }
+  .waveline-frame__wave-tabs { grid-template-columns: 1fr; }
   .waveline-frame__chart { min-height: 220px; }
   .waveline-frame__cols { grid-template-columns: 1fr; }
   .waveline-frame__cols p { -webkit-line-clamp: 10; }
