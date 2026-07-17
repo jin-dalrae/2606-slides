@@ -446,11 +446,11 @@ function buildWavePath(stages, padL, padT, chartW, chartH) {
 // curve point to inspect that wave × stage in the detail panel.
 function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStage, onSelectWave }) {
   const width = 1520;
-  const height = 340;
-  const padL = 88;
-  const padR = 88;
-  const padT = 28;
-  const padB = 58;
+  const height = 360;
+  const padL = 108;
+  const padR = 72;
+  const padT = 32;
+  const padB = 62;
   const chartW = width - padL - padR;
   const chartH = height - padT - padB;
   const baselineY = padT + chartH;
@@ -460,22 +460,59 @@ function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStag
 
   const stageXs = stageSpine.map((_, index) => padL + (index / Math.max(n - 1, 1)) * chartW);
 
+  // Y-axis: wave height encodes felt intensity (0 at baseline → 1 at top of plot).
+  const yTicks = [
+    { t: 1, label: "High" },
+    { t: 0.5, label: "Mid" },
+    { t: 0, label: "Low" },
+  ];
+
   const series = waves.map((wave) => {
     const { points, lineD } = buildWavePath(wave.stages, padL, padT, chartW, chartH);
     return { wave, points, lineD };
   });
 
   return (
-    <svg className="waveline-chart waveline-chart--compare" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      {[0.5, 1].map((t) => {
+    <svg className="waveline-chart waveline-chart--compare" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Compared experience wavelines. Vertical axis: wave height is felt intensity. Horizontal axis: session stages.">
+      {/* Y-axis grid + ticks */}
+      {yTicks.map(({ t, label }) => {
         const y = padT + chartH * (1 - t);
         return (
-          <line key={t} x1={padL} y1={y} x2={width - padR} y2={y} stroke="rgba(17,28,78,0.08)" strokeDasharray="3 5" />
+          <g key={label} className="waveline-y-tick">
+            <line
+              x1={padL}
+              y1={y}
+              x2={width - padR}
+              y2={y}
+              stroke="rgba(17,28,78,0.1)"
+              strokeDasharray={t === 0 ? "0" : "3 5"}
+              strokeWidth={t === 0 ? 1.35 : 1}
+            />
+            <text x={padL - 12} y={y + 4} textAnchor="end" className="waveline-y-tick-label">
+              {label}
+            </text>
+          </g>
         );
       })}
-      <line x1={padL} y1={baselineY} x2={width - padR} y2={baselineY} stroke="rgba(17,28,78,0.16)" strokeWidth="1.25" />
+      {/* Y-axis spine */}
+      <line x1={padL} y1={padT} x2={padL} y2={baselineY} stroke="rgba(17,28,78,0.28)" strokeWidth="1.5" />
+      {/* Rotated Y-axis title */}
+      <text
+        className="waveline-y-axis-title"
+        transform={`translate(28, ${(padT + baselineY) / 2}) rotate(-90)`}
+        textAnchor="middle"
+      >
+        Wave height = felt intensity
+      </text>
+      <text
+        className="waveline-y-axis-sub"
+        transform={`translate(48, ${(padT + baselineY) / 2}) rotate(-90)`}
+        textAnchor="middle"
+      >
+        (engagement / fulfillment, not time-on-app)
+      </text>
 
-      {/* Shared vertical guides + stage labels */}
+      {/* Shared vertical guides + stage labels (X-axis) */}
       {stageSpine.map((stage, index) => {
         const x = stageXs[index];
         const active = stage.id === activeStageId;
@@ -504,6 +541,9 @@ function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStag
           </g>
         );
       })}
+      <text x={(padL + width - padR) / 2} y={height - 6} textAnchor="middle" className="waveline-x-axis-title">
+        Session stages →
+      </text>
 
       {/* Three curves */}
       {series.map(({ wave, points, lineD }) => {
@@ -585,7 +625,7 @@ function UserWavelinePage() {
             <h1>Three sessions, one stage spine</h1>
           </div>
           <p className="waveline-lede">
-            Cosmos VR, feed social (Reddit-like), and non-game VR browsing drawn together. Wave height is felt intensity. Select a curve or stage to read that path.
+            Cosmos VR, feed social (Reddit-like), and non-game VR browsing on one chart. Y-axis: wave height = felt intensity (engagement / fulfillment). X-axis: shared session stages. Select a curve or stage to read that path.
           </p>
         </header>
 

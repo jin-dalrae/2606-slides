@@ -476,25 +476,57 @@
   }
   function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStage, onSelectWave }) {
     const width = 1520;
-    const height = 340;
-    const padL = 88;
-    const padR = 88;
-    const padT = 28;
-    const padB = 58;
+    const height = 360;
+    const padL = 108;
+    const padR = 72;
+    const padT = 32;
+    const padB = 62;
     const chartW = width - padL - padR;
     const chartH = height - padT - padB;
     const baselineY = padT + chartH;
     const stageSpine = waves[0]?.stages || [];
     const n = stageSpine.length;
     const stageXs = stageSpine.map((_, index) => padL + index / Math.max(n - 1, 1) * chartW);
+    const yTicks = [
+      { t: 1, label: "High" },
+      { t: 0.5, label: "Mid" },
+      { t: 0, label: "Low" }
+    ];
     const series = waves.map((wave) => {
       const { points, lineD } = buildWavePath(wave.stages, padL, padT, chartW, chartH);
       return { wave, points, lineD };
     });
-    return /* @__PURE__ */ React.createElement("svg", { className: "waveline-chart waveline-chart--compare", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, [0.5, 1].map((t) => {
+    return /* @__PURE__ */ React.createElement("svg", { className: "waveline-chart waveline-chart--compare", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet", role: "img", "aria-label": "Compared experience wavelines. Vertical axis: wave height is felt intensity. Horizontal axis: session stages." }, yTicks.map(({ t, label }) => {
       const y = padT + chartH * (1 - t);
-      return /* @__PURE__ */ React.createElement("line", { key: t, x1: padL, y1: y, x2: width - padR, y2: y, stroke: "rgba(17,28,78,0.08)", strokeDasharray: "3 5" });
-    }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: baselineY, x2: width - padR, y2: baselineY, stroke: "rgba(17,28,78,0.16)", strokeWidth: "1.25" }), stageSpine.map((stage, index) => {
+      return /* @__PURE__ */ React.createElement("g", { key: label, className: "waveline-y-tick" }, /* @__PURE__ */ React.createElement(
+        "line",
+        {
+          x1: padL,
+          y1: y,
+          x2: width - padR,
+          y2: y,
+          stroke: "rgba(17,28,78,0.1)",
+          strokeDasharray: t === 0 ? "0" : "3 5",
+          strokeWidth: t === 0 ? 1.35 : 1
+        }
+      ), /* @__PURE__ */ React.createElement("text", { x: padL - 12, y: y + 4, textAnchor: "end", className: "waveline-y-tick-label" }, label));
+    }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: padT, x2: padL, y2: baselineY, stroke: "rgba(17,28,78,0.28)", strokeWidth: "1.5" }), /* @__PURE__ */ React.createElement(
+      "text",
+      {
+        className: "waveline-y-axis-title",
+        transform: `translate(28, ${(padT + baselineY) / 2}) rotate(-90)`,
+        textAnchor: "middle"
+      },
+      "Wave height = felt intensity"
+    ), /* @__PURE__ */ React.createElement(
+      "text",
+      {
+        className: "waveline-y-axis-sub",
+        transform: `translate(48, ${(padT + baselineY) / 2}) rotate(-90)`,
+        textAnchor: "middle"
+      },
+      "(engagement / fulfillment, not time-on-app)"
+    ), stageSpine.map((stage, index) => {
       const x = stageXs[index];
       const active = stage.id === activeStageId;
       return /* @__PURE__ */ React.createElement(
@@ -520,7 +552,7 @@
         /* @__PURE__ */ React.createElement("text", { x, y: baselineY + 22, textAnchor: "middle", className: "stage-num" }, stage.stage),
         /* @__PURE__ */ React.createElement("text", { x, y: baselineY + 46, textAnchor: "middle", className: "stage-name" }, stage.name)
       );
-    }), series.map(({ wave, points, lineD }) => {
+    }), /* @__PURE__ */ React.createElement("text", { x: (padL + width - padR) / 2, y: height - 6, textAnchor: "middle", className: "waveline-x-axis-title" }, "Session stages \u2192"), series.map(({ wave, points, lineD }) => {
       const isFocusWave = wave.id === activeWaveId;
       return /* @__PURE__ */ React.createElement("g", { key: wave.id, className: `waveline-series ${isFocusWave ? "is-focus" : ""}`, opacity: isFocusWave ? 1 : 0.72 }, /* @__PURE__ */ React.createElement(
         "path",
@@ -584,7 +616,7 @@
     const [activeId, setActiveId] = useState("immerse");
     const wave = experienceWaves.find((w) => w.id === waveId) || experienceWaves[0];
     const active = wave.stages.find((s) => s.id === activeId) || wave.stages[0];
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Compared experience wavelines, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User wavelines \xB7 three sessions"), /* @__PURE__ */ React.createElement("h1", null, "Three sessions, one stage spine")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Cosmos VR, feed social (Reddit-like), and non-game VR browsing drawn together. Wave height is felt intensity. Select a curve or stage to read that path.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__legend-row", role: "list", "aria-label": "Wave legend" }, experienceWaves.map((w) => /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Compared experience wavelines, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User wavelines \xB7 three sessions"), /* @__PURE__ */ React.createElement("h1", null, "Three sessions, one stage spine")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Cosmos VR, feed social (Reddit-like), and non-game VR browsing on one chart. Y-axis: wave height = felt intensity (engagement / fulfillment). X-axis: shared session stages. Select a curve or stage to read that path.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__legend-row", role: "list", "aria-label": "Wave legend" }, experienceWaves.map((w) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: w.id,

@@ -666,6 +666,33 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   font-size: 15px;
   font-weight: 700;
 }
+.waveline-y-tick-label {
+  fill: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+}
+.waveline-y-axis-title {
+  fill: var(--navy);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.waveline-y-axis-sub {
+  fill: var(--muted);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+}
+.waveline-x-axis-title {
+  fill: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 .waveline-frame__chart {
   min-height: 0;
   display: flex;
