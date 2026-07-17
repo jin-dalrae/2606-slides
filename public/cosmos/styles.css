@@ -630,32 +630,41 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   max-width: 34ch;
   justify-self: end;
 }
-.waveline-frame__wave-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
+.waveline-frame__legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
 }
-.waveline-frame__wave-tabs button {
-  min-width: 0;
-  padding: 8px 10px;
+.waveline-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
   border: 1px solid var(--line);
   background: white;
-  color: var(--muted);
+  color: var(--navy);
   font-family: var(--sans);
-  font-size: clamp(11px, 1.35cqi, 13px);
+  font-size: clamp(11px, 1.3cqi, 13px);
   font-weight: 700;
-  line-height: 1.2;
-  text-align: center;
   cursor: pointer;
 }
-.waveline-frame__wave-tabs button.is-active {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: inset 0 -2px 0 currentColor;
+.waveline-legend-item i {
+  display: block;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
 }
-.waveline-frame__wave-tabs button:hover {
+.waveline-legend-item.is-active {
   background: var(--yellow);
-  color: var(--navy);
   border-color: var(--yellow);
+}
+.waveline-legend-item:hover {
+  border-color: var(--navy);
+}
+.waveline-chart--compare .peak-label {
+  font-size: 15px;
+  font-weight: 700;
 }
 .waveline-frame__chart {
   min-height: 0;
