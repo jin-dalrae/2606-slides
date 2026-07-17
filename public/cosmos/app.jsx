@@ -624,9 +624,6 @@ function UserWavelinePage() {
             <p className="waveline-kicker">04 · User wavelines · three sessions</p>
             <h1>Three sessions, one stage spine</h1>
           </div>
-          <p className="waveline-lede">
-            Cosmos VR, feed social (Reddit-like), and non-game VR browsing on one chart. Y-axis: wave height = felt intensity (engagement / fulfillment). X-axis: shared session stages. Select a curve or stage to read that path.
-          </p>
         </header>
 
         <div className="waveline-frame__legend-row" role="list" aria-label="Wave legend">
