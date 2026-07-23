@@ -1188,13 +1188,14 @@
         for (const sid of focusSideIds) {
           const side = sideById[sid];
           if (!side) continue;
+          pts.push(side.anchor);
           side.nodes.forEach((n) => pts.push(n));
         }
       }
       if (!pts.length) return { cx: width / 2, cy: height / 2, scale: 1 };
       const xs = pts.map((p) => p.x);
       const ys = pts.map((p) => p.y);
-      const pad = selectedEdge ? 100 : activeNodeId ? 130 : focusMode === "side" ? 160 : 200;
+      const pad = selectedEdge ? 100 : activeNodeId ? 130 : focusMode === "side" ? 140 : focusMode === "structure" ? 90 : 110;
       const minX = Math.min(...xs) - pad;
       const maxX = Math.max(...xs) + pad;
       const minY = Math.min(...ys) - pad;
@@ -1217,11 +1218,14 @@
         bias = 1.12;
         maxScale = 1.75;
       } else if (focusMode === "type") {
-        bias = 1;
-        maxScale = 1.45;
+        bias = 1.05;
+        maxScale = 1.55;
+      } else if (focusMode === "structure") {
+        bias = 1.08;
+        maxScale = 1.35;
       } else {
-        bias = 0.82;
-        maxScale = 0.88;
+        bias = 1.02;
+        maxScale = 1.25;
       }
       return { cx, cy, scale: Math.min(fit * bias, maxScale) };
     })();
