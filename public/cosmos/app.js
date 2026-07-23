@@ -1068,7 +1068,7 @@
     if (side === "s") return { x: 0, y: 1 };
     return { x: -1, y: 0 };
   }
-  function routeBetweenCards(a, b) {
+  function routeBetweenCards(a, b, { curve = true } = {}) {
     const A = cardSideAnchors(a);
     const B = cardSideAnchors(b);
     const sides = ["n", "e", "s", "w"];
@@ -1095,14 +1095,20 @@
     const pad = 2;
     const x1 = best.from.x + na.x * pad;
     const y1 = best.from.y + na.y * pad;
-    const tipClear = 1;
+    const tipClear = curve ? 1 : 0;
     const x2 = best.to.x + nb.x * tipClear;
     const y2 = best.to.y + nb.y * tipClear;
-    const mx = (x1 + x2) / 2;
-    const my = (y1 + y2) / 2;
-    const bow = 0.08;
-    const cx = mx - (y2 - y1) * bow;
-    const cy = my + (x2 - x1) * bow;
+    let d;
+    if (curve) {
+      const mx = (x1 + x2) / 2;
+      const my = (y1 + y2) / 2;
+      const bow = 0.1;
+      const cx = mx - (y2 - y1) * bow;
+      const cy = my + (x2 - x1) * bow;
+      d = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+    } else {
+      d = `M ${x1} ${y1} L ${x2} ${y2}`;
+    }
     return {
       x1,
       y1,
@@ -1110,7 +1116,7 @@
       y2,
       fromSide: best.fromSide,
       toSide: best.toSide,
-      d: `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`
+      d
     };
   }
   var sideById = Object.fromEntries(networkGraph.map((s) => [s.id, s]));
@@ -1539,7 +1545,7 @@
             a = nodeById[edge.from];
           }
           if (!a) return null;
-          const route = routeBetweenCards(a, b);
+          const route = routeBetweenCards(a, b, { curve: false });
           return /* @__PURE__ */ React.createElement(
             "path",
             {
@@ -1547,10 +1553,9 @@
               d: route.d,
               fill: "none",
               stroke: "#8a8780",
-              strokeWidth: edge.rel === "cluster" ? 2 : 1.7,
-              strokeDasharray: edge.rel === "branch" ? "5 4" : void 0,
+              strokeWidth: edge.rel === "cluster" ? 2 : 1.65,
               strokeLinecap: "round",
-              opacity: 0.55,
+              opacity: 0.5,
               className: "stakeholder-map__relationship"
             }
           );
@@ -1603,15 +1608,15 @@
           const b = nodeById[edge.to];
           if (!a || !b) return null;
           const typeMeta = influenceTypeById[edge.type];
-          const route = routeBetweenCards(a, b);
+          const route = routeBetweenCards(a, b, { curve: true });
           const isSelected = selectedEdgeKey === edgeKey(edge);
-          const hot = isSelected || !selectedEdgeKey && activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || hoverEdge && hoverEdge.edge === edge;
+          const isHover = hoverEdge && hoverEdge.edge === edge;
           const muted = selectedEdgeKey && !isSelected;
           return /* @__PURE__ */ React.createElement(
             "g",
             {
               key: `inf-${edge.from}-${edge.to}-${i}`,
-              className: `stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${muted ? "is-muted" : ""}`,
+              className: `stakeholder-map__influence-hit ${isSelected ? "is-hot" : ""} ${muted ? "is-muted" : ""}`,
               "data-from-side": route.fromSide,
               "data-to-side": route.toSide,
               onMouseEnter: (event) => {
@@ -1647,8 +1652,8 @@
                 className: `stakeholder-map__influence is-${edge.type}`,
                 fill: "none",
                 stroke: typeMeta?.color || "#111c4e",
-                strokeWidth: isSelected ? 3.6 : hot ? 2.8 : 2.2,
-                opacity: muted ? 0.1 : isSelected ? 1 : hot ? 0.95 : 0.8,
+                strokeWidth: isSelected ? 3.6 : isHover ? 2.8 : 2.2,
+                opacity: muted ? 0.1 : isSelected ? 1 : isHover ? 0.95 : 0.78,
                 markerEnd: `url(#inf-arrow-${edge.type})`
               }
             )

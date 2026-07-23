@@ -1202,9 +1202,9 @@ function outwardNormal(side) {
   return { x: -1, y: 0 };
 }
 
-// Pick exit side on A and entry side on B so the path leaves/arrives cleanly
-// and arrowheads sit on the card rim (not under the pill fill).
-function routeBetweenCards(a, b) {
+// Pick exit/entry card sides. curve=false → straight (category relationship);
+// curve=true → bowed path (influence).
+function routeBetweenCards(a, b, { curve = true } = {}) {
   const A = cardSideAnchors(a);
   const B = cardSideAnchors(b);
   const sides = ["n", "e", "s", "w"];
@@ -1218,8 +1218,6 @@ function routeBetweenCards(a, b) {
       const dist = Math.hypot(dx, dy) || 1;
       const na = outwardNormal(sa);
       const nb = outwardNormal(sb);
-      // Prefer leaving along A's outward normal toward B, and arriving into B
-      // from outside (against B's outward normal). Soft-penalize long hops.
       const leave = (dx * na.x + dy * na.y) / dist;
       const arrive = (-dx * nb.x - dy * nb.y) / dist;
       const score = leave * 1.35 + arrive * 1.35 - dist / 2400;
@@ -1228,22 +1226,25 @@ function routeBetweenCards(a, b) {
       }
     }
   }
-  // Nudge slightly outward so stroke + marker tip clear the fill edge.
   const na = outwardNormal(best.fromSide);
   const nb = outwardNormal(best.toSide);
   const pad = 2;
   const x1 = best.from.x + na.x * pad;
   const y1 = best.from.y + na.y * pad;
-  // Leave room for the arrowhead tip (marker tip sits at path end).
-  const tipClear = 1;
+  const tipClear = curve ? 1 : 0;
   const x2 = best.to.x + nb.x * tipClear;
   const y2 = best.to.y + nb.y * tipClear;
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2;
-  // Gentle perpendicular bow so overlapping pairs separate a little.
-  const bow = 0.08;
-  const cx = mx - (y2 - y1) * bow;
-  const cy = my + (x2 - x1) * bow;
+  let d;
+  if (curve) {
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    const bow = 0.1;
+    const cx = mx - (y2 - y1) * bow;
+    const cy = my + (x2 - x1) * bow;
+    d = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+  } else {
+    d = `M ${x1} ${y1} L ${x2} ${y2}`;
+  }
   return {
     x1,
     y1,
@@ -1251,7 +1252,7 @@ function routeBetweenCards(a, b) {
     y2,
     fromSide: best.fromSide,
     toSide: best.toSide,
-    d: `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`,
+    d,
   };
 }
 
@@ -1787,9 +1788,7 @@ function StakeholderMapPage() {
             />
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
-              {/* —— LAYER 1: Relationship network (ALWAYS on, gray, no arrowheads) ——
-                  Structure only: cluster hub → category roots → brands.
-                  This is NOT influence and is never filtered by influence type. */}
+              {/* Category relationship: always-on, straight, gray, no arrowheads */}
               {relationshipEdges.map((edge) => {
                 let a;
                 let b = nodeById[edge.to];
@@ -1810,17 +1809,16 @@ function StakeholderMapPage() {
                   a = nodeById[edge.from];
                 }
                 if (!a) return null;
-                const route = routeBetweenCards(a, b);
+                const route = routeBetweenCards(a, b, { curve: false });
                 return (
                   <path
                     key={`rel-${edge.from}-${edge.to}`}
                     d={route.d}
                     fill="none"
                     stroke="#8a8780"
-                    strokeWidth={edge.rel === "cluster" ? 2.0 : 1.7}
-                    strokeDasharray={edge.rel === "branch" ? "5 4" : undefined}
+                    strokeWidth={edge.rel === "cluster" ? 2 : 1.65}
                     strokeLinecap="round"
-                    opacity={0.55}
+                    opacity={0.5}
                     className="stakeholder-map__relationship"
                   />
                 );
@@ -1865,27 +1863,20 @@ function StakeholderMapPage() {
                 );
               })}
 
-              {/* —— LAYER 2: Influence network (colored + arrowheads, separate from relationship) ——
-                  Filtered by type tabs; click one arrow to highlight only that influence. */}
+              {/* Influence: curved, colored, arrowheads; highlight only the clicked arrow */}
               {visibleEdges.map((edge, i) => {
                 const a = nodeById[edge.from];
                 const b = nodeById[edge.to];
                 if (!a || !b) return null;
                 const typeMeta = influenceTypeById[edge.type];
-                const route = routeBetweenCards(a, b);
+                const route = routeBetweenCards(a, b, { curve: true });
                 const isSelected = selectedEdgeKey === edgeKey(edge);
-                const hot =
-                  isSelected ||
-                  (!selectedEdgeKey &&
-                    activeNodeId &&
-                    (edge.from === activeNodeId || edge.to === activeNodeId)) ||
-                  (hoverEdge && hoverEdge.edge === edge);
-                // Mute other influence arrows only — never the gray relationship layer.
+                const isHover = hoverEdge && hoverEdge.edge === edge;
                 const muted = selectedEdgeKey && !isSelected;
                 return (
                   <g
                     key={`inf-${edge.from}-${edge.to}-${i}`}
-                    className={`stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${muted ? "is-muted" : ""}`}
+                    className={`stakeholder-map__influence-hit ${isSelected ? "is-hot" : ""} ${muted ? "is-muted" : ""}`}
                     data-from-side={route.fromSide}
                     data-to-side={route.toSide}
                     onMouseEnter={(event) => {
@@ -1919,8 +1910,8 @@ function StakeholderMapPage() {
                       className={`stakeholder-map__influence is-${edge.type}`}
                       fill="none"
                       stroke={typeMeta?.color || "#111c4e"}
-                      strokeWidth={isSelected ? 3.6 : hot ? 2.8 : 2.2}
-                      opacity={muted ? 0.1 : isSelected ? 1 : hot ? 0.95 : 0.8}
+                      strokeWidth={isSelected ? 3.6 : isHover ? 2.8 : 2.2}
+                      opacity={muted ? 0.1 : isSelected ? 1 : isHover ? 0.95 : 0.78}
                       markerEnd={`url(#inf-arrow-${edge.type})`}
                     />
                   </g>

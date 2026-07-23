@@ -1272,10 +1272,11 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   display: inline-block;
   width: 28px;
   height: 0;
-  border-top: 2.5px solid #8a8780;
+  border-top: 2.5px solid #8a8780; /* straight gray = category relationship */
 }
 .stakeholder-map-legend__inf {
-  border-top-color: #f14f9b;
+  border-top-color: #f14f9b; /* curved colored = influence (shown curved on map) */
+  border-radius: 40%;
   position: relative;
 }
 .stakeholder-map-legend__inf::after {
