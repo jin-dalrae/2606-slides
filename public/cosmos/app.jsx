@@ -1283,6 +1283,8 @@ function StakeholderMapPage() {
   const [activeTypeId, setActiveTypeId] = useState("emotional");
   const [activeSideId, setActiveSideId] = useState("app");
   const [activeNodeId, setActiveNodeId] = useState(null);
+  // Single influence edge selection (clicking an arrow does NOT select whole type).
+  const [selectedEdgeKey, setSelectedEdgeKey] = useState(null); // `${from}|${to}|${type}`
   const [hoverEdge, setHoverEdge] = useState(null); // { edge, x, y } in map client coords
   // Free camera: null = follow focusBounds; user pan/zoom takes over until focus changes or Fit.
   const [view, setView] = useState(null); // { cx, cy, scale } | null
@@ -1297,6 +1299,13 @@ function StakeholderMapPage() {
   const activeSide = sideById[activeSideId] || sideById.app;
   const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
 
+  function edgeKey(e) {
+    return `${e.from}|${e.to}|${e.type}`;
+  }
+  const selectedEdge = selectedEdgeKey
+    ? influenceEdges.find((e) => edgeKey(e) === selectedEdgeKey) || null
+    : null;
+
   const typedEdges = influenceEdges.filter((e) => e.type === activeTypeId);
   const nodeFocusEdges = activeNodeId
     ? influenceEdges.filter((e) => e.from === activeNodeId || e.to === activeNodeId)
@@ -1309,6 +1318,12 @@ function StakeholderMapPage() {
   // Which nodes are lit for the current focus
   const litNodeIds = (() => {
     const set = new Set();
+    // A single selected arrow only lights its two endpoints (not the whole type).
+    if (selectedEdge) {
+      set.add(selectedEdge.from);
+      set.add(selectedEdge.to);
+      return set;
+    }
     if (focusMode === "type") {
       typedEdges.forEach((e) => {
         set.add(e.from);
@@ -1355,8 +1370,14 @@ function StakeholderMapPage() {
   const focusSet = new Set(focusSideIds);
 
   // Influence layer only (relationship layer is always drawn separately in gray).
-  // Overview / type: show the selected influence type. Side/entity: show influences on that focus.
+  // Type tabs filter by type; clicking one arrow selects only that edge.
   const visibleEdges = (() => {
+    if (selectedEdge) {
+      // Keep same-type siblings faintly visible for context, but only the selected edge is hot.
+      if (focusMode === "side" && activeNodeId) return nodeFocusEdges;
+      if (focusMode === "side") return sideFocusEdges;
+      return typedEdges.length ? typedEdges : influenceEdges.filter((e) => e.type === selectedEdge.type);
+    }
     if (focusMode === "side") {
       if (activeNodeId) return nodeFocusEdges;
       return sideFocusEdges;
@@ -1524,6 +1545,7 @@ function StakeholderMapPage() {
   function goOverview() {
     setFocusMode("overview");
     setActiveNodeId(null);
+    setSelectedEdgeKey(null);
     setView(null);
   }
 
@@ -1531,6 +1553,7 @@ function StakeholderMapPage() {
     setFocusMode("type");
     setActiveTypeId(typeId);
     setActiveNodeId(null);
+    setSelectedEdgeKey(null);
     setView(null);
   }
 
@@ -1538,6 +1561,7 @@ function StakeholderMapPage() {
     setFocusMode("side");
     setActiveSideId(sideId);
     setActiveNodeId(null);
+    setSelectedEdgeKey(null);
     setView(null);
   }
 
@@ -1545,7 +1569,21 @@ function StakeholderMapPage() {
     setFocusMode("side");
     setActiveSideId(sideId);
     setActiveNodeId(nodeId);
+    setSelectedEdgeKey(null);
     setView(null);
+  }
+
+  function selectEdge(edge) {
+    const key = edgeKey(edge);
+    // Toggle off if the same arrow is clicked again.
+    if (selectedEdgeKey === key) {
+      setSelectedEdgeKey(null);
+      return;
+    }
+    setSelectedEdgeKey(key);
+    setActiveTypeId(edge.type); // keep type swatch in sync without flooding all arrows
+    setActiveNodeId(null);
+    setFocusMode("overview");
   }
 
   const typeIndex = influenceTypes.findIndex((t) => t.id === activeTypeId);
@@ -1566,15 +1604,17 @@ function StakeholderMapPage() {
     }
   }
 
-  const detailEdges =
-    focusMode === "side"
+  const detailEdges = selectedEdge
+    ? [selectedEdge]
+    : focusMode === "side"
       ? activeNodeId
         ? nodeFocusEdges
         : sideFocusEdges
       : typedEdges;
 
-  const title =
-    focusMode === "side"
+  const title = selectedEdge
+    ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} → ${nodeById[selectedEdge.to]?.label || selectedEdge.to}`
+    : focusMode === "side"
       ? activeNode
         ? activeNode.label
         : activeSide.shortName
@@ -1582,14 +1622,15 @@ function StakeholderMapPage() {
         ? `${activeType.label} influence`
         : "Stakeholder networks";
 
-  const subtitle =
-    focusMode === "side"
+  const subtitle = selectedEdge
+    ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence · this arrow only`
+    : focusMode === "side"
       ? activeNode
         ? `Influence arrows involving this entity · gray relationship structure stays behind`
         : `${activeSide.name} · influence arrows touching this group · gray = relationship`
       : focusMode === "type"
         ? `Colored arrows = ${activeType.label.toLowerCase()} influence only · gray lines = relationship structure (always on)`
-        : "Gray = relationship (cluster → category → brand) · color arrows = selected influence type";
+        : "Gray = relationship · click one influence arrow to inspect it · type tabs filter the set";
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
@@ -1796,20 +1837,26 @@ function StakeholderMapPage() {
                 );
               })}
 
-              {/* —— Influence network (typed; follows selected type / entity focus) —— */}
+              {/* —— Influence network (typed). Click selects ONE arrow, not the whole type. —— */}
               {visibleEdges.map((edge, i) => {
                 const a = nodeById[edge.from];
                 const b = nodeById[edge.to];
                 if (!a || !b) return null;
                 const typeMeta = influenceTypeById[edge.type];
                 const route = routeBetweenCards(a, b);
+                const isSelected = selectedEdgeKey === edgeKey(edge);
                 const hot =
-                  (activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId)) ||
+                  isSelected ||
+                  (!selectedEdgeKey &&
+                    activeNodeId &&
+                    (edge.from === activeNodeId || edge.to === activeNodeId)) ||
                   (hoverEdge && hoverEdge.edge === edge);
+                // When one arrow is selected, mute the other visible arrows.
+                const muted = selectedEdgeKey && !isSelected;
                 return (
                   <g
                     key={`inf-${edge.from}-${edge.to}-${i}`}
-                    className={`stakeholder-map__influence-hit ${hot ? "is-hot" : ""}`}
+                    className={`stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${muted ? "is-muted" : ""}`}
                     data-from-side={route.fromSide}
                     data-to-side={route.toSide}
                     onMouseEnter={(event) => {
@@ -1831,7 +1878,10 @@ function StakeholderMapPage() {
                       });
                     }}
                     onMouseLeave={() => setHoverEdge(null)}
-                    onClick={() => goType(edge.type)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      selectEdge(edge);
+                    }}
                     style={{ cursor: "pointer" }}
                   >
                     <path d={route.d} fill="none" stroke="transparent" strokeWidth="14" />
@@ -1840,8 +1890,8 @@ function StakeholderMapPage() {
                       className={`stakeholder-map__influence is-${edge.type}`}
                       fill="none"
                       stroke={typeMeta?.color || "#111c4e"}
-                      strokeWidth={hot ? 3.2 : 2.3}
-                      opacity={hot ? 1 : 0.88}
+                      strokeWidth={isSelected ? 3.6 : hot ? 2.8 : 2.1}
+                      opacity={muted ? 0.12 : isSelected ? 1 : hot ? 0.95 : 0.75}
                       markerEnd={`url(#inf-arrow-${edge.type})`}
                     />
                   </g>

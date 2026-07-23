@@ -1135,6 +1135,7 @@
     const [activeTypeId, setActiveTypeId] = useState("emotional");
     const [activeSideId, setActiveSideId] = useState("app");
     const [activeNodeId, setActiveNodeId] = useState(null);
+    const [selectedEdgeKey, setSelectedEdgeKey] = useState(null);
     const [hoverEdge, setHoverEdge] = useState(null);
     const [view, setView] = useState(null);
     const [isPanning, setIsPanning] = useState(false);
@@ -1146,6 +1147,10 @@
     const activeType = influenceTypeById[activeTypeId] || influenceTypes[0];
     const activeSide = sideById[activeSideId] || sideById.app;
     const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
+    function edgeKey(e) {
+      return `${e.from}|${e.to}|${e.type}`;
+    }
+    const selectedEdge = selectedEdgeKey ? influenceEdges.find((e) => edgeKey(e) === selectedEdgeKey) || null : null;
     const typedEdges = influenceEdges.filter((e) => e.type === activeTypeId);
     const nodeFocusEdges = activeNodeId ? influenceEdges.filter((e) => e.from === activeNodeId || e.to === activeNodeId) : [];
     const sideNodeIds = new Set((activeSide?.nodes || []).map((n) => n.id));
@@ -1154,6 +1159,11 @@
     );
     const litNodeIds = (() => {
       const set = /* @__PURE__ */ new Set();
+      if (selectedEdge) {
+        set.add(selectedEdge.from);
+        set.add(selectedEdge.to);
+        return set;
+      }
       if (focusMode === "type") {
         typedEdges.forEach((e) => {
           set.add(e.from);
@@ -1197,6 +1207,11 @@
     })();
     const focusSet = new Set(focusSideIds);
     const visibleEdges = (() => {
+      if (selectedEdge) {
+        if (focusMode === "side" && activeNodeId) return nodeFocusEdges;
+        if (focusMode === "side") return sideFocusEdges;
+        return typedEdges.length ? typedEdges : influenceEdges.filter((e) => e.type === selectedEdge.type);
+      }
       if (focusMode === "side") {
         if (activeNodeId) return nodeFocusEdges;
         return sideFocusEdges;
@@ -1344,25 +1359,40 @@
     function goOverview() {
       setFocusMode("overview");
       setActiveNodeId(null);
+      setSelectedEdgeKey(null);
       setView(null);
     }
     function goType(typeId) {
       setFocusMode("type");
       setActiveTypeId(typeId);
       setActiveNodeId(null);
+      setSelectedEdgeKey(null);
       setView(null);
     }
     function goSide(sideId) {
       setFocusMode("side");
       setActiveSideId(sideId);
       setActiveNodeId(null);
+      setSelectedEdgeKey(null);
       setView(null);
     }
     function goNode(nodeId, sideId) {
       setFocusMode("side");
       setActiveSideId(sideId);
       setActiveNodeId(nodeId);
+      setSelectedEdgeKey(null);
       setView(null);
+    }
+    function selectEdge(edge) {
+      const key = edgeKey(edge);
+      if (selectedEdgeKey === key) {
+        setSelectedEdgeKey(null);
+        return;
+      }
+      setSelectedEdgeKey(key);
+      setActiveTypeId(edge.type);
+      setActiveNodeId(null);
+      setFocusMode("overview");
     }
     const typeIndex = influenceTypes.findIndex((t) => t.id === activeTypeId);
     const sideIndex = networkGraph.findIndex((s) => s.id === activeSideId);
@@ -1379,9 +1409,9 @@
         goType(next.id);
       }
     }
-    const detailEdges = focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
-    const title = focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
-    const subtitle = focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship (cluster \u2192 category \u2192 brand) \xB7 color arrows = selected influence type";
+    const detailEdges = selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
+    const title = selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
+    const subtitle = selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 click one influence arrow to inspect it \xB7 type tabs filter the set";
     return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "Overview"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} sides` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-map-hint" }, "Gray = relationship (cluster \u2192 category \u2192 brand) \xB7 Color arrows = influence (switch type tabs) \xB7 Scroll zoom \xB7 Drag pan"), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "button",
       {
@@ -1544,12 +1574,14 @@
           if (!a || !b) return null;
           const typeMeta = influenceTypeById[edge.type];
           const route = routeBetweenCards(a, b);
-          const hot = activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || hoverEdge && hoverEdge.edge === edge;
+          const isSelected = selectedEdgeKey === edgeKey(edge);
+          const hot = isSelected || !selectedEdgeKey && activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || hoverEdge && hoverEdge.edge === edge;
+          const muted = selectedEdgeKey && !isSelected;
           return /* @__PURE__ */ React.createElement(
             "g",
             {
               key: `inf-${edge.from}-${edge.to}-${i}`,
-              className: `stakeholder-map__influence-hit ${hot ? "is-hot" : ""}`,
+              className: `stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${muted ? "is-muted" : ""}`,
               "data-from-side": route.fromSide,
               "data-to-side": route.toSide,
               onMouseEnter: (event) => {
@@ -1571,7 +1603,10 @@
                 });
               },
               onMouseLeave: () => setHoverEdge(null),
-              onClick: () => goType(edge.type),
+              onClick: (event) => {
+                event.stopPropagation();
+                selectEdge(edge);
+              },
               style: { cursor: "pointer" }
             },
             /* @__PURE__ */ React.createElement("path", { d: route.d, fill: "none", stroke: "transparent", strokeWidth: "14" }),
@@ -1582,8 +1617,8 @@
                 className: `stakeholder-map__influence is-${edge.type}`,
                 fill: "none",
                 stroke: typeMeta?.color || "#111c4e",
-                strokeWidth: hot ? 3.2 : 2.3,
-                opacity: hot ? 1 : 0.88,
+                strokeWidth: isSelected ? 3.6 : hot ? 2.8 : 2.1,
+                opacity: muted ? 0.12 : isSelected ? 1 : hot ? 0.95 : 0.75,
                 markerEnd: `url(#inf-arrow-${edge.type})`
               }
             )
