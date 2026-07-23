@@ -1442,7 +1442,7 @@
     const detailEdges = selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
     const title = selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
     const subtitle = selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 click one influence arrow to inspect it \xB7 type tabs filter the set";
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "Overview"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} sides` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-map-hint" }, "Gray = relationship (cluster \u2192 category \u2192 brand) \xB7 Color arrows = influence (switch type tabs) \xB7 Scroll zoom \xB7 Drag pan"), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "Overview"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} sides` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Relationship (always on): cluster \u2192 category \u2192 brand"), /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence (typed arrows): click one \xB7 type tabs filter")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: t.id,
@@ -1529,34 +1529,34 @@
             a = {
               x: side.anchor.x,
               y: side.anchor.y,
-              hw: 22,
-              hh: 22,
+              hw: 26,
+              hh: 26,
               lines: [side.shortName],
-              rw: 44,
-              rh: 44
+              rw: 52,
+              rh: 52
             };
           } else {
             a = nodeById[edge.from];
           }
           if (!a) return null;
           const route = routeBetweenCards(a, b);
-          const lit = !activeNodeId || edge.from === activeNodeId || edge.to === activeNodeId || edge.rel === "cluster" && activeSideId === edge.clusterId && focusMode === "side";
           return /* @__PURE__ */ React.createElement(
             "path",
             {
               key: `rel-${edge.from}-${edge.to}`,
               d: route.d,
               fill: "none",
-              stroke: "#9a9890",
-              strokeWidth: edge.rel === "cluster" ? 1.35 : 1.2,
-              strokeDasharray: edge.rel === "branch" ? "4 5" : "2 3",
-              opacity: lit ? 0.55 : 0.28,
+              stroke: "#8a8780",
+              strokeWidth: edge.rel === "cluster" ? 2 : 1.7,
+              strokeDasharray: edge.rel === "branch" ? "5 4" : void 0,
+              strokeLinecap: "round",
+              opacity: 0.55,
               className: "stakeholder-map__relationship"
             }
           );
         }), networkGraph.map((side) => {
           const isActive = activeSideId === side.id && focusMode === "side";
-          const hubR = 22;
+          const hubR = 26;
           return /* @__PURE__ */ React.createElement(
             "g",
             {
@@ -1570,19 +1570,19 @@
               "circle",
               {
                 r: hubR,
-                fill: "#f4f3ef",
-                stroke: "#b8b6ae",
-                strokeWidth: isActive ? 2 : 1.25
+                fill: "#eceae4",
+                stroke: isActive ? "#f14f9b" : "#7a7770",
+                strokeWidth: isActive ? 2.2 : 1.6
               }
             ),
             /* @__PURE__ */ React.createElement(
               "text",
               {
-                y: -2,
+                y: -3,
                 textAnchor: "middle",
                 dominantBaseline: "middle",
                 className: "stakeholder-map__rel-hub-num",
-                fill: "#6e6c66"
+                fill: "#4a4842"
               },
               side.number
             ),
@@ -1593,7 +1593,7 @@
                 textAnchor: "middle",
                 dominantBaseline: "middle",
                 className: "stakeholder-map__rel-hub-name",
-                fill: "#6e6c66"
+                fill: "#4a4842"
               },
               side.shortName
             )
@@ -1647,8 +1647,8 @@
                 className: `stakeholder-map__influence is-${edge.type}`,
                 fill: "none",
                 stroke: typeMeta?.color || "#111c4e",
-                strokeWidth: isSelected ? 3.6 : hot ? 2.8 : 2.1,
-                opacity: muted ? 0.12 : isSelected ? 1 : hot ? 0.95 : 0.75,
+                strokeWidth: isSelected ? 3.6 : hot ? 2.8 : 2.2,
+                opacity: muted ? 0.1 : isSelected ? 1 : hot ? 0.95 : 0.8,
                 markerEnd: `url(#inf-arrow-${edge.type})`
               }
             )

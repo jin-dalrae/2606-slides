@@ -1688,9 +1688,16 @@ function StakeholderMapPage() {
             </button>
           </div>
         </div>
-        <p className="stakeholder-map-hint">
-          Gray = relationship (cluster → category → brand) · Color arrows = influence (switch type tabs) · Scroll zoom · Drag pan
-        </p>
+        <div className="stakeholder-map-legend" aria-hidden="true">
+          <span className="stakeholder-map-legend__item">
+            <i className="stakeholder-map-legend__rel" />
+            Relationship (always on): cluster → category → brand
+          </span>
+          <span className="stakeholder-map-legend__item">
+            <i className="stakeholder-map-legend__inf" />
+            Influence (typed arrows): click one · type tabs filter
+          </span>
+        </div>
 
         <div className="stakeholder-frame__chain-tabs stakeholder-frame__type-tabs" role="tablist" aria-label="Influence types">
           {influenceTypes.map((t) => (
@@ -1780,8 +1787,9 @@ function StakeholderMapPage() {
             />
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
-              {/* —— Relationship network (always on, gray backbone) ——
-                  Cluster center → category roots → brands. Not influence. */}
+              {/* —— LAYER 1: Relationship network (ALWAYS on, gray, no arrowheads) ——
+                  Structure only: cluster hub → category roots → brands.
+                  This is NOT influence and is never filtered by influence type. */}
               {relationshipEdges.map((edge) => {
                 let a;
                 let b = nodeById[edge.to];
@@ -1792,33 +1800,27 @@ function StakeholderMapPage() {
                   a = {
                     x: side.anchor.x,
                     y: side.anchor.y,
-                    hw: 22,
-                    hh: 22,
+                    hw: 26,
+                    hh: 26,
                     lines: [side.shortName],
-                    rw: 44,
-                    rh: 44,
+                    rw: 52,
+                    rh: 52,
                   };
                 } else {
                   a = nodeById[edge.from];
                 }
                 if (!a) return null;
                 const route = routeBetweenCards(a, b);
-                const lit =
-                  !activeNodeId ||
-                  edge.from === activeNodeId ||
-                  edge.to === activeNodeId ||
-                  (edge.rel === "cluster" &&
-                    activeSideId === edge.clusterId &&
-                    focusMode === "side");
                 return (
                   <path
                     key={`rel-${edge.from}-${edge.to}`}
                     d={route.d}
                     fill="none"
-                    stroke="#9a9890"
-                    strokeWidth={edge.rel === "cluster" ? 1.35 : 1.2}
-                    strokeDasharray={edge.rel === "branch" ? "4 5" : "2 3"}
-                    opacity={lit ? 0.55 : 0.28}
+                    stroke="#8a8780"
+                    strokeWidth={edge.rel === "cluster" ? 2.0 : 1.7}
+                    strokeDasharray={edge.rel === "branch" ? "5 4" : undefined}
+                    strokeLinecap="round"
+                    opacity={0.55}
                     className="stakeholder-map__relationship"
                   />
                 );
@@ -1826,7 +1828,7 @@ function StakeholderMapPage() {
 
               {networkGraph.map((side) => {
                 const isActive = activeSideId === side.id && focusMode === "side";
-                const hubR = 22;
+                const hubR = 26;
                 return (
                   <g
                     key={`rel-hub-${side.id}`}
@@ -1837,16 +1839,16 @@ function StakeholderMapPage() {
                   >
                     <circle
                       r={hubR}
-                      fill="#f4f3ef"
-                      stroke="#b8b6ae"
-                      strokeWidth={isActive ? 2 : 1.25}
+                      fill="#eceae4"
+                      stroke={isActive ? "#f14f9b" : "#7a7770"}
+                      strokeWidth={isActive ? 2.2 : 1.6}
                     />
                     <text
-                      y={-2}
+                      y={-3}
                       textAnchor="middle"
                       dominantBaseline="middle"
                       className="stakeholder-map__rel-hub-num"
-                      fill="#6e6c66"
+                      fill="#4a4842"
                     >
                       {side.number}
                     </text>
@@ -1855,7 +1857,7 @@ function StakeholderMapPage() {
                       textAnchor="middle"
                       dominantBaseline="middle"
                       className="stakeholder-map__rel-hub-name"
-                      fill="#6e6c66"
+                      fill="#4a4842"
                     >
                       {side.shortName}
                     </text>
@@ -1863,7 +1865,8 @@ function StakeholderMapPage() {
                 );
               })}
 
-              {/* —— Influence network (typed). Click selects ONE arrow, not the whole type. —— */}
+              {/* —— LAYER 2: Influence network (colored + arrowheads, separate from relationship) ——
+                  Filtered by type tabs; click one arrow to highlight only that influence. */}
               {visibleEdges.map((edge, i) => {
                 const a = nodeById[edge.from];
                 const b = nodeById[edge.to];
@@ -1877,7 +1880,7 @@ function StakeholderMapPage() {
                     activeNodeId &&
                     (edge.from === activeNodeId || edge.to === activeNodeId)) ||
                   (hoverEdge && hoverEdge.edge === edge);
-                // When one arrow is selected, mute the other visible arrows.
+                // Mute other influence arrows only — never the gray relationship layer.
                 const muted = selectedEdgeKey && !isSelected;
                 return (
                   <g
@@ -1916,8 +1919,8 @@ function StakeholderMapPage() {
                       className={`stakeholder-map__influence is-${edge.type}`}
                       fill="none"
                       stroke={typeMeta?.color || "#111c4e"}
-                      strokeWidth={isSelected ? 3.6 : hot ? 2.8 : 2.1}
-                      opacity={muted ? 0.12 : isSelected ? 1 : hot ? 0.95 : 0.75}
+                      strokeWidth={isSelected ? 3.6 : hot ? 2.8 : 2.2}
+                      opacity={muted ? 0.1 : isSelected ? 1 : hot ? 0.95 : 0.8}
                       markerEnd={`url(#inf-arrow-${edge.type})`}
                     />
                   </g>
