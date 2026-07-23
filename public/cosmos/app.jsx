@@ -697,7 +697,17 @@ function UserWavelinePage() {
   );
 }
 
-// —— Stakeholder network: chain-first graph (full prep material) ——
+// —— Stakeholder network: typed influence graph (replaces multi-step chains) ——
+const influenceTypes = [
+  { id: "functional", label: "Functional", short: "Can / workflow", color: "#111c4e", desc: "Capability, access, workflow — whether the job can be done." },
+  { id: "financial", label: "Financial", short: "Money / cost", color: "#0a7a5c", desc: "Price, fees, infra cost, revenue share — who can afford to enter or ship." },
+  { id: "emotional", label: "Emotional", short: "Feel / comfort", color: "#f14f9b", desc: "Comfort, belonging, anxiety, fatigue, delight — what the session feels like." },
+  { id: "identity", label: "Identity", short: "Who we are", color: "#c43b7a", desc: "Status and belonging signals — “people like me use this.”" },
+  { id: "meaning", label: "Meaning", short: "Purpose / value", color: "#8a6d00", desc: "Purpose, learning, lasting contribution — why the time felt worth it." },
+];
+
+const influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
+
 const networkSides = [
   {
     id: "users",
@@ -710,11 +720,8 @@ const networkSides = [
       { id: "casual-explorers", label: "Casual Explorers" },
       { id: "anti-doomscrolling", label: "Anti-doomscrolling Users" },
       { id: "niche-community", label: "Niche Community Members" },
-    ],
-    chains: [
-      "Knowledge Seekers → discover via Promoter Side → enter through Device Side → explore content from Writers Side inside App Side",
-      "Anti-doomscrolling Users → reject vertical feeds (X, Threads, YouTube) → seek spatial alternative → arrive via Promoter Side → stay in App Side",
-      "Casual Explorers → try via Device Side → get pulled deeper by Writers Side content → become regular Users",
+      { id: "privacy-users", label: "Privacy-conscious Users" },
+      { id: "lurkers", label: "Lurkers / Quiet Readers" },
     ],
   },
   {
@@ -728,17 +735,13 @@ const networkSides = [
       { id: "voice-contributors", label: "Voice Contributors" },
       { id: "community-builders", label: "Community Builders" },
       { id: "knowledge-sharers", label: "Knowledge Sharers" },
-    ],
-    chains: [
-      "Writers Side → create posts in App Side → content gets spatially organized → discovered by User Side",
-      "Writers Side → receive reactions & voice replies from User Side → increases posting activity → more content feeds back into App Side",
-      "Active Posters → promote their own posts via Promoter Side → attract new Users → new Users discover more Writers Side content",
+      { id: "moderators", label: "Moderators / Trust & Safety" },
     ],
   },
   {
     id: "promoters",
     number: "03",
-    name: "Promoter Side (Marketer / Distribution / Ad)",
+    name: "Promoter Side (Marketer / Distribution)",
     shortName: "Promoters",
     color: "#c43b7a",
     nodes: [
@@ -748,12 +751,6 @@ const networkSides = [
       { id: "discord-owners", label: "Discord Server Owners" },
       { id: "vr-communities", label: "VR Communities" },
       { id: "app-store-algo", label: "App Store / Platform Algorithms" },
-    ],
-    chains: [
-      "Promoter Side → surfaces App Side to User Side → User Side enters via Device Side",
-      "Indie Hackers + Design Communities → share App Side → attract Writers Side → Writers Side creates content → improves quality for User Side",
-      "Discord Server Owners → test App Side as alternative to Discord → bring their communities → increases Writers Side activity",
-      "Promoter Side → drives initial adoption → App Side improves → creates better stories for Promoter Side to share again (flywheel)",
     ],
   },
   {
@@ -768,12 +765,6 @@ const networkSides = [
       { id: "other-vr", label: "Other VR Headsets" },
       { id: "vr-stores", label: "VR Platform Stores" },
     ],
-    chains: [
-      "Device Side → enables access to App Side → User Side can enter the spatial experience",
-      "Device Side (Quest) → lowers barrier for casual Users → increases User Side volume → attracts more Writers Side",
-      "High-end Device Side (Vision Pro) → attracts quality-focused Users and Writers → raises overall content quality in App Side",
-      "Device Side limitations (motion sickness, price) → restricts User Side growth → puts pressure on App Side to optimize experience",
-    ],
   },
   {
     id: "app",
@@ -783,62 +774,93 @@ const networkSides = [
     color: "#d4b200",
     isHub: true,
     nodes: [
-      { id: "spatial-engine", label: "Spatial Engine (semantic positioning)" },
-      { id: "voice-system", label: "Voice System (creation + playback)" },
-      { id: "interaction-system", label: "Interaction System (grab, point, zoom, react)" },
-      { id: "content-org", label: "Content Organization Layer" },
-      { id: "onboarding", label: "Onboarding & First-time Experience" },
-    ],
-    chains: [
-      "App Side → receives content from Writers Side → spatially organizes it → delivers to User Side",
-      "App Side → provides voice playback & spatial context → increases emotional value for User Side → Users stay longer and engage more with Writers Side",
-      "App Side quality → determines retention of User Side → influences how Promoter Side talks about it",
-      "App Side → depends on Device Side performance → poor device experience hurts User Side perception",
-      "App Side → creates unique value (anti-vertical doomscrolling) → becomes easier for Promoter Side to market",
+      { id: "spatial-engine", label: "Spatial Engine" },
+      { id: "voice-system", label: "Voice System" },
+      { id: "interaction-system", label: "Interaction System" },
+      { id: "content-org", label: "Content Organization" },
+      { id: "onboarding", label: "Onboarding" },
+      { id: "continuity", label: "Continuity / Save-Return" },
+      { id: "cloud-ai", label: "Cloud AI / Infra Cost" },
+      { id: "content-sources", label: "Content Sources & Rights" },
     ],
   },
 ];
 
-const criticalChains = [
-  {
-    id: "adoption",
-    name: "Adoption Chain",
-    kind: "acquisition",
-    flow: ["promoters", "users", "devices", "app"],
-    steps: "Promoter Side → User Side → Device Side → App Side",
-  },
-  {
-    id: "content-flywheel",
-    name: "Content Flywheel",
-    kind: "content",
-    flow: ["writers", "app", "users", "writers"],
-    steps: "Writers Side → App Side → User Side → reactions & replies → Writers Side (more posting)",
-  },
-  {
-    id: "value-delivery",
-    name: "Value Delivery Chain",
-    kind: "content",
-    flow: ["writers", "app", "users"],
-    steps: "Writers Side → App Side (spatial + voice) → User Side (meaningful discovery instead of doomscrolling)",
-  },
-  {
-    id: "distribution",
-    name: "Distribution Chain",
-    kind: "acquisition",
-    flow: ["promoters", "users", "app", "promoters"],
-    steps: "Promoter Side (Indie Hackers + Design Communities) → User Side → App Side growth → better stories for Promoter Side",
-  },
-  {
-    id: "hardware",
-    name: "Hardware Dependency Chain",
-    kind: "hardware",
-    flow: ["devices", "app", "users", "promoters"],
-    steps: "Device Side → App Side experience quality → User Side satisfaction → retention & word-of-mouth back to Promoter Side",
-  },
+// Sparse influence edges: only load-bearing links (not a complete graph).
+// type: functional | financial | emotional | identity | meaning
+const influenceEdges = [
+  // —— Adoption / access ——
+  { from: "indie-hackers", to: "casual-explorers", type: "identity", note: "Signals “tools like this are for builders and curious people,” not only gamers." },
+  { from: "design-communities", to: "knowledge-seekers", type: "identity", note: "Design discourse legitimizes spatial reading as serious practice." },
+  { from: "digital-minimalist", to: "anti-doomscrolling", type: "identity", note: "Shared identity of intentional attention; Cosmos must match that self-image." },
+  { from: "discord-owners", to: "niche-community", type: "functional", note: "Owners can migrate or mirror whole communities into a new place." },
+  { from: "vr-communities", to: "casual-explorers", type: "identity", note: "Headset culture sets expectations: play first, browse second." },
+  { from: "app-store-algo", to: "casual-explorers", type: "financial", note: "Store ranking and featuring decide who ever sees the install." },
+  { from: "app-store-algo", to: "indie-hackers", type: "financial", note: "Fees and ranking shape whether promoters call the product “viable.”" },
+  { from: "quest", to: "casual-explorers", type: "financial", note: "Lower device price expands who can try non-game VR time." },
+  { from: "vision-pro", to: "knowledge-seekers", type: "identity", note: "Premium device attracts quality-focused readers and writers." },
+  { from: "quest", to: "onboarding", type: "functional", note: "Platform UX and comfort defaults set the first-session floor." },
+  { from: "vr-stores", to: "app", type: "functional", note: "Distribution channel and policy gate for the whole App Side." },
+  { from: "vr-stores", to: "app", type: "financial", note: "Revenue share and pricing rules constrain monetization stories." },
+
+  // —— Hardware ↔ experience ——
+  { from: "quest", to: "interaction-system", type: "functional", note: "Tracking, resolution, and input stack bound what grab/zoom can feel like." },
+  { from: "vision-pro", to: "interaction-system", type: "functional", note: "Different input model (eyes/hands) changes interaction design." },
+  { from: "other-vr", to: "interaction-system", type: "functional", note: "Fragmented hardware forces lowest-common-denominator UX or forks." },
+  { from: "quest", to: "anti-doomscrolling", type: "emotional", note: "Weight, heat, and motion comfort decide whether calm browsing is possible." },
+  { from: "vision-pro", to: "knowledge-seekers", type: "emotional", note: "Comfort and passthrough quality affect long reading sessions." },
+  { from: "interaction-system", to: "onboarding", type: "functional", note: "If first gestures fail, users never reach content." },
+  { from: "onboarding", to: "casual-explorers", type: "emotional", note: "High setup drag turns hope into early drop-off." },
+
+  // —— App systems → users / writers ——
+  { from: "spatial-engine", to: "knowledge-seekers", type: "functional", note: "Placement must answer “why is this here?” or seekers cannot navigate meaning." },
+  { from: "spatial-engine", to: "knowledge-sharers", type: "meaning", note: "Good layout makes contribution feel like building a place, not dumping text." },
+  { from: "content-org", to: "knowledge-seekers", type: "meaning", note: "Clusters and relationships turn posts into understandable discourse." },
+  { from: "voice-system", to: "voice-contributors", type: "functional", note: "Creation and playback quality determine whether voice posting is usable." },
+  { from: "voice-system", to: "lurkers", type: "emotional", note: "Hearing tone creates presence without forcing lurkers to speak." },
+  { from: "voice-system", to: "privacy-users", type: "emotional", note: "Voice capture can feel invasive; trust is a precondition." },
+  { from: "voice-system", to: "cloud-ai", type: "financial", note: "STT/TTS and storage cost scale with voice use." },
+  { from: "spatial-engine", to: "cloud-ai", type: "financial", note: "Embeddings and layout compute are ongoing infra cost." },
+  { from: "cloud-ai", to: "app", type: "financial", note: "Unit economics constrain which features can stay free or always-on." },
+  { from: "interaction-system", to: "anti-doomscrolling", type: "emotional", note: "Grab / point / zoom create agency instead of passive scroll." },
+  { from: "interaction-system", to: "active-posters", type: "functional", note: "Low-friction react and place-reply change what posters bother to do in-headset." },
+  { from: "continuity", to: "niche-community", type: "meaning", note: "Saved places and return paths make the community feel persistent." },
+  { from: "continuity", to: "knowledge-seekers", type: "functional", note: "Without return, discovery cannot become a library." },
+  { from: "content-sources", to: "knowledge-sharers", type: "functional", note: "Import/rights path decides whether real threads can seed the wall." },
+  { from: "content-sources", to: "moderators", type: "functional", note: "Source provenance shapes what can be allowed and audited." },
+  { from: "onboarding", to: "spatial-engine", type: "functional", note: "First-run must teach spatial language or the engine stays invisible decoration." },
+
+  // —— Writers ↔ users (value loop) ——
+  { from: "knowledge-sharers", to: "knowledge-seekers", type: "meaning", note: "Depth-oriented content fulfills seeker goals better than ranking heat." },
+  { from: "knowledge-seekers", to: "knowledge-sharers", type: "emotional", note: "Attentive audience rewards careful writing; silence kills motivation." },
+  { from: "lurkers", to: "active-posters", type: "meaning", note: "Quiet readership still validates that posts matter (participation without posting)." },
+  { from: "active-posters", to: "casual-explorers", type: "emotional", note: "Living content density pulls explorers deeper than empty space." },
+  { from: "voice-contributors", to: "lurkers", type: "emotional", note: "Voice presence creates intimacy that text ranking rarely does." },
+  { from: "anti-doomscrolling", to: "active-posters", type: "identity", note: "Norms against rage-bait reshape what posters believe is “good” content here." },
+  { from: "community-builders", to: "niche-community", type: "identity", note: "Builders define who belongs and what the space is for." },
+  { from: "moderators", to: "privacy-users", type: "emotional", note: "Visible, fair norms create safety to stay and speak." },
+  { from: "moderators", to: "voice-contributors", type: "functional", note: "Moderation tools decide whether voice abuse is containable." },
+  { from: "niche-community", to: "community-builders", type: "identity", note: "Member culture pushes builders toward or away from Cosmos as “our place.”" },
+
+  // —— Promoters ↔ product quality ——
+  { from: "indie-hackers", to: "active-posters", type: "identity", note: "Builder audiences often become early writers, not only installers." },
+  { from: "design-communities", to: "knowledge-sharers", type: "identity", note: "Critique culture attracts people who explain and document." },
+  { from: "discord-owners", to: "community-builders", type: "functional", note: "Owners bring moderation habits and community ops into the product." },
+  { from: "discord-owners", to: "moderators", type: "identity", note: "Existing mod identity may transfer—or resist—new spatial norms." },
+  { from: "active-posters", to: "indie-hackers", type: "meaning", note: "Visible living walls give promoters concrete stories to share." },
+  { from: "knowledge-seekers", to: "design-communities", type: "meaning", note: "Successful deep-reading sessions become case studies in design circles." },
+  { from: "continuity", to: "indie-hackers", type: "functional", note: "Return loops are required for “habit” claims in distribution narratives." },
+  { from: "privacy-users", to: "digital-minimalist", type: "identity", note: "Privacy stance must align with minimalist values or promotion backfires." },
+
+  // —— Tension / constraints ——
+  { from: "cloud-ai", to: "voice-contributors", type: "financial", note: "If voice is expensive, free-tier limits suppress contribution." },
+  { from: "cloud-ai", to: "spatial-engine", type: "financial", note: "Layout quality may be throttled by compute budget." },
+  { from: "app-store-algo", to: "vision-pro", type: "financial", note: "Store and platform strategy differ by headset ecosystem." },
+  { from: "vr-communities", to: "anti-doomscrolling", type: "identity", note: "“VR is for games” culture competes with intentional browsing identity." },
+  { from: "content-sources", to: "knowledge-seekers", type: "meaning", note: "Without real discourse to import, seekers find an empty spectacle." },
 ];
 
-// Network anchors: App slightly larger presence in the middle; every side is the
-// same hub-and-spoke pattern (center badge + entity ring + spokes).
+// Network anchors: App hub center, four sides well separated.
 const sideAnchors = {
   app: { x: 800, y: 540 },
   users: { x: 250, y: 270 },
@@ -847,7 +869,6 @@ const sideAnchors = {
   devices: { x: 1350, y: 810 },
 };
 
-// Shared compact entity footprint for every cluster (including App).
 const CLUSTER_MIN_CHORD = 96;
 const CLUSTER_MIN_RADIUS = 92;
 const CLUSTER_BADGE_R = 28;
@@ -856,10 +877,9 @@ const CLUSTER_BADGE_R_HUB = 34;
 function placeCluster(side) {
   const anchor = sideAnchors[side.id];
   const n = Math.max(side.nodes.length, 1);
-  // Same layout for every side: center badge + ring sized so pills don’t overlap.
   const fromChord = CLUSTER_MIN_CHORD / (2 * Math.sin(Math.PI / n));
-  const radius = Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 110 : 92);
-  // Outer clusters open so the first spoke faces away from App; App starts at top.
+  // App holds more nodes — slightly larger ring.
+  const radius = Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 125 : 92);
   const towardApp = Math.atan2(sideAnchors.app.y - anchor.y, sideAnchors.app.x - anchor.x);
   const startAngle = side.isHub ? -Math.PI / 2 : towardApp + Math.PI;
   const nodes = side.nodes.map((node, i) => {
@@ -876,7 +896,7 @@ function placeCluster(side) {
     anchor,
     radius,
     fieldR: radius + 50,
-    compact: true, // all clusters use the same smaller entity pills
+    compact: true,
     badgeR: side.isHub ? CLUSTER_BADGE_R_HUB : CLUSTER_BADGE_R,
     nodes,
   };
@@ -894,85 +914,106 @@ const nodeById = (() => {
   return map;
 })();
 
-// Structural network edges (side-to-side flows from prep). Used as base mesh.
-const structuralEdges = [
-  { from: "promoters", to: "users", kind: "acquisition", label: "surfaces / discovers" },
-  { from: "users", to: "devices", kind: "acquisition", label: "enter via" },
-  { from: "devices", to: "app", kind: "hardware", label: "enables access" },
-  { from: "promoters", to: "app", kind: "acquisition", label: "shares / markets" },
-  { from: "writers", to: "app", kind: "content", label: "create posts" },
-  { from: "app", to: "users", kind: "content", label: "delivers spatially" },
-  { from: "users", to: "writers", kind: "content", label: "reactions & replies" },
-  { from: "writers", to: "promoters", kind: "acquisition", label: "promote posts" },
-  { from: "promoters", to: "writers", kind: "acquisition", label: "attract creators" },
-  { from: "devices", to: "users", kind: "hardware", label: "barrier / access" },
-  { from: "app", to: "promoters", kind: "acquisition", label: "stories to share" },
-  { from: "users", to: "app", kind: "content", label: "stay & engage" },
-];
-
-function centroidForSide(sideId) {
-  const side = sideById[sideId];
-  return side.anchor;
-}
-
-function pickBridgeNode(sideId, towardSideId) {
-  const side = sideById[sideId];
-  const toward = sideById[towardSideId].anchor;
-  let best = side.nodes[0];
-  let bestD = Infinity;
-  for (const node of side.nodes) {
-    const d = (node.x - toward.x) ** 2 + (node.y - toward.y) ** 2;
-    if (d < bestD) {
-      bestD = d;
-      best = node;
-    }
-  }
-  return best;
-}
-
 function StakeholderMapPage() {
-  // One part at a time: camera pans to the active chain/side; detail sits below
-  // the map (not inside a clipped aspect-ratio box) and only shows that part.
-  const [focusMode, setFocusMode] = useState("chain"); // "overview" | "chain" | "side"
-  const [activeChainId, setActiveChainId] = useState("adoption");
+  const [focusMode, setFocusMode] = useState("overview"); // "overview" | "type" | "side"
+  const [activeTypeId, setActiveTypeId] = useState("emotional");
   const [activeSideId, setActiveSideId] = useState("app");
   const [activeNodeId, setActiveNodeId] = useState(null);
 
   const width = 1600;
-  const height = 1200; // taller logical canvas so spaced clusters fit when zoomed out
-  const activeChain = criticalChains.find((c) => c.id === activeChainId) || criticalChains[0];
+  const height = 1200;
+  const activeType = influenceTypeById[activeTypeId] || influenceTypes[0];
   const activeSide = sideById[activeSideId] || sideById.app;
   const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
 
-  const focusSideIds =
-    focusMode === "side"
-      ? [activeSideId]
-      : focusMode === "chain"
-        ? [...new Set(activeChain.flow)]
-        : networkGraph.map((s) => s.id);
+  const typedEdges = influenceEdges.filter((e) => e.type === activeTypeId);
+  const nodeFocusEdges = activeNodeId
+    ? influenceEdges.filter((e) => e.from === activeNodeId || e.to === activeNodeId)
+    : [];
+  const sideNodeIds = new Set((activeSide?.nodes || []).map((n) => n.id));
+  const sideFocusEdges = influenceEdges.filter(
+    (e) => sideNodeIds.has(e.from) || sideNodeIds.has(e.to)
+  );
+
+  // Which nodes are lit for the current focus
+  const litNodeIds = (() => {
+    const set = new Set();
+    if (focusMode === "type") {
+      typedEdges.forEach((e) => {
+        set.add(e.from);
+        set.add(e.to);
+      });
+    } else if (focusMode === "side") {
+      if (activeNodeId) {
+        set.add(activeNodeId);
+        nodeFocusEdges.forEach((e) => {
+          set.add(e.from);
+          set.add(e.to);
+        });
+      } else {
+        sideNodeIds.forEach((id) => set.add(id));
+        sideFocusEdges.forEach((e) => {
+          set.add(e.from);
+          set.add(e.to);
+        });
+      }
+    } else {
+      // overview: light nodes that participate in any influence
+      influenceEdges.forEach((e) => {
+        set.add(e.from);
+        set.add(e.to);
+      });
+    }
+    return set;
+  })();
+
+  const focusSideIds = (() => {
+    if (focusMode === "side") return [activeSideId];
+    if (focusMode === "type") {
+      const sides = new Set();
+      typedEdges.forEach((e) => {
+        const a = nodeById[e.from];
+        const b = nodeById[e.to];
+        if (a) sides.add(a.sideId);
+        if (b) sides.add(b.sideId);
+      });
+      return [...sides];
+    }
+    return networkGraph.map((s) => s.id);
+  })();
   const focusSet = new Set(focusSideIds);
 
-  const chainPairs =
-    focusMode === "chain" || focusMode === "overview"
-      ? activeChain.flow.slice(0, -1).map((from, i) => ({
-          from,
-          to: activeChain.flow[i + 1],
-          isReturn: activeChain.flow[i + 1] === activeChain.flow[0] && i === activeChain.flow.length - 2,
-        }))
-      : [];
+  const visibleEdges = (() => {
+    if (focusMode === "type") return typedEdges;
+    if (focusMode === "side") {
+      if (activeNodeId) return nodeFocusEdges;
+      return sideFocusEdges;
+    }
+    // overview: show all lightly; typed filter still tints
+    return influenceEdges;
+  })();
 
   const focusBounds = (() => {
     const pts = [];
-    for (const sid of focusSideIds) {
-      const side = sideById[sid];
-      if (!side) continue;
-      pts.push(side.anchor);
-      side.nodes.forEach((n) => pts.push(n));
+    if (focusMode === "side" && activeNodeId && nodeById[activeNodeId]) {
+      const n = nodeById[activeNodeId];
+      pts.push(n, sideById[n.sideId].anchor);
+      nodeFocusEdges.forEach((e) => {
+        if (nodeById[e.from]) pts.push(nodeById[e.from]);
+        if (nodeById[e.to]) pts.push(nodeById[e.to]);
+      });
+    } else {
+      for (const sid of focusSideIds) {
+        const side = sideById[sid];
+        if (!side) continue;
+        pts.push(side.anchor);
+        side.nodes.forEach((n) => pts.push(n));
+      }
     }
-    if (!pts.length) return { cx: 800, cy: 500, scale: 1 };
+    if (!pts.length) return { cx: 800, cy: 540, scale: 1 };
     const xs = pts.map((p) => p.x);
     const ys = pts.map((p) => p.y);
-    const pad = focusMode === "side" ? 160 : 180;
+    const pad = focusMode === "side" ? 150 : 170;
     const minX = Math.min(...xs) - pad;
     const maxX = Math.max(...xs) + pad;
     const minY = Math.min(...ys) - pad;
@@ -982,45 +1023,24 @@ function StakeholderMapPage() {
     const bw = Math.max(maxX - minX, 320);
     const bh = Math.max(maxY - minY, 280);
     const fit = Math.min(width / bw, height / bh);
-    const bias = focusMode === "side" ? 1.28 : focusMode === "chain" ? 1.08 : 0.9;
-    return { cx, cy, scale: Math.min(fit * bias, 1.9) };
+    const bias = focusMode === "side" ? 1.22 : focusMode === "type" ? 1.05 : 0.88;
+    return { cx, cy, scale: Math.min(fit * bias, 1.85) };
   })();
 
-  // CSS transform (not SVG attribute) so pan/zoom can animate.
   const cameraStyle = {
     transform: `translate(${width / 2}px, ${height / 2}px) scale(${focusBounds.scale}) translate(${-focusBounds.cx}px, ${-focusBounds.cy}px)`,
     transformOrigin: "0px 0px",
     transition: "transform 0.45s ease",
   };
 
-  const meshEdges = structuralEdges.map((edge, i) => {
-    const a = pickBridgeNode(edge.from, edge.to);
-    const b = pickBridgeNode(edge.to, edge.from);
-    const onChain =
-      chainPairs.some((p) => p.from === edge.from && p.to === edge.to) ||
-      chainPairs.some((p) => p.from === edge.to && p.to === edge.from);
-    const involvesFocus = focusSet.has(edge.from) && focusSet.has(edge.to);
-    return { ...edge, i, a, b, onChain, involvesFocus };
-  });
-
-  const clusterEdges = networkGraph.flatMap((side) => {
-    const edges = [];
-    for (let i = 0; i < side.nodes.length; i += 1) {
-      const a = side.nodes[i];
-      const b = side.nodes[(i + 1) % side.nodes.length];
-      edges.push({ a, b, sideId: side.id, inFocus: focusSet.has(side.id) });
-    }
-    return edges;
-  });
-
   function goOverview() {
     setFocusMode("overview");
     setActiveNodeId(null);
   }
 
-  function goChain(chainId) {
-    setFocusMode("chain");
-    setActiveChainId(chainId);
+  function goType(typeId) {
+    setFocusMode("type");
+    setActiveTypeId(typeId);
     setActiveNodeId(null);
   }
 
@@ -1036,81 +1056,96 @@ function StakeholderMapPage() {
     setActiveNodeId(nodeId);
   }
 
+  const typeIndex = influenceTypes.findIndex((t) => t.id === activeTypeId);
   const sideIndex = networkGraph.findIndex((s) => s.id === activeSideId);
-  const chainIndex = criticalChains.findIndex((c) => c.id === activeChainId);
 
   function stepPart(delta) {
-    if (focusMode === "overview") {
-      // Overview: step the highlighted chain without leaving overview.
-      const next = criticalChains[(chainIndex + delta + criticalChains.length) % criticalChains.length];
-      setActiveChainId(next.id);
-      return;
-    }
     if (focusMode === "side") {
       const next = networkGraph[(sideIndex + delta + networkGraph.length) % networkGraph.length];
       goSide(next.id);
       return;
     }
-    const next = criticalChains[(chainIndex + delta + criticalChains.length) % criticalChains.length];
-    goChain(next.id);
+    // overview + type: step influence types
+    const next = influenceTypes[(typeIndex + delta + influenceTypes.length) % influenceTypes.length];
+    if (focusMode === "overview") {
+      setActiveTypeId(next.id);
+    } else {
+      goType(next.id);
+    }
   }
+
+  const detailEdges =
+    focusMode === "side"
+      ? activeNodeId
+        ? nodeFocusEdges
+        : sideFocusEdges
+      : typedEdges;
+
+  const title =
+    focusMode === "side"
+      ? activeNode
+        ? activeNode.label
+        : activeSide.shortName
+      : focusMode === "type"
+        ? activeType.label
+        : "Influence network";
+
+  const subtitle =
+    focusMode === "side"
+      ? activeNode
+        ? `${activeNode.sideName} · influences involving this entity`
+        : `${activeSide.name} · all influences touching this side`
+      : focusMode === "type"
+        ? activeType.desc
+        : "Sparse directed influences across entities. Filter by type or open a side/entity.";
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
-      <div className="stakeholder-shell" aria-label="Cosmos VR stakeholder network">
+      <div className="stakeholder-shell" aria-label="Cosmos VR stakeholder influence network">
         <header className="stakeholder-frame__head">
           <div>
-            <p className="stakeholder-kicker">05 · Stakeholder network · Cosmos VR</p>
-            <h1>
-              {focusMode === "side"
-                ? activeSide.shortName
-                : focusMode === "chain"
-                  ? activeChain.name
-                  : "Full network"}
-            </h1>
+            <p className="stakeholder-kicker">05 · Stakeholder network · influence</p>
+            <h1>{title}</h1>
           </div>
-          <p className="stakeholder-lede">
-            {focusMode === "side"
-              ? activeSide.name
-              : focusMode === "chain"
-                ? activeChain.steps
-                : "Whole graph. Use tabs or ← → to center a critical chain; open Sides to inspect one cluster."}
-          </p>
+          <p className="stakeholder-lede">{subtitle}</p>
         </header>
 
         <div className="stakeholder-frame__toolbar">
           <div className="stakeholder-frame__mode-tabs" role="tablist" aria-label="Focus mode">
             <button type="button" className={focusMode === "overview" ? "is-active" : ""} onClick={goOverview}>Overview</button>
-            <button type="button" className={focusMode === "chain" ? "is-active" : ""} onClick={() => goChain(activeChainId)}>Critical chains</button>
-            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>Sides</button>
+            <button type="button" className={focusMode === "type" ? "is-active" : ""} onClick={() => goType(activeTypeId)}>By influence type</button>
+            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>By side / entity</button>
           </div>
           <div className="stakeholder-frame__stepper">
-            <button type="button" onClick={() => stepPart(-1)} aria-label="Previous part">←</button>
+            <button type="button" onClick={() => stepPart(-1)} aria-label="Previous">←</button>
             <span>
               {focusMode === "side"
                 ? `${sideIndex + 1} / ${networkGraph.length} sides`
-                : `${chainIndex + 1} / ${criticalChains.length} chains`}
+                : `${typeIndex + 1} / ${influenceTypes.length} types`}
             </span>
-            <button type="button" onClick={() => stepPart(1)} aria-label="Next part">→</button>
+            <button type="button" onClick={() => stepPart(1)} aria-label="Next">→</button>
           </div>
         </div>
 
-        {(focusMode === "chain" || focusMode === "overview") && (
-          <div className="stakeholder-frame__chain-tabs" role="tablist" aria-label="Critical multi-step chains">
-            {criticalChains.map((chain) => (
-              <button
-                key={chain.id}
-                type="button"
-                role="tab"
-                aria-selected={chain.id === activeChainId}
-                className={chain.id === activeChainId ? "is-active" : ""}
-                onClick={() => (focusMode === "overview" ? setActiveChainId(chain.id) : goChain(chain.id))}
-              >
-                {chain.name}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="stakeholder-frame__chain-tabs stakeholder-frame__type-tabs" role="tablist" aria-label="Influence types">
+          {influenceTypes.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              aria-selected={t.id === activeTypeId}
+              className={t.id === activeTypeId && focusMode !== "side" ? "is-active" : ""}
+              style={{
+                borderColor: t.id === activeTypeId ? t.color : undefined,
+                color: t.id === activeTypeId ? t.color : undefined,
+              }}
+              onClick={() => goType(t.id)}
+            >
+              <i className="stakeholder-type-swatch" style={{ background: t.color }} />
+              {t.label}
+            </button>
+          ))}
+        </div>
 
         {focusMode === "side" && (
           <div className="stakeholder-frame__side-tabs stakeholder-frame__side-tabs--bar" role="tablist" aria-label="Sides">
@@ -1130,22 +1165,20 @@ function StakeholderMapPage() {
         <div className="stakeholder-frame__map stakeholder-frame__map--focus">
           <svg className="stakeholder-map" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
             <defs>
-              <marker id="net-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 8 5 L 0 9 z" fill="#f14f9b" />
-              </marker>
-              <marker id="net-arrow-content" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 8 5 L 0 9 z" fill="#111c4e" />
-              </marker>
-              <marker id="net-arrow-hw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 8 5 L 0 9 z" fill="#0a7a5c" />
-              </marker>
-              <filter id="soft-glow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="4" result="b" />
-                <feMerge>
-                  <feMergeNode in="b" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
+              {influenceTypes.map((t) => (
+                <marker
+                  key={`arrow-${t.id}`}
+                  id={`inf-arrow-${t.id}`}
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M 0 1 L 8 5 L 0 9 z" fill={t.color} />
+                </marker>
+              ))}
             </defs>
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
@@ -1168,7 +1201,6 @@ function StakeholderMapPage() {
                 />
               ))}
 
-              {/* Spokes: side center → each entity */}
               {networkGraph.flatMap((side) =>
                 side.nodes.map((node) => (
                   <line
@@ -1177,80 +1209,49 @@ function StakeholderMapPage() {
                     y1={side.anchor.y}
                     x2={node.x}
                     y2={node.y}
-                    className={`stakeholder-map__spoke ${focusSet.has(side.id) ? "is-in-chain" : ""}`}
+                    className="stakeholder-map__spoke"
                     stroke={side.isHub ? "#111c4e" : side.color}
-                    opacity={focusSet.has(side.id) ? 0.45 : 0.08}
+                    opacity={focusSet.has(side.id) ? 0.4 : 0.08}
                   />
                 ))
               )}
 
-              {/* Light ring mesh between neighboring entities */}
-              {clusterEdges.map((edge, i) => (
-                <line
-                  key={`cluster-${edge.sideId}-${i}`}
-                  x1={edge.a.x}
-                  y1={edge.a.y}
-                  x2={edge.b.x}
-                  y2={edge.b.y}
-                  className={`stakeholder-map__mesh ${edge.inFocus ? "is-in-chain" : ""}`}
-                  opacity={edge.inFocus ? 0.22 : 0.06}
-                />
-              ))}
-
-              {meshEdges.map((edge) => {
-                // Inter-side links run between side centers (badges), not outer pills
-                const a = sideById[edge.from].anchor;
-                const b = sideById[edge.to].anchor;
+              {/* Influence edges (entity → entity) */}
+              {visibleEdges.map((edge, i) => {
+                const a = nodeById[edge.from];
+                const b = nodeById[edge.to];
+                if (!a || !b) return null;
+                const typeMeta = influenceTypeById[edge.type];
+                const dimmed =
+                  focusMode === "overview"
+                    ? edge.type !== activeTypeId
+                    : false;
                 const mx = (a.x + b.x) / 2;
                 const my = (a.y + b.y) / 2;
-                const cx = mx + (800 - mx) * 0.1;
-                const cy = my + (540 - my) * 0.08;
+                const cx = mx + (a.y - b.y) * 0.12;
+                const cy = my + (b.x - a.x) * 0.12;
                 const d = `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+                const hot =
+                  (activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId)) ||
+                  (focusMode === "type" && edge.type === activeTypeId);
                 return (
                   <path
-                    key={`mesh-${edge.i}`}
+                    key={`inf-${edge.from}-${edge.to}-${i}`}
                     d={d}
-                    className={[
-                      "stakeholder-map__link",
-                      `is-${edge.kind}`,
-                      edge.onChain ? "is-chain-lit" : "is-base",
-                    ].join(" ")}
+                    className={`stakeholder-map__influence is-${edge.type} ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""}`}
                     fill="none"
-                    opacity={edge.involvesFocus || edge.onChain ? (edge.onChain ? 0.75 : 0.28) : 0.05}
+                    stroke={typeMeta?.color || "#111c4e"}
+                    strokeWidth={hot ? 2.8 : dimmed ? 1.1 : 1.8}
+                    opacity={dimmed ? 0.12 : hot ? 0.95 : focusMode === "overview" ? 0.35 : 0.75}
+                    markerEnd={`url(#inf-arrow-${edge.type})`}
+                    onClick={() => {
+                      goType(edge.type);
+                    }}
+                    style={{ cursor: "pointer" }}
                   />
                 );
               })}
 
-              {chainPairs.map((pair, i) => {
-                const a = sideById[pair.from].anchor;
-                const b = sideById[pair.to].anchor;
-                const mx = (a.x + b.x) / 2;
-                const lift = pair.isReturn ? 80 : -32;
-                const my = (a.y + b.y) / 2 + lift;
-                const d = `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
-                const marker =
-                  activeChain.kind === "content"
-                    ? "url(#net-arrow-content)"
-                    : activeChain.kind === "hardware"
-                      ? "url(#net-arrow-hw)"
-                      : "url(#net-arrow)";
-                return (
-                  <g key={`flow-${i}`}>
-                    <path
-                      d={d}
-                      className={`stakeholder-map__flow is-${activeChain.kind}`}
-                      fill="none"
-                      markerEnd={marker}
-                      filter="url(#soft-glow)"
-                    />
-                    <text x={mx} y={my + (pair.isReturn ? 18 : -10)} textAnchor="middle" className="stakeholder-map__flow-label">
-                      {i + 1}
-                    </text>
-                  </g>
-                );
-              })}
-
-              {/* Side center badges — same pattern for every cluster, including App */}
               {networkGraph.map((side) => {
                 const inFocus = focusSet.has(side.id);
                 const isActive = activeSideId === side.id && focusMode === "side";
@@ -1275,22 +1276,10 @@ function StakeholderMapPage() {
                       stroke={isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color}
                       strokeWidth={isActive || side.isHub ? 2.1 : 1.45}
                     />
-                    <text
-                      y={-5}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      className="stakeholder-map__badge-num"
-                      fill={side.isHub ? "#111c4e" : side.color}
-                    >
+                    <text y={-5} textAnchor="middle" dominantBaseline="middle" className="stakeholder-map__badge-num" fill={side.isHub ? "#111c4e" : side.color}>
                       {side.number}
                     </text>
-                    <text
-                      y={8}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      className="stakeholder-map__badge-name"
-                      fill={side.isHub ? "#111c4e" : side.color}
-                    >
+                    <text y={8} textAnchor="middle" dominantBaseline="middle" className="stakeholder-map__badge-name" fill={side.isHub ? "#111c4e" : side.color}>
                       {side.shortName}
                     </text>
                   </g>
@@ -1300,8 +1289,8 @@ function StakeholderMapPage() {
               {networkGraph.flatMap((side) =>
                 side.nodes.map((node) => {
                   const isActive = node.id === activeNodeId;
-                  const inFocus = focusSet.has(side.id);
-                  // Same compact pill sizing on every cluster (App included).
+                  const lit = litNodeIds.has(node.id);
+                  const inFocusSide = focusSet.has(side.id);
                   const maxChars = 15;
                   const lines =
                     node.label.length > maxChars
@@ -1313,7 +1302,6 @@ function StakeholderMapPage() {
                       : [node.label];
                   const rw = Math.min(112, Math.max(70, ...lines.map((l) => l.length * 5.7 + 14)));
                   const rh = lines.length > 1 ? 28 : 22;
-                  const fontLine = 9;
                   return (
                     <g
                       key={node.id}
@@ -1321,8 +1309,8 @@ function StakeholderMapPage() {
                         "stakeholder-map__node",
                         "is-compact",
                         isActive ? "is-active" : "",
-                        inFocus ? "is-in-chain" : "",
-                        !inFocus ? "is-dimmed" : "",
+                        lit ? "is-in-chain" : "",
+                        !lit && !inFocusSide ? "is-dimmed" : !lit ? "is-soft" : "",
                       ].filter(Boolean).join(" ")}
                       transform={`translate(${node.x}, ${node.y})`}
                       onClick={(event) => {
@@ -1345,7 +1333,7 @@ function StakeholderMapPage() {
                         <text
                           key={li}
                           x={0}
-                          y={(li - (lines.length - 1) / 2) * fontLine}
+                          y={(li - (lines.length - 1) / 2) * 9}
                           textAnchor="middle"
                           dominantBaseline="middle"
                           className="stakeholder-map__node-label"
@@ -1362,80 +1350,75 @@ function StakeholderMapPage() {
           </svg>
         </div>
 
-        {/* Detail lives outside the map height lock so it never clips the graph */}
         <div className="stakeholder-frame__detail stakeholder-frame__detail--open" aria-live="polite">
-          {focusMode === "side" ? (
-            <>
-              <div className="stakeholder-frame__detail-title">
-                <span className="stakeholder-frame__swatch" style={{ background: activeSide.color }} />
-                <div>
-                  <p className="stakeholder-frame__group">{activeSide.number} · {activeSide.name}</p>
-                  <h2>{activeNode ? activeNode.label : activeSide.shortName}</h2>
-                </div>
-                <p className="stakeholder-frame__count">{activeSide.nodes.length} nodes · {activeSide.chains.length} chains</p>
-              </div>
-              <div className="stakeholder-frame__focus-body">
-                <div className="stakeholder-frame__focus-nodes">
-                  <b>Nodes</b>
-                  <ul>
-                    {activeSide.nodes.map((n) => (
-                      <li key={n.id} className={n.id === activeNodeId ? "is-active" : ""}>
-                        <button type="button" className="stakeholder-frame__link" onClick={() => goNode(n.id, activeSide.id)}>
-                          {n.label}
+          <div className="stakeholder-frame__detail-title">
+            <span
+              className="stakeholder-frame__swatch"
+              style={{
+                background:
+                  focusMode === "type"
+                    ? activeType.color
+                    : activeNode?.color || activeSide.color,
+              }}
+            />
+            <div>
+              <p className="stakeholder-frame__group">
+                {focusMode === "type"
+                  ? `Influence · ${activeType.short}`
+                  : focusMode === "side"
+                    ? activeNode
+                      ? activeNode.sideName
+                      : `${activeSide.number} · ${activeSide.name}`
+                    : "All influence types (highlight via tabs)"}
+              </p>
+              <h2>{title}</h2>
+              <p className="stakeholder-frame__sub">{subtitle}</p>
+            </div>
+            <p className="stakeholder-frame__count">{detailEdges.length} link{detailEdges.length === 1 ? "" : "s"}</p>
+          </div>
+
+          <div className="stakeholder-frame__influence-list">
+            {detailEdges.length === 0 ? (
+              <p className="stakeholder-frame__empty">No influence links in this focus. Pick another type or entity.</p>
+            ) : (
+              detailEdges.map((edge, i) => {
+                const from = nodeById[edge.from];
+                const to = nodeById[edge.to];
+                const typeMeta = influenceTypeById[edge.type];
+                return (
+                  <article key={`${edge.from}-${edge.to}-${i}`} className="stakeholder-frame__influence-card">
+                    <header>
+                      <b style={{ color: typeMeta?.color }}>{typeMeta?.label || edge.type}</b>
+                      <span>
+                        <button type="button" className="stakeholder-frame__link" onClick={() => from && goNode(from.id, from.sideId)}>
+                          {from?.label || edge.from}
                         </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="stakeholder-frame__focus-chains">
-                  <b>Key relationship chains</b>
-                  <ol>
-                    {activeSide.chains.map((chain, i) => (
-                      <li key={i}>{chain}</li>
-                    ))}
-                  </ol>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="stakeholder-frame__detail-title">
-                <span className="stakeholder-frame__swatch" style={{ background: "#f14f9b" }} />
-                <div>
-                  <p className="stakeholder-frame__group">Critical multi-step chain</p>
-                  <h2>{activeChain.name}</h2>
-                  <p className="stakeholder-frame__sub">{activeChain.steps}</p>
-                </div>
-                <p className="stakeholder-frame__count">{activeChain.flow.length} steps in path</p>
-              </div>
-              <div className="stakeholder-frame__focus-body stakeholder-frame__focus-body--chain">
-                <div className="stakeholder-frame__focus-path">
-                  <b>Path</b>
-                  <ol className="stakeholder-frame__path-steps">
-                    {activeChain.flow.map((sid, i) => (
-                      <li key={`${sid}-${i}`}>
-                        <button type="button" className="stakeholder-frame__path-chip" onClick={() => goSide(sid)}>
-                          <span>{i + 1}</span>
-                          {sideById[sid].shortName}
+                        {" → "}
+                        <button type="button" className="stakeholder-frame__link" onClick={() => to && goNode(to.id, to.sideId)}>
+                          {to?.label || edge.to}
                         </button>
-                        {i < activeChain.flow.length - 1 && <i aria-hidden="true">→</i>}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-                <div className="stakeholder-frame__focus-chains">
-                  <b>What this chain means</b>
-                  <p className="stakeholder-frame__notes stakeholder-frame__notes--full">{activeChain.steps}</p>
-                  <p className="stakeholder-frame__hint">Other chains: use the tabs above. Opening a side chip switches to that cluster’s full node list and relationship chains.</p>
-                </div>
-              </div>
-            </>
-          )}
+                      </span>
+                    </header>
+                    <p>{edge.note}</p>
+                  </article>
+                );
+              })
+            )}
+          </div>
+
+          <div className="stakeholder-frame__legend stakeholder-frame__legend--influence">
+            {influenceTypes.map((t) => (
+              <span key={t.id}>
+                <i style={{ borderTopColor: t.color, borderTopStyle: "solid" }} />
+                {t.label}: {t.short}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
       <p className="waveline-share-hint">
-        Tip: close the left sidebar (‹). The map is tall and free of a locked 16:9 box; detail sits under it and only shows the active chain or side.
+        Tip: close the left sidebar (‹). Influence types replace multi-step chains — filter Functional / Financial / Emotional / Identity / Meaning, or open a side and entity to see only its links.
       </p>
 
       <div className="report-next-links">
