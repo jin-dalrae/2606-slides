@@ -837,48 +837,46 @@ const criticalChains = [
   },
 ];
 
-// Network anchors: App hub center, four sides well separated so clusters don't collide.
+// Network anchors: App hub center, four sides well separated.
+// Each side is a hub-and-spoke: side badge at the center, entities on a ring.
 const sideAnchors = {
-  app: { x: 800, y: 520 },
-  users: { x: 220, y: 240 },
-  writers: { x: 220, y: 800 },
-  promoters: { x: 1380, y: 260 },
-  devices: { x: 1380, y: 800 },
+  app: { x: 800, y: 540 },
+  users: { x: 230, y: 280 },
+  writers: { x: 230, y: 820 },
+  promoters: { x: 1370, y: 300 },
+  devices: { x: 1370, y: 820 },
 };
-
-// Estimated pill footprint used for spacing (must stay clear of neighbors).
-const NODE_GAP_Y = 78;
-const HUB_RADIUS = 190;
 
 function placeCluster(side) {
   const anchor = sideAnchors[side.id];
-  const n = side.nodes.length;
-
-  // Hub: wide ring so 5 large pills never sit on top of each other.
-  if (side.isHub) {
-    const nodes = side.nodes.map((node, i) => {
-      const angle = -Math.PI / 2 + (i / n) * Math.PI * 2;
-      return {
-        ...node,
-        sideId: side.id,
-        x: anchor.x + Math.cos(angle) * HUB_RADIUS,
-        y: anchor.y + Math.sin(angle) * HUB_RADIUS,
-      };
-    });
-    return { ...side, anchor, fieldR: HUB_RADIUS + 90, nodes };
-  }
-
-  // Outer sides: vertical stack (clear network “cluster” without fan overlap).
-  // Center the stack on the side anchor.
-  const startY = anchor.y - ((n - 1) * NODE_GAP_Y) / 2;
-  const nodes = side.nodes.map((node, i) => ({
-    ...node,
-    sideId: side.id,
-    x: anchor.x,
-    y: startY + i * NODE_GAP_Y,
-  }));
-  const stackHalf = ((n - 1) * NODE_GAP_Y) / 2 + 56;
-  return { ...side, anchor, fieldR: Math.max(120, stackHalf + 24), nodes };
+  const n = Math.max(side.nodes.length, 1);
+  const compact = !side.isHub;
+  // Ring radius from chord length so pills don’t collide (compact sides use smaller pills).
+  const minChord = compact ? 92 : 118;
+  const fromChord = minChord / (2 * Math.sin(Math.PI / n));
+  const radius = Math.max(side.isHub ? 175 : 88, fromChord);
+  // Start angle: outer clusters open slightly toward the app hub.
+  const towardApp = Math.atan2(sideAnchors.app.y - anchor.y, sideAnchors.app.x - anchor.x);
+  const startAngle = side.isHub ? -Math.PI / 2 : towardApp + Math.PI; // first node opposite hub for outer sides
+  const nodes = side.nodes.map((node, i) => {
+    const angle = startAngle + (i / n) * Math.PI * 2;
+    return {
+      ...node,
+      sideId: side.id,
+      x: anchor.x + Math.cos(angle) * radius,
+      y: anchor.y + Math.sin(angle) * radius,
+    };
+  });
+  return {
+    ...side,
+    anchor,
+    radius,
+    fieldR: radius + (compact ? 52 : 78),
+    compact,
+    // Center badge size (promoters / outer sides stay smaller)
+    badgeR: side.isHub ? 46 : 30,
+    nodes,
+  };
 }
 
 const networkGraph = networkSides.map(placeCluster);
@@ -1153,24 +1151,38 @@ function StakeholderMapPage() {
                   key={`field-${side.id}`}
                   cx={side.anchor.x}
                   cy={side.anchor.y}
-                  r={side.fieldR || (side.isHub ? 280 : 160)}
+                  r={side.fieldR || 160}
                   className={[
                     "stakeholder-map__field",
                     focusSet.has(side.id) ? "is-in-chain" : "",
                     activeSideId === side.id && focusMode === "side" ? "is-active" : "",
                   ].filter(Boolean).join(" ")}
-                  fill={side.isHub ? "rgba(242,240,79,0.18)" : `${side.color}14`}
+                  fill={side.isHub ? "rgba(242,240,79,0.16)" : `${side.color}12`}
                   stroke={side.color}
-                  opacity={focusSet.has(side.id) ? 1 : 0.14}
+                  opacity={focusSet.has(side.id) ? 1 : 0.12}
                   onClick={() => goSide(side.id)}
                   style={{ cursor: "pointer" }}
                 />
               ))}
 
-              {/* Hub only: ring mesh. Outer sides are stacked — no edge between neighbors needed. */}
-              {clusterEdges
-                .filter((edge) => sideById[edge.sideId]?.isHub)
-                .map((edge, i) => (
+              {/* Spokes: side center → each entity */}
+              {networkGraph.flatMap((side) =>
+                side.nodes.map((node) => (
+                  <line
+                    key={`spoke-${side.id}-${node.id}`}
+                    x1={side.anchor.x}
+                    y1={side.anchor.y}
+                    x2={node.x}
+                    y2={node.y}
+                    className={`stakeholder-map__spoke ${focusSet.has(side.id) ? "is-in-chain" : ""}`}
+                    stroke={side.isHub ? "#111c4e" : side.color}
+                    opacity={focusSet.has(side.id) ? 0.45 : 0.08}
+                  />
+                ))
+              )}
+
+              {/* Light ring mesh between neighboring entities */}
+              {clusterEdges.map((edge, i) => (
                 <line
                   key={`cluster-${edge.sideId}-${i}`}
                   x1={edge.a.x}
@@ -1178,16 +1190,19 @@ function StakeholderMapPage() {
                   x2={edge.b.x}
                   y2={edge.b.y}
                   className={`stakeholder-map__mesh ${edge.inFocus ? "is-in-chain" : ""}`}
-                  opacity={edge.inFocus ? 1 : 0.1}
+                  opacity={edge.inFocus ? 0.22 : 0.06}
                 />
               ))}
 
               {meshEdges.map((edge) => {
-                const mx = (edge.a.x + edge.b.x) / 2;
-                const my = (edge.a.y + edge.b.y) / 2;
-                const cx = mx + (800 - mx) * 0.12;
-                const cy = my + (500 - my) * 0.08;
-                const d = `M ${edge.a.x} ${edge.a.y} Q ${cx} ${cy} ${edge.b.x} ${edge.b.y}`;
+                // Inter-side links run between side centers (badges), not outer pills
+                const a = sideById[edge.from].anchor;
+                const b = sideById[edge.to].anchor;
+                const mx = (a.x + b.x) / 2;
+                const my = (a.y + b.y) / 2;
+                const cx = mx + (800 - mx) * 0.1;
+                const cy = my + (540 - my) * 0.08;
+                const d = `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
                 return (
                   <path
                     key={`mesh-${edge.i}`}
@@ -1198,17 +1213,16 @@ function StakeholderMapPage() {
                       edge.onChain ? "is-chain-lit" : "is-base",
                     ].join(" ")}
                     fill="none"
-                    opacity={edge.involvesFocus || edge.onChain ? (edge.onChain ? 0.7 : 0.32) : 0.05}
+                    opacity={edge.involvesFocus || edge.onChain ? (edge.onChain ? 0.75 : 0.28) : 0.05}
                   />
                 );
               })}
 
               {chainPairs.map((pair, i) => {
-                const a = pickBridgeNode(pair.from, pair.to);
-                const b = pickBridgeNode(pair.to, pair.from);
+                const a = sideById[pair.from].anchor;
+                const b = sideById[pair.to].anchor;
                 const mx = (a.x + b.x) / 2;
-                // Return edges swing outward so cycles don't sit on the outbound path
-                const lift = pair.isReturn ? 70 : -28;
+                const lift = pair.isReturn ? 80 : -32;
                 const my = (a.y + b.y) / 2 + lift;
                 const d = `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
                 const marker =
@@ -1233,42 +1247,81 @@ function StakeholderMapPage() {
                 );
               })}
 
-              {networkGraph.map((side) => (
-                <text
-                  key={`label-${side.id}`}
-                  x={side.anchor.x}
-                  y={side.anchor.y - (side.fieldR || 160) - 18}
-                  textAnchor="middle"
-                  fill={side.isHub ? "#111c4e" : side.color}
-                  className="stakeholder-map__side-label-text"
-                  opacity={focusSet.has(side.id) ? 1 : 0.18}
-                  onClick={() => goSide(side.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {side.number} · {side.shortName}
-                </text>
-              ))}
+              {/* Side center badges — sit in the middle of their entity ring */}
+              {networkGraph.map((side) => {
+                const inFocus = focusSet.has(side.id);
+                const isActive = activeSideId === side.id && focusMode === "side";
+                const r = side.badgeR || 30;
+                return (
+                  <g
+                    key={`badge-${side.id}`}
+                    className={[
+                      "stakeholder-map__side-badge",
+                      side.isHub ? "is-hub" : "is-outer",
+                      inFocus ? "is-in-chain" : "",
+                      isActive ? "is-active" : "",
+                      !inFocus ? "is-dimmed" : "",
+                    ].filter(Boolean).join(" ")}
+                    transform={`translate(${side.anchor.x}, ${side.anchor.y})`}
+                    onClick={() => goSide(side.id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <circle
+                      r={r}
+                      fill={side.isHub ? "#f2f04f" : "#fffef9"}
+                      stroke={isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color}
+                      strokeWidth={isActive || side.isHub ? 2.25 : 1.5}
+                    />
+                    <text
+                      y={side.isHub ? -6 : -5}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="stakeholder-map__badge-num"
+                      fill={side.isHub ? "#111c4e" : side.color}
+                    >
+                      {side.number}
+                    </text>
+                    <text
+                      y={side.isHub ? 10 : 8}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="stakeholder-map__badge-name"
+                      fill={side.isHub ? "#111c4e" : side.color}
+                    >
+                      {side.shortName}
+                    </text>
+                  </g>
+                );
+              })}
 
               {networkGraph.flatMap((side) =>
                 side.nodes.map((node) => {
                   const isActive = node.id === activeNodeId;
                   const inFocus = focusSet.has(side.id);
+                  const compact = side.compact;
+                  const maxChars = compact ? 16 : 22;
                   const lines =
-                    node.label.length > 22
+                    node.label.length > maxChars
                       ? (() => {
                           const words = node.label.split(" ");
                           const mid = Math.ceil(words.length / 2);
                           return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
                         })()
                       : [node.label];
-                  // Fixed-ish pill sizes so layout spacing (NODE_GAP_Y / HUB_RADIUS) stays valid
-                  const rw = Math.min(200, Math.max(118, ...lines.map((l) => l.length * 7.1 + 22)));
-                  const rh = lines.length > 1 ? 40 : 34;
+                  // Outer sides (esp. Promoters) use smaller entity pills
+                  const charW = compact ? 5.8 : 7.1;
+                  const rw = Math.min(
+                    compact ? 118 : 188,
+                    Math.max(compact ? 72 : 112, ...lines.map((l) => l.length * charW + (compact ? 14 : 22)))
+                  );
+                  const rh = compact ? (lines.length > 1 ? 30 : 24) : lines.length > 1 ? 40 : 34;
+                  const fontLine = compact ? 9.5 : 12;
                   return (
                     <g
                       key={node.id}
                       className={[
                         "stakeholder-map__node",
+                        compact ? "is-compact" : "",
                         isActive ? "is-active" : "",
                         inFocus ? "is-in-chain" : "",
                         !inFocus ? "is-dimmed" : "",
@@ -1288,16 +1341,17 @@ function StakeholderMapPage() {
                         rx={999}
                         fill={side.isHub ? "#f2f04f" : "#fffef9"}
                         stroke={isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color}
-                        strokeWidth={isActive ? 2.5 : 1.6}
+                        strokeWidth={isActive ? 2.25 : 1.35}
                       />
                       {lines.map((line, li) => (
                         <text
                           key={li}
                           x={0}
-                          y={(li - (lines.length - 1) / 2) * 12}
+                          y={(li - (lines.length - 1) / 2) * fontLine}
                           textAnchor="middle"
                           dominantBaseline="middle"
                           className="stakeholder-map__node-label"
+                          fontSize={compact ? 10 : 12}
                         >
                           {line}
                         </text>

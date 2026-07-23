@@ -1269,6 +1269,37 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
 .stakeholder-map__mesh.is-in-chain {
   stroke: rgba(17, 28, 78, 0.28);
 }
+.stakeholder-map__spoke {
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+.stakeholder-map__side-badge.is-dimmed {
+  opacity: 0.2;
+}
+.stakeholder-map__badge-num {
+  font-family: var(--serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+.stakeholder-map__side-badge.is-hub .stakeholder-map__badge-num {
+  font-size: 13px;
+}
+.stakeholder-map__badge-name {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.stakeholder-map__side-badge.is-hub .stakeholder-map__badge-name {
+  font-size: 11px;
+}
+.stakeholder-map__node.is-compact .stakeholder-map__node-label {
+  font-size: 10px;
+}
 .stakeholder-map__link.is-base.is-content { stroke: #111c4e; }
 .stakeholder-map__link.is-base.is-acquisition { stroke: #f14f9b; }
 .stakeholder-map__link.is-base.is-hardware { stroke: #0a7a5c; stroke-dasharray: 4 4; }
