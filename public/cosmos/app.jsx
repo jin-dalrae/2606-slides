@@ -712,14 +712,14 @@ const influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]
 // 1) Relationship — structural: cluster → category → brand (gray backbone)
 // 2) Influence — typed forces between entities (colored; filters by type)
 // parentId = brand under a category (Reddit under Feed Social). Never drop entities here casually.
-// Fixed hub positions — tight pack (App center, others ~280–320px out).
+// Hub ring ~400px from App — tight enough, but trees (~200px) no longer collide in the middle.
 const networkClusters = [
-  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 520, y: 720 },
-  { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 800, y: 680, isHub: true },
-  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1080, y: 720 },
-  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 560, y: 420 },
-  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1040, y: 420 },
-  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 800, y: 980 },
+  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 480, y: 820 },
+  { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 880, y: 760, isHub: true },
+  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1280, y: 820 },
+  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 540, y: 380 },
+  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1220, y: 380 },
+  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 880, y: 1180 },
 ];
 
 // Entities: as many relatable names as useful. parentId = branch from a category entity.
@@ -977,9 +977,9 @@ const networkSides = networkClusters.map((c) => ({
   nodes: networkEntities.filter((e) => e.cluster === c.id),
 }));
 
-const MAP_W = 1600;
-const MAP_H = 1280;
-const MAP_PAD = 40;
+const MAP_W = 1760;
+const MAP_H = 1440;
+const MAP_PAD = 50;
 
 /**
  * Category structure: fixed hubs + full 360° trees.
@@ -1022,7 +1022,8 @@ function layoutNetworkGraph(clusters, entities, influence) {
     const n = Math.max(rootOrder.length, 1);
     const busy = rootOrder.length >= 6;
     const isCenter = Boolean(c.isHub);
-    const rootR = isCenter ? (busy ? 118 : 105) : busy ? 112 : 98;
+    // Slightly smaller trees so neighboring hubs' rings don't crush into App.
+    const rootR = isCenter ? (busy ? 108 : 96) : busy ? 92 : 82;
     rootOrder.forEach((root, i) => {
       const ang = startAng + (i / n) * Math.PI * 2;
       into[root.id] = {
@@ -1030,10 +1031,10 @@ function layoutNetworkGraph(clusters, entities, influence) {
         y: hub.y + Math.sin(ang) * rootR,
       };
       const kids = childOrders[root.id] || kidsByParent[root.id] || [];
-      const childStep = kids.length >= 4 ? 108 : kids.length >= 3 ? 100 : kids.length === 2 ? 90 : 82;
+      const childStep = kids.length >= 4 ? 92 : kids.length >= 3 ? 86 : kids.length === 2 ? 78 : 72;
       const childR = rootR + childStep;
       kids.forEach((kid, ki) => {
-        const kfan = Math.min(1.15, 0.34 * Math.max(kids.length, 1));
+        const kfan = Math.min(1.05, 0.32 * Math.max(kids.length, 1));
         const kang =
           ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : (ki / (kids.length - 1)) * kfan);
         into[kid.id] = {
@@ -1259,8 +1260,8 @@ function layoutNetworkGraph(clusters, entities, influence) {
     }
   }
 
-  // Light anti-overlap (non-family only).
-  for (let pass = 0; pass < 30; pass++) {
+  // Stronger anti-overlap + keep entities out of foreign hub cores (fixes center pile-up).
+  for (let pass = 0; pass < 80; pass++) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
         const a = entities[i];
@@ -1275,9 +1276,9 @@ function layoutNetworkGraph(clusters, entities, influence) {
         let dx = pb.x - pa.x;
         let dy = pb.y - pa.y;
         let d = Math.hypot(dx, dy) || 0.01;
-        const minD = a.cluster === b.cluster ? 80 : 74;
+        const minD = a.cluster === b.cluster ? 88 : 100;
         if (d >= minD) continue;
-        const push = ((minD - d) / d) * 0.45;
+        const push = ((minD - d) / d) * 0.65;
         const ux = dx / d;
         const uy = dy / d;
         pa.x -= ux * push * 0.5;
@@ -1286,6 +1287,37 @@ function layoutNetworkGraph(clusters, entities, influence) {
         pb.y += uy * push * 0.5;
       }
     }
+    // Push any entity out of another cluster's hub exclusion zone.
+    entities.forEach((e) => {
+      const p = pos[e.id];
+      clusters.forEach((c) => {
+        if (c.id === e.cluster) return;
+        const dx = p.x - c.x;
+        const dy = p.y - c.y;
+        const d = Math.hypot(dx, dy) || 0.01;
+        const excl = c.isHub ? 130 : 115;
+        if (d >= excl) return;
+        const push = (excl - d) / d;
+        p.x += (dx / d) * push * 0.85;
+        p.y += (dy / d) * push * 0.85;
+      });
+      // Keep near own hub (don't drift into the void / center)
+      const home = clusters.find((c) => c.id === e.cluster);
+      if (!home) return;
+      const hx = p.x - home.x;
+      const hy = p.y - home.y;
+      const hd = Math.hypot(hx, hy) || 0.01;
+      const maxOrbit = home.isHub ? 210 : 195;
+      if (hd > maxOrbit) {
+        p.x = home.x + (hx / hd) * maxOrbit;
+        p.y = home.y + (hy / hd) * maxOrbit;
+      }
+      const minOrbit = 48;
+      if (hd < minOrbit) {
+        p.x = home.x + (hx / hd) * minOrbit;
+        p.y = home.y + (hy / hd) * minOrbit;
+      }
+    });
   }
 
   for (const e of entities) {
