@@ -994,41 +994,39 @@ const MAP_H = 1280;
 const MAP_PAD = 40;
 
 /**
- * Deterministic category layout (neat for “Categories only”):
- * fixed hub positions, roots in a ring/fan, brands outside their parent.
- * Influence does not move nodes.
+ * Category structure fixed (hubs + 360° trees). Then rotate / reorder each
+ * cluster’s ring to shorten influence arrows and cut crossings.
  */
-function layoutNetworkGraph(clusters, entities) {
+function layoutNetworkGraph(clusters, entities, influence) {
   const canvasCx = MAP_W / 2;
   const canvasCy = MAP_H / 2;
-  const pos = {};
+  const kidsByParent = {};
+  entities.forEach((e) => {
+    if (!e.parentId) return;
+    if (!kidsByParent[e.parentId]) kidsByParent[e.parentId] = [];
+    kidsByParent[e.parentId].push(e);
+  });
 
-  for (const c of clusters) {
+  function placeCluster(c, rootOrder, startAng, into) {
     const hub = { x: c.x, y: c.y };
-    const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
+    const n = Math.max(rootOrder.length, 1);
+    const busy = rootOrder.length >= 6;
     const isCenter = Boolean(c.isHub);
-    // Full 360° around every hub (entity spokes may cross hub↔hub links — that's fine).
-    const busy = roots.length >= 6;
     const rootR = isCenter ? (busy ? 118 : 105) : busy ? 112 : 98;
-    // Rotate start angle so first root faces roughly outward (optional polish only).
-    const startAng = Math.atan2(hub.y - canvasCy, hub.x - canvasCx) - Math.PI / 2;
-
-    roots.forEach((root, i) => {
-      const ang = startAng + (i / Math.max(roots.length, 1)) * Math.PI * 2;
-      pos[root.id] = {
+    rootOrder.forEach((root, i) => {
+      const ang = startAng + (i / n) * Math.PI * 2;
+      into[root.id] = {
         x: hub.x + Math.cos(ang) * rootR,
         y: hub.y + Math.sin(ang) * rootR,
       };
-
-      const kids = entities.filter((e) => e.parentId === root.id);
-      // Brands sit further out on the same radial, spread in a small arc if many.
+      const kids = kidsByParent[root.id] || [];
       const childStep = kids.length >= 3 ? 100 : kids.length === 2 ? 90 : 82;
       const childR = rootR + childStep;
       kids.forEach((kid, ki) => {
         const kfan = Math.min(0.9, 0.3 * Math.max(kids.length, 1));
         const kang =
           ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : (ki / (kids.length - 1)) * kfan);
-        pos[kid.id] = {
+        into[kid.id] = {
           x: hub.x + Math.cos(kang) * childR,
           y: hub.y + Math.sin(kang) * childR,
         };
@@ -1036,8 +1034,88 @@ function layoutNetworkGraph(clusters, entities) {
     });
   }
 
-  // Soft pass: separate only overlapping non-family pills (keep trees intact).
-  for (let pass = 0; pass < 50; pass++) {
+  function orient2d(ax, ay, bx, by, cx, cy) {
+    return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+  }
+
+  function segmentsCross(a, b, c, d) {
+    // Skip if share an endpoint (not a visual cross of independent arrows).
+    if (a === c || a === d || b === c || b === d) return false;
+    const pa = pos[a];
+    const pb = pos[b];
+    const pc = pos[c];
+    const pd = pos[d];
+    if (!pa || !pb || !pc || !pd) return false;
+    const o1 = orient2d(pa.x, pa.y, pb.x, pb.y, pc.x, pc.y);
+    const o2 = orient2d(pa.x, pa.y, pb.x, pb.y, pd.x, pd.y);
+    const o3 = orient2d(pc.x, pc.y, pd.x, pd.y, pa.x, pa.y);
+    const o4 = orient2d(pc.x, pc.y, pd.x, pd.y, pb.x, pb.y);
+    return o1 * o2 < 0 && o3 * o4 < 0;
+  }
+
+  let pos = {};
+  // Initial placement
+  const rootOrders = {};
+  const startAngles = {};
+  clusters.forEach((c) => {
+    const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
+    rootOrders[c.id] = roots.slice();
+    startAngles[c.id] =
+      Math.atan2(c.y - canvasCy, c.x - canvasCx) - Math.PI / 2;
+    placeCluster(c, rootOrders[c.id], startAngles[c.id], pos);
+  });
+
+  function scoreInfluence() {
+    let len = 0;
+    for (const e of influence) {
+      const a = pos[e.from];
+      const b = pos[e.to];
+      if (!a || !b) continue;
+      len += Math.hypot(a.x - b.x, a.y - b.y);
+    }
+    let crosses = 0;
+    for (let i = 0; i < influence.length; i++) {
+      for (let j = i + 1; j < influence.length; j++) {
+        const e1 = influence[i];
+        const e2 = influence[j];
+        if (segmentsCross(e1.from, e1.to, e2.from, e2.to)) crosses += 1;
+      }
+    }
+    // Prefer short influence arrows; penalize crossings.
+    return len + crosses * 180;
+  }
+
+  // Coordinate descent: for each cluster, try ring rotation + cyclic root order.
+  const angleSteps = 36;
+  for (let pass = 0; pass < 3; pass++) {
+    for (const c of clusters) {
+      const baseOrder = rootOrders[c.id];
+      const n = baseOrder.length;
+      if (n < 1) continue;
+      let best = { score: Infinity, order: baseOrder, start: startAngles[c.id] };
+      const shifts = n; // all cyclic orders
+      for (let sh = 0; sh < shifts; sh++) {
+        const order = baseOrder.map((_, i) => baseOrder[(i + sh) % n]);
+        for (let s = 0; s < angleSteps; s++) {
+          const start = (s / angleSteps) * Math.PI * 2;
+          // Trial place only this cluster into a copy of pos
+          const trial = { ...pos };
+          placeCluster(c, order, start, trial);
+          const saved = pos;
+          pos = trial;
+          const sc = scoreInfluence();
+          pos = saved;
+          if (sc < best.score) best = { score: sc, order, start };
+        }
+      }
+      rootOrders[c.id] = best.order;
+      startAngles[c.id] = best.start;
+      placeCluster(c, best.order, best.start, pos);
+    }
+  }
+
+  // Light anti-overlap (non-family only) so rings stay readable.
+  for (let pass = 0; pass < 30; pass++) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
         const a = entities[i];
@@ -1052,9 +1130,9 @@ function layoutNetworkGraph(clusters, entities) {
         let dx = pb.x - pa.x;
         let dy = pb.y - pa.y;
         let d = Math.hypot(dx, dy) || 0.01;
-        const minD = a.cluster === b.cluster ? 82 : 76;
+        const minD = a.cluster === b.cluster ? 80 : 74;
         if (d >= minD) continue;
-        const push = ((minD - d) / d) * 0.55;
+        const push = ((minD - d) / d) * 0.45;
         const ux = dx / d;
         const uy = dy / d;
         pa.x -= ux * push * 0.5;
@@ -1070,7 +1148,6 @@ function layoutNetworkGraph(clusters, entities) {
     pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
   }
 
-  // Hubs stay on fixed coordinates so hub↔hub links stay clean.
   return clusters.map((c) => {
     const nodes = entities
       .filter((e) => e.cluster === c.id)
@@ -1092,7 +1169,11 @@ function layoutNetworkGraph(clusters, entities) {
   });
 }
 
-const networkGraph = layoutNetworkGraph(networkClusters, networkEntities);
+const networkGraph = layoutNetworkGraph(
+  networkClusters,
+  networkEntities,
+  influenceEdges
+);
 
 // Shared pill metrics so edge anchors match the drawn rects.
 function nodeLabelLines(label, maxChars = 18) {
