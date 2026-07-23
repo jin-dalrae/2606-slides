@@ -647,12 +647,13 @@
   ];
   var influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
   var networkClusters = [
-    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 280, y: 720 },
-    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1100, y: 780, isHub: true },
-    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1900, y: 720 },
-    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 420, y: 260 },
-    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1760, y: 260 },
-    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1100, y: 1280 }
+    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 300, y: 780 },
+    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1100, y: 620, isHub: true },
+    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1920, y: 780 },
+    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 380, y: 240 },
+    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1820, y: 240 },
+    // Institutions sit low and slightly left so they don’t crush into App (capital/team links pull them).
+    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 900, y: 1420 }
   ];
   var networkEntities = [
     // People
@@ -687,7 +688,6 @@
     { id: "tiktok", label: "TikTok", cluster: "competitors", parentId: "feed-social" },
     { id: "chat-platforms", label: "Chat Platforms", cluster: "competitors" },
     { id: "discord", label: "Discord", cluster: "competitors", parentId: "chat-platforms" },
-    { id: "slack", label: "Slack", cluster: "competitors", parentId: "chat-platforms" },
     { id: "social-vr", label: "Social VR", cluster: "competitors" },
     { id: "vrchat", label: "VRChat", cluster: "competitors", parentId: "social-vr" },
     { id: "horizon", label: "Horizon Worlds", cluster: "competitors", parentId: "social-vr" },
@@ -788,8 +788,7 @@
     { from: "discord", to: "stewards", type: "functional", note: "Mod craft already lives in Discord toolchains." },
     { from: "discord", to: "readers", type: "identity", note: "\u201CMy community lives on Discord.\u201D" },
     { from: "discord", to: "community-orgs", type: "functional", note: "Many community orgs run on Discord." },
-    { from: "slack", to: "enterprise-orgs", type: "identity", note: "Work chat already owns workplace discourse." },
-    { from: "slack", to: "contributors", type: "functional", note: "Async work threads compete with spatial contribution." },
+    { from: "discord", to: "cosmos", type: "identity", note: "Discord is the default \u201Cplace\u201D communities compare Cosmos against." },
     { from: "vrchat", to: "readers", type: "emotional", note: "Play-social VR makes calm browsing feel wrong." },
     { from: "vrchat", to: "contributors", type: "identity", note: "Headset culture defaults to hangouts, not walls." },
     { from: "horizon", to: "readers", type: "identity", note: "Horizon defines mass-market \u201Cwhat VR is for.\u201D" },
@@ -844,9 +843,10 @@
     { from: "edu-orgs", to: "content-org", type: "meaning", note: "Curriculum needs stable structure." },
     { from: "edu-orgs", to: "moderation-tools", type: "functional", note: "Institutions expect audit and safety." },
     { from: "enterprise-orgs", to: "team", type: "financial", note: "Workplaces buy contracts when ready." },
-    { from: "enterprise-orgs", to: "continuity", type: "functional", note: "Work needs save/return and handoff." },
+    { from: "enterprise-orgs", to: "cosmos", type: "functional", note: "Enterprise adoption is a later Cosmos channel\u2014not the core community wall." },
+    { from: "enterprise-orgs", to: "continuity", type: "functional", note: "If work uses Cosmos at all, it needs save/return and handoff." },
     { from: "enterprise-orgs", to: "moderation-tools", type: "functional", note: "Procurement expects access control." },
-    { from: "enterprise-orgs", to: "cross-device-bridge", type: "functional", note: "Desk \u2194 headset is required at work." },
+    { from: "enterprise-orgs", to: "cross-device-bridge", type: "functional", note: "Desk \u2194 headset is required if Cosmos is used near work." },
     { from: "community-orgs", to: "stewards", type: "identity", note: "Orgs bring local stewards and norms." },
     { from: "community-orgs", to: "readers", type: "functional", note: "Orgs can migrate whole groups." },
     { from: "community-orgs", to: "discord", type: "identity", note: "Many still call Discord home." }
@@ -855,9 +855,9 @@
     ...c,
     nodes: networkEntities.filter((e) => e.cluster === c.id)
   }));
-  var MAP_W = 2200;
-  var MAP_H = 1500;
-  var MAP_PAD = 110;
+  var MAP_W = 2300;
+  var MAP_H = 1680;
+  var MAP_PAD = 120;
   function layoutNetworkGraph(clusters, entities, influence, membership) {
     const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
     const membershipSet = new Set(membership.map((m) => `${m.from}|${m.to}`));
@@ -913,10 +913,11 @@
           }
           const d = Math.sqrt(d2);
           const sameCluster = a.cluster === b.cluster;
-          const minD = sameCluster ? 150 : 120;
-          const pushBase = sameCluster ? 9200 : 6400;
+          const appInstPair = a.cluster === "app" && b.cluster === "institutions" || a.cluster === "institutions" && b.cluster === "app";
+          const minD = sameCluster ? 155 : appInstPair ? 200 : 130;
+          const pushBase = sameCluster ? 9800 : appInstPair ? 14e3 : 7200;
           let push = pushBase / d2;
-          if (d < minD) push += (minD - d) / d * (sameCluster ? 2.4 : 1.6);
+          if (d < minD) push += (minD - d) / d * (sameCluster ? 2.5 : appInstPair ? 3.2 : 1.8);
           const ux = dx / d;
           const uy = dy / d;
           force[a.id].x -= ux * push;
@@ -942,9 +943,38 @@
       for (const e of entities) {
         const c = clusterById[e.cluster];
         const p = pos[e.id];
-        const strength = e.parentId ? 4e-3 : 0.01;
+        let strength = e.parentId ? 4e-3 : 0.012;
+        if (e.cluster === "institutions") strength = e.parentId ? 6e-3 : 0.02;
+        if (e.cluster === "app") strength = e.parentId ? 4e-3 : 0.014;
         force[e.id].x += (c.x - p.x) * strength;
         force[e.id].y += (c.y - p.y) * strength;
+      }
+      {
+        const appNodes = entities.filter((e) => e.cluster === "app");
+        const instNodes = entities.filter((e) => e.cluster === "institutions");
+        if (appNodes.length && instNodes.length) {
+          let appCy = 0;
+          let instCy = 0;
+          appNodes.forEach((e) => {
+            appCy += pos[e.id].y;
+          });
+          instNodes.forEach((e) => {
+            instCy += pos[e.id].y;
+          });
+          appCy /= appNodes.length;
+          instCy /= instNodes.length;
+          const gap = instCy - appCy;
+          const want = 420;
+          if (gap < want) {
+            const pushY = (want - gap) * 0.04;
+            appNodes.forEach((e) => {
+              force[e.id].y -= pushY;
+            });
+            instNodes.forEach((e) => {
+              force[e.id].y += pushY;
+            });
+          }
+        }
       }
       for (const e of children) {
         const p = pos[e.parentId];
