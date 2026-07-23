@@ -1703,3 +1703,301 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
     grid-template-columns: 1fr;
   }
 }
+
+/* —— Presentation / large displays (~1440–1920+) ——
+   Reading layout is intentionally narrow; on presentation widths that
+   reads as tiny. Widen columns and step up type so 16:9 / 1920 screens
+   use the room without zooming the browser. */
+@media (min-width: 1400px) {
+  .hero,
+  .report-section {
+    max-width: 1320px;
+  }
+  html[data-cosmos-rail="closed"] .hero,
+  html[data-cosmos-rail="closed"] .report-section {
+    max-width: 1480px;
+  }
+  .report-document {
+    width: min(100%, 920px);
+  }
+  .report-chapter > p,
+  .report-chapter li {
+    font-size: 15.5px;
+    line-height: 1.75;
+  }
+  .report-chapter .report-lead {
+    font-size: 23px;
+  }
+  .report-page-intro h1 {
+    font-size: clamp(42px, 3.8vw, 64px);
+  }
+  .report-page-intro > p:last-child {
+    font-size: 15.5px;
+    max-width: 740px;
+  }
+  .stakeholder-shell {
+    max-width: min(1560px, 100%);
+  }
+  html[data-cosmos-rail="closed"] .stakeholder-shell {
+    max-width: min(1680px, 100%);
+  }
+  .waveline-frame,
+  .stakeholder-frame {
+    max-width: min(1520px, 100%);
+  }
+  html[data-cosmos-rail="closed"] .waveline-frame,
+  html[data-cosmos-rail="closed"] .stakeholder-frame {
+    max-width: min(1640px, 100%);
+  }
+}
+
+@media (min-width: 1680px) {
+  .site-header {
+    height: 84px;
+    padding: 0 48px;
+  }
+  .chapter-rail {
+    top: 84px;
+    width: 300px;
+    padding: 40px 24px 32px 32px;
+  }
+  main,
+  .site-footer {
+    margin-left: 300px;
+  }
+  html[data-cosmos-rail="closed"] main,
+  html[data-cosmos-rail="closed"] .site-footer {
+    margin-left: 0;
+  }
+  .rail-reopen {
+    top: 100px;
+  }
+  .wordmark {
+    font-size: 15px;
+  }
+  .header-meta {
+    font-size: 12px;
+  }
+  .rail-intro h2 {
+    font-size: 40px;
+  }
+  .rail-intro > span {
+    max-width: 210px;
+    font-size: 15px;
+  }
+  .chapter-rail a {
+    min-height: 56px;
+    font-size: 15px;
+  }
+  .chapter-rail a span {
+    font-size: 15px;
+  }
+  .rail-subnav a {
+    font-size: 13.5px;
+  }
+
+  .hero,
+  .report-section {
+    max-width: 1540px;
+    padding-left: 72px;
+    padding-right: 72px;
+  }
+  html[data-cosmos-rail="closed"] .hero,
+  html[data-cosmos-rail="closed"] .report-section {
+    max-width: 1760px;
+  }
+
+  #intro h1 {
+    max-width: 960px;
+    font-size: clamp(56px, 5.2vw, 92px);
+  }
+  #intro .hero-summary {
+    max-width: 800px;
+    font-size: 23px;
+  }
+  .eyebrow,
+  .mini-label {
+    font-size: 13px;
+  }
+
+  .report-document {
+    width: min(100%, 1080px);
+    padding: 84px 0 120px;
+  }
+  .report-chapter {
+    padding: 60px 0 12px 60px;
+  }
+  .report-chapter h2 {
+    font-size: clamp(34px, 2.5vw, 48px);
+  }
+  .report-chapter h3 {
+    font-size: 24px;
+  }
+  .report-chapter > p,
+  .report-chapter li {
+    font-size: 17.5px;
+    line-height: 1.7;
+  }
+  .report-chapter .report-lead {
+    font-size: 26px;
+    line-height: 1.5;
+  }
+  .report-quote {
+    font-size: 24px;
+  }
+  .report-note p {
+    font-size: 15px;
+  }
+  .report-page-intro h1 {
+    max-width: 920px;
+    font-size: clamp(48px, 3.6vw, 76px);
+  }
+  .report-page-intro > p:last-child {
+    max-width: 820px;
+    font-size: 18px;
+  }
+  .report-table {
+    font-size: 13.5px;
+  }
+  .report-table th {
+    font-size: 11px;
+  }
+  .report-contents a {
+    font-size: 13px;
+  }
+  .report-next-links a {
+    font-size: 12px;
+    min-width: 280px;
+    padding: 15px 18px;
+  }
+  .report-subreport-link b {
+    font-size: 17px;
+  }
+
+  /* Secondary / interview shared reading surfaces */
+  .interview-document .report-chapter > p,
+  .interview-document .report-chapter li {
+    font-size: 17px;
+  }
+  .questionnaire-intro h1 {
+    font-size: clamp(44px, 3.8vw, 68px);
+  }
+  .questionnaire-intro > p:not(.eyebrow) {
+    font-size: 16px;
+  }
+  .question-field > b {
+    font-size: 19px;
+  }
+
+  /* Waveline + stakeholder: use most of a 1920 presentation canvas */
+  .waveline-page,
+  .stakeholder-page.report-section,
+  .stakeholder-page {
+    padding-top: 20px;
+    padding-bottom: 36px;
+  }
+  .waveline-frame,
+  .stakeholder-frame {
+    max-width: min(1720px, calc(100vw - 340px));
+    width: min(1720px, calc(100vw - 340px), calc((100vh - 120px) * 16 / 9));
+    height: min(calc(100vh - 120px), 980px);
+    max-height: calc(100vh - 110px);
+  }
+  html[data-cosmos-rail="closed"] .waveline-frame,
+  html[data-cosmos-rail="closed"] .stakeholder-frame {
+    max-width: min(1840px, calc(100vw - 48px));
+    width: min(1840px, calc(100vw - 48px), calc((100vh - 110px) * 16 / 9));
+  }
+  .waveline-frame__head h1 {
+    font-size: clamp(28px, 2.4cqi, 42px);
+  }
+  .waveline-lede {
+    font-size: clamp(14px, 1.5cqi, 18px);
+  }
+  .stakeholder-shell {
+    max-width: min(1720px, calc(100vw - 340px));
+  }
+  html[data-cosmos-rail="closed"] .stakeholder-shell {
+    max-width: min(1840px, calc(100vw - 48px));
+  }
+  .stakeholder-shell .stakeholder-frame__head h1 {
+    font-size: clamp(32px, 2.6vw, 46px);
+  }
+  .stakeholder-shell .stakeholder-lede {
+    max-width: 48ch;
+    font-size: 17px;
+  }
+  .stakeholder-shell .stakeholder-kicker {
+    font-size: 13px;
+  }
+  .stakeholder-frame__mode-tabs button,
+  .stakeholder-frame__stepper button {
+    padding: 9px 14px;
+    font-size: 14px;
+  }
+  .stakeholder-shell .stakeholder-frame__chain-tabs button,
+  .stakeholder-frame__side-tabs--bar button {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  .stakeholder-frame__map--focus,
+  .stakeholder-frame__map--page {
+    height: min(86vh, 1200px);
+    min-height: 800px;
+  }
+  .stakeholder-map__group-label {
+    font-size: 13px;
+  }
+  .stakeholder-map__node text {
+    font-size: 13px;
+  }
+  .stakeholder-frame__influence-card header b {
+    font-size: 12px;
+  }
+  .stakeholder-frame__influence-card header span {
+    font-size: 14px;
+  }
+  .stakeholder-frame__influence-card p {
+    font-size: 15px;
+  }
+}
+
+/* Ultra-wide / projector: one more step so type holds from the back of a room */
+@media (min-width: 1900px) {
+  .hero,
+  .report-section {
+    max-width: 1680px;
+  }
+  html[data-cosmos-rail="closed"] .hero,
+  html[data-cosmos-rail="closed"] .report-section {
+    max-width: 1840px;
+  }
+  .report-document {
+    width: min(100%, 1160px);
+  }
+  .report-chapter > p,
+  .report-chapter li {
+    font-size: 18.5px;
+  }
+  .report-chapter .report-lead {
+    font-size: 28px;
+  }
+  .report-page-intro h1 {
+    font-size: clamp(52px, 3.4vw, 82px);
+  }
+  .stakeholder-shell,
+  .waveline-frame,
+  .stakeholder-frame {
+    max-width: min(1860px, calc(100vw - 340px));
+  }
+  html[data-cosmos-rail="closed"] .stakeholder-shell,
+  html[data-cosmos-rail="closed"] .waveline-frame,
+  html[data-cosmos-rail="closed"] .stakeholder-frame {
+    max-width: min(1920px, calc(100vw - 40px));
+  }
+  .stakeholder-frame__map--focus,
+  .stakeholder-frame__map--page {
+    height: min(88vh, 1280px);
+    min-height: 860px;
+  }
+}
