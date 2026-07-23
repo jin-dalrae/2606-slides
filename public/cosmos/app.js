@@ -1296,7 +1296,7 @@
         const svgPt = clientToSvg(event.clientX, event.clientY);
         const current = currentCamera();
         const world = svgToWorld(svgPt.x, svgPt.y, current);
-        const intensity = Math.min(Math.abs(event.deltaY) / 80, 3);
+        const intensity = Math.min(Math.abs(event.deltaY) / 80, 3) * 2;
         const zoomIn = event.deltaY < 0;
         const nextScale = clampScale(
           current.scale * (zoomIn ? Math.pow(1.09, intensity) : Math.pow(0.91, intensity))
