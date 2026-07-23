@@ -1075,14 +1075,50 @@ const MAP_H = 1440;
 const MAP_PAD = 50;
 
 /**
+ * Place items on a circle with many discrete angle slots.
+ * At most `maxPerSlot` items share a slot; extras step outward on a second ring.
+ * More slots than items keeps neighbors from stacking on the same ray.
+ */
+function placeOnCircleSlots(items, cx, cy, baseRadius, {
+  minSlots = 12,
+  maxPerSlot = 2,
+  startAngle = -Math.PI / 2,
+  ringStep = 36,
+} = {}) {
+  if (!items.length) return [];
+  const slots = Math.max(minSlots, Math.ceil(items.length / maxPerSlot));
+  return items.map((item, i) => {
+    const slot = i % slots;
+    const ring = Math.floor(i / slots); // 0, then 1 if a 2nd entity reuses the slot
+    const ang = startAngle + (slot / slots) * Math.PI * 2;
+    const r = baseRadius + ring * ringStep;
+    return {
+      item,
+      slot,
+      ring,
+      ang,
+      x: cx + Math.cos(ang) * r,
+      y: cy + Math.sin(ang) * r,
+      r,
+    };
+  });
+}
+
+/**
  * d3-force category layout:
  * - Hubs pinned (App center, others around)
- * - Strong short links for category trees (hub→root, parent→brand)
- * - Weak influence links only to rotate entities toward partners
- * - Collision so pills don’t stack
+ * - Roots seeded on many circle slots around hub (≤2 entities per slot)
+ * - Children seeded on slots around their parent
+ * - Strong tree links + weak influence; collide + light home pull
  */
 function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks) {
   const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
+  const childrenOf = {};
+  entities.forEach((e) => {
+    if (!e.parentId) return;
+    if (!childrenOf[e.parentId]) childrenOf[e.parentId] = [];
+    childrenOf[e.parentId].push(e);
+  });
 
   // Simulation nodes: real entities + pinned hub nodes
   const nodes = [];
@@ -1093,17 +1129,65 @@ function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks)
     nodes.push(n);
     byId[id] = n;
   });
-  entities.forEach((e, i) => {
+
+  // Seed roots on a generous circle around each hub (many slots, max 2 per slot).
+  // Then seed children around parents on their own local circles.
+  const seedPos = {};
+  clusters.forEach((c, ci) => {
+    const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
+    // Prefer more slots than roots so the circle looks open, not a tight fan.
+    const rootPlacements = placeOnCircleSlots(roots, c.x, c.y, 118, {
+      minSlots: Math.max(12, roots.length * 2),
+      maxPerSlot: 2,
+      startAngle: -Math.PI / 2 + ci * 0.22, // slight per-cluster offset so hubs don’t mirror
+      ringStep: 42,
+    });
+    rootPlacements.forEach((p) => {
+      seedPos[p.item.id] = { x: p.x, y: p.y, r: p.r, ang: p.ang };
+    });
+
+    // BFS-ish: children after parents exist in seedPos
+    const queue = roots.map((r) => r.id);
+    while (queue.length) {
+      const pid = queue.shift();
+      const kids = childrenOf[pid] || [];
+      if (!kids.length) continue;
+      const parentSeed = seedPos[pid] || { x: c.x, y: c.y, ang: 0 };
+      // Fan children around the outward side of the parent (from hub through parent).
+      const outward = Math.atan2(parentSeed.y - c.y, parentSeed.x - c.x);
+      const childPlacements = placeOnCircleSlots(kids, parentSeed.x, parentSeed.y, 78, {
+        minSlots: Math.max(8, kids.length * 2),
+        maxPerSlot: 2,
+        startAngle: outward - Math.PI * 0.55,
+        ringStep: 34,
+      });
+      // Remap child angles to a ~110° arc facing outward so trees read as branches, not full rings.
+      const arc = Math.PI * 0.95;
+      childPlacements.forEach((p, i) => {
+        const t = kids.length === 1 ? 0.5 : i / (kids.length - 1);
+        const ang = outward - arc / 2 + t * arc;
+        const ring = p.ring;
+        const r = 78 + ring * 34;
+        const x = parentSeed.x + Math.cos(ang) * r;
+        const y = parentSeed.y + Math.sin(ang) * r;
+        seedPos[p.item.id] = { x, y, r, ang };
+        queue.push(p.item.id);
+      });
+    }
+  });
+
+  entities.forEach((e) => {
     const home = clusterById[e.cluster];
-    // Seed near home hub so simulation settles as a tree, not a ball in the center
-    const ang = (i / Math.max(entities.length, 1)) * Math.PI * 2;
+    const seed = seedPos[e.id] || { x: home.x + 90, y: home.y };
     const n = {
       id: e.id,
       kind: "entity",
       cluster: e.cluster,
       parentId: e.parentId || null,
-      x: home.x + Math.cos(ang) * 90,
-      y: home.y + Math.sin(ang) * 90,
+      x: seed.x,
+      y: seed.y,
+      seedR: seed.r || 100,
+      seedAng: seed.ang || 0,
     };
     nodes.push(n);
     byId[e.id] = n;
@@ -1116,20 +1200,22 @@ function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks)
       source: `hub:${a}`,
       target: `hub:${b}`,
       kind: "hub",
-      distance: 380,
-      strength: 0.35,
+      distance: 400,
+      strength: 0.32,
     });
   });
-  // Hub → category roots
+  // Hub → category roots — distance from seed so multi-slot rings hold
   entities
     .filter((e) => !e.parentId)
     .forEach((e) => {
+      const rootCount = entities.filter((x) => x.cluster === e.cluster && !x.parentId).length;
+      const base = rootCount > 8 ? 130 : 115;
       links.push({
         source: `hub:${e.cluster}`,
         target: e.id,
         kind: "cluster",
-        distance: 100,
-        strength: 1.1,
+        distance: byId[e.id].seedR || base,
+        strength: 1.05,
       });
     });
   // Parent → brand
@@ -1138,8 +1224,8 @@ function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks)
       source: e.from,
       target: e.to,
       kind: "branch",
-      distance: 88,
-      strength: 1.35,
+      distance: byId[e.to]?.seedR || 82,
+      strength: 1.25,
     });
   });
   // Weak influence (layout only — does not draw as category)
@@ -1149,8 +1235,8 @@ function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks)
       source: e.from,
       target: e.to,
       kind: "influence",
-      distance: 220,
-      strength: 0.06,
+      distance: 240,
+      strength: 0.045,
     });
   });
 
@@ -1164,31 +1250,86 @@ function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks)
     )
     .force(
       "charge",
-      forceManyBody().strength((d) => (d.kind === "hub" ? -40 : -220))
+      forceManyBody().strength((d) => (d.kind === "hub" ? -50 : -260))
     )
     .force(
       "collide",
       forceCollide()
-        .radius((d) => (d.kind === "hub" ? 36 : 46))
-        .strength(0.9)
-        .iterations(3)
+        .radius((d) => (d.kind === "hub" ? 40 : 52))
+        .strength(0.95)
+        .iterations(4)
     )
     // Soft pull entities toward their home hub (keeps category trees local)
     .force(
       "homeX",
       forceX((d) => (d.kind === "hub" ? d.fx : clusterById[d.cluster].x)).strength((d) =>
-        d.kind === "hub" ? 0 : 0.12
+        d.kind === "hub" ? 0 : 0.08
       )
     )
     .force(
       "homeY",
       forceY((d) => (d.kind === "hub" ? d.fy : clusterById[d.cluster].y)).strength((d) =>
-        d.kind === "hub" ? 0 : 0.12
+        d.kind === "hub" ? 0 : 0.08
       )
     )
     .stop();
 
-  for (let i = 0; i < 320; i++) sim.tick();
+  for (let i = 0; i < 340; i++) sim.tick();
+
+  // Angular re-spread around each hub: never stack >2 roots on the same ray.
+  // Sort roots by current angle, then assign evenly onto many circle slots.
+  clusters.forEach((c) => {
+    const roots = entities
+      .filter((e) => e.cluster === c.id && !e.parentId)
+      .map((e) => byId[e.id]);
+    if (roots.length < 2) return;
+    roots.sort((a, b) => Math.atan2(a.y - c.y, a.x - c.x) - Math.atan2(b.y - c.y, b.x - c.x));
+    const slots = Math.max(12, roots.length * 2);
+    const maxPerSlot = 2;
+    const usable = Math.min(slots, Math.max(roots.length, Math.ceil(roots.length / maxPerSlot) * 2));
+    // Pick evenly spaced slot indices across the circle
+    const slotIndices = [];
+    for (let i = 0; i < roots.length; i++) {
+      slotIndices.push(Math.round((i * (usable - 1)) / Math.max(roots.length - 1, 1)) % usable);
+    }
+    // Ensure uniqueness of consecutive slots when possible
+    for (let i = 1; i < slotIndices.length; i++) {
+      if (slotIndices[i] === slotIndices[i - 1] && roots.length <= usable) {
+        slotIndices[i] = (slotIndices[i - 1] + 1) % usable;
+      }
+    }
+    const startAng = -Math.PI / 2;
+    roots.forEach((n, i) => {
+      const slot = slotIndices[i];
+      // How many roots already assigned this slot (for second-ring offset)
+      let same = 0;
+      for (let j = 0; j < i; j++) if (slotIndices[j] === slot) same += 1;
+      const ang = startAng + (slot / usable) * Math.PI * 2;
+      const r = Math.max(n.seedR || 115, 110) + same * 40;
+      n.x = c.x + Math.cos(ang) * r;
+      n.y = c.y + Math.sin(ang) * r;
+    });
+
+    // Re-fan children around each parent after root move
+    const queue = roots.map((n) => n.id);
+    while (queue.length) {
+      const pid = queue.shift();
+      const kids = (childrenOf[pid] || []).map((e) => byId[e.id]);
+      if (!kids.length) continue;
+      const parent = byId[pid];
+      const outward = Math.atan2(parent.y - c.y, parent.x - c.x);
+      const arc = Math.min(Math.PI * 1.05, Math.PI * 0.35 + kids.length * 0.22);
+      // Spread kids across distinct arc points (no shared ray unless forced by count).
+      kids.forEach((n, i) => {
+        const t = kids.length === 1 ? 0.5 : i / (kids.length - 1);
+        const ang = outward - arc / 2 + t * arc;
+        const r = 78;
+        n.x = parent.x + Math.cos(ang) * r;
+        n.y = parent.y + Math.sin(ang) * r;
+        queue.push(n.id);
+      });
+    }
+  });
 
   // Clamp to canvas; re-pin hubs
   nodes.forEach((n) => {
@@ -1209,12 +1350,46 @@ function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks)
       const dx = n.x - c.x;
       const dy = n.y - c.y;
       const d = Math.hypot(dx, dy) || 0.01;
-      const excl = c.isHub ? 125 : 110;
+      const excl = c.isHub ? 130 : 115;
       if (d < excl) {
         n.x = c.x + (dx / d) * excl;
         n.y = c.y + (dy / d) * excl;
       }
     });
+  });
+
+  // Final local collide pass: push entity pairs that still overlap (pills ~100×28)
+  for (let pass = 0; pass < 8; pass++) {
+    for (let i = 0; i < entities.length; i++) {
+      for (let j = i + 1; j < entities.length; j++) {
+        const a = byId[entities[i].id];
+        const b = byId[entities[j].id];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const d = Math.hypot(dx, dy) || 0.01;
+        const minD = entities[i].cluster === entities[j].cluster ? 58 : 52;
+        if (d < minD) {
+          const push = ((minD - d) / d) * 0.5;
+          const ux = dx * push;
+          const uy = dy * push;
+          a.x -= ux;
+          a.y -= uy;
+          b.x += ux;
+          b.y += uy;
+        }
+      }
+    }
+  }
+
+  // Clamp again after collide
+  nodes.forEach((n) => {
+    if (n.kind === "hub") {
+      n.x = n.fx;
+      n.y = n.fy;
+      return;
+    }
+    n.x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, n.x));
+    n.y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, n.y));
   });
 
   return clusters.map((c) => {

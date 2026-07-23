@@ -1855,8 +1855,38 @@
   var MAP_W = 1760;
   var MAP_H = 1440;
   var MAP_PAD = 50;
+  function placeOnCircleSlots(items, cx, cy, baseRadius, {
+    minSlots = 12,
+    maxPerSlot = 2,
+    startAngle = -Math.PI / 2,
+    ringStep = 36
+  } = {}) {
+    if (!items.length) return [];
+    const slots = Math.max(minSlots, Math.ceil(items.length / maxPerSlot));
+    return items.map((item, i) => {
+      const slot = i % slots;
+      const ring = Math.floor(i / slots);
+      const ang = startAngle + slot / slots * Math.PI * 2;
+      const r = baseRadius + ring * ringStep;
+      return {
+        item,
+        slot,
+        ring,
+        ang,
+        x: cx + Math.cos(ang) * r,
+        y: cy + Math.sin(ang) * r,
+        r
+      };
+    });
+  }
   function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks) {
     const clusterById = Object.fromEntries(clusters.map((c2) => [c2.id, c2]));
+    const childrenOf = {};
+    entities.forEach((e) => {
+      if (!e.parentId) return;
+      if (!childrenOf[e.parentId]) childrenOf[e.parentId] = [];
+      childrenOf[e.parentId].push(e);
+    });
     const nodes = [];
     const byId = {};
     clusters.forEach((c2) => {
@@ -1865,16 +1895,57 @@
       nodes.push(n);
       byId[id] = n;
     });
-    entities.forEach((e, i) => {
+    const seedPos = {};
+    clusters.forEach((c2, ci) => {
+      const roots = entities.filter((e) => e.cluster === c2.id && !e.parentId);
+      const rootPlacements = placeOnCircleSlots(roots, c2.x, c2.y, 118, {
+        minSlots: Math.max(12, roots.length * 2),
+        maxPerSlot: 2,
+        startAngle: -Math.PI / 2 + ci * 0.22,
+        // slight per-cluster offset so hubs don’t mirror
+        ringStep: 42
+      });
+      rootPlacements.forEach((p) => {
+        seedPos[p.item.id] = { x: p.x, y: p.y, r: p.r, ang: p.ang };
+      });
+      const queue = roots.map((r) => r.id);
+      while (queue.length) {
+        const pid = queue.shift();
+        const kids = childrenOf[pid] || [];
+        if (!kids.length) continue;
+        const parentSeed = seedPos[pid] || { x: c2.x, y: c2.y, ang: 0 };
+        const outward = Math.atan2(parentSeed.y - c2.y, parentSeed.x - c2.x);
+        const childPlacements = placeOnCircleSlots(kids, parentSeed.x, parentSeed.y, 78, {
+          minSlots: Math.max(8, kids.length * 2),
+          maxPerSlot: 2,
+          startAngle: outward - Math.PI * 0.55,
+          ringStep: 34
+        });
+        const arc = Math.PI * 0.95;
+        childPlacements.forEach((p, i) => {
+          const t = kids.length === 1 ? 0.5 : i / (kids.length - 1);
+          const ang = outward - arc / 2 + t * arc;
+          const ring = p.ring;
+          const r = 78 + ring * 34;
+          const x3 = parentSeed.x + Math.cos(ang) * r;
+          const y3 = parentSeed.y + Math.sin(ang) * r;
+          seedPos[p.item.id] = { x: x3, y: y3, r, ang };
+          queue.push(p.item.id);
+        });
+      }
+    });
+    entities.forEach((e) => {
       const home = clusterById[e.cluster];
-      const ang = i / Math.max(entities.length, 1) * Math.PI * 2;
+      const seed = seedPos[e.id] || { x: home.x + 90, y: home.y };
       const n = {
         id: e.id,
         kind: "entity",
         cluster: e.cluster,
         parentId: e.parentId || null,
-        x: home.x + Math.cos(ang) * 90,
-        y: home.y + Math.sin(ang) * 90
+        x: seed.x,
+        y: seed.y,
+        seedR: seed.r || 100,
+        seedAng: seed.ang || 0
       };
       nodes.push(n);
       byId[e.id] = n;
@@ -1885,17 +1956,19 @@
         source: `hub:${a2}`,
         target: `hub:${b}`,
         kind: "hub",
-        distance: 380,
-        strength: 0.35
+        distance: 400,
+        strength: 0.32
       });
     });
     entities.filter((e) => !e.parentId).forEach((e) => {
+      const rootCount = entities.filter((x3) => x3.cluster === e.cluster && !x3.parentId).length;
+      const base = rootCount > 8 ? 130 : 115;
       links.push({
         source: `hub:${e.cluster}`,
         target: e.id,
         kind: "cluster",
-        distance: 100,
-        strength: 1.1
+        distance: byId[e.id].seedR || base,
+        strength: 1.05
       });
     });
     membership.forEach((e) => {
@@ -1903,8 +1976,8 @@
         source: e.from,
         target: e.to,
         kind: "branch",
-        distance: 88,
-        strength: 1.35
+        distance: byId[e.to]?.seedR || 82,
+        strength: 1.25
       });
     });
     influence.forEach((e) => {
@@ -1913,8 +1986,8 @@
         source: e.from,
         target: e.to,
         kind: "influence",
-        distance: 220,
-        strength: 0.06
+        distance: 240,
+        strength: 0.045
       });
     });
     const sim = simulation_default(nodes).force(
@@ -1922,22 +1995,66 @@
       link_default(links).id((d) => d.id).distance((d) => d.distance).strength((d) => d.strength)
     ).force(
       "charge",
-      manyBody_default().strength((d) => d.kind === "hub" ? -40 : -220)
+      manyBody_default().strength((d) => d.kind === "hub" ? -50 : -260)
     ).force(
       "collide",
-      collide_default().radius((d) => d.kind === "hub" ? 36 : 46).strength(0.9).iterations(3)
+      collide_default().radius((d) => d.kind === "hub" ? 40 : 52).strength(0.95).iterations(4)
     ).force(
       "homeX",
       x_default2((d) => d.kind === "hub" ? d.fx : clusterById[d.cluster].x).strength(
-        (d) => d.kind === "hub" ? 0 : 0.12
+        (d) => d.kind === "hub" ? 0 : 0.08
       )
     ).force(
       "homeY",
       y_default2((d) => d.kind === "hub" ? d.fy : clusterById[d.cluster].y).strength(
-        (d) => d.kind === "hub" ? 0 : 0.12
+        (d) => d.kind === "hub" ? 0 : 0.08
       )
     ).stop();
-    for (let i = 0; i < 320; i++) sim.tick();
+    for (let i = 0; i < 340; i++) sim.tick();
+    clusters.forEach((c2) => {
+      const roots = entities.filter((e) => e.cluster === c2.id && !e.parentId).map((e) => byId[e.id]);
+      if (roots.length < 2) return;
+      roots.sort((a2, b) => Math.atan2(a2.y - c2.y, a2.x - c2.x) - Math.atan2(b.y - c2.y, b.x - c2.x));
+      const slots = Math.max(12, roots.length * 2);
+      const maxPerSlot = 2;
+      const usable = Math.min(slots, Math.max(roots.length, Math.ceil(roots.length / maxPerSlot) * 2));
+      const slotIndices = [];
+      for (let i = 0; i < roots.length; i++) {
+        slotIndices.push(Math.round(i * (usable - 1) / Math.max(roots.length - 1, 1)) % usable);
+      }
+      for (let i = 1; i < slotIndices.length; i++) {
+        if (slotIndices[i] === slotIndices[i - 1] && roots.length <= usable) {
+          slotIndices[i] = (slotIndices[i - 1] + 1) % usable;
+        }
+      }
+      const startAng = -Math.PI / 2;
+      roots.forEach((n, i) => {
+        const slot = slotIndices[i];
+        let same = 0;
+        for (let j = 0; j < i; j++) if (slotIndices[j] === slot) same += 1;
+        const ang = startAng + slot / usable * Math.PI * 2;
+        const r = Math.max(n.seedR || 115, 110) + same * 40;
+        n.x = c2.x + Math.cos(ang) * r;
+        n.y = c2.y + Math.sin(ang) * r;
+      });
+      const queue = roots.map((n) => n.id);
+      while (queue.length) {
+        const pid = queue.shift();
+        const kids = (childrenOf[pid] || []).map((e) => byId[e.id]);
+        if (!kids.length) continue;
+        const parent = byId[pid];
+        const outward = Math.atan2(parent.y - c2.y, parent.x - c2.x);
+        const arc = Math.min(Math.PI * 1.05, Math.PI * 0.35 + kids.length * 0.22);
+        kids.forEach((n, i) => {
+          const t = kids.length === 1 ? 0.5 : i / (kids.length - 1);
+          const ang = outward - arc / 2 + t * arc;
+          const r = 78;
+          n.x = parent.x + Math.cos(ang) * r;
+          n.y = parent.y + Math.sin(ang) * r;
+          queue.push(n.id);
+        });
+      }
+    });
     nodes.forEach((n) => {
       if (n.kind === "hub") {
         n.x = n.fx;
@@ -1954,12 +2071,42 @@
         const dx = n.x - c2.x;
         const dy = n.y - c2.y;
         const d = Math.hypot(dx, dy) || 0.01;
-        const excl = c2.isHub ? 125 : 110;
+        const excl = c2.isHub ? 130 : 115;
         if (d < excl) {
           n.x = c2.x + dx / d * excl;
           n.y = c2.y + dy / d * excl;
         }
       });
+    });
+    for (let pass = 0; pass < 8; pass++) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = i + 1; j < entities.length; j++) {
+          const a2 = byId[entities[i].id];
+          const b = byId[entities[j].id];
+          const dx = b.x - a2.x;
+          const dy = b.y - a2.y;
+          const d = Math.hypot(dx, dy) || 0.01;
+          const minD = entities[i].cluster === entities[j].cluster ? 58 : 52;
+          if (d < minD) {
+            const push = (minD - d) / d * 0.5;
+            const ux = dx * push;
+            const uy = dy * push;
+            a2.x -= ux;
+            a2.y -= uy;
+            b.x += ux;
+            b.y += uy;
+          }
+        }
+      }
+    }
+    nodes.forEach((n) => {
+      if (n.kind === "hub") {
+        n.x = n.fx;
+        n.y = n.fy;
+        return;
+      }
+      n.x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, n.x));
+      n.y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, n.y));
     });
     return clusters.map((c2) => {
       const cNodes = entities.filter((e) => e.cluster === c2.id).map((e) => ({
