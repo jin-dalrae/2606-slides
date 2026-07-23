@@ -75,7 +75,7 @@
   }
 
   // public/cosmos/app.jsx
-  var { useEffect, useState } = React;
+  var { useEffect, useState, useRef } = React;
   var experienceWaves = [
     {
       id: "cosmos",
@@ -790,21 +790,19 @@
     { from: "content-sources", to: "knowledge-seekers", type: "meaning", note: "Without real discourse to import, seekers find an empty spectacle." }
   ];
   var sideAnchors = {
-    app: { x: 800, y: 540 },
-    users: { x: 250, y: 270 },
-    writers: { x: 250, y: 810 },
-    promoters: { x: 1350, y: 270 },
-    devices: { x: 1350, y: 810 }
+    app: { x: 800, y: 500 },
+    users: { x: 430, y: 260 },
+    writers: { x: 430, y: 740 },
+    promoters: { x: 1170, y: 260 },
+    devices: { x: 1170, y: 740 }
   };
-  var CLUSTER_MIN_CHORD = 96;
-  var CLUSTER_MIN_RADIUS = 92;
-  var CLUSTER_BADGE_R = 28;
-  var CLUSTER_BADGE_R_HUB = 34;
+  var CLUSTER_MIN_CHORD = 118;
+  var CLUSTER_MIN_RADIUS = 105;
   function placeCluster(side) {
     const anchor = sideAnchors[side.id];
     const n = Math.max(side.nodes.length, 1);
     const fromChord = CLUSTER_MIN_CHORD / (2 * Math.sin(Math.PI / n));
-    const radius = Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 125 : 92);
+    const radius = Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 140 : 105);
     const towardApp = Math.atan2(sideAnchors.app.y - anchor.y, sideAnchors.app.x - anchor.x);
     const startAngle = side.isHub ? -Math.PI / 2 : towardApp + Math.PI;
     const nodes = side.nodes.map((node, i) => {
@@ -820,9 +818,8 @@
       ...side,
       anchor,
       radius,
-      fieldR: radius + 50,
-      compact: true,
-      badgeR: side.isHub ? CLUSTER_BADGE_R_HUB : CLUSTER_BADGE_R,
+      // Label sits above the cluster centroid (no circular badge)
+      labelY: anchor.y - radius - 28,
       nodes
     };
   }
@@ -837,13 +834,28 @@
     }
     return map;
   })();
+  function shortenEdge(ax, ay, bx, by, trimStart, trimEnd) {
+    const dx = bx - ax;
+    const dy = by - ay;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len;
+    const uy = dy / len;
+    return {
+      x1: ax + ux * trimStart,
+      y1: ay + uy * trimStart,
+      x2: bx - ux * trimEnd,
+      y2: by - uy * trimEnd
+    };
+  }
   function StakeholderMapPage() {
     const [focusMode, setFocusMode] = useState("overview");
     const [activeTypeId, setActiveTypeId] = useState("emotional");
     const [activeSideId, setActiveSideId] = useState("app");
     const [activeNodeId, setActiveNodeId] = useState(null);
-    const width = 1600;
-    const height = 1200;
+    const [hoverEdge, setHoverEdge] = useState(null);
+    const mapRef = useRef(null);
+    const width = 1400;
+    const height = 980;
     const activeType = influenceTypeById[activeTypeId] || influenceTypes[0];
     const activeSide = sideById[activeSideId] || sideById.app;
     const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
@@ -935,8 +947,8 @@
       const bw = Math.max(maxX - minX, 320);
       const bh = Math.max(maxY - minY, 280);
       const fit = Math.min(width / bw, height / bh);
-      const bias = focusMode === "side" ? 1.22 : focusMode === "type" ? 1.05 : 0.88;
-      return { cx, cy, scale: Math.min(fit * bias, 1.85) };
+      const bias = focusMode === "side" ? 1.18 : focusMode === "type" ? 1.02 : 0.98;
+      return { cx, cy, scale: Math.min(fit * bias, focusMode === "overview" ? 1.05 : 1.55) };
     })();
     const cameraStyle = {
       transform: `translate(${width / 2}px, ${height / 2}px) scale(${focusBounds.scale}) translate(${-focusBounds.cx}px, ${-focusBounds.cy}px)`,
@@ -1007,131 +1019,118 @@
       side.number,
       " \xB7 ",
       side.shortName
-    ))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__map stakeholder-frame__map--focus" }, /* @__PURE__ */ React.createElement("svg", { className: "stakeholder-map", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet" }, /* @__PURE__ */ React.createElement("defs", null, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
+    ))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__map stakeholder-frame__map--page", ref: mapRef }, /* @__PURE__ */ React.createElement("svg", { className: "stakeholder-map", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet" }, /* @__PURE__ */ React.createElement("defs", null, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "marker",
       {
         key: `arrow-${t.id}`,
         id: `inf-arrow-${t.id}`,
-        viewBox: "0 0 10 10",
-        refX: "8",
-        refY: "5",
-        markerWidth: "6",
-        markerHeight: "6",
-        orient: "auto-start-reverse"
+        viewBox: "0 0 12 12",
+        refX: "10",
+        refY: "6",
+        markerWidth: "10",
+        markerHeight: "10",
+        markerUnits: "userSpaceOnUse",
+        orient: "auto"
       },
-      /* @__PURE__ */ React.createElement("path", { d: "M 0 1 L 8 5 L 0 9 z", fill: t.color })
-    ))), /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, networkGraph.map((side) => /* @__PURE__ */ React.createElement(
-      "circle",
-      {
-        key: `field-${side.id}`,
-        cx: side.anchor.x,
-        cy: side.anchor.y,
-        r: side.fieldR || 160,
-        className: [
-          "stakeholder-map__field",
-          focusSet.has(side.id) ? "is-in-chain" : "",
-          activeSideId === side.id && focusMode === "side" ? "is-active" : ""
-        ].filter(Boolean).join(" "),
-        fill: side.isHub ? "rgba(242,240,79,0.16)" : `${side.color}12`,
-        stroke: side.color,
-        opacity: focusSet.has(side.id) ? 1 : 0.12,
-        onClick: () => goSide(side.id),
-        style: { cursor: "pointer" }
-      }
-    )), networkGraph.flatMap(
-      (side) => side.nodes.map((node) => /* @__PURE__ */ React.createElement(
-        "line",
+      /* @__PURE__ */ React.createElement("path", { d: "M 0 1 L 11 6 L 0 11 z", fill: t.color })
+    ))), /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, networkGraph.map((side) => {
+      const inFocus = focusSet.has(side.id);
+      const isActive = activeSideId === side.id && focusMode === "side";
+      return /* @__PURE__ */ React.createElement(
+        "text",
         {
-          key: `spoke-${side.id}-${node.id}`,
-          x1: side.anchor.x,
-          y1: side.anchor.y,
-          x2: node.x,
-          y2: node.y,
-          className: "stakeholder-map__spoke",
-          stroke: side.isHub ? "#111c4e" : side.color,
-          opacity: focusSet.has(side.id) ? 0.4 : 0.08
-        }
-      ))
-    ), visibleEdges.map((edge, i) => {
+          key: `label-${side.id}`,
+          x: side.anchor.x,
+          y: side.labelY || side.anchor.y - side.radius - 24,
+          textAnchor: "middle",
+          className: [
+            "stakeholder-map__cluster-label",
+            inFocus ? "is-in-chain" : "",
+            isActive ? "is-active" : "",
+            !inFocus ? "is-dimmed" : ""
+          ].filter(Boolean).join(" "),
+          fill: side.isHub ? "#111c4e" : side.color,
+          opacity: inFocus ? 1 : 0.28,
+          onClick: () => goSide(side.id),
+          style: { cursor: "pointer" }
+        },
+        side.number,
+        " \xB7 ",
+        side.shortName
+      );
+    }), visibleEdges.map((edge, i) => {
       const a = nodeById[edge.from];
       const b = nodeById[edge.to];
       if (!a || !b) return null;
       const typeMeta = influenceTypeById[edge.type];
       const dimmed = focusMode === "overview" ? edge.type !== activeTypeId : false;
-      const mx = (a.x + b.x) / 2;
-      const my = (a.y + b.y) / 2;
-      const cx = mx + (a.y - b.y) * 0.12;
-      const cy = my + (b.x - a.x) * 0.12;
-      const d = `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
-      const hot = activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || focusMode === "type" && edge.type === activeTypeId;
-      return /* @__PURE__ */ React.createElement(
-        "path",
-        {
-          key: `inf-${edge.from}-${edge.to}-${i}`,
-          d,
-          className: `stakeholder-map__influence is-${edge.type} ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""}`,
-          fill: "none",
-          stroke: typeMeta?.color || "#111c4e",
-          strokeWidth: hot ? 2.8 : dimmed ? 1.1 : 1.8,
-          opacity: dimmed ? 0.12 : hot ? 0.95 : focusMode === "overview" ? 0.35 : 0.75,
-          markerEnd: `url(#inf-arrow-${edge.type})`,
-          onClick: () => {
-            goType(edge.type);
-          },
-          style: { cursor: "pointer" }
-        }
-      );
-    }), networkGraph.map((side) => {
-      const inFocus = focusSet.has(side.id);
-      const isActive = activeSideId === side.id && focusMode === "side";
-      const r = side.badgeR || CLUSTER_BADGE_R;
+      const trimmed = shortenEdge(a.x, a.y, b.x, b.y, 36, 40);
+      const mx = (trimmed.x1 + trimmed.x2) / 2;
+      const my = (trimmed.y1 + trimmed.y2) / 2;
+      const cx = mx + (a.y - b.y) * 0.1;
+      const cy = my + (b.x - a.x) * 0.1;
+      const d = `M ${trimmed.x1} ${trimmed.y1} Q ${cx} ${cy} ${trimmed.x2} ${trimmed.y2}`;
+      const hot = activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || focusMode === "type" && edge.type === activeTypeId || hoverEdge && hoverEdge.edge === edge;
       return /* @__PURE__ */ React.createElement(
         "g",
         {
-          key: `badge-${side.id}`,
-          className: [
-            "stakeholder-map__side-badge",
-            side.isHub ? "is-hub" : "is-outer",
-            inFocus ? "is-in-chain" : "",
-            isActive ? "is-active" : "",
-            !inFocus ? "is-dimmed" : ""
-          ].filter(Boolean).join(" "),
-          transform: `translate(${side.anchor.x}, ${side.anchor.y})`,
-          onClick: () => goSide(side.id),
+          key: `inf-${edge.from}-${edge.to}-${i}`,
+          className: `stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""}`,
+          onMouseEnter: (event) => {
+            const rect = mapRef.current?.getBoundingClientRect();
+            if (!rect) return;
+            setHoverEdge({
+              edge,
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top
+            });
+          },
+          onMouseMove: (event) => {
+            const rect = mapRef.current?.getBoundingClientRect();
+            if (!rect) return;
+            setHoverEdge({
+              edge,
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top
+            });
+          },
+          onMouseLeave: () => setHoverEdge(null),
+          onClick: () => goType(edge.type),
           style: { cursor: "pointer" }
         },
+        /* @__PURE__ */ React.createElement("path", { d, fill: "none", stroke: "transparent", strokeWidth: "14" }),
         /* @__PURE__ */ React.createElement(
-          "circle",
+          "path",
           {
-            r,
-            fill: side.isHub ? "#f2f04f" : "#fffef9",
-            stroke: isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color,
-            strokeWidth: isActive || side.isHub ? 2.1 : 1.45
+            d,
+            className: `stakeholder-map__influence is-${edge.type}`,
+            fill: "none",
+            stroke: typeMeta?.color || "#111c4e",
+            strokeWidth: hot ? 3.2 : dimmed ? 1.4 : 2.2,
+            opacity: dimmed ? 0.14 : hot ? 1 : focusMode === "overview" ? 0.42 : 0.85,
+            markerEnd: `url(#inf-arrow-${edge.type})`
           }
-        ),
-        /* @__PURE__ */ React.createElement("text", { y: -5, textAnchor: "middle", dominantBaseline: "middle", className: "stakeholder-map__badge-num", fill: side.isHub ? "#111c4e" : side.color }, side.number),
-        /* @__PURE__ */ React.createElement("text", { y: 8, textAnchor: "middle", dominantBaseline: "middle", className: "stakeholder-map__badge-name", fill: side.isHub ? "#111c4e" : side.color }, side.shortName)
+        )
       );
     }), networkGraph.flatMap(
       (side) => side.nodes.map((node) => {
         const isActive = node.id === activeNodeId;
         const lit = litNodeIds.has(node.id);
         const inFocusSide = focusSet.has(side.id);
-        const maxChars = 15;
+        const maxChars = 18;
         const lines = node.label.length > maxChars ? (() => {
           const words = node.label.split(" ");
           const mid = Math.ceil(words.length / 2);
           return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
         })() : [node.label];
-        const rw = Math.min(112, Math.max(70, ...lines.map((l) => l.length * 5.7 + 14)));
-        const rh = lines.length > 1 ? 28 : 22;
+        const rw = Math.min(148, Math.max(96, ...lines.map((l) => l.length * 7.2 + 20)));
+        const rh = lines.length > 1 ? 36 : 28;
         return /* @__PURE__ */ React.createElement(
           "g",
           {
             key: node.id,
             className: [
               "stakeholder-map__node",
-              "is-compact",
               isActive ? "is-active" : "",
               lit ? "is-in-chain" : "",
               !lit && !inFocusSide ? "is-dimmed" : !lit ? "is-soft" : ""
@@ -1150,10 +1149,10 @@
               y: -rh / 2,
               width: rw,
               height: rh,
-              rx: 999,
+              rx: 8,
               fill: side.isHub ? "#f2f04f" : "#fffef9",
               stroke: isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color,
-              strokeWidth: isActive ? 2.1 : 1.3
+              strokeWidth: isActive ? 2.2 : 1.5
             }
           ),
           lines.map((line, li) => /* @__PURE__ */ React.createElement(
@@ -1161,17 +1160,27 @@
             {
               key: li,
               x: 0,
-              y: (li - (lines.length - 1) / 2) * 9,
+              y: (li - (lines.length - 1) / 2) * 12,
               textAnchor: "middle",
               dominantBaseline: "middle",
               className: "stakeholder-map__node-label",
-              fontSize: 10
+              fontSize: 12
             },
             line
           ))
         );
       })
-    )))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail stakeholder-frame__detail--open", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail-title" }, /* @__PURE__ */ React.createElement(
+    ))), hoverEdge && /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: "stakeholder-edge-tooltip",
+        style: { left: hoverEdge.x + 14, top: Math.max(8, hoverEdge.y - 12) },
+        role: "tooltip"
+      },
+      /* @__PURE__ */ React.createElement("b", { style: { color: influenceTypeById[hoverEdge.edge.type]?.color } }, influenceTypeById[hoverEdge.edge.type]?.label || hoverEdge.edge.type),
+      /* @__PURE__ */ React.createElement("span", null, nodeById[hoverEdge.edge.from]?.label || hoverEdge.edge.from, " \u2192 ", nodeById[hoverEdge.edge.to]?.label || hoverEdge.edge.to),
+      /* @__PURE__ */ React.createElement("p", null, hoverEdge.edge.note)
+    )), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail stakeholder-frame__detail--open", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail-title" }, /* @__PURE__ */ React.createElement(
       "span",
       {
         className: "stakeholder-frame__swatch",
