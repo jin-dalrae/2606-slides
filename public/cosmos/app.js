@@ -648,300 +648,287 @@
   var influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
   var networkSides = [
     {
-      id: "users",
+      id: "people",
       number: "01",
-      name: "User Side",
-      shortName: "Users",
+      name: "People (Readers & Contributors)",
+      shortName: "People",
       color: "#f14f9b",
       nodes: [
-        { id: "knowledge-seekers", label: "Knowledge Seekers" },
-        { id: "casual-explorers", label: "Casual Explorers" },
-        { id: "anti-doomscrolling", label: "Anti-doomscrolling Users" },
-        { id: "niche-community", label: "Niche Community Members" },
-        { id: "privacy-users", label: "Privacy-conscious Users" },
-        { id: "lurkers", label: "Lurkers / Quiet Readers" },
-        { id: "educators-learners", label: "Educators & Learners" },
-        { id: "enterprise-workers", label: "Enterprise Knowledge Workers" }
+        { id: "readers", label: "Readers" },
+        { id: "contributors", label: "Contributors" },
+        { id: "stewards", label: "Stewards / Mods" },
+        { id: "intentional-users", label: "Intentional Users" }
       ]
     },
     {
-      id: "writers",
+      id: "app",
       number: "02",
-      name: "Writers Side (Content Creators)",
-      shortName: "Writers",
-      color: "#111c4e",
+      name: "App (Product Systems)",
+      shortName: "App",
+      color: "#d4b200",
+      isHub: true,
       nodes: [
-        { id: "active-posters", label: "Active Posters" },
-        { id: "voice-contributors", label: "Voice Contributors" },
-        { id: "community-builders", label: "Community Builders" },
-        { id: "knowledge-sharers", label: "Knowledge Sharers" },
-        { id: "moderators", label: "Moderators / Trust & Safety" },
-        { id: "researchers", label: "Researchers & Domain Experts" },
-        { id: "journalists", label: "Journalists / Explainers" }
-      ]
-    },
-    {
-      id: "promoters",
-      number: "03",
-      name: "Promoter Side (Grassroots Distribution)",
-      shortName: "Promoters",
-      color: "#c43b7a",
-      nodes: [
-        { id: "indie-hackers", label: "Indie Hackers" },
-        { id: "design-communities", label: "Design Communities" },
-        { id: "digital-minimalist", label: "Digital Minimalist Communities" },
-        { id: "discord-owners", label: "Discord Server Owners" },
-        { id: "vr-communities", label: "VR Communities" },
-        { id: "academic-labs", label: "Academic / Design Labs" },
-        { id: "press-creators", label: "Press & Influencer Creators" }
+        { id: "spatial-ux", label: "Spatial UX & Layout" },
+        { id: "voice-interaction", label: "Voice & Interaction" },
+        { id: "session-loop", label: "Onboarding & Return" },
+        { id: "trust-tools", label: "Trust & Moderation" }
       ]
     },
     {
       id: "devices",
-      number: "04",
-      name: "Device Side",
+      number: "03",
+      name: "Devices",
       shortName: "Devices",
       color: "#0a7a5c",
       nodes: [
         { id: "quest", label: "Meta Quest" },
         { id: "vision-pro", label: "Apple Vision Pro" },
-        { id: "other-vr", label: "Other VR Headsets" },
-        { id: "vr-stores", label: "VR Platform Stores" },
-        { id: "pcvr", label: "PCVR / SteamVR" }
+        { id: "open-xr", label: "Open / PCVR Headsets" }
       ]
     },
     {
-      id: "app",
-      number: "05",
-      name: "App Side",
-      shortName: "App",
-      color: "#d4b200",
-      isHub: true,
+      id: "competitors",
+      number: "04",
+      name: "Competitors (Substitutes for Time & Discourse)",
+      shortName: "Competitors",
+      color: "#c43b7a",
       nodes: [
-        { id: "spatial-engine", label: "Spatial Engine" },
-        { id: "voice-system", label: "Voice System" },
-        { id: "interaction-system", label: "Interaction System" },
-        { id: "content-org", label: "Content Organization" },
-        { id: "onboarding", label: "Onboarding" },
-        { id: "continuity", label: "Continuity / Save-Return" },
-        { id: "moderation-tools", label: "Moderation Tooling" },
-        { id: "cross-device-bridge", label: "Cross-device Bridge" }
+        { id: "feed-social", label: "Feed Social (Reddit, X, TikTok)" },
+        { id: "discord", label: "Discord / Chat Platforms" },
+        { id: "social-vr", label: "Social VR (VRChat, Horizon)" }
       ]
     },
     {
-      id: "industry",
-      number: "06",
-      name: "Industry Side (Markets, Platforms, Capital)",
-      shortName: "Industry",
+      id: "partners",
+      number: "05",
+      name: "Partners (Enable Distribution & Capability)",
+      shortName: "Partners",
       color: "#5b6cff",
       nodes: [
-        { id: "meta-xr-labs", label: "Meta Reality Labs / XR Platform" },
-        { id: "apple-ecosystem", label: "Apple Ecosystem / Vision" },
-        { id: "feed-social-industry", label: "Feed Social Industry (Reddit, X, TikTok)" },
-        { id: "chat-platform-industry", label: "Chat Platforms (Discord Inc.)" },
-        { id: "social-vr-games", label: "Social VR / Games (VRChat, Horizon)" },
-        { id: "cloud-ai-vendors", label: "Cloud AI Vendors" },
-        { id: "content-rights-holders", label: "Content Platforms & Rights Holders" },
-        { id: "investors-capital", label: "Investors / Venture Capital" },
-        { id: "edu-enterprise-buyers", label: "Education & Enterprise Buyers" },
-        { id: "regulators-policy", label: "Regulators / Privacy Policy" },
-        { id: "advertising-industry", label: "Advertising / Attention Economy" }
+        { id: "meta-platform", label: "Meta (Store & OS)" },
+        { id: "apple-platform", label: "Apple (Store & visionOS)" },
+        { id: "cloud-ai", label: "Cloud AI Providers" },
+        { id: "content-partners", label: "Content & Rights Partners" }
+      ]
+    },
+    {
+      id: "institutions",
+      number: "06",
+      name: "Institutions (Capital, Org, Government, Team)",
+      shortName: "Institutions",
+      color: "#111c4e",
+      nodes: [
+        { id: "capital", label: "Investors / Capital" },
+        { id: "employees", label: "Employees / Team" },
+        { id: "government", label: "Government / Regulators" },
+        { id: "organizations", label: "Orgs (Schools, Work, Labs)" }
       ]
     }
   ];
   var influenceEdges = [
-    // —— Adoption / access ——
-    { from: "indie-hackers", to: "casual-explorers", type: "identity", note: "Signals \u201Ctools like this are for builders and curious people,\u201D not only gamers." },
-    { from: "design-communities", to: "knowledge-seekers", type: "identity", note: "Design discourse legitimizes spatial reading as serious practice." },
-    { from: "digital-minimalist", to: "anti-doomscrolling", type: "identity", note: "Shared identity of intentional attention; Cosmos must match that self-image." },
-    { from: "discord-owners", to: "niche-community", type: "functional", note: "Owners can migrate or mirror whole communities into a new place." },
-    { from: "vr-communities", to: "casual-explorers", type: "identity", note: "Headset culture sets expectations: play first, browse second." },
-    { from: "quest", to: "casual-explorers", type: "financial", note: "Lower device price expands who can try non-game VR time." },
-    { from: "vision-pro", to: "knowledge-seekers", type: "identity", note: "Premium device attracts quality-focused readers and writers." },
-    { from: "quest", to: "onboarding", type: "functional", note: "Platform UX and comfort defaults set the first-session floor." },
-    { from: "vr-stores", to: "onboarding", type: "functional", note: "Distribution channel and policy gate for install and first-run." },
-    { from: "vr-stores", to: "continuity", type: "financial", note: "Revenue share and pricing rules constrain what return features can fund." },
-    { from: "pcvr", to: "knowledge-seekers", type: "functional", note: "Desktop VR offers longer seated sessions for serious reading, with higher setup cost." },
-    // —— Hardware ↔ experience ——
-    { from: "quest", to: "interaction-system", type: "functional", note: "Tracking, resolution, and input stack bound what grab/zoom can feel like." },
-    { from: "vision-pro", to: "interaction-system", type: "functional", note: "Different input model (eyes/hands) changes interaction design." },
-    { from: "other-vr", to: "interaction-system", type: "functional", note: "Fragmented hardware forces lowest-common-denominator UX or forks." },
-    { from: "quest", to: "anti-doomscrolling", type: "emotional", note: "Weight, heat, and motion comfort decide whether calm browsing is possible." },
-    { from: "vision-pro", to: "knowledge-seekers", type: "emotional", note: "Comfort and passthrough quality affect long reading sessions." },
-    { from: "interaction-system", to: "onboarding", type: "functional", note: "If first gestures fail, users never reach content." },
-    { from: "onboarding", to: "casual-explorers", type: "emotional", note: "High setup drag turns hope into early drop-off." },
-    { from: "cross-device-bridge", to: "enterprise-workers", type: "functional", note: "Desktop/phone bridge is required for work-adjacent contribution and follow-up." },
-    { from: "cross-device-bridge", to: "voice-contributors", type: "functional", note: "Typing replies often leaves the headset; bridge keeps the loop closed." },
-    // —— App systems → users / writers ——
-    { from: "spatial-engine", to: "knowledge-seekers", type: "functional", note: "Placement must answer \u201Cwhy is this here?\u201D or seekers cannot navigate meaning." },
-    { from: "spatial-engine", to: "knowledge-sharers", type: "meaning", note: "Good layout makes contribution feel like building a place, not dumping text." },
-    { from: "content-org", to: "knowledge-seekers", type: "meaning", note: "Clusters and relationships turn posts into understandable discourse." },
-    { from: "voice-system", to: "voice-contributors", type: "functional", note: "Creation and playback quality determine whether voice posting is usable." },
-    { from: "voice-system", to: "lurkers", type: "emotional", note: "Hearing tone creates presence without forcing lurkers to speak." },
-    { from: "voice-system", to: "privacy-users", type: "emotional", note: "Voice capture can feel invasive; trust is a precondition." },
-    { from: "interaction-system", to: "anti-doomscrolling", type: "emotional", note: "Grab / point / zoom create agency instead of passive scroll." },
-    { from: "interaction-system", to: "active-posters", type: "functional", note: "Low-friction react and place-reply change what posters bother to do in-headset." },
-    { from: "continuity", to: "niche-community", type: "meaning", note: "Saved places and return paths make the community feel persistent." },
-    { from: "continuity", to: "knowledge-seekers", type: "functional", note: "Without return, discovery cannot become a library." },
-    { from: "onboarding", to: "spatial-engine", type: "functional", note: "First-run must teach spatial language or the engine stays invisible decoration." },
-    { from: "moderation-tools", to: "moderators", type: "functional", note: "Without tooling, trust-and-safety roles cannot operate at community scale." },
-    { from: "moderation-tools", to: "privacy-users", type: "emotional", note: "Visible controls and norms create safety to stay and speak." },
-    { from: "content-org", to: "educators-learners", type: "meaning", note: "Course-like or curriculum walls need stable structure, not feed heat." },
-    { from: "continuity", to: "enterprise-workers", type: "functional", note: "Work use needs saved places, handoff, and revisit\u2014not one-shot demos." },
-    // —— Writers ↔ users (value loop) ——
-    { from: "knowledge-sharers", to: "knowledge-seekers", type: "meaning", note: "Depth-oriented content fulfills seeker goals better than ranking heat." },
-    { from: "knowledge-seekers", to: "knowledge-sharers", type: "emotional", note: "Attentive audience rewards careful writing; silence kills motivation." },
-    { from: "lurkers", to: "active-posters", type: "meaning", note: "Quiet readership still validates that posts matter (participation without posting)." },
-    { from: "active-posters", to: "casual-explorers", type: "emotional", note: "Living content density pulls explorers deeper than empty space." },
-    { from: "voice-contributors", to: "lurkers", type: "emotional", note: "Voice presence creates intimacy that text ranking rarely does." },
-    { from: "anti-doomscrolling", to: "active-posters", type: "identity", note: "Norms against rage-bait reshape what posters believe is \u201Cgood\u201D content here." },
-    { from: "community-builders", to: "niche-community", type: "identity", note: "Builders define who belongs and what the space is for." },
-    { from: "moderators", to: "privacy-users", type: "emotional", note: "Visible, fair norms create safety to stay and speak." },
-    { from: "moderators", to: "voice-contributors", type: "functional", note: "Moderation practice decides whether voice abuse is containable." },
-    { from: "niche-community", to: "community-builders", type: "identity", note: "Member culture pushes builders toward or away from Cosmos as \u201Cour place.\u201D" },
-    { from: "researchers", to: "knowledge-seekers", type: "meaning", note: "Expert threads raise the ceiling of what seekers can learn in-place." },
-    { from: "journalists", to: "casual-explorers", type: "emotional", note: "Clear explainers pull explorers into deeper clusters without rage bait." },
-    { from: "educators-learners", to: "researchers", type: "identity", note: "Teaching contexts recruit domain experts as writers, not only consumers." },
-    // —— Promoters ↔ product quality ——
-    { from: "indie-hackers", to: "active-posters", type: "identity", note: "Builder audiences often become early writers, not only installers." },
-    { from: "design-communities", to: "knowledge-sharers", type: "identity", note: "Critique culture attracts people who explain and document." },
-    { from: "discord-owners", to: "community-builders", type: "functional", note: "Owners bring moderation habits and community ops into the product." },
-    { from: "discord-owners", to: "moderators", type: "identity", note: "Existing mod identity may transfer\u2014or resist\u2014new spatial norms." },
-    { from: "active-posters", to: "indie-hackers", type: "meaning", note: "Visible living walls give promoters concrete stories to share." },
-    { from: "knowledge-seekers", to: "design-communities", type: "meaning", note: "Successful deep-reading sessions become case studies in design circles." },
-    { from: "continuity", to: "indie-hackers", type: "functional", note: "Return loops are required for \u201Chabit\u201D claims in distribution narratives." },
-    { from: "privacy-users", to: "digital-minimalist", type: "identity", note: "Privacy stance must align with minimalist values or promotion backfires." },
-    { from: "academic-labs", to: "researchers", type: "identity", note: "Labs legitimize Cosmos as research infrastructure, not only a consumer toy." },
-    { from: "academic-labs", to: "educators-learners", type: "functional", note: "Classroom and study pilots create structured demand for spatial discourse." },
-    { from: "press-creators", to: "casual-explorers", type: "emotional", note: "Coverage shapes first impressions before anyone installs." },
-    { from: "press-creators", to: "investors-capital", type: "identity", note: "Narrative legitimacy affects capital and partnership interest." },
-    // —— Industry side (markets, platforms, capital, substitutes) ——
-    { from: "meta-xr-labs", to: "quest", type: "functional", note: "Platform roadmap and OS features dictate what Quest apps can do." },
-    { from: "meta-xr-labs", to: "vr-stores", type: "financial", note: "Store policy and featuring are controlled by the platform owner." },
-    { from: "meta-xr-labs", to: "social-vr-games", type: "identity", note: "Horizon-style products define \u201Cwhat VR is for\u201D in mass culture." },
-    { from: "apple-ecosystem", to: "vision-pro", type: "functional", note: "Apple\u2019s stack, APIs, and review rules bound Vision experiences." },
-    { from: "apple-ecosystem", to: "enterprise-workers", type: "identity", note: "Apple\u2019s work/creative identity pulls knowledge workers toward Vision." },
-    { from: "feed-social-industry", to: "anti-doomscrolling", type: "emotional", note: "Ranking feeds train habits Cosmos is trying to replace\u2014and compete with for time." },
-    { from: "feed-social-industry", to: "knowledge-seekers", type: "meaning", note: "Seekers already get \u201Canswers\u201D from feeds; Cosmos must beat that job-to-be-done." },
-    { from: "feed-social-industry", to: "advertising-industry", type: "financial", note: "Attention markets fund the dominant feed UX Cosmos refuses to copy." },
-    { from: "chat-platform-industry", to: "discord-owners", type: "functional", note: "Discord\u2019s tools and network effects lock community ops where owners already are." },
-    { from: "chat-platform-industry", to: "niche-community", type: "identity", note: "\u201CMy community lives on Discord\u201D is an identity barrier to migration." },
-    { from: "social-vr-games", to: "vr-communities", type: "identity", note: "Play-first social VR owns headset leisure time and culture." },
-    { from: "social-vr-games", to: "casual-explorers", type: "emotional", note: "Fun multiplayer defaults make \u201Cjust browsing\u201D feel like the wrong use of VR." },
-    { from: "cloud-ai-vendors", to: "spatial-engine", type: "functional", note: "Embedding and model APIs enable (and constrain) spatial organization quality." },
-    { from: "cloud-ai-vendors", to: "voice-system", type: "functional", note: "STT/TTS providers determine latency, language coverage, and failure modes." },
-    { from: "cloud-ai-vendors", to: "voice-system", type: "financial", note: "Per-minute and storage pricing set voice feature unit economics." },
-    { from: "cloud-ai-vendors", to: "spatial-engine", type: "financial", note: "Compute cost can force cheaper, less meaningful layouts." },
-    { from: "content-rights-holders", to: "content-org", type: "functional", note: "Without rights-safe import, organization has nothing real to arrange." },
-    { from: "content-rights-holders", to: "moderators", type: "functional", note: "Provenance and licenses shape what can be hosted and removed." },
-    { from: "content-rights-holders", to: "knowledge-seekers", type: "meaning", note: "Empty or synthetic walls fail seekers who wanted real discourse." },
-    { from: "investors-capital", to: "indie-hackers", type: "financial", note: "Funding climate changes whether solo builders can ship spatial products at all." },
-    { from: "investors-capital", to: "cloud-ai-vendors", type: "financial", note: "Capital pressure favors high-margin platform plays over patient community tools." },
-    { from: "investors-capital", to: "continuity", type: "financial", note: "Runway decides whether return loops get built before growth theater." },
-    { from: "edu-enterprise-buyers", to: "educators-learners", type: "financial", note: "Institutional purchase enables classroom and cohort use at scale." },
-    { from: "edu-enterprise-buyers", to: "enterprise-workers", type: "functional", note: "Procurement and IT policy gate whether work knowledge can live in Cosmos." },
-    { from: "edu-enterprise-buyers", to: "moderation-tools", type: "functional", note: "Buyers require audit, SSO-adjacent controls, and safety features." },
-    { from: "regulators-policy", to: "privacy-users", type: "emotional", note: "Policy sets baseline expectations for voice and spatial tracking safety." },
-    { from: "regulators-policy", to: "voice-system", type: "functional", note: "Consent, retention, and biometric rules constrain voice product design." },
-    { from: "regulators-policy", to: "meta-xr-labs", type: "financial", note: "Platform compliance cost reshapes what store apps can ship." },
-    { from: "advertising-industry", to: "feed-social-industry", type: "financial", note: "Ad demand keeps ranking feeds optimized for engagement over understanding." },
-    { from: "advertising-industry", to: "anti-doomscrolling", type: "emotional", note: "Attention extraction is the emotional antagonist of intentional reading." },
-    { from: "academic-labs", to: "edu-enterprise-buyers", type: "identity", note: "Research pilots open institutional doors for procurement conversations." }
+    // —— People ↔ App (value loop) ——
+    { from: "spatial-ux", to: "readers", type: "meaning", note: "Layout must answer \u201Cwhy is this here?\u201D or reading stays a flat feed in 3D." },
+    { from: "spatial-ux", to: "contributors", type: "functional", note: "Contributors need place-to-post, not only a text box." },
+    { from: "voice-interaction", to: "contributors", type: "functional", note: "Voice create/playback quality decides whether contribution is viable in-headset." },
+    { from: "voice-interaction", to: "readers", type: "emotional", note: "Tone and presence pull quiet readers without forcing them to speak." },
+    { from: "voice-interaction", to: "intentional-users", type: "emotional", note: "Voice capture can feel invasive; trust is a precondition for intentional use." },
+    { from: "session-loop", to: "readers", type: "functional", note: "Without return paths, discovery never becomes a library." },
+    { from: "session-loop", to: "contributors", type: "emotional", note: "High first-session drag kills who might have become regular writers." },
+    { from: "trust-tools", to: "stewards", type: "functional", note: "Mods cannot operate at community scale without tooling." },
+    { from: "trust-tools", to: "intentional-users", type: "emotional", note: "Visible safety controls create room to stay and speak." },
+    { from: "contributors", to: "readers", type: "meaning", note: "Living walls give readers something worth returning for." },
+    { from: "readers", to: "contributors", type: "emotional", note: "Attentive readership rewards careful contribution; silence kills it." },
+    { from: "stewards", to: "contributors", type: "functional", note: "Norms and moderation decide whether contribution stays safe and legible." },
+    { from: "stewards", to: "readers", type: "identity", note: "Stewards define who belongs and what the place is for." },
+    { from: "intentional-users", to: "contributors", type: "identity", note: "Anti-doomscroll norms reshape what \u201Cgood\u201D posts look like here." },
+    // —— Devices ——
+    { from: "quest", to: "session-loop", type: "functional", note: "Quest UX, comfort, and store entry set the first-session floor." },
+    { from: "quest", to: "readers", type: "financial", note: "Lower headset price expands who can try non-game VR time." },
+    { from: "quest", to: "voice-interaction", type: "functional", note: "Tracking and input stack bound what grab, point, and voice can feel like." },
+    { from: "vision-pro", to: "voice-interaction", type: "functional", note: "Eyes/hands input model changes interaction design vs controller VR." },
+    { from: "vision-pro", to: "readers", type: "identity", note: "Premium device attracts quality-focused readers and knowledge workers." },
+    { from: "open-xr", to: "voice-interaction", type: "functional", note: "Fragmented open hardware forces lowest-common-denominator UX or forks." },
+    { from: "open-xr", to: "readers", type: "functional", note: "PCVR enables longer seated reading at higher setup cost." },
+    // —— Competitors (substitutes) ——
+    { from: "feed-social", to: "readers", type: "meaning", note: "Feeds already answer \u201Cwhat should I read?\u201D; Cosmos must beat that job." },
+    { from: "feed-social", to: "intentional-users", type: "emotional", note: "Ranking feeds train the habits Cosmos is trying to replace." },
+    { from: "feed-social", to: "contributors", type: "identity", note: "Attention metrics teach writers what \u201Csuccess\u201D looks like elsewhere." },
+    { from: "discord", to: "stewards", type: "functional", note: "Community ops and mod craft already live in Discord toolchains." },
+    { from: "discord", to: "readers", type: "identity", note: "\u201CMy community lives on Discord\u201D is a migration barrier." },
+    { from: "social-vr", to: "readers", type: "emotional", note: "Play-first social VR makes calm browsing feel like the wrong use of a headset." },
+    { from: "social-vr", to: "contributors", type: "identity", note: "Headset culture defaults to games and hangouts, not asynchronous discourse." },
+    // —— Partners (enable) ——
+    { from: "meta-platform", to: "quest", type: "functional", note: "Meta OS, APIs, and Quest hardware roadmap bound what ships on Quest." },
+    { from: "meta-platform", to: "session-loop", type: "financial", note: "Store fees, featuring, and policy gate distribution and monetization." },
+    { from: "apple-platform", to: "vision-pro", type: "functional", note: "Apple review, APIs, and visionOS features bound Vision apps\u2014not a vague \u201Cecosystem.\u201D" },
+    { from: "apple-platform", to: "session-loop", type: "financial", note: "App Store rules and revenue share shape what return features can fund." },
+    { from: "cloud-ai", to: "spatial-ux", type: "functional", note: "Embedding/model APIs enable (and constrain) spatial organization quality." },
+    { from: "cloud-ai", to: "voice-interaction", type: "functional", note: "STT/TTS providers set latency, language coverage, and failure modes." },
+    { from: "cloud-ai", to: "spatial-ux", type: "financial", note: "Compute cost can force cheaper, less meaningful layouts." },
+    { from: "cloud-ai", to: "voice-interaction", type: "financial", note: "Per-minute and storage pricing set voice unit economics." },
+    { from: "content-partners", to: "spatial-ux", type: "functional", note: "Without rights-safe import, layout has nothing real to arrange." },
+    { from: "content-partners", to: "readers", type: "meaning", note: "Empty or synthetic walls fail people who wanted real discourse." },
+    { from: "content-partners", to: "stewards", type: "functional", note: "Provenance and licenses shape what can be hosted and removed." },
+    // —— Institutions ——
+    { from: "capital", to: "employees", type: "financial", note: "Runway funds team size and how long patient community work can last." },
+    { from: "capital", to: "session-loop", type: "financial", note: "Capital pressure can push growth theater over return loops and craft." },
+    { from: "capital", to: "cloud-ai", type: "financial", note: "Funding climate favors high-margin platform plays over patient tools." },
+    { from: "employees", to: "spatial-ux", type: "functional", note: "Team capacity and skill mix decide what ships in the spatial layer." },
+    { from: "employees", to: "trust-tools", type: "functional", note: "Safety and moderation product work only exists if the team prioritizes it." },
+    { from: "employees", to: "contributors", type: "identity", note: "How the team shows up (roadmap, tone, presence) shapes contributor trust." },
+    { from: "government", to: "intentional-users", type: "emotional", note: "Privacy and biometric rules set baseline expectations for safe use." },
+    { from: "government", to: "voice-interaction", type: "functional", note: "Consent, retention, and biometric law constrain voice product design." },
+    { from: "government", to: "meta-platform", type: "financial", note: "Platform compliance cost reshapes what store apps can ship." },
+    { from: "organizations", to: "readers", type: "financial", note: "Schools and workplaces can fund seats and structured use at scale." },
+    { from: "organizations", to: "stewards", type: "functional", note: "Institutional hosts bring policies, cohorts, and local stewards." },
+    { from: "organizations", to: "trust-tools", type: "functional", note: "Procurement expects audit, access control, and safety features." },
+    { from: "organizations", to: "session-loop", type: "meaning", note: "Classroom and work use need return, handoff, and saved places\u2014not demos." }
   ];
   var sideAnchors = {
-    app: { x: 800, y: 640 },
-    users: { x: 280, y: 400 },
-    writers: { x: 280, y: 920 },
-    promoters: { x: 1320, y: 400 },
-    devices: { x: 1320, y: 920 },
-    industry: { x: 800, y: 250 }
+    app: { x: 800, y: 560 },
+    people: { x: 280, y: 560 },
+    devices: { x: 1320, y: 560 },
+    competitors: { x: 480, y: 220 },
+    partners: { x: 1120, y: 220 },
+    institutions: { x: 800, y: 900 }
   };
   var CLUSTER_MIN_CHORD = 118;
   var CLUSTER_MIN_RADIUS = 105;
-  var nodeRingAngles = {
-    // users
-    "educators-learners": -2.945243,
-    "enterprise-workers": -2.159845,
-    "privacy-users": -1.374447,
-    "anti-doomscrolling": -0.589049,
-    "casual-explorers": 0.19635,
-    "knowledge-seekers": 0.981748,
-    "niche-community": 1.767146,
-    lurkers: 2.552544,
-    // writers
-    "active-posters": -0.654498,
-    moderators: 0.243099,
-    "voice-contributors": 1.140697,
-    journalists: 2.038295,
-    "community-builders": 2.935893,
-    researchers: 3.833491,
-    "knowledge-sharers": 4.731089,
-    // promoters
-    "academic-labs": -2.356194,
-    "vr-communities": -1.458597,
-    "digital-minimalist": -0.560999,
-    "press-creators": 0.336599,
-    "design-communities": 1.234197,
-    "discord-owners": 2.131795,
-    "indie-hackers": 3.029393,
-    // devices
-    "other-vr": 1.439897,
-    "vision-pro": 2.696534,
-    quest: 3.953171,
-    "vr-stores": 5.209808,
-    pcvr: 6.466445,
-    // app
-    "moderation-tools": 2.552544,
-    "content-org": 3.337942,
-    "voice-system": 4.12334,
-    "spatial-engine": 4.908739,
-    continuity: 5.694137,
-    onboarding: 6.479535,
-    "interaction-system": 7.264933,
-    "cross-device-bridge": 8.050331,
-    // industry
-    "feed-social-industry": -3.076143,
-    "advertising-industry": -2.504944,
-    "apple-ecosystem": -1.933745,
-    "regulators-policy": -1.362547,
-    "social-vr-games": -0.791348,
-    "meta-xr-labs": -0.220149,
-    "chat-platform-industry": 0.351049,
-    "investors-capital": 0.922248,
-    "cloud-ai-vendors": 1.493447,
-    "content-rights-holders": 2.064645,
-    "edu-enterprise-buyers": 2.635844
-  };
   function clusterRadius(side) {
     const n = Math.max(side.nodes.length, 1);
     const fromChord = CLUSTER_MIN_CHORD / (2 * Math.sin(Math.PI / n));
-    return Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 140 : 105);
+    return Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 130 : 100);
   }
-  function placeCluster(side) {
-    const anchor = sideAnchors[side.id];
-    const radius = clusterRadius(side);
-    const n = Math.max(side.nodes.length, 1);
-    const towardApp = Math.atan2(sideAnchors.app.y - anchor.y, sideAnchors.app.x - anchor.x);
-    const fallbackStart = side.isHub ? -Math.PI / 2 : towardApp + Math.PI;
-    const nodes = side.nodes.map((node, i) => {
-      const angle = nodeRingAngles[node.id] ?? fallbackStart + i / n * Math.PI * 2;
+  function layoutNetworkGraph(sides, edges) {
+    const sideIdByNode = {};
+    for (const side of sides) {
+      for (const node of side.nodes) sideIdByNode[node.id] = side.id;
+    }
+    const adj = {};
+    for (const edge of edges) {
+      const link = (from, to) => {
+        if (!adj[from]) adj[from] = [];
+        const cross = sideIdByNode[from] !== sideIdByNode[to];
+        adj[from].push({ id: to, weight: cross ? 1 : 0.35 });
+      };
+      link(edge.from, edge.to);
+      link(edge.to, edge.from);
+    }
+    const angles = {};
+    const placeAll = () => {
+      const pos = {};
+      for (const side of sides) {
+        const anchor = sideAnchors[side.id];
+        const radius = clusterRadius(side);
+        for (const node of side.nodes) {
+          const angle = angles[node.id];
+          pos[node.id] = {
+            x: anchor.x + Math.cos(angle) * radius,
+            y: anchor.y + Math.sin(angle) * radius
+          };
+        }
+      }
+      return pos;
+    };
+    const edgeLen = (pos) => {
+      let sum = 0;
+      for (const e of edges) {
+        const a = pos[e.from];
+        const b = pos[e.to];
+        if (!a || !b) continue;
+        sum += Math.hypot(a.x - b.x, a.y - b.y);
+      }
+      return sum;
+    };
+    for (const side of sides) {
+      const anchor = sideAnchors[side.id];
+      const n = side.nodes.length;
+      const towardApp = Math.atan2(sideAnchors.app.y - anchor.y, sideAnchors.app.x - anchor.x);
+      const start = side.isHub ? -Math.PI / 2 : towardApp + Math.PI;
+      side.nodes.forEach((node, i) => {
+        angles[node.id] = start + i / Math.max(n, 1) * Math.PI * 2;
+      });
+    }
+    let bestLen = edgeLen(placeAll());
+    const steps = 72;
+    for (let pass = 0; pass < 8; pass++) {
+      const pos = placeAll();
+      for (const side of sides) {
+        const n = side.nodes.length;
+        if (n < 2) continue;
+        const anchor = sideAnchors[side.id];
+        const gap = Math.PI * 2 / n;
+        const ideals = side.nodes.map((node) => {
+          const nbrs = adj[node.id] || [];
+          let sx = 0;
+          let sy = 0;
+          let w = 0;
+          for (const { id, weight } of nbrs) {
+            const p = pos[id];
+            if (!p) continue;
+            sx += p.x * weight;
+            sy += p.y * weight;
+            w += weight;
+          }
+          return {
+            id: node.id,
+            ideal: w > 0 ? Math.atan2(sy / w - anchor.y, sx / w - anchor.x) : angles[node.id]
+          };
+        });
+        ideals.sort((a, b) => a.ideal - b.ideal);
+        let localBest = { len: bestLen, map: null };
+        for (const reverse of [false, true]) {
+          const ordered = reverse ? ideals.slice().reverse() : ideals;
+          for (let shift = 0; shift < n; shift++) {
+            for (let s = 0; s < steps; s++) {
+              const start = -Math.PI + s / steps * Math.PI * 2;
+              const trial = { ...angles };
+              for (let k = 0; k < n; k++) {
+                trial[ordered[(k + shift) % n].id] = start + k * gap;
+              }
+              const trialPos = { ...pos };
+              const radius = clusterRadius(side);
+              for (const node of side.nodes) {
+                const ang = trial[node.id];
+                trialPos[node.id] = {
+                  x: anchor.x + Math.cos(ang) * radius,
+                  y: anchor.y + Math.sin(ang) * radius
+                };
+              }
+              const len = edgeLen(trialPos);
+              if (len < localBest.len) localBest = { len, map: trial };
+            }
+          }
+        }
+        if (localBest.map) {
+          Object.assign(angles, localBest.map);
+          bestLen = localBest.len;
+        }
+      }
+    }
+    return sides.map((side) => {
+      const anchor = sideAnchors[side.id];
+      const radius = clusterRadius(side);
+      const nodes = side.nodes.map((node) => {
+        const angle = angles[node.id];
+        return {
+          ...node,
+          sideId: side.id,
+          angle,
+          x: anchor.x + Math.cos(angle) * radius,
+          y: anchor.y + Math.sin(angle) * radius
+        };
+      });
       return {
-        ...node,
-        sideId: side.id,
-        angle,
-        x: anchor.x + Math.cos(angle) * radius,
-        y: anchor.y + Math.sin(angle) * radius
+        ...side,
+        anchor,
+        radius,
+        labelY: anchor.y - radius - 28,
+        nodes
       };
     });
-    return {
-      ...side,
-      anchor,
-      radius,
-      labelY: anchor.y - radius - 28,
-      nodes
-    };
   }
-  var networkGraph = networkSides.map(placeCluster);
+  var networkGraph = layoutNetworkGraph(networkSides, influenceEdges);
   function nodeLabelLines(label, maxChars = 18) {
     if (label.length <= maxChars) return [label];
     const words = label.split(" ");
