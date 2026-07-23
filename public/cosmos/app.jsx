@@ -727,11 +727,12 @@ const networkSides = [
   {
     id: "app",
     number: "02",
-    name: "App (Product Systems)",
+    name: "App (Product, Systems & Team)",
     shortName: "App",
     color: "#d4b200",
     isHub: true,
     nodes: [
+      { id: "team", label: "Product & Marketing Team" },
       { id: "spatial-ux", label: "Spatial UX & Layout" },
       { id: "voice-interaction", label: "Voice & Interaction" },
       { id: "session-loop", label: "Onboarding & Return" },
@@ -778,12 +779,11 @@ const networkSides = [
   {
     id: "institutions",
     number: "06",
-    name: "Institutions (Capital, Org, Government, Team)",
+    name: "Institutions (External: Capital, Government, Orgs)",
     shortName: "Institutions",
     color: "#111c4e",
     nodes: [
       { id: "capital", label: "Investors / Capital" },
-      { id: "employees", label: "Team (Product & Marketing)" },
       { id: "government", label: "Government / Regulators" },
       { id: "organizations", label: "Orgs (Schools, Work, Labs)" },
     ],
@@ -793,7 +793,14 @@ const networkSides = [
 // Sparse influence edges: only load-bearing links (not a complete graph).
 // type: functional | financial | emotional | identity | meaning
 const influenceEdges = [
-  // —— People ↔ App (value loop) ——
+  // —— App team & systems ↔ People ——
+  { from: "team", to: "spatial-ux", type: "functional", note: "Product capacity and skill mix decide what ships in the spatial layer." },
+  { from: "team", to: "voice-interaction", type: "functional", note: "Team prioritization decides how far voice and interaction craft go." },
+  { from: "team", to: "session-loop", type: "functional", note: "Onboarding and return loops only exist if product invests in them." },
+  { from: "team", to: "trust-tools", type: "functional", note: "Safety and moderation product work only exists if the team prioritizes it." },
+  { from: "team", to: "readers", type: "emotional", note: "Marketing and narrative work shape first impressions before anyone installs." },
+  { from: "team", to: "contributors", type: "identity", note: "How the team shows up (roadmap, tone, presence) shapes contributor trust." },
+  { from: "team", to: "capital", type: "identity", note: "Story and traction from product + marketing feed capital conversations." },
   { from: "spatial-ux", to: "readers", type: "meaning", note: "Layout must answer “why is this here?” or reading stays a flat feed in 3D." },
   { from: "spatial-ux", to: "contributors", type: "functional", note: "Contributors need place-to-post, not only a text box." },
   { from: "voice-interaction", to: "contributors", type: "functional", note: "Voice create/playback quality decides whether contribution is viable in-headset." },
@@ -840,15 +847,10 @@ const influenceEdges = [
   { from: "content-partners", to: "readers", type: "meaning", note: "Empty or synthetic walls fail people who wanted real discourse." },
   { from: "content-partners", to: "stewards", type: "functional", note: "Provenance and licenses shape what can be hosted and removed." },
 
-  // —— Institutions ——
-  { from: "capital", to: "employees", type: "financial", note: "Runway funds team size and how long patient community work can last." },
+  // —— Institutions (external only) ——
+  { from: "capital", to: "team", type: "financial", note: "Runway funds team size and how long patient community work can last." },
   { from: "capital", to: "session-loop", type: "financial", note: "Capital pressure can push growth theater over return loops and craft." },
   { from: "capital", to: "cloud-ai", type: "financial", note: "Funding climate favors high-margin platform plays over patient tools." },
-  { from: "employees", to: "spatial-ux", type: "functional", note: "Team capacity and skill mix decide what ships in the spatial layer." },
-  { from: "employees", to: "trust-tools", type: "functional", note: "Safety and moderation product work only exists if the team prioritizes it." },
-  { from: "employees", to: "contributors", type: "identity", note: "How the team shows up (roadmap, tone, presence) shapes contributor trust." },
-  { from: "employees", to: "readers", type: "emotional", note: "Marketing and narrative work shape first impressions—not a separate “promoter” public." },
-  { from: "employees", to: "capital", type: "identity", note: "Story and traction marketing also feed capital conversations." },
   { from: "government", to: "intentional-users", type: "emotional", note: "Privacy and biometric rules set baseline expectations for safe use." },
   { from: "government", to: "voice-interaction", type: "functional", note: "Consent, retention, and biometric law constrain voice product design." },
   { from: "government", to: "meta-platform", type: "financial", note: "Platform compliance cost reshapes what store apps can ship." },
