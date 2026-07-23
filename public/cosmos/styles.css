@@ -1701,6 +1701,363 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   }
 }
 
+/* —— Impact analysis: open research chapter —— */
+.impact-page {
+  padding-top: 48px;
+  padding-bottom: 80px;
+}
+.impact-heading {
+  grid-template-columns: 1.15fr 0.85fr;
+  margin-bottom: 48px;
+}
+.impact-toc {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 20px;
+  margin: 0 0 56px;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+}
+.impact-toc > p {
+  grid-column: 1 / -1;
+  margin: 0 0 8px;
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.impact-toc a {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+.impact-toc a span {
+  color: var(--pink);
+  font-family: var(--serif);
+}
+.impact-toc a:hover {
+  color: var(--navy);
+}
+.impact-document {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+}
+.impact-frame-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 28px 0 32px;
+}
+.impact-frame-grid article {
+  padding: 22px 20px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.impact-frame-grid span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.impact-frame-grid h3 {
+  margin: 0 0 10px;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.impact-frame-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.impact-horizon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+.impact-horizon-grid article {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 280px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+}
+.impact-horizon-grid header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.impact-horizon-grid header > span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 18px;
+}
+.impact-horizon-grid h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 600;
+}
+.impact-horizon-grid header p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.impact-horizon-q {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.4;
+}
+.impact-horizon-grid ul {
+  margin: auto 0 0;
+  padding-left: 18px;
+  color: #39415f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.impact-actor-table-wrap {
+  overflow-x: auto;
+  margin: 24px 0 8px;
+}
+.impact-actor-table td:first-child {
+  min-width: 160px;
+}
+.impact-actor-table td:first-child b {
+  display: block;
+  margin-bottom: 4px;
+}
+.impact-actor-table td:first-child span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.impact-claim-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+.impact-claim-list > article {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.impact-claim-list header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.impact-claim-list header span {
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.impact-claim-list header i {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+.impact-claim-list h3 {
+  margin: 0 0 14px;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.impact-claim-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.impact-claim-grid b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.impact-claim-grid p {
+  margin: 0;
+  color: #39415f;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.impact-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+.impact-risk-grid article {
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+}
+.impact-risk-grid span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 14px;
+}
+.impact-risk-grid h3 {
+  margin: 8px 0 10px;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+}
+.impact-risk-grid p {
+  margin: 0 0 12px;
+  color: #39415f;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.impact-risk-mitigate {
+  margin: 0 !important;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--navy) !important;
+}
+.impact-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0 28px;
+}
+.impact-metric-grid article {
+  padding: 18px 18px 16px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.impact-metric-grid h3 {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+}
+.impact-metric-grid ul {
+  margin: 0;
+  padding-left: 16px;
+  color: #39415f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.impact-scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+.impact-scenario {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  padding: 22px;
+  border: 1px solid var(--line);
+}
+.impact-scenario span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.impact-scenario h3 {
+  margin: 12px 0 14px;
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 600;
+}
+.impact-scenario p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.impact-scenario-foot {
+  margin-top: auto !important;
+  padding-top: 16px;
+  color: var(--muted);
+  font-size: 12px !important;
+  font-weight: 600;
+}
+.impact-scenario--good {
+  background: #eef7f3;
+  border-color: rgba(10, 122, 92, 0.25);
+}
+.impact-scenario--good span { color: #0a7a5c; }
+.impact-scenario--mixed {
+  background: var(--yellow);
+}
+.impact-scenario--mixed span { color: var(--navy); }
+.impact-scenario--bad {
+  color: white;
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.impact-scenario--bad p { color: rgba(255, 255, 255, 0.82); }
+.impact-scenario--bad .impact-scenario-foot { color: rgba(255, 255, 255, 0.55) !important; }
+.impact-scenario--bad span { color: var(--yellow); }
+.impact-next-list {
+  margin: 24px 0 32px;
+  padding-left: 22px;
+  color: #39415f;
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.impact-next-list li {
+  margin-bottom: 12px;
+}
+.impact-next-list b {
+  color: var(--navy);
+}
+.impact-next-links {
+  max-width: min(1080px, 100%);
+  margin: 40px auto 0;
+}
+@media (max-width: 900px) {
+  .impact-heading { grid-template-columns: 1fr; }
+  .impact-toc { grid-template-columns: 1fr 1fr; }
+  .impact-frame-grid,
+  .impact-horizon-grid,
+  .impact-scenario-grid,
+  .impact-metric-grid,
+  .impact-risk-grid,
+  .impact-claim-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (min-width: 1680px) {
+  .impact-document { width: min(100%, 1180px); }
+  .impact-frame-grid h3 { font-size: 24px; }
+  .impact-horizon-q { font-size: 17px; }
+  .impact-claim-list h3 { font-size: 22px; }
+  .impact-next-list { font-size: 17px; }
+}
+
 /* —— Presentation / large displays (~1440–1920+) ——
    Reading layout is intentionally narrow; on presentation widths that
    reads as tiny. Widen columns and step up type so 16:9 / 1920 screens
