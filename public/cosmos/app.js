@@ -714,7 +714,17 @@
     { id: "enterprise-orgs", label: "Enterprises / Workplaces", cluster: "institutions" },
     { id: "community-orgs", label: "Community Organizations", cluster: "institutions" }
   ];
-  var membershipEdges = networkEntities.filter((e) => e.parentId).map((e) => ({ from: e.parentId, to: e.id }));
+  var membershipEdges = networkEntities.filter((e) => e.parentId).map((e) => ({ from: e.parentId, to: e.id, rel: "branch" }));
+  function clusterHubId(clusterId) {
+    return `hub:${clusterId}`;
+  }
+  var clusterMembershipEdges = networkEntities.filter((e) => !e.parentId).map((e) => ({
+    from: clusterHubId(e.cluster),
+    to: e.id,
+    rel: "cluster",
+    clusterId: e.cluster
+  }));
+  var relationshipEdges = [...clusterMembershipEdges, ...membershipEdges];
   var influenceEdges = [
     // App internal
     { from: "team", to: "cosmos", type: "functional", note: "The team ships and stewards Cosmos." },
@@ -1187,12 +1197,11 @@
     })();
     const focusSet = new Set(focusSideIds);
     const visibleEdges = (() => {
-      if (focusMode === "type") return typedEdges;
       if (focusMode === "side") {
         if (activeNodeId) return nodeFocusEdges;
         return sideFocusEdges;
       }
-      return influenceEdges;
+      return typedEdges;
     })();
     const focusBounds = (() => {
       const pts = [];
@@ -1371,9 +1380,9 @@
       }
     }
     const detailEdges = focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
-    const title = focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? activeType.label : "Influence network";
-    const subtitle = focusMode === "side" ? activeNode ? `${activeNode.sideName} \xB7 influences involving this entity` : `${activeSide.name} \xB7 all influences touching this side` : focusMode === "type" ? activeType.desc : "Sparse directed influences across entities. Filter by type or open a side/entity.";
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Stakeholder network \xB7 influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "Overview"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "By influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "By side / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} sides` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-map-hint" }, "Scroll to zoom \xB7 Drag empty space to pan \xB7 Fit resets camera"), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
+    const title = focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
+    const subtitle = focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship (cluster \u2192 category \u2192 brand) \xB7 color arrows = selected influence type";
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "Overview"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} sides` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-map-hint" }, "Gray = relationship (cluster \u2192 category \u2192 brand) \xB7 Color arrows = influence (switch type tabs) \xB7 Scroll zoom \xB7 Drag pan"), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: t.id,
@@ -1450,82 +1459,97 @@
             fill: "transparent"
           }
         ),
-        /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, networkGraph.map((side) => {
-          const inFocus = focusSet.has(side.id);
+        /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, relationshipEdges.map((edge) => {
+          let a;
+          let b = nodeById[edge.to];
+          if (!b) return null;
+          if (edge.rel === "cluster" && edge.clusterId) {
+            const side = sideById[edge.clusterId];
+            if (!side) return null;
+            a = {
+              x: side.anchor.x,
+              y: side.anchor.y,
+              hw: 22,
+              hh: 22,
+              lines: [side.shortName],
+              rw: 44,
+              rh: 44
+            };
+          } else {
+            a = nodeById[edge.from];
+          }
+          if (!a) return null;
+          const route = routeBetweenCards(a, b);
+          const lit = !activeNodeId || edge.from === activeNodeId || edge.to === activeNodeId || edge.rel === "cluster" && activeSideId === edge.clusterId && focusMode === "side";
+          return /* @__PURE__ */ React.createElement(
+            "path",
+            {
+              key: `rel-${edge.from}-${edge.to}`,
+              d: route.d,
+              fill: "none",
+              stroke: "#9a9890",
+              strokeWidth: edge.rel === "cluster" ? 1.35 : 1.2,
+              strokeDasharray: edge.rel === "branch" ? "4 5" : "2 3",
+              opacity: lit ? 0.55 : 0.28,
+              className: "stakeholder-map__relationship"
+            }
+          );
+        }), networkGraph.map((side) => {
           const isActive = activeSideId === side.id && focusMode === "side";
+          const hubR = 22;
           return /* @__PURE__ */ React.createElement(
             "g",
             {
-              key: `region-${side.id}`,
-              className: [
-                "stakeholder-map__cluster",
-                inFocus ? "is-in-chain" : "",
-                isActive ? "is-active" : "",
-                !inFocus ? "is-dimmed" : ""
-              ].filter(Boolean).join(" "),
-              opacity: inFocus ? 0.95 : 0.28,
+              key: `rel-hub-${side.id}`,
+              className: `stakeholder-map__rel-hub ${isActive ? "is-active" : ""}`,
+              transform: `translate(${side.anchor.x}, ${side.anchor.y})`,
               onClick: () => goSide(side.id),
               style: { cursor: "pointer" }
             },
             /* @__PURE__ */ React.createElement(
               "circle",
               {
-                className: "stakeholder-map__field",
-                cx: side.anchor.x,
-                cy: side.anchor.y,
-                r: side.radius,
-                fill: side.isHub ? "rgba(242,240,79,0.06)" : "rgba(255,254,249,0.04)",
-                stroke: side.isHub ? "#111c4e" : side.color,
-                strokeDasharray: "6 8",
-                strokeWidth: isActive ? 2.2 : 1.2
+                r: hubR,
+                fill: "#f4f3ef",
+                stroke: "#b8b6ae",
+                strokeWidth: isActive ? 2 : 1.25
               }
             ),
             /* @__PURE__ */ React.createElement(
               "text",
               {
-                x: side.anchor.x,
-                y: side.labelY,
+                y: -2,
                 textAnchor: "middle",
-                className: "stakeholder-map__cluster-label",
-                fill: side.isHub ? "#111c4e" : side.color
+                dominantBaseline: "middle",
+                className: "stakeholder-map__rel-hub-num",
+                fill: "#6e6c66"
               },
-              side.number,
-              " \xB7 ",
+              side.number
+            ),
+            /* @__PURE__ */ React.createElement(
+              "text",
+              {
+                y: 10,
+                textAnchor: "middle",
+                dominantBaseline: "middle",
+                className: "stakeholder-map__rel-hub-name",
+                fill: "#6e6c66"
+              },
               side.shortName
             )
-          );
-        }), membershipEdges.map((edge) => {
-          const a = nodeById[edge.from];
-          const b = nodeById[edge.to];
-          if (!a || !b) return null;
-          const inFocus = focusSet.has(a.sideId) || activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId);
-          const route = routeBetweenCards(a, b);
-          return /* @__PURE__ */ React.createElement(
-            "path",
-            {
-              key: `mem-${edge.from}-${edge.to}`,
-              d: route.d,
-              fill: "none",
-              stroke: a.color || "#111c4e",
-              strokeWidth: 1.4,
-              strokeDasharray: "3 5",
-              opacity: inFocus ? 0.55 : 0.18,
-              className: "stakeholder-map__membership"
-            }
           );
         }), visibleEdges.map((edge, i) => {
           const a = nodeById[edge.from];
           const b = nodeById[edge.to];
           if (!a || !b) return null;
           const typeMeta = influenceTypeById[edge.type];
-          const dimmed = focusMode === "overview" ? edge.type !== activeTypeId : false;
           const route = routeBetweenCards(a, b);
-          const hot = activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || focusMode === "type" && edge.type === activeTypeId || hoverEdge && hoverEdge.edge === edge;
+          const hot = activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || hoverEdge && hoverEdge.edge === edge;
           return /* @__PURE__ */ React.createElement(
             "g",
             {
               key: `inf-${edge.from}-${edge.to}-${i}`,
-              className: `stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""}`,
+              className: `stakeholder-map__influence-hit ${hot ? "is-hot" : ""}`,
               "data-from-side": route.fromSide,
               "data-to-side": route.toSide,
               onMouseEnter: (event) => {
@@ -1558,8 +1582,8 @@
                 className: `stakeholder-map__influence is-${edge.type}`,
                 fill: "none",
                 stroke: typeMeta?.color || "#111c4e",
-                strokeWidth: hot ? 3.2 : dimmed ? 1.4 : 2.2,
-                opacity: dimmed ? 0.14 : hot ? 1 : focusMode === "overview" ? 0.42 : 0.85,
+                strokeWidth: hot ? 3.2 : 2.3,
+                opacity: hot ? 1 : 0.88,
                 markerEnd: `url(#inf-arrow-${edge.type})`
               }
             )

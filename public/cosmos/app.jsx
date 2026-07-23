@@ -708,9 +708,10 @@ const influenceTypes = [
 
 const influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
 
-// Flat entity graph: clusters are soft regions (not hub-and-spoke centers).
-// parentId branches concrete brands from a category (Reddit/X under Feed Social).
-// Influences are the primary links; membership is a light dashed parent→child.
+// Two network layers (do not conflate):
+// 1) Relationship — structural: cluster → category → brand (gray backbone)
+// 2) Influence — typed forces between entities (colored; filters by type)
+// parentId = brand under a category (Reddit under Feed Social). Never drop entities here casually.
 const networkClusters = [
   { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 300, y: 780 },
   { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1100, y: 620, isHub: true },
@@ -787,15 +788,32 @@ const networkEntities = [
   { id: "community-orgs", label: "Community Organizations", cluster: "institutions" },
 ];
 
-// Fix typo id other-hmD -> other-hmd
-
-// Membership links (category → brand) — drawn dashed, no arrowhead.
+// —— Relationship network (structure only) ——
+// Category → brand branches
 const membershipEdges = networkEntities
   .filter((e) => e.parentId)
-  .map((e) => ({ from: e.parentId, to: e.id }));
+  .map((e) => ({ from: e.parentId, to: e.id, rel: "branch" }));
+
+// Cluster hub id used only for relationship drawing/layout anchors (not product entities).
+function clusterHubId(clusterId) {
+  return `hub:${clusterId}`;
+}
+
+// Cluster center → root entities in that cluster (no parent = sits under the cluster)
+const clusterMembershipEdges = networkEntities
+  .filter((e) => !e.parentId)
+  .map((e) => ({
+    from: clusterHubId(e.cluster),
+    to: e.id,
+    rel: "cluster",
+    clusterId: e.cluster,
+  }));
+
+// Full relationship edge list (gray background network)
+const relationshipEdges = [...clusterMembershipEdges, ...membershipEdges];
 
 // Influence edges (typed). Financial = money given (payer → payee).
-// Price / cost pressure = emotional.
+// Price / cost pressure = emotional. Separate from relationshipEdges.
 const influenceEdges = [
   // App internal
   { from: "team", to: "cosmos", type: "functional", note: "The team ships and stewards Cosmos." },
@@ -1336,14 +1354,14 @@ function StakeholderMapPage() {
   })();
   const focusSet = new Set(focusSideIds);
 
+  // Influence layer only (relationship layer is always drawn separately in gray).
+  // Overview / type: show the selected influence type. Side/entity: show influences on that focus.
   const visibleEdges = (() => {
-    if (focusMode === "type") return typedEdges;
     if (focusMode === "side") {
       if (activeNodeId) return nodeFocusEdges;
       return sideFocusEdges;
     }
-    // overview: show all lightly; typed filter still tints
-    return influenceEdges;
+    return typedEdges;
   })();
 
   const focusBounds = (() => {
@@ -1561,24 +1579,24 @@ function StakeholderMapPage() {
         ? activeNode.label
         : activeSide.shortName
       : focusMode === "type"
-        ? activeType.label
-        : "Influence network";
+        ? `${activeType.label} influence`
+        : "Stakeholder networks";
 
   const subtitle =
     focusMode === "side"
       ? activeNode
-        ? `${activeNode.sideName} · influences involving this entity`
-        : `${activeSide.name} · all influences touching this side`
+        ? `Influence arrows involving this entity · gray relationship structure stays behind`
+        : `${activeSide.name} · influence arrows touching this group · gray = relationship`
       : focusMode === "type"
-        ? activeType.desc
-        : "Sparse directed influences across entities. Filter by type or open a side/entity.";
+        ? `Colored arrows = ${activeType.label.toLowerCase()} influence only · gray lines = relationship structure (always on)`
+        : "Gray = relationship (cluster → category → brand) · color arrows = selected influence type";
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
       <div className="stakeholder-shell" aria-label="Cosmos VR stakeholder influence network">
         <header className="stakeholder-frame__head">
           <div>
-            <p className="stakeholder-kicker">05 · Stakeholder network · influence</p>
+            <p className="stakeholder-kicker">05 · Two networks · relationship + influence</p>
             <h1>{title}</h1>
           </div>
           <p className="stakeholder-lede">{subtitle}</p>
@@ -1587,8 +1605,8 @@ function StakeholderMapPage() {
         <div className="stakeholder-frame__toolbar">
           <div className="stakeholder-frame__mode-tabs" role="tablist" aria-label="Focus mode">
             <button type="button" className={focusMode === "overview" ? "is-active" : ""} onClick={goOverview}>Overview</button>
-            <button type="button" className={focusMode === "type" ? "is-active" : ""} onClick={() => goType(activeTypeId)}>By influence type</button>
-            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>By side / entity</button>
+            <button type="button" className={focusMode === "type" ? "is-active" : ""} onClick={() => goType(activeTypeId)}>Influence type</button>
+            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>Group / entity</button>
           </div>
           <div className="stakeholder-frame__stepper">
             <button type="button" onClick={() => stepPart(-1)} aria-label="Previous">←</button>
@@ -1603,7 +1621,9 @@ function StakeholderMapPage() {
             </button>
           </div>
         </div>
-        <p className="stakeholder-map-hint">Scroll to zoom · Drag empty space to pan · Fit resets camera</p>
+        <p className="stakeholder-map-hint">
+          Gray = relationship (cluster → category → brand) · Color arrows = influence (switch type tabs) · Scroll zoom · Drag pan
+        </p>
 
         <div className="stakeholder-frame__chain-tabs stakeholder-frame__type-tabs" role="tablist" aria-label="Influence types">
           {influenceTypes.map((t) => (
@@ -1693,87 +1713,103 @@ function StakeholderMapPage() {
             />
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
-              {/* Soft cluster region labels (no hub-and-spoke) */}
+              {/* —— Relationship network (always on, gray backbone) ——
+                  Cluster center → category roots → brands. Not influence. */}
+              {relationshipEdges.map((edge) => {
+                let a;
+                let b = nodeById[edge.to];
+                if (!b) return null;
+                if (edge.rel === "cluster" && edge.clusterId) {
+                  const side = sideById[edge.clusterId];
+                  if (!side) return null;
+                  a = {
+                    x: side.anchor.x,
+                    y: side.anchor.y,
+                    hw: 22,
+                    hh: 22,
+                    lines: [side.shortName],
+                    rw: 44,
+                    rh: 44,
+                  };
+                } else {
+                  a = nodeById[edge.from];
+                }
+                if (!a) return null;
+                const route = routeBetweenCards(a, b);
+                const lit =
+                  !activeNodeId ||
+                  edge.from === activeNodeId ||
+                  edge.to === activeNodeId ||
+                  (edge.rel === "cluster" &&
+                    activeSideId === edge.clusterId &&
+                    focusMode === "side");
+                return (
+                  <path
+                    key={`rel-${edge.from}-${edge.to}`}
+                    d={route.d}
+                    fill="none"
+                    stroke="#9a9890"
+                    strokeWidth={edge.rel === "cluster" ? 1.35 : 1.2}
+                    strokeDasharray={edge.rel === "branch" ? "4 5" : "2 3"}
+                    opacity={lit ? 0.55 : 0.28}
+                    className="stakeholder-map__relationship"
+                  />
+                );
+              })}
+
               {networkGraph.map((side) => {
-                const inFocus = focusSet.has(side.id);
                 const isActive = activeSideId === side.id && focusMode === "side";
+                const hubR = 22;
                 return (
                   <g
-                    key={`region-${side.id}`}
-                    className={[
-                      "stakeholder-map__cluster",
-                      inFocus ? "is-in-chain" : "",
-                      isActive ? "is-active" : "",
-                      !inFocus ? "is-dimmed" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    opacity={inFocus ? 0.95 : 0.28}
+                    key={`rel-hub-${side.id}`}
+                    className={`stakeholder-map__rel-hub ${isActive ? "is-active" : ""}`}
+                    transform={`translate(${side.anchor.x}, ${side.anchor.y})`}
                     onClick={() => goSide(side.id)}
                     style={{ cursor: "pointer" }}
                   >
                     <circle
-                      className="stakeholder-map__field"
-                      cx={side.anchor.x}
-                      cy={side.anchor.y}
-                      r={side.radius}
-                      fill={side.isHub ? "rgba(242,240,79,0.06)" : "rgba(255,254,249,0.04)"}
-                      stroke={side.isHub ? "#111c4e" : side.color}
-                      strokeDasharray="6 8"
-                      strokeWidth={isActive ? 2.2 : 1.2}
+                      r={hubR}
+                      fill="#f4f3ef"
+                      stroke="#b8b6ae"
+                      strokeWidth={isActive ? 2 : 1.25}
                     />
                     <text
-                      x={side.anchor.x}
-                      y={side.labelY}
+                      y={-2}
                       textAnchor="middle"
-                      className="stakeholder-map__cluster-label"
-                      fill={side.isHub ? "#111c4e" : side.color}
+                      dominantBaseline="middle"
+                      className="stakeholder-map__rel-hub-num"
+                      fill="#6e6c66"
                     >
-                      {side.number} · {side.shortName}
+                      {side.number}
+                    </text>
+                    <text
+                      y={10}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="stakeholder-map__rel-hub-name"
+                      fill="#6e6c66"
+                    >
+                      {side.shortName}
                     </text>
                   </g>
                 );
               })}
 
-              {/* Category → brand membership (branch), dashed, no arrowhead */}
-              {membershipEdges.map((edge) => {
-                const a = nodeById[edge.from];
-                const b = nodeById[edge.to];
-                if (!a || !b) return null;
-                const inFocus =
-                  focusSet.has(a.sideId) ||
-                  (activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId));
-                const route = routeBetweenCards(a, b);
-                return (
-                  <path
-                    key={`mem-${edge.from}-${edge.to}`}
-                    d={route.d}
-                    fill="none"
-                    stroke={a.color || "#111c4e"}
-                    strokeWidth={1.4}
-                    strokeDasharray="3 5"
-                    opacity={inFocus ? 0.55 : 0.18}
-                    className="stakeholder-map__membership"
-                  />
-                );
-              })}
-
-              {/* Influence edges: primary relationships */}
+              {/* —— Influence network (typed; follows selected type / entity focus) —— */}
               {visibleEdges.map((edge, i) => {
                 const a = nodeById[edge.from];
                 const b = nodeById[edge.to];
                 if (!a || !b) return null;
                 const typeMeta = influenceTypeById[edge.type];
-                const dimmed = focusMode === "overview" ? edge.type !== activeTypeId : false;
                 const route = routeBetweenCards(a, b);
                 const hot =
                   (activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId)) ||
-                  (focusMode === "type" && edge.type === activeTypeId) ||
                   (hoverEdge && hoverEdge.edge === edge);
                 return (
                   <g
                     key={`inf-${edge.from}-${edge.to}-${i}`}
-                    className={`stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""}`}
+                    className={`stakeholder-map__influence-hit ${hot ? "is-hot" : ""}`}
                     data-from-side={route.fromSide}
                     data-to-side={route.toSide}
                     onMouseEnter={(event) => {
@@ -1798,15 +1834,14 @@ function StakeholderMapPage() {
                     onClick={() => goType(edge.type)}
                     style={{ cursor: "pointer" }}
                   >
-                    {/* Wide invisible stroke for easier hover */}
                     <path d={route.d} fill="none" stroke="transparent" strokeWidth="14" />
                     <path
                       d={route.d}
                       className={`stakeholder-map__influence is-${edge.type}`}
                       fill="none"
                       stroke={typeMeta?.color || "#111c4e"}
-                      strokeWidth={hot ? 3.2 : dimmed ? 1.4 : 2.2}
-                      opacity={dimmed ? 0.14 : hot ? 1 : focusMode === "overview" ? 0.42 : 0.85}
+                      strokeWidth={hot ? 3.2 : 2.3}
+                      opacity={hot ? 1 : 0.88}
                       markerEnd={`url(#inf-arrow-${edge.type})`}
                     />
                   </g>

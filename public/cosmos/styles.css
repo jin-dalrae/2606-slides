@@ -1263,9 +1263,29 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
 }
 .stakeholder-map__camera .stakeholder-map__node,
 .stakeholder-map__camera .stakeholder-map__influence-hit,
-.stakeholder-map__camera .stakeholder-map__cluster,
-.stakeholder-map__camera .stakeholder-map__membership {
+.stakeholder-map__camera .stakeholder-map__rel-hub,
+.stakeholder-map__camera .stakeholder-map__cluster {
   pointer-events: auto;
+}
+.stakeholder-map__relationship {
+  pointer-events: none;
+}
+.stakeholder-map__rel-hub-num {
+  font-family: var(--serif);
+  font-size: 9px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.stakeholder-map__rel-hub-name {
+  font-family: var(--sans);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.stakeholder-map__rel-hub.is-active circle {
+  stroke: #f14f9b;
 }
 .stakeholder-map__cluster-label {
   font-family: var(--sans);
