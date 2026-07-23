@@ -1382,38 +1382,66 @@ function StakeholderMapPage() {
 
   const focusBounds = (() => {
     const pts = [];
-    if (focusMode === "side" && activeNodeId && nodeById[activeNodeId]) {
-      const n = nodeById[activeNodeId];
-      pts.push(n, sideById[n.sideId].anchor);
+    // Tight framing for a single arrow or entity; wide framing only for full overview.
+    if (selectedEdge) {
+      if (nodeById[selectedEdge.from]) pts.push(nodeById[selectedEdge.from]);
+      if (nodeById[selectedEdge.to]) pts.push(nodeById[selectedEdge.to]);
+    } else if (focusMode === "side" && activeNodeId && nodeById[activeNodeId]) {
+      pts.push(nodeById[activeNodeId]);
       nodeFocusEdges.forEach((e) => {
         if (nodeById[e.from]) pts.push(nodeById[e.from]);
         if (nodeById[e.to]) pts.push(nodeById[e.to]);
+      });
+    } else if (focusMode === "type") {
+      typedEdges.forEach((e) => {
+        if (nodeById[e.from]) pts.push(nodeById[e.from]);
+        if (nodeById[e.to]) pts.push(nodeById[e.to]);
+      });
+    } else if (focusMode === "side") {
+      (activeSide?.nodes || []).forEach((n) => {
+        if (nodeById[n.id]) pts.push(nodeById[n.id]);
       });
     } else {
       for (const sid of focusSideIds) {
         const side = sideById[sid];
         if (!side) continue;
-        pts.push(side.anchor);
         side.nodes.forEach((n) => pts.push(n));
       }
     }
     if (!pts.length) return { cx: width / 2, cy: height / 2, scale: 1 };
     const xs = pts.map((p) => p.x);
     const ys = pts.map((p) => p.y);
-    const pad = focusMode === "side" ? 150 : 170;
+    const pad = selectedEdge ? 100 : activeNodeId ? 130 : focusMode === "side" ? 160 : 200;
     const minX = Math.min(...xs) - pad;
     const maxX = Math.max(...xs) + pad;
     const minY = Math.min(...ys) - pad;
     const maxY = Math.max(...ys) + pad;
     const cx = (minX + maxX) / 2;
     const cy = (minY + maxY) / 2;
-    const bw = Math.max(maxX - minX, 320);
-    const bh = Math.max(maxY - minY, 280);
+    // Smaller floor span when focusing so the camera can actually zoom in.
+    const minSpan = selectedEdge ? 200 : activeNodeId ? 260 : 340;
+    const bw = Math.max(maxX - minX, minSpan);
+    const bh = Math.max(maxY - minY, minSpan * 0.85);
     const fit = Math.min(width / bw, height / bh);
-    // Overview slightly zoomed out so the roomier graph has breathing room.
-    // Overview stays slightly zoomed out so the more dispersed graph can breathe.
-    const bias = focusMode === "side" ? 1.08 : focusMode === "type" ? 0.94 : 0.82;
-    return { cx, cy, scale: Math.min(fit * bias, focusMode === "overview" ? 0.88 : 1.4) };
+    let bias;
+    let maxScale;
+    if (selectedEdge) {
+      bias = 1.25;
+      maxScale = 2.6;
+    } else if (activeNodeId) {
+      bias = 1.22;
+      maxScale = 2.2;
+    } else if (focusMode === "side") {
+      bias = 1.12;
+      maxScale = 1.75;
+    } else if (focusMode === "type") {
+      bias = 1.0;
+      maxScale = 1.45;
+    } else {
+      bias = 0.82;
+      maxScale = 0.88;
+    }
+    return { cx, cy, scale: Math.min(fit * bias, maxScale) };
   })();
 
   const cam = view || focusBounds;
@@ -1574,12 +1602,14 @@ function StakeholderMapPage() {
     // Toggle off if the same arrow is clicked again.
     if (selectedEdgeKey === key) {
       setSelectedEdgeKey(null);
+      setView(null);
       return;
     }
     setSelectedEdgeKey(key);
     setActiveTypeId(edge.type); // keep type swatch in sync without flooding all arrows
     setActiveNodeId(null);
     setFocusMode("overview");
+    setView(null); // reframe camera on this arrow (tighter zoom)
   }
 
   const typeIndex = influenceTypes.findIndex((t) => t.id === activeTypeId);
