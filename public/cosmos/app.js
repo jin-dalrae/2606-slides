@@ -647,13 +647,12 @@
   ];
   var influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
   var networkClusters = [
-    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 340, y: 900 },
-    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1280, y: 700, isHub: true },
-    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 2260, y: 900 },
-    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 420, y: 280 },
-    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 2180, y: 280 },
-    // Institutions sit low so capital/team links don’t crush into App.
-    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1280, y: 1680 }
+    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 420, y: 980 },
+    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1200, y: 900, isHub: true },
+    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1980, y: 980 },
+    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 520, y: 320 },
+    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1880, y: 320 },
+    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1200, y: 1580 }
   ];
   var networkEntities = [
     // People
@@ -724,7 +723,26 @@
     rel: "cluster",
     clusterId: e.cluster
   }));
-  var relationshipEdges = [...clusterMembershipEdges, ...membershipEdges];
+  var hubLinkPairs = [
+    ["app", "people"],
+    ["app", "hardware"],
+    ["app", "competitors"],
+    ["app", "partners"],
+    ["app", "institutions"],
+    ["people", "competitors"],
+    ["competitors", "partners"],
+    ["partners", "hardware"],
+    ["hardware", "institutions"],
+    ["institutions", "people"]
+  ];
+  var hubHubEdges = hubLinkPairs.map(([a, b]) => ({
+    from: clusterHubId(a),
+    to: clusterHubId(b),
+    rel: "hub",
+    fromCluster: a,
+    toCluster: b
+  }));
+  var relationshipEdges = [...hubHubEdges, ...clusterMembershipEdges, ...membershipEdges];
   var influenceEdges = [
     // App internal
     { from: "team", to: "cosmos", type: "functional", note: "The team ships and stewards Cosmos." },
@@ -865,171 +883,70 @@
     ...c,
     nodes: networkEntities.filter((e) => e.cluster === c.id)
   }));
-  var MAP_W = 2800;
-  var MAP_H = 2e3;
-  var MAP_PAD = 140;
-  function layoutNetworkGraph(clusters, entities, influence, membership) {
-    const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
-    const membershipSet = new Set(membership.map((m) => `${m.from}|${m.to}`));
-    const isMembership = (a, b) => membershipSet.has(`${a}|${b}`) || membershipSet.has(`${b}|${a}`);
-    const relatedByCategory = (a, b) => isMembership(a.id, b.id) || a.parentId === b.id || b.parentId === a.id || a.parentId && a.parentId === b.parentId || a.cluster === b.cluster && !a.parentId && !b.parentId;
+  var MAP_W = 2400;
+  var MAP_H = 1800;
+  var MAP_PAD = 80;
+  function layoutNetworkGraph(clusters, entities) {
+    const canvasCx = MAP_W / 2;
+    const canvasCy = MAP_H / 2;
     const pos = {};
-    const parents = entities.filter((e) => !e.parentId);
-    const children = entities.filter((e) => e.parentId);
-    parents.forEach((e) => {
-      const c = clusterById[e.cluster];
-      const peers = parents.filter((p) => p.cluster === e.cluster);
-      const idx = peers.findIndex((p) => p.id === e.id);
-      const ang = -Math.PI / 2 + idx / Math.max(peers.length, 1) * Math.PI * 2;
-      const r = 95 + peers.length * 16;
-      pos[e.id] = {
-        x: c.x + Math.cos(ang) * r,
-        y: c.y + Math.sin(ang) * r
-      };
-    });
-    children.forEach((e) => {
-      const c = clusterById[e.cluster];
-      const sibs = children.filter((ch) => ch.parentId === e.parentId);
-      const idx = sibs.findIndex((ch) => ch.id === e.id);
-      const p = pos[e.parentId] || { x: c.x, y: c.y };
-      const span = Math.min(Math.PI * 0.9, 0.55 * sibs.length);
-      const ang = -span / 2 + (sibs.length <= 1 ? 0 : idx / (sibs.length - 1) * span);
-      const r = 88 + idx * 8;
-      pos[e.id] = {
-        x: p.x + Math.cos(ang) * r,
-        y: p.y + Math.sin(ang) * r
-      };
-    });
-    const allEdges = [
-      ...influence.map((e) => ({ a: e.from, b: e.to, w: 0.28, kind: "influence" })),
-      ...membership.map((e) => ({ a: e.from, b: e.to, w: 2.4, kind: "membership" }))
-    ];
-    const iters = 420;
-    for (let iter = 0; iter < iters; iter++) {
-      const force = {};
-      for (const e of entities) force[e.id] = { x: 0, y: 0 };
+    for (const c of clusters) {
+      const hub = { x: c.x, y: c.y };
+      const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
+      const outward = Math.atan2(hub.y - canvasCy, hub.x - canvasCx);
+      const isCenter = Boolean(c.isHub);
+      const rootR = isCenter ? 145 : 125;
+      roots.forEach((root, i) => {
+        let ang;
+        if (isCenter) {
+          ang = -Math.PI / 2 + i / Math.max(roots.length, 1) * Math.PI * 2;
+        } else {
+          const fan = Math.min(Math.PI * 1.15, 0.55 + roots.length * 0.22);
+          ang = outward - fan / 2 + (roots.length <= 1 ? fan / 2 : i / (roots.length - 1) * fan);
+        }
+        pos[root.id] = {
+          x: hub.x + Math.cos(ang) * rootR,
+          y: hub.y + Math.sin(ang) * rootR
+        };
+        const kids = entities.filter((e) => e.parentId === root.id);
+        const childR = rootR + 108;
+        kids.forEach((kid, ki) => {
+          const kfan = Math.min(0.95, 0.28 * Math.max(kids.length, 1));
+          const kang = ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : ki / (kids.length - 1) * kfan);
+          pos[kid.id] = {
+            x: hub.x + Math.cos(kang) * childR,
+            y: hub.y + Math.sin(kang) * childR
+          };
+        });
+      });
+    }
+    for (let pass = 0; pass < 40; pass++) {
       for (let i = 0; i < entities.length; i++) {
         for (let j = i + 1; j < entities.length; j++) {
           const a = entities[i];
           const b = entities[j];
+          const family = a.parentId === b.id || b.parentId === a.id || a.parentId && a.parentId === b.parentId;
+          if (family) continue;
           const pa = pos[a.id];
           const pb = pos[b.id];
           let dx = pb.x - pa.x;
           let dy = pb.y - pa.y;
-          let d2 = dx * dx + dy * dy;
-          if (d2 < 64) {
-            dx = (i * 17 + j * 13) % 11 - 5 || 1;
-            dy = (i * 11 + j * 19) % 11 - 5 || 1;
-            d2 = dx * dx + dy * dy;
-          }
-          const d = Math.sqrt(d2);
-          const cat = relatedByCategory(a, b);
-          const sameCluster = a.cluster === b.cluster;
-          const appInstPair = a.cluster === "app" && b.cluster === "institutions" || a.cluster === "institutions" && b.cluster === "app";
-          let minD;
-          let pushBase;
-          if (cat) {
-            minD = 92;
-            pushBase = 3200;
-          } else if (sameCluster) {
-            minD = 130;
-            pushBase = 9e3;
-          } else if (appInstPair) {
-            minD = 240;
-            pushBase = 18e3;
-          } else {
-            minD = 160;
-            pushBase = 11e3;
-          }
-          let push = pushBase / d2;
-          if (d < minD) {
-            push += (minD - d) / d * (cat ? 1.2 : sameCluster ? 2.4 : 2.8);
-          }
+          let d = Math.hypot(dx, dy) || 0.01;
+          const minD = a.cluster === b.cluster ? 108 : 96;
+          if (d >= minD) continue;
+          const push = (minD - d) / d * 0.5;
           const ux = dx / d;
           const uy = dy / d;
-          force[a.id].x -= ux * push;
-          force[a.id].y -= uy * push;
-          force[b.id].x += ux * push;
-          force[b.id].y += uy * push;
+          pa.x -= ux * push * 0.5;
+          pa.y -= uy * push * 0.5;
+          pb.x += ux * push * 0.5;
+          pb.y += uy * push * 0.5;
         }
       }
-      for (const { a, b, w, kind } of allEdges) {
-        if (!pos[a] || !pos[b]) continue;
-        const pa = pos[a];
-        const pb = pos[b];
-        const dx = pb.x - pa.x;
-        const dy = pb.y - pa.y;
-        const d = Math.hypot(dx, dy) || 1;
-        const ideal = kind === "membership" ? 96 : 360;
-        const k = kind === "membership" ? 0.055 : 0.012;
-        const pull = (d - ideal) / d * k * w;
-        force[a].x += dx * pull;
-        force[a].y += dy * pull;
-        force[b].x -= dx * pull;
-        force[b].y -= dy * pull;
-      }
-      for (const e of entities) {
-        const c = clusterById[e.cluster];
-        const p = pos[e.id];
-        if (e.parentId && pos[e.parentId]) {
-          const par = pos[e.parentId];
-          const dx = p.x - par.x;
-          const dy = p.y - par.y;
-          const d = Math.hypot(dx, dy) || 1;
-          const ideal = 96;
-          const k = 0.06;
-          force[e.id].x += (ideal - d) / d * dx * k;
-          force[e.id].y += (ideal - d) / d * dy * k;
-          force[e.parentId].x -= (ideal - d) / d * dx * k * 0.35;
-          force[e.parentId].y -= (ideal - d) / d * dy * k * 0.35;
-        } else {
-          const strength = e.cluster === "institutions" ? 0.016 : 0.012;
-          force[e.id].x += (c.x - p.x) * strength;
-          force[e.id].y += (c.y - p.y) * strength;
-        }
-      }
-      {
-        const appNodes = entities.filter((e) => e.cluster === "app");
-        const instNodes = entities.filter((e) => e.cluster === "institutions");
-        if (appNodes.length && instNodes.length) {
-          let appCy = 0;
-          let instCy = 0;
-          appNodes.forEach((e) => {
-            appCy += pos[e.id].y;
-          });
-          instNodes.forEach((e) => {
-            instCy += pos[e.id].y;
-          });
-          appCy /= appNodes.length;
-          instCy /= instNodes.length;
-          const gap = instCy - appCy;
-          const want = 480;
-          if (gap < want) {
-            const pushY = (want - gap) * 0.04;
-            appNodes.forEach((e) => {
-              force[e.id].y -= pushY;
-            });
-            instNodes.forEach((e) => {
-              force[e.id].y += pushY;
-            });
-          }
-        }
-      }
-      const cool = 0.88 * (1 - iter / iters) + 0.1;
-      for (const e of entities) {
-        let fx = force[e.id].x * cool;
-        let fy = force[e.id].y * cool;
-        const mag = Math.hypot(fx, fy);
-        const maxStep = 32;
-        if (mag > maxStep) {
-          fx = fx / mag * maxStep;
-          fy = fy / mag * maxStep;
-        }
-        pos[e.id].x += fx;
-        pos[e.id].y += fy;
-        pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
-        pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
-      }
+    }
+    for (const e of entities) {
+      pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
+      pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
     }
     return clusters.map((c) => {
       const nodes = entities.filter((e) => e.cluster === c.id).map((e) => ({
@@ -1038,26 +955,17 @@
         x: pos[e.id].x,
         y: pos[e.id].y
       }));
-      const roots = nodes.filter((n) => !n.parentId);
-      const hubPts = roots.length ? roots : nodes;
-      const cx = hubPts.reduce((s, n) => s + n.x, 0) / Math.max(hubPts.length, 1) || c.x;
-      const cy = hubPts.reduce((s, n) => s + n.y, 0) / Math.max(hubPts.length, 1) || c.y;
-      const radius = nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - cx, n.y - cy)), 0) + 50;
+      const radius = nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - c.x, n.y - c.y)), 0) + 40;
       return {
         ...c,
-        anchor: { x: cx, y: cy },
-        radius: Math.max(radius, 120),
-        labelY: cy - Math.max(radius, 120) - 20,
+        anchor: { x: c.x, y: c.y },
+        radius: Math.max(radius, 140),
+        labelY: c.y - Math.max(radius, 140) - 18,
         nodes
       };
     });
   }
-  var networkGraph = layoutNetworkGraph(
-    networkClusters,
-    networkEntities,
-    influenceEdges,
-    membershipEdges
-  );
+  var networkGraph = layoutNetworkGraph(networkClusters, networkEntities);
   function nodeLabelLines(label, maxChars = 18) {
     if (label.length <= maxChars) return [label];
     const words = label.split(" ");
@@ -1483,7 +1391,7 @@
     const detailEdges = !showInfluence ? [] : selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
     const title = focusMode === "structure" ? "Category relationship" : selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
     const subtitle = focusMode === "structure" ? "Straight gray lines only \xB7 cluster \u2192 category \u2192 brand \xB7 no influence arrows" : selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 color arrows = influence \xB7 type tabs filter influence";
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "structure" ? "is-active" : "", onClick: goStructure }, "Categories only"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "+ Influence"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous", disabled: focusMode === "structure" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "structure" ? "structure" : focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} groups` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next", disabled: focusMode === "structure" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Category relationship: straight gray \xB7 always in Categories only"), showInfluence && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence: curved color \xB7 click one arrow")), showInfluence && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "structure" ? "is-active" : "", onClick: goStructure }, "Categories only"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "+ Influence"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous", disabled: focusMode === "structure" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "structure" ? "structure" : focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} groups` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next", disabled: focusMode === "structure" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Category: hubs linked \xB7 hub \u2192 category \u2192 brand (straight gray)"), showInfluence && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence: curved color \xB7 click one arrow")), showInfluence && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: t.id,
@@ -1561,6 +1469,36 @@
           }
         ),
         /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, relationshipEdges.map((edge) => {
+          if (edge.rel === "hub") {
+            const sa = sideById[edge.fromCluster];
+            const sb = sideById[edge.toCluster];
+            if (!sa || !sb) return null;
+            const dx = sb.anchor.x - sa.anchor.x;
+            const dy = sb.anchor.y - sa.anchor.y;
+            const len = Math.hypot(dx, dy) || 1;
+            const ux = dx / len;
+            const uy = dy / len;
+            const trim = 28;
+            const x1 = sa.anchor.x + ux * trim;
+            const y1 = sa.anchor.y + uy * trim;
+            const x2 = sb.anchor.x - ux * trim;
+            const y2 = sb.anchor.y - uy * trim;
+            return /* @__PURE__ */ React.createElement(
+              "line",
+              {
+                key: `rel-hub-${edge.fromCluster}-${edge.toCluster}`,
+                x1,
+                y1,
+                x2,
+                y2,
+                stroke: "#8a8780",
+                strokeWidth: 2.2,
+                strokeLinecap: "round",
+                opacity: 0.45,
+                className: "stakeholder-map__relationship stakeholder-map__relationship--hub"
+              }
+            );
+          }
           let a;
           let b = nodeById[edge.to];
           if (!b) return null;

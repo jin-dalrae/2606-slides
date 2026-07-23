@@ -712,14 +712,14 @@ const influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]
 // 1) Relationship — structural: cluster → category → brand (gray backbone)
 // 2) Influence — typed forces between entities (colored; filters by type)
 // parentId = brand under a category (Reddit under Feed Social). Never drop entities here casually.
+// Fixed hub positions for a neat category map (App center, others around).
 const networkClusters = [
-  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 340, y: 900 },
-  { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1280, y: 700, isHub: true },
-  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 2260, y: 900 },
-  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 420, y: 280 },
-  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 2180, y: 280 },
-  // Institutions sit low so capital/team links don’t crush into App.
-  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1280, y: 1680 },
+  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 420, y: 980 },
+  { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1200, y: 900, isHub: true },
+  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1980, y: 980 },
+  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 520, y: 320 },
+  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1880, y: 320 },
+  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1200, y: 1580 },
 ];
 
 // Entities: as many relatable names as useful. parentId = branch from a category entity.
@@ -809,8 +809,29 @@ const clusterMembershipEdges = networkEntities
     clusterId: e.cluster,
   }));
 
+// Cluster hubs connected to each other (star through App + outer ring).
+const hubLinkPairs = [
+  ["app", "people"],
+  ["app", "hardware"],
+  ["app", "competitors"],
+  ["app", "partners"],
+  ["app", "institutions"],
+  ["people", "competitors"],
+  ["competitors", "partners"],
+  ["partners", "hardware"],
+  ["hardware", "institutions"],
+  ["institutions", "people"],
+];
+const hubHubEdges = hubLinkPairs.map(([a, b]) => ({
+  from: clusterHubId(a),
+  to: clusterHubId(b),
+  rel: "hub",
+  fromCluster: a,
+  toCluster: b,
+}));
+
 // Full relationship edge list (gray background network)
-const relationshipEdges = [...clusterMembershipEdges, ...membershipEdges];
+const relationshipEdges = [...hubHubEdges, ...clusterMembershipEdges, ...membershipEdges];
 
 // Influence edges (typed). Financial = money given (payer → payee).
 // Price / cost pressure = emotional. Separate from relationshipEdges.
@@ -962,202 +983,93 @@ const networkSides = networkClusters.map((c) => ({
   nodes: networkEntities.filter((e) => e.cluster === c.id),
 }));
 
-const MAP_W = 2800;
-const MAP_H = 2000;
-const MAP_PAD = 140;
+const MAP_W = 2400;
+const MAP_H = 1800;
+const MAP_PAD = 80;
 
 /**
- * Layout prioritizes short category-relationship edges (parent↔brand, cluster roots).
- * Influence links may stretch; they must not pull related entities far apart.
+ * Deterministic category layout (neat for “Categories only”):
+ * fixed hub positions, roots in a ring/fan, brands outside their parent.
+ * Influence does not move nodes.
  */
-function layoutNetworkGraph(clusters, entities, influence, membership) {
-  const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
-  const membershipSet = new Set(membership.map((m) => `${m.from}|${m.to}`));
-  const isMembership = (a, b) =>
-    membershipSet.has(`${a}|${b}`) || membershipSet.has(`${b}|${a}`);
-  const relatedByCategory = (a, b) =>
-    isMembership(a.id, b.id) ||
-    a.parentId === b.id ||
-    b.parentId === a.id ||
-    (a.parentId && a.parentId === b.parentId) ||
-    (a.cluster === b.cluster && !a.parentId && !b.parentId);
-
-  // Seed: tight trees around cluster centers (category relationship geometry).
+function layoutNetworkGraph(clusters, entities) {
+  const canvasCx = MAP_W / 2;
+  const canvasCy = MAP_H / 2;
   const pos = {};
-  const parents = entities.filter((e) => !e.parentId);
-  const children = entities.filter((e) => e.parentId);
-  parents.forEach((e) => {
-    const c = clusterById[e.cluster];
-    const peers = parents.filter((p) => p.cluster === e.cluster);
-    const idx = peers.findIndex((p) => p.id === e.id);
-    const ang = -Math.PI / 2 + (idx / Math.max(peers.length, 1)) * Math.PI * 2;
-    const r = 95 + peers.length * 16;
-    pos[e.id] = {
-      x: c.x + Math.cos(ang) * r,
-      y: c.y + Math.sin(ang) * r,
-    };
-  });
-  children.forEach((e) => {
-    const c = clusterById[e.cluster];
-    const sibs = children.filter((ch) => ch.parentId === e.parentId);
-    const idx = sibs.findIndex((ch) => ch.id === e.id);
-    const p = pos[e.parentId] || { x: c.x, y: c.y };
-    const span = Math.min(Math.PI * 0.9, 0.55 * sibs.length);
-    const ang =
-      -span / 2 + (sibs.length <= 1 ? 0 : (idx / (sibs.length - 1)) * span);
-    const r = 88 + idx * 8;
-    pos[e.id] = {
-      x: p.x + Math.cos(ang) * r,
-      y: p.y + Math.sin(ang) * r,
-    };
-  });
 
-  // Strong membership springs; weak long influence springs.
-  const allEdges = [
-    ...influence.map((e) => ({ a: e.from, b: e.to, w: 0.28, kind: "influence" })),
-    ...membership.map((e) => ({ a: e.from, b: e.to, w: 2.4, kind: "membership" })),
-  ];
+  for (const c of clusters) {
+    const hub = { x: c.x, y: c.y };
+    const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
+    const outward = Math.atan2(hub.y - canvasCy, hub.x - canvasCx);
+    const isCenter = Boolean(c.isHub);
+    const rootR = isCenter ? 145 : 125;
 
-  const iters = 420;
-  for (let iter = 0; iter < iters; iter++) {
-    const force = {};
-    for (const e of entities) force[e.id] = { x: 0, y: 0 };
+    roots.forEach((root, i) => {
+      let ang;
+      if (isCenter) {
+        ang = -Math.PI / 2 + (i / Math.max(roots.length, 1)) * Math.PI * 2;
+      } else {
+        // Fan roots away from the map center so trees don’t collide into App.
+        const fan = Math.min(Math.PI * 1.15, 0.55 + roots.length * 0.22);
+        ang =
+          outward -
+          fan / 2 +
+          (roots.length <= 1 ? fan / 2 : (i / (roots.length - 1)) * fan);
+      }
+      pos[root.id] = {
+        x: hub.x + Math.cos(ang) * rootR,
+        y: hub.y + Math.sin(ang) * rootR,
+      };
 
+      const kids = entities.filter((e) => e.parentId === root.id);
+      const childR = rootR + 108;
+      kids.forEach((kid, ki) => {
+        const kfan = Math.min(0.95, 0.28 * Math.max(kids.length, 1));
+        const kang =
+          ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : (ki / (kids.length - 1)) * kfan);
+        pos[kid.id] = {
+          x: hub.x + Math.cos(kang) * childR,
+          y: hub.y + Math.sin(kang) * childR,
+        };
+      });
+    });
+  }
+
+  // Soft pass: separate only overlapping non-family pills (keep trees intact).
+  for (let pass = 0; pass < 40; pass++) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
         const a = entities[i];
         const b = entities[j];
+        const family =
+          a.parentId === b.id ||
+          b.parentId === a.id ||
+          (a.parentId && a.parentId === b.parentId);
+        if (family) continue;
         const pa = pos[a.id];
         const pb = pos[b.id];
         let dx = pb.x - pa.x;
         let dy = pb.y - pa.y;
-        let d2 = dx * dx + dy * dy;
-        if (d2 < 64) {
-          dx = ((i * 17 + j * 13) % 11) - 5 || 1;
-          dy = ((i * 11 + j * 19) % 11) - 5 || 1;
-          d2 = dx * dx + dy * dy;
-        }
-        const d = Math.sqrt(d2);
-        const cat = relatedByCategory(a, b);
-        const sameCluster = a.cluster === b.cluster;
-        const appInstPair =
-          (a.cluster === "app" && b.cluster === "institutions") ||
-          (a.cluster === "institutions" && b.cluster === "app");
-        // Category-related pairs: only light separation (keep trees compact).
-        let minD;
-        let pushBase;
-        if (cat) {
-          minD = 92;
-          pushBase = 3200;
-        } else if (sameCluster) {
-          minD = 130;
-          pushBase = 9000;
-        } else if (appInstPair) {
-          minD = 240;
-          pushBase = 18000;
-        } else {
-          minD = 160;
-          pushBase = 11000;
-        }
-        let push = pushBase / d2;
-        if (d < minD) {
-          push += ((minD - d) / d) * (cat ? 1.2 : sameCluster ? 2.4 : 2.8);
-        }
+        let d = Math.hypot(dx, dy) || 0.01;
+        const minD = a.cluster === b.cluster ? 108 : 96;
+        if (d >= minD) continue;
+        const push = ((minD - d) / d) * 0.5;
         const ux = dx / d;
         const uy = dy / d;
-        force[a.id].x -= ux * push;
-        force[a.id].y -= uy * push;
-        force[b.id].x += ux * push;
-        force[b.id].y += uy * push;
+        pa.x -= ux * push * 0.5;
+        pa.y -= uy * push * 0.5;
+        pb.x += ux * push * 0.5;
+        pb.y += uy * push * 0.5;
       }
-    }
-
-    for (const { a, b, w, kind } of allEdges) {
-      if (!pos[a] || !pos[b]) continue;
-      const pa = pos[a];
-      const pb = pos[b];
-      const dx = pb.x - pa.x;
-      const dy = pb.y - pa.y;
-      const d = Math.hypot(dx, dy) || 1;
-      // Short category links; influence may stretch.
-      const ideal = kind === "membership" ? 96 : 360;
-      const k = kind === "membership" ? 0.055 : 0.012;
-      const pull = ((d - ideal) / d) * k * w;
-      force[a].x += dx * pull;
-      force[a].y += dy * pull;
-      force[b].x -= dx * pull;
-      force[b].y -= dy * pull;
-    }
-
-    // Roots hug cluster center; brands hug their parent (category relationship).
-    for (const e of entities) {
-      const c = clusterById[e.cluster];
-      const p = pos[e.id];
-      if (e.parentId && pos[e.parentId]) {
-        const par = pos[e.parentId];
-        const dx = p.x - par.x;
-        const dy = p.y - par.y;
-        const d = Math.hypot(dx, dy) || 1;
-        const ideal = 96;
-        const k = 0.06;
-        force[e.id].x += ((ideal - d) / d) * dx * k;
-        force[e.id].y += ((ideal - d) / d) * dy * k;
-        // Mild counter-pull so parent stays near its children
-        force[e.parentId].x -= ((ideal - d) / d) * dx * k * 0.35;
-        force[e.parentId].y -= ((ideal - d) / d) * dy * k * 0.35;
-      } else {
-        const strength = e.cluster === "institutions" ? 0.016 : 0.012;
-        force[e.id].x += (c.x - p.x) * strength;
-        force[e.id].y += (c.y - p.y) * strength;
-      }
-    }
-
-    {
-      const appNodes = entities.filter((e) => e.cluster === "app");
-      const instNodes = entities.filter((e) => e.cluster === "institutions");
-      if (appNodes.length && instNodes.length) {
-        let appCy = 0;
-        let instCy = 0;
-        appNodes.forEach((e) => {
-          appCy += pos[e.id].y;
-        });
-        instNodes.forEach((e) => {
-          instCy += pos[e.id].y;
-        });
-        appCy /= appNodes.length;
-        instCy /= instNodes.length;
-        const gap = instCy - appCy;
-        const want = 480;
-        if (gap < want) {
-          const pushY = (want - gap) * 0.04;
-          appNodes.forEach((e) => {
-            force[e.id].y -= pushY;
-          });
-          instNodes.forEach((e) => {
-            force[e.id].y += pushY;
-          });
-        }
-      }
-    }
-
-    const cool = 0.88 * (1 - iter / iters) + 0.1;
-    for (const e of entities) {
-      let fx = force[e.id].x * cool;
-      let fy = force[e.id].y * cool;
-      const mag = Math.hypot(fx, fy);
-      const maxStep = 32;
-      if (mag > maxStep) {
-        fx = (fx / mag) * maxStep;
-        fy = (fy / mag) * maxStep;
-      }
-      pos[e.id].x += fx;
-      pos[e.id].y += fy;
-      pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
-      pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
     }
   }
 
-  // Cluster hub = mean of root entities (keeps gray hub→root lines short).
+  for (const e of entities) {
+    pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
+    pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
+  }
+
+  // Hubs stay on fixed coordinates so hub↔hub links stay clean.
   return clusters.map((c) => {
     const nodes = entities
       .filter((e) => e.cluster === c.id)
@@ -1167,28 +1079,19 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
         x: pos[e.id].x,
         y: pos[e.id].y,
       }));
-    const roots = nodes.filter((n) => !n.parentId);
-    const hubPts = roots.length ? roots : nodes;
-    const cx = hubPts.reduce((s, n) => s + n.x, 0) / Math.max(hubPts.length, 1) || c.x;
-    const cy = hubPts.reduce((s, n) => s + n.y, 0) / Math.max(hubPts.length, 1) || c.y;
     const radius =
-      nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - cx, n.y - cy)), 0) + 50;
+      nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - c.x, n.y - c.y)), 0) + 40;
     return {
       ...c,
-      anchor: { x: cx, y: cy },
-      radius: Math.max(radius, 120),
-      labelY: cy - Math.max(radius, 120) - 20,
+      anchor: { x: c.x, y: c.y },
+      radius: Math.max(radius, 140),
+      labelY: c.y - Math.max(radius, 140) - 18,
       nodes,
     };
   });
 }
 
-const networkGraph = layoutNetworkGraph(
-  networkClusters,
-  networkEntities,
-  influenceEdges,
-  membershipEdges
-);
+const networkGraph = layoutNetworkGraph(networkClusters, networkEntities);
 
 // Shared pill metrics so edge anchors match the drawn rects.
 function nodeLabelLines(label, maxChars = 18) {
@@ -1755,7 +1658,7 @@ function StakeholderMapPage() {
         <div className="stakeholder-map-legend" aria-hidden="true">
           <span className="stakeholder-map-legend__item">
             <i className="stakeholder-map-legend__rel" />
-            Category relationship: straight gray · always in Categories only
+            Category: hubs linked · hub → category → brand (straight gray)
           </span>
           {showInfluence && (
             <span className="stakeholder-map-legend__item">
@@ -1857,6 +1760,37 @@ function StakeholderMapPage() {
             <g className="stakeholder-map__camera" style={cameraStyle}>
               {/* Category relationship: always-on, straight, gray, no arrowheads */}
               {relationshipEdges.map((edge) => {
+                // Hub ↔ hub
+                if (edge.rel === "hub") {
+                  const sa = sideById[edge.fromCluster];
+                  const sb = sideById[edge.toCluster];
+                  if (!sa || !sb) return null;
+                  const dx = sb.anchor.x - sa.anchor.x;
+                  const dy = sb.anchor.y - sa.anchor.y;
+                  const len = Math.hypot(dx, dy) || 1;
+                  const ux = dx / len;
+                  const uy = dy / len;
+                  const trim = 28;
+                  const x1 = sa.anchor.x + ux * trim;
+                  const y1 = sa.anchor.y + uy * trim;
+                  const x2 = sb.anchor.x - ux * trim;
+                  const y2 = sb.anchor.y - uy * trim;
+                  return (
+                    <line
+                      key={`rel-hub-${edge.fromCluster}-${edge.toCluster}`}
+                      x1={x1}
+                      y1={y1}
+                      x2={x2}
+                      y2={y2}
+                      stroke="#8a8780"
+                      strokeWidth={2.2}
+                      strokeLinecap="round"
+                      opacity={0.45}
+                      className="stakeholder-map__relationship stakeholder-map__relationship--hub"
+                    />
+                  );
+                }
+
                 let a;
                 let b = nodeById[edge.to];
                 if (!b) return null;
