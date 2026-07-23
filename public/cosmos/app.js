@@ -719,7 +719,7 @@
       color: "#111c4e",
       nodes: [
         { id: "capital", label: "Investors / Capital" },
-        { id: "employees", label: "Employees / Team" },
+        { id: "employees", label: "Team (Product & Marketing)" },
         { id: "government", label: "Government / Regulators" },
         { id: "organizations", label: "Orgs (Schools, Work, Labs)" }
       ]
@@ -776,6 +776,8 @@
     { from: "employees", to: "spatial-ux", type: "functional", note: "Team capacity and skill mix decide what ships in the spatial layer." },
     { from: "employees", to: "trust-tools", type: "functional", note: "Safety and moderation product work only exists if the team prioritizes it." },
     { from: "employees", to: "contributors", type: "identity", note: "How the team shows up (roadmap, tone, presence) shapes contributor trust." },
+    { from: "employees", to: "readers", type: "emotional", note: "Marketing and narrative work shape first impressions\u2014not a separate \u201Cpromoter\u201D public." },
+    { from: "employees", to: "capital", type: "identity", note: "Story and traction marketing also feed capital conversations." },
     { from: "government", to: "intentional-users", type: "emotional", note: "Privacy and biometric rules set baseline expectations for safe use." },
     { from: "government", to: "voice-interaction", type: "functional", note: "Consent, retention, and biometric law constrain voice product design." },
     { from: "government", to: "meta-platform", type: "financial", note: "Platform compliance cost reshapes what store apps can ship." },
