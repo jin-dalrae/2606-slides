@@ -571,87 +571,85 @@ blockquote footer { max-width: 580px; font-size: 13px; line-height: 1.6; opacity
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 
-/* —— User experience waveline: one 16:9 slide (chart + explanation) —— */
+/* —— User experience waveline: open analysis page (not a 16:9 slide) —— */
 .waveline-page {
   padding-top: 36px;
-  padding-bottom: 48px;
+  padding-bottom: 64px;
 }
 .waveline-frame {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1.05fr) minmax(0, 1.2fr);
-  gap: 8px;
+  grid-template-rows: auto auto auto auto;
+  gap: 16px 18px;
   width: 100%;
-  max-width: min(1240px, 100%);
+  max-width: min(1480px, 100%);
   margin: 0 auto;
-  aspect-ratio: 16 / 9;
-  padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.4vw, 18px);
+  padding: 22px 24px 24px;
   border: 1px solid var(--line);
   background: var(--paper);
   box-shadow: 0 16px 40px rgba(17, 28, 78, 0.07);
-  overflow: hidden;
-  container-type: size;
+  overflow: visible;
 }
 html[data-cosmos-rail="closed"] .waveline-frame {
-  max-width: min(1360px, 100%);
+  max-width: min(1680px, 100%);
 }
 .waveline-frame__head {
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  gap: 8px 18px;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 12px 28px;
   align-items: end;
-  padding-bottom: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
 }
 .waveline-kicker {
-  margin: 0 0 3px;
+  margin: 0 0 6px;
   color: var(--pink);
   font-family: var(--sans);
-  font-size: clamp(11px, 1.25cqi, 13px);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: .11em;
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
 .waveline-frame__head h1 {
   margin: 0;
   color: var(--navy);
   font-family: var(--serif);
-  font-size: clamp(22px, 3.1cqi, 34px);
+  font-size: clamp(28px, 3.2vw, 44px);
   font-weight: 600;
   line-height: 1.08;
-  letter-spacing: -.025em;
+  letter-spacing: -.03em;
 }
 .waveline-lede {
   margin: 0;
   color: var(--muted);
   font-family: var(--sans);
-  font-size: clamp(13px, 1.55cqi, 16px);
+  font-size: clamp(14px, 1.2vw, 17px);
   font-weight: 500;
-  line-height: 1.35;
-  max-width: 34ch;
+  line-height: 1.45;
+  max-width: 42ch;
   justify-self: end;
 }
 .waveline-frame__legend-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
+  gap: 10px 14px;
   align-items: center;
 }
 .waveline-legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
+  gap: 10px;
+  padding: 9px 14px;
   border: 1px solid var(--line);
   background: white;
   color: var(--navy);
   font-family: var(--sans);
-  font-size: clamp(11px, 1.3cqi, 13px);
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
 }
 .waveline-legend-item i {
   display: block;
-  width: 18px;
+  width: 22px;
   height: 3px;
   border-radius: 2px;
 }
@@ -663,46 +661,49 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   border-color: var(--navy);
 }
 .waveline-chart--compare .peak-label {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 .waveline-y-tick-label {
   fill: var(--muted);
   font-family: var(--sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 .waveline-y-axis-title {
   fill: var(--navy);
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.02em;
 }
 .waveline-y-axis-sub {
   fill: var(--muted);
   font-family: var(--sans);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
 }
 .waveline-x-axis-title {
   fill: var(--muted);
   font-family: var(--sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 .waveline-frame__chart {
-  min-height: 0;
+  min-height: 420px;
+  height: clamp(420px, 46vh, 620px);
   display: flex;
   align-items: stretch;
+  padding: 8px 4px 4px;
+  border: 1px solid var(--line);
+  background: #fbfaf6;
 }
 .waveline-chart {
   display: block;
   width: 100%;
   height: 100%;
-  max-height: 100%;
   font-family: var(--sans);
 }
 .waveline-chart text {
@@ -712,7 +713,7 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   font-family: var(--sans);
 }
 .waveline-chart text.peak-label {
-  font-size: 17px;
+  font-size: 18px;
   letter-spacing: 0.02em;
 }
 .waveline-chart text.is-active { fill: var(--pink); }
@@ -724,30 +725,29 @@ html[data-cosmos-rail="closed"] .waveline-frame {
 }
 .waveline-chart text.stage-name {
   fill: var(--navy);
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 700;
   font-family: var(--sans);
 }
 .waveline-frame__detail {
-  min-height: 0;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 6px;
-  padding: 10px 12px 8px;
+  grid-template-rows: auto auto auto;
+  gap: 14px;
+  padding: 20px 22px 18px;
   border: 1px solid var(--line);
   background: var(--paper-deep);
-  overflow: hidden;
+  overflow: visible;
 }
 .waveline-frame__detail-title {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 8px 12px;
+  gap: 10px 16px;
   align-items: center;
 }
 .waveline-frame__detail-title > span {
   color: var(--pink);
   font-family: var(--serif);
-  font-size: clamp(26px, 3.4cqi, 36px);
+  font-size: clamp(32px, 3.2vw, 44px);
   font-weight: 600;
   line-height: 1;
 }
@@ -755,35 +755,32 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   margin: 0;
   color: var(--navy);
   font-family: var(--serif);
-  font-size: clamp(20px, 2.5cqi, 28px);
+  font-size: clamp(22px, 2.2vw, 32px);
   font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -.015em;
+  line-height: 1.12;
+  letter-spacing: -.02em;
 }
 .waveline-frame__detail-title p {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   color: var(--muted);
   font-family: var(--sans);
-  font-size: clamp(12px, 1.4cqi, 15px);
+  font-size: 15px;
   font-weight: 600;
 }
 .waveline-frame__cols {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 14px;
-  min-height: 0;
-  overflow: hidden;
+  gap: 16px 22px;
 }
 .waveline-frame__cols article {
   min-width: 0;
-  overflow: hidden;
 }
 .waveline-frame__cols b {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   color: var(--pink);
   font-family: var(--sans);
-  font-size: clamp(10px, 1.15cqi, 12px);
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -792,66 +789,66 @@ html[data-cosmos-rail="closed"] .waveline-frame {
   margin: 0;
   color: #2f3758;
   font-family: var(--sans);
-  font-size: clamp(12.5px, 1.55cqi, 15.5px);
+  font-size: 15.5px;
   font-weight: 500;
-  line-height: 1.38;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
-  overflow: hidden;
+  line-height: 1.55;
+  /* Full copy — no slide-style line clamp */
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
 }
 .waveline-frame__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .waveline-frame__chips li {
   margin: 0;
-  padding: 4px 9px;
+  padding: 7px 12px;
   border: 1px solid var(--line);
   background: white;
   color: var(--navy);
   font-family: var(--sans);
-  font-size: clamp(11px, 1.25cqi, 13px);
+  font-size: 13px;
   font-weight: 700;
 }
 .waveline-share-hint {
-  margin: 12px auto 0;
-  max-width: min(1240px, 100%);
+  margin: 16px auto 0;
+  max-width: min(1480px, 100%);
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 14px;
+  line-height: 1.45;
 }
-.report-next-links {
+.waveline-page .report-next-links {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  max-width: min(1240px, 100%);
-  margin: 22px auto 0;
-  padding-top: 14px;
+  max-width: min(1480px, 100%);
+  margin: 28px auto 0;
+  padding-top: 18px;
   border-top: 1px solid var(--line);
   font-size: 14px;
   font-weight: 600;
 }
-.report-next-links a { text-decoration: none; }
-.report-next-links a:hover { color: var(--pink); }
+.waveline-page .report-next-links a { text-decoration: none; }
+.waveline-page .report-next-links a:hover { color: var(--pink); }
 
 @media (max-width: 900px) {
   .waveline-frame {
-    aspect-ratio: auto;
-    min-height: auto;
-    height: auto;
-    grid-template-rows: auto auto auto auto;
+    padding: 16px;
+    gap: 14px;
   }
   .waveline-frame__head { grid-template-columns: 1fr; }
   .waveline-lede { justify-self: start; max-width: none; }
   .waveline-frame__wave-tabs { grid-template-columns: 1fr; }
-  .waveline-frame__chart { min-height: 220px; }
+  .waveline-frame__chart {
+    min-height: 280px;
+    height: 300px;
+  }
   .waveline-frame__cols { grid-template-columns: 1fr; }
-  .waveline-frame__cols p { -webkit-line-clamp: 10; }
 }
 
 /* —— Stakeholder map: 16:9 plot + full relationship detail —— */
@@ -1741,11 +1738,15 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   html[data-cosmos-rail="closed"] .stakeholder-shell {
     max-width: min(1680px, 100%);
   }
-  .waveline-frame,
+  .waveline-frame {
+    max-width: min(1560px, 100%);
+  }
+  html[data-cosmos-rail="closed"] .waveline-frame {
+    max-width: min(1680px, 100%);
+  }
   .stakeholder-frame {
     max-width: min(1520px, 100%);
   }
-  html[data-cosmos-rail="closed"] .waveline-frame,
   html[data-cosmos-rail="closed"] .stakeholder-frame {
     max-width: min(1640px, 100%);
   }
@@ -1889,30 +1890,60 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
     font-size: 19px;
   }
 
-  /* Waveline + stakeholder: use most of a 1920 presentation canvas */
-  .waveline-page,
+  /* Waveline: open page (not locked to 16:9). Stakeholder frame can still fill canvas. */
+  .waveline-page {
+    padding-top: 28px;
+    padding-bottom: 56px;
+  }
   .stakeholder-page.report-section,
   .stakeholder-page {
     padding-top: 20px;
     padding-bottom: 36px;
   }
-  .waveline-frame,
+  .waveline-frame {
+    max-width: min(1720px, calc(100vw - 340px));
+    width: 100%;
+    height: auto;
+    max-height: none;
+  }
+  html[data-cosmos-rail="closed"] .waveline-frame {
+    max-width: min(1840px, calc(100vw - 48px));
+  }
+  .waveline-frame__head h1 {
+    font-size: clamp(34px, 2.8vw, 52px);
+  }
+  .waveline-lede {
+    font-size: 18px;
+    max-width: 46ch;
+  }
+  .waveline-frame__chart {
+    min-height: 520px;
+    height: clamp(520px, 52vh, 720px);
+  }
+  .waveline-frame__cols p {
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .waveline-frame__detail {
+    padding: 24px 26px 22px;
+  }
+  .waveline-share-hint,
+  .waveline-page .report-next-links {
+    max-width: min(1720px, calc(100vw - 340px));
+  }
+  html[data-cosmos-rail="closed"] .waveline-share-hint,
+  html[data-cosmos-rail="closed"] .waveline-page .report-next-links {
+    max-width: min(1840px, calc(100vw - 48px));
+  }
   .stakeholder-frame {
     max-width: min(1720px, calc(100vw - 340px));
     width: min(1720px, calc(100vw - 340px), calc((100vh - 120px) * 16 / 9));
     height: min(calc(100vh - 120px), 980px);
     max-height: calc(100vh - 110px);
   }
-  html[data-cosmos-rail="closed"] .waveline-frame,
   html[data-cosmos-rail="closed"] .stakeholder-frame {
     max-width: min(1840px, calc(100vw - 48px));
     width: min(1840px, calc(100vw - 48px), calc((100vh - 110px) * 16 / 9));
-  }
-  .waveline-frame__head h1 {
-    font-size: clamp(28px, 2.4cqi, 42px);
-  }
-  .waveline-lede {
-    font-size: clamp(14px, 1.5cqi, 18px);
   }
   .stakeholder-shell {
     max-width: min(1720px, calc(100vw - 340px));
@@ -1986,13 +2017,30 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
     font-size: clamp(52px, 3.4vw, 82px);
   }
   .stakeholder-shell,
-  .waveline-frame,
   .stakeholder-frame {
     max-width: min(1860px, calc(100vw - 340px));
   }
+  .waveline-frame {
+    max-width: min(1860px, calc(100vw - 340px));
+  }
   html[data-cosmos-rail="closed"] .stakeholder-shell,
-  html[data-cosmos-rail="closed"] .waveline-frame,
-  html[data-cosmos-rail="closed"] .stakeholder-frame {
+  html[data-cosmos-rail="closed"] .stakeholder-frame,
+  html[data-cosmos-rail="closed"] .waveline-frame {
+    max-width: min(1920px, calc(100vw - 40px));
+  }
+  .waveline-frame__chart {
+    min-height: 560px;
+    height: clamp(560px, 54vh, 780px);
+  }
+  .waveline-frame__cols p {
+    font-size: 18px;
+  }
+  .waveline-share-hint,
+  .waveline-page .report-next-links {
+    max-width: min(1860px, calc(100vw - 340px));
+  }
+  html[data-cosmos-rail="closed"] .waveline-share-hint,
+  html[data-cosmos-rail="closed"] .waveline-page .report-next-links {
     max-width: min(1920px, calc(100vw - 40px));
   }
   .stakeholder-frame__map--focus,

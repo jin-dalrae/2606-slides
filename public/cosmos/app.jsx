@@ -453,12 +453,13 @@ function buildWavePath(stages, padL, padT, chartW, chartH) {
 // All experience waves on one chart. Stage axis is shared; click a stage or a
 // curve point to inspect that wave × stage in the detail panel.
 function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStage, onSelectWave }) {
-  const width = 1520;
-  const height = 360;
-  const padL = 108;
-  const padR = 72;
-  const padT = 32;
-  const padB = 62;
+  // Taller plot — open analysis page, not a 16:9 slide crop.
+  const width = 1680;
+  const height = 520;
+  const padL = 118;
+  const padR = 80;
+  const padT = 40;
+  const padB = 72;
   const chartW = width - padL - padR;
   const chartH = height - padT - padB;
   const baselineY = padT + chartH;
@@ -626,12 +627,16 @@ function UserWavelinePage() {
 
   return (
     <section className="report-section waveline-page" id="user-waveline">
-      <div className="waveline-frame" aria-label="Compared experience wavelines, 16 by 9">
+      <div className="waveline-frame" aria-label="Compared experience wavelines">
         <header className="waveline-frame__head">
           <div>
             <p className="waveline-kicker">04 · User wavelines · three sessions</p>
             <h1>Three sessions, one stage spine</h1>
           </div>
+          <p className="waveline-lede">
+            Same eight stages across Cosmos, feed platforms, and VR without a game loop.
+            Height is felt intensity — not time-on-app. Click a curve or stage to open the full stage reading.
+          </p>
         </header>
 
         <div className="waveline-frame__legend-row" role="list" aria-label="Wave legend">

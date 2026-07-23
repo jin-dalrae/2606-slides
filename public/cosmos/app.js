@@ -1368,12 +1368,12 @@
     return { points, lineD };
   }
   function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStage, onSelectWave }) {
-    const width = 1520;
-    const height = 360;
-    const padL = 108;
-    const padR = 72;
-    const padT = 32;
-    const padB = 62;
+    const width = 1680;
+    const height = 520;
+    const padL = 118;
+    const padR = 80;
+    const padT = 40;
+    const padB = 72;
     const chartW = width - padL - padR;
     const chartH = height - padT - padB;
     const baselineY = padT + chartH;
@@ -1509,7 +1509,7 @@
     const [activeId, setActiveId] = useState("immerse");
     const wave = experienceWaves.find((w) => w.id === waveId) || experienceWaves[0];
     const active = wave.stages.find((s) => s.id === activeId) || wave.stages[0];
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Compared experience wavelines, 16 by 9" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User wavelines \xB7 three sessions"), /* @__PURE__ */ React.createElement("h1", null, "Three sessions, one stage spine"))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__legend-row", role: "list", "aria-label": "Wave legend" }, experienceWaves.map((w) => /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Compared experience wavelines" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User wavelines \xB7 three sessions"), /* @__PURE__ */ React.createElement("h1", null, "Three sessions, one stage spine")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Same eight stages across Cosmos, feed platforms, and VR without a game loop. Height is felt intensity \u2014 not time-on-app. Click a curve or stage to open the full stage reading.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__legend-row", role: "list", "aria-label": "Wave legend" }, experienceWaves.map((w) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: w.id,
