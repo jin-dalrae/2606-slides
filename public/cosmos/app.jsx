@@ -949,56 +949,90 @@ const MAP_H = 1680;
 const MAP_PAD = 120;
 
 /**
- * Soft-region force layout: roomy spacing — strong repulsion, longer ideal
- * edges, weaker cluster glue so groups breathe without stacking pills.
+ * Pure network force layout — no geographic “areas”.
+ * Positions come only from influence + membership links (and repulsion).
+ * Multi-hop structure shows up as connected components, not region blobs.
  */
 function layoutNetworkGraph(clusters, entities, influence, membership) {
-  const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
   const membershipSet = new Set(membership.map((m) => `${m.from}|${m.to}`));
   const isMembership = (a, b) =>
     membershipSet.has(`${a}|${b}`) || membershipSet.has(`${b}|${a}`);
 
-  // Seed: wide rings around cluster regions; children branch farther out.
+  // Degree for seed ordering (highly connected nodes toward center later).
+  const degree = {};
+  entities.forEach((e) => {
+    degree[e.id] = 0;
+  });
+  influence.forEach((e) => {
+    degree[e.from] = (degree[e.from] || 0) + 1;
+    degree[e.to] = (degree[e.to] || 0) + 1;
+  });
+  membership.forEach((e) => {
+    degree[e.from] = (degree[e.from] || 0) + 0.5;
+    degree[e.to] = (degree[e.to] || 0) + 0.5;
+  });
+
+  const ordered = [...entities].sort(
+    (a, b) => (degree[b.id] || 0) - (degree[a.id] || 0) || a.id.localeCompare(b.id)
+  );
+
+  // Seed on a spiral (deterministic) — structure emerges from forces, not regions.
   const pos = {};
-  const parents = entities.filter((e) => !e.parentId);
-  const children = entities.filter((e) => e.parentId);
-  parents.forEach((e) => {
-    const c = clusterById[e.cluster];
-    const peers = parents.filter((p) => p.cluster === e.cluster);
-    const idx = peers.findIndex((p) => p.id === e.id);
-    const ang = -Math.PI / 2 + (idx / Math.max(peers.length, 1)) * Math.PI * 2;
-    const r = 90 + peers.length * 22;
+  const cx0 = MAP_W / 2;
+  const cy0 = MAP_H / 2;
+  ordered.forEach((e, i) => {
+    const t = i + 1;
+    const r = 40 + t * 18;
+    const ang = t * 0.85;
     pos[e.id] = {
-      x: c.x + Math.cos(ang) * r + (idx % 3) * 12,
-      y: c.y + Math.sin(ang) * r + (idx % 2) * 14,
+      x: cx0 + Math.cos(ang) * r,
+      y: cy0 + Math.sin(ang) * r,
     };
   });
-  children.forEach((e) => {
-    const c = clusterById[e.cluster];
-    const sibs = children.filter((ch) => ch.parentId === e.parentId);
-    const idx = sibs.findIndex((ch) => ch.id === e.id);
-    const p = pos[e.parentId] || { x: c.x, y: c.y };
-    const span = Math.PI * 0.85;
-    const ang =
-      -span / 2 + (sibs.length <= 1 ? 0 : (idx / (sibs.length - 1)) * span);
-    const r = 120 + idx * 18;
-    pos[e.id] = {
-      x: p.x + Math.cos(ang) * r,
-      y: p.y + Math.sin(ang) * r,
-    };
-  });
+  // Children start near parents if already placed
+  entities
+    .filter((e) => e.parentId)
+    .forEach((e, i) => {
+      const p = pos[e.parentId];
+      if (!p) return;
+      const ang = i * 1.1;
+      pos[e.id] = {
+        x: p.x + Math.cos(ang) * 90,
+        y: p.y + Math.sin(ang) * 90,
+      };
+    });
 
   const allEdges = [
-    ...influence.map((e) => ({ a: e.from, b: e.to, w: 0.85 })),
-    ...membership.map((e) => ({ a: e.from, b: e.to, w: 1.35 })),
+    ...influence.map((e) => ({ a: e.from, b: e.to, w: 1 })),
+    ...membership.map((e) => ({ a: e.from, b: e.to, w: 1.5 })),
   ];
 
-  const iters = 320;
+  // 2-hop “path” springs so multi-step chains pull into coherent chains (weak).
+  const undirected = {};
+  const linkU = (a, b) => {
+    if (!undirected[a]) undirected[a] = new Set();
+    if (!undirected[b]) undirected[b] = new Set();
+    undirected[a].add(b);
+    undirected[b].add(a);
+  };
+  influence.forEach((e) => linkU(e.from, e.to));
+  membership.forEach((e) => linkU(e.from, e.to));
+  const twoHop = [];
+  for (const a of Object.keys(undirected)) {
+    for (const mid of undirected[a]) {
+      for (const b of undirected[mid]) {
+        if (b === a || undirected[a].has(b)) continue;
+        if (a < b) twoHop.push({ a, b, w: 0.22 });
+      }
+    }
+  }
+
+  const iters = 380;
   for (let iter = 0; iter < iters; iter++) {
     const force = {};
     for (const e of entities) force[e.id] = { x: 0, y: 0 };
 
-    // Stronger node–node repulsion (especially within cluster)
+    // Uniform repulsion (network space, not regional)
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
         const a = entities[i];
@@ -1014,15 +1048,9 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
           d2 = dx * dx + dy * dy;
         }
         const d = Math.sqrt(d2);
-        // Soft minimum spacing; extra push between App ↔ Institutions (many money/edge springs).
-        const sameCluster = a.cluster === b.cluster;
-        const appInstPair =
-          (a.cluster === "app" && b.cluster === "institutions") ||
-          (a.cluster === "institutions" && b.cluster === "app");
-        const minD = sameCluster ? 155 : appInstPair ? 200 : 130;
-        const pushBase = sameCluster ? 9800 : appInstPair ? 14000 : 7200;
-        let push = pushBase / d2;
-        if (d < minD) push += ((minD - d) / d) * (sameCluster ? 2.5 : appInstPair ? 3.2 : 1.8);
+        const minD = 140;
+        let push = 7800 / d2;
+        if (d < minD) push += ((minD - d) / d) * 2.2;
         const ux = dx / d;
         const uy = dy / d;
         force[a.id].x -= ux * push;
@@ -1032,7 +1060,7 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
       }
     }
 
-    // Edge springs — longer rest length so influence lines can stretch
+    // Direct edges (influence + membership)
     for (const { a, b, w } of allEdges) {
       if (!pos[a] || !pos[b]) continue;
       const pa = pos[a];
@@ -1040,75 +1068,43 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
       const dx = pb.x - pa.x;
       const dy = pb.y - pa.y;
       const d = Math.hypot(dx, dy) || 1;
-      const ideal = isMembership(a, b) ? 100 : 240;
-      const pull = ((d - ideal) / d) * 0.028 * w;
+      const ideal = isMembership(a, b) ? 95 : 200;
+      const pull = ((d - ideal) / d) * 0.04 * w;
       force[a].x += dx * pull;
       force[a].y += dy * pull;
       force[b].x -= dx * pull;
       force[b].y -= dy * pull;
     }
 
-    // Cluster attractor — slightly stronger for institutions so they stay low
-    for (const e of entities) {
-      const c = clusterById[e.cluster];
-      const p = pos[e.id];
-      let strength = e.parentId ? 0.004 : 0.012;
-      if (e.cluster === "institutions") strength = e.parentId ? 0.006 : 0.02;
-      if (e.cluster === "app") strength = e.parentId ? 0.004 : 0.014;
-      force[e.id].x += (c.x - p.x) * strength;
-      force[e.id].y += (c.y - p.y) * strength;
-    }
-
-    // Soft bias: keep App centroid above Institutions (reduce vertical overlap)
-    {
-      const appNodes = entities.filter((e) => e.cluster === "app");
-      const instNodes = entities.filter((e) => e.cluster === "institutions");
-      if (appNodes.length && instNodes.length) {
-        let appCy = 0;
-        let instCy = 0;
-        appNodes.forEach((e) => {
-          appCy += pos[e.id].y;
-        });
-        instNodes.forEach((e) => {
-          instCy += pos[e.id].y;
-        });
-        appCy /= appNodes.length;
-        instCy /= instNodes.length;
-        const gap = instCy - appCy;
-        const want = 420;
-        if (gap < want) {
-          const pushY = (want - gap) * 0.04;
-          appNodes.forEach((e) => {
-            force[e.id].y -= pushY;
-          });
-          instNodes.forEach((e) => {
-            force[e.id].y += pushY;
-          });
-        }
-      }
-    }
-
-    // Children stay near parent, but not on top of them
-    for (const e of children) {
-      const p = pos[e.parentId];
-      const q = pos[e.id];
-      if (!p) continue;
-      const dx = q.x - p.x;
-      const dy = q.y - p.y;
+    // Weak 2-hop springs: multi-step paths form chains instead of random scatter
+    for (const { a, b, w } of twoHop) {
+      if (!pos[a] || !pos[b]) continue;
+      const pa = pos[a];
+      const pb = pos[b];
+      const dx = pb.x - pa.x;
+      const dy = pb.y - pa.y;
       const d = Math.hypot(dx, dy) || 1;
-      const ideal = 110;
-      const k = 0.03;
-      force[e.id].x += ((ideal - d) / d) * dx * k;
-      force[e.id].y += ((ideal - d) / d) * dy * k;
+      const ideal = 320;
+      const pull = ((d - ideal) / d) * 0.012 * w;
+      force[a].x += dx * pull;
+      force[a].y += dy * pull;
+      force[b].x -= dx * pull;
+      force[b].y -= dy * pull;
     }
 
-    const cool = 0.9 * (1 - iter / iters) + 0.1;
+    // Mild center gravity so the network doesn’t fly apart
     for (const e of entities) {
-      // Cap step so layout stays stable
+      const p = pos[e.id];
+      force[e.id].x += (cx0 - p.x) * 0.003;
+      force[e.id].y += (cy0 - p.y) * 0.003;
+    }
+
+    const cool = 0.92 * (1 - iter / iters) + 0.08;
+    for (const e of entities) {
       let fx = force[e.id].x * cool;
       let fy = force[e.id].y * cool;
       const mag = Math.hypot(fx, fy);
-      const maxStep = 28;
+      const maxStep = 30;
       if (mag > maxStep) {
         fx = (fx / mag) * maxStep;
         fy = (fy / mag) * maxStep;
@@ -1120,7 +1116,23 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
     }
   }
 
-  // Build graph API expected by UI
+  // Recenter mass
+  let mx = 0;
+  let my = 0;
+  entities.forEach((e) => {
+    mx += pos[e.id].x;
+    my += pos[e.id].y;
+  });
+  mx /= entities.length;
+  my /= entities.length;
+  entities.forEach((e) => {
+    pos[e.id].x += cx0 - mx;
+    pos[e.id].y += cy0 - my;
+    pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
+    pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
+  });
+
+  // Build graph API expected by UI (cluster = group color only, not a region)
   return clusters.map((c) => {
     const nodes = entities
       .filter((e) => e.cluster === c.id)
@@ -1134,16 +1146,40 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
     const ys = nodes.map((n) => n.y);
     const cx = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : c.x;
     const cy = ys.length ? ys.reduce((a, b) => a + b, 0) / ys.length : c.y;
-    const radius =
-      nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - cx, n.y - cy)), 0) + 70;
     return {
       ...c,
       anchor: { x: cx, y: cy },
-      radius: Math.max(radius, 140),
-      labelY: cy - Math.max(radius, 140) - 20,
+      radius: 80,
+      labelY: cy - 40,
       nodes,
     };
   });
+}
+
+/** Undirected multi-hop neighborhood for influence + membership (network paths). */
+function multiHopNeighborhood(startId, edges, membership, maxHop = 2) {
+  const adj = {};
+  const add = (a, b) => {
+    if (!adj[a]) adj[a] = [];
+    if (!adj[b]) adj[b] = [];
+    adj[a].push(b);
+    adj[b].push(a);
+  };
+  edges.forEach((e) => add(e.from, e.to));
+  membership.forEach((e) => add(e.from, e.to));
+  const hop = { [startId]: 0 };
+  const q = [startId];
+  for (let qi = 0; qi < q.length; qi++) {
+    const u = q[qi];
+    if (hop[u] >= maxHop) continue;
+    for (const v of adj[u] || []) {
+      if (hop[v] === undefined) {
+        hop[v] = hop[u] + 1;
+        q.push(v);
+      }
+    }
+  }
+  return hop;
 }
 
 const networkGraph = layoutNetworkGraph(
@@ -1280,7 +1316,14 @@ function StakeholderMapPage() {
   const activeNode = activeNodeId ? nodeById[activeNodeId] : null;
 
   const typedEdges = influenceEdges.filter((e) => e.type === activeTypeId);
+  // Multi-step neighborhood when an entity is selected (direct + 2-hop paths).
+  const hopByNode = activeNodeId
+    ? multiHopNeighborhood(activeNodeId, influenceEdges, membershipEdges, 2)
+    : null;
   const nodeFocusEdges = activeNodeId
+    ? influenceEdges.filter((e) => hopByNode[e.from] !== undefined && hopByNode[e.to] !== undefined)
+    : [];
+  const directFocusEdges = activeNodeId
     ? influenceEdges.filter((e) => e.from === activeNodeId || e.to === activeNodeId)
     : [];
   const sideNodeIds = new Set((activeSide?.nodes || []).map((n) => n.id));
@@ -1288,7 +1331,7 @@ function StakeholderMapPage() {
     (e) => sideNodeIds.has(e.from) || sideNodeIds.has(e.to)
   );
 
-  // Which nodes are lit for the current focus
+  // Which nodes are lit for the current focus (network, not area)
   const litNodeIds = (() => {
     const set = new Set();
     if (focusMode === "type") {
@@ -1297,12 +1340,8 @@ function StakeholderMapPage() {
         set.add(e.to);
       });
     } else if (focusMode === "side") {
-      if (activeNodeId) {
-        set.add(activeNodeId);
-        nodeFocusEdges.forEach((e) => {
-          set.add(e.from);
-          set.add(e.to);
-        });
+      if (activeNodeId && hopByNode) {
+        Object.keys(hopByNode).forEach((id) => set.add(id));
       } else {
         sideNodeIds.forEach((id) => set.add(id));
         sideFocusEdges.forEach((e) => {
@@ -1311,7 +1350,6 @@ function StakeholderMapPage() {
         });
       }
     } else {
-      // overview: light nodes that participate in any influence
       influenceEdges.forEach((e) => {
         set.add(e.from);
         set.add(e.to);
@@ -1321,7 +1359,15 @@ function StakeholderMapPage() {
   })();
 
   const focusSideIds = (() => {
-    if (focusMode === "side") return [activeSideId];
+    if (focusMode === "side" && !activeNodeId) return [activeSideId];
+    if (focusMode === "side" && activeNodeId) {
+      const sides = new Set();
+      litNodeIds.forEach((id) => {
+        const n = nodeById[id];
+        if (n) sides.add(n.sideId);
+      });
+      return [...sides];
+    }
     if (focusMode === "type") {
       const sides = new Set();
       typedEdges.forEach((e) => {
@@ -1342,31 +1388,37 @@ function StakeholderMapPage() {
       if (activeNodeId) return nodeFocusEdges;
       return sideFocusEdges;
     }
-    // overview: show all lightly; typed filter still tints
     return influenceEdges;
   })();
 
   const focusBounds = (() => {
     const pts = [];
-    if (focusMode === "side" && activeNodeId && nodeById[activeNodeId]) {
-      const n = nodeById[activeNodeId];
-      pts.push(n, sideById[n.sideId].anchor);
-      nodeFocusEdges.forEach((e) => {
+    if (focusMode === "side" && activeNodeId && hopByNode) {
+      Object.keys(hopByNode).forEach((id) => {
+        if (nodeById[id]) pts.push(nodeById[id]);
+      });
+    } else if (focusMode === "type") {
+      typedEdges.forEach((e) => {
+        if (nodeById[e.from]) pts.push(nodeById[e.from]);
+        if (nodeById[e.to]) pts.push(nodeById[e.to]);
+      });
+    } else if (focusMode === "side") {
+      for (const n of activeSide?.nodes || []) {
+        if (nodeById[n.id]) pts.push(nodeById[n.id]);
+      }
+      sideFocusEdges.forEach((e) => {
         if (nodeById[e.from]) pts.push(nodeById[e.from]);
         if (nodeById[e.to]) pts.push(nodeById[e.to]);
       });
     } else {
-      for (const sid of focusSideIds) {
-        const side = sideById[sid];
-        if (!side) continue;
-        pts.push(side.anchor);
-        side.nodes.forEach((n) => pts.push(n));
-      }
+      networkEntities.forEach((e) => {
+        if (nodeById[e.id]) pts.push(nodeById[e.id]);
+      });
     }
     if (!pts.length) return { cx: width / 2, cy: height / 2, scale: 1 };
     const xs = pts.map((p) => p.x);
     const ys = pts.map((p) => p.y);
-    const pad = focusMode === "side" ? 150 : 170;
+    const pad = activeNodeId ? 180 : focusMode === "side" ? 160 : 200;
     const minX = Math.min(...xs) - pad;
     const maxX = Math.max(...xs) + pad;
     const minY = Math.min(...ys) - pad;
@@ -1376,9 +1428,8 @@ function StakeholderMapPage() {
     const bw = Math.max(maxX - minX, 320);
     const bh = Math.max(maxY - minY, 280);
     const fit = Math.min(width / bw, height / bh);
-    // Overview slightly zoomed out so the roomier graph has breathing room.
-    const bias = focusMode === "side" ? 1.12 : focusMode === "type" ? 0.98 : 0.88;
-    return { cx, cy, scale: Math.min(fit * bias, focusMode === "overview" ? 0.95 : 1.45) };
+    const bias = activeNodeId ? 1.05 : focusMode === "side" ? 1.0 : focusMode === "type" ? 0.95 : 0.86;
+    return { cx, cy, scale: Math.min(fit * bias, focusMode === "overview" ? 0.92 : 1.5) };
   })();
 
   const cam = view || focusBounds;
@@ -1455,7 +1506,7 @@ function StakeholderMapPage() {
     if (
       target.closest &&
       target.closest(
-        ".stakeholder-map__node, .stakeholder-map__influence-hit, .stakeholder-map__cluster, button, a"
+        ".stakeholder-map__node, .stakeholder-map__influence-hit, button, a"
       )
     ) {
       return;
@@ -1551,9 +1602,16 @@ function StakeholderMapPage() {
   const detailEdges =
     focusMode === "side"
       ? activeNodeId
-        ? nodeFocusEdges
+        ? directFocusEdges
         : sideFocusEdges
       : typedEdges;
+
+  const hop2Count = hopByNode
+    ? Object.values(hopByNode).filter((h) => h === 2).length
+    : 0;
+  const hop1Count = hopByNode
+    ? Object.values(hopByNode).filter((h) => h === 1).length
+    : 0;
 
   const title =
     focusMode === "side"
@@ -1567,8 +1625,8 @@ function StakeholderMapPage() {
   const subtitle =
     focusMode === "side"
       ? activeNode
-        ? `${activeNode.sideName} · influences involving this entity`
-        : `${activeSide.name} · all influences touching this side`
+        ? `Multi-step network · ${hop1Count} direct · ${hop2Count} two hops away`
+        : `${activeSide.name} · links touching this group`
       : focusMode === "type"
         ? activeType.desc
         : "Sparse directed influences across entities. Filter by type or open a side/entity.";
@@ -1578,7 +1636,7 @@ function StakeholderMapPage() {
       <div className="stakeholder-shell" aria-label="Cosmos VR stakeholder influence network">
         <header className="stakeholder-frame__head">
           <div>
-            <p className="stakeholder-kicker">05 · Stakeholder network · influence</p>
+            <p className="stakeholder-kicker">05 · Stakeholder network · multi-step influence</p>
             <h1>{title}</h1>
           </div>
           <p className="stakeholder-lede">{subtitle}</p>
@@ -1586,15 +1644,15 @@ function StakeholderMapPage() {
 
         <div className="stakeholder-frame__toolbar">
           <div className="stakeholder-frame__mode-tabs" role="tablist" aria-label="Focus mode">
-            <button type="button" className={focusMode === "overview" ? "is-active" : ""} onClick={goOverview}>Overview</button>
+            <button type="button" className={focusMode === "overview" ? "is-active" : ""} onClick={goOverview}>Full network</button>
             <button type="button" className={focusMode === "type" ? "is-active" : ""} onClick={() => goType(activeTypeId)}>By influence type</button>
-            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>By side / entity</button>
+            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>By group / entity</button>
           </div>
           <div className="stakeholder-frame__stepper">
             <button type="button" onClick={() => stepPart(-1)} aria-label="Previous">←</button>
             <span>
               {focusMode === "side"
-                ? `${sideIndex + 1} / ${networkGraph.length} sides`
+                ? `${sideIndex + 1} / ${networkGraph.length} groups`
                 : `${typeIndex + 1} / ${influenceTypes.length} types`}
             </span>
             <button type="button" onClick={() => stepPart(1)} aria-label="Next">→</button>
@@ -1603,7 +1661,9 @@ function StakeholderMapPage() {
             </button>
           </div>
         </div>
-        <p className="stakeholder-map-hint">Scroll to zoom · Drag empty space to pan · Fit resets camera</p>
+        <p className="stakeholder-map-hint">
+          Network layout · click an entity for multi-step paths · scroll zoom · drag pan · Fit
+        </p>
 
         <div className="stakeholder-frame__chain-tabs stakeholder-frame__type-tabs" role="tablist" aria-label="Influence types">
           {influenceTypes.map((t) => (
@@ -1626,7 +1686,7 @@ function StakeholderMapPage() {
         </div>
 
         {focusMode === "side" && (
-          <div className="stakeholder-frame__side-tabs stakeholder-frame__side-tabs--bar" role="tablist" aria-label="Sides">
+          <div className="stakeholder-frame__side-tabs stakeholder-frame__side-tabs--bar" role="tablist" aria-label="Entity groups">
             {networkGraph.map((side) => (
               <button
                 key={side.id}
@@ -1693,56 +1753,14 @@ function StakeholderMapPage() {
             />
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
-              {/* Soft cluster region labels (no hub-and-spoke) */}
-              {networkGraph.map((side) => {
-                const inFocus = focusSet.has(side.id);
-                const isActive = activeSideId === side.id && focusMode === "side";
-                return (
-                  <g
-                    key={`region-${side.id}`}
-                    className={[
-                      "stakeholder-map__cluster",
-                      inFocus ? "is-in-chain" : "",
-                      isActive ? "is-active" : "",
-                      !inFocus ? "is-dimmed" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    opacity={inFocus ? 0.95 : 0.28}
-                    onClick={() => goSide(side.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <circle
-                      className="stakeholder-map__field"
-                      cx={side.anchor.x}
-                      cy={side.anchor.y}
-                      r={side.radius}
-                      fill={side.isHub ? "rgba(242,240,79,0.06)" : "rgba(255,254,249,0.04)"}
-                      stroke={side.isHub ? "#111c4e" : side.color}
-                      strokeDasharray="6 8"
-                      strokeWidth={isActive ? 2.2 : 1.2}
-                    />
-                    <text
-                      x={side.anchor.x}
-                      y={side.labelY}
-                      textAnchor="middle"
-                      className="stakeholder-map__cluster-label"
-                      fill={side.isHub ? "#111c4e" : side.color}
-                    >
-                      {side.number} · {side.shortName}
-                    </text>
-                  </g>
-                );
-              })}
-
-              {/* Category → brand membership (branch), dashed, no arrowhead */}
+              {/* Category → brand membership (branch of the network), dashed */}
               {membershipEdges.map((edge) => {
                 const a = nodeById[edge.from];
                 const b = nodeById[edge.to];
                 if (!a || !b) return null;
-                const inFocus =
-                  focusSet.has(a.sideId) ||
-                  (activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId));
+                const inHop =
+                  !hopByNode ||
+                  (hopByNode[edge.from] !== undefined && hopByNode[edge.to] !== undefined);
                 const route = routeBetweenCards(a, b);
                 return (
                   <path
@@ -1750,15 +1768,15 @@ function StakeholderMapPage() {
                     d={route.d}
                     fill="none"
                     stroke={a.color || "#111c4e"}
-                    strokeWidth={1.4}
+                    strokeWidth={1.35}
                     strokeDasharray="3 5"
-                    opacity={inFocus ? 0.55 : 0.18}
+                    opacity={inHop ? (focusMode === "overview" ? 0.28 : 0.55) : 0.08}
                     className="stakeholder-map__membership"
                   />
                 );
               })}
 
-              {/* Influence edges: primary relationships */}
+              {/* Influence edges — the multi-step network */}
               {visibleEdges.map((edge, i) => {
                 const a = nodeById[edge.from];
                 const b = nodeById[edge.to];
@@ -1766,14 +1784,25 @@ function StakeholderMapPage() {
                 const typeMeta = influenceTypeById[edge.type];
                 const dimmed = focusMode === "overview" ? edge.type !== activeTypeId : false;
                 const route = routeBetweenCards(a, b);
+                const direct =
+                  activeNodeId &&
+                  (edge.from === activeNodeId || edge.to === activeNodeId);
+                const hopA = hopByNode ? hopByNode[edge.from] : 0;
+                const hopB = hopByNode ? hopByNode[edge.to] : 0;
+                const isTwoHop =
+                  activeNodeId &&
+                  hopA !== undefined &&
+                  hopB !== undefined &&
+                  !direct &&
+                  Math.max(hopA, hopB) === 2;
                 const hot =
-                  (activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId)) ||
+                  direct ||
                   (focusMode === "type" && edge.type === activeTypeId) ||
                   (hoverEdge && hoverEdge.edge === edge);
                 return (
                   <g
                     key={`inf-${edge.from}-${edge.to}-${i}`}
-                    className={`stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""}`}
+                    className={`stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""} ${isTwoHop ? "is-two-hop" : ""}`}
                     data-from-side={route.fromSide}
                     data-to-side={route.toSide}
                     onMouseEnter={(event) => {
@@ -1798,15 +1827,25 @@ function StakeholderMapPage() {
                     onClick={() => goType(edge.type)}
                     style={{ cursor: "pointer" }}
                   >
-                    {/* Wide invisible stroke for easier hover */}
                     <path d={route.d} fill="none" stroke="transparent" strokeWidth="14" />
                     <path
                       d={route.d}
                       className={`stakeholder-map__influence is-${edge.type}`}
                       fill="none"
                       stroke={typeMeta?.color || "#111c4e"}
-                      strokeWidth={hot ? 3.2 : dimmed ? 1.4 : 2.2}
-                      opacity={dimmed ? 0.14 : hot ? 1 : focusMode === "overview" ? 0.42 : 0.85}
+                      strokeWidth={hot ? 3.2 : isTwoHop ? 1.6 : dimmed ? 1.3 : 2.1}
+                      strokeDasharray={isTwoHop ? "5 4" : undefined}
+                      opacity={
+                        dimmed
+                          ? 0.12
+                          : hot
+                            ? 1
+                            : isTwoHop
+                              ? 0.55
+                              : focusMode === "overview"
+                                ? 0.4
+                                : 0.88
+                      }
                       markerEnd={`url(#inf-arrow-${edge.type})`}
                     />
                   </g>
@@ -1818,7 +1857,7 @@ function StakeholderMapPage() {
                   const laid = nodeById[node.id] || { ...node, ...nodeBox(node) };
                   const isActive = node.id === activeNodeId;
                   const lit = litNodeIds.has(node.id);
-                  const inFocusSide = focusSet.has(side.id);
+                  const hop = hopByNode ? hopByNode[node.id] : null;
                   const isBranch = Boolean(node.parentId);
                   const isGroup = membershipEdges.some((m) => m.from === node.id);
                   const { lines, rw, rh } = laid;
@@ -1831,7 +1870,8 @@ function StakeholderMapPage() {
                         isGroup ? "is-group" : "",
                         isActive ? "is-active" : "",
                         lit ? "is-in-chain" : "",
-                        !lit && !inFocusSide ? "is-dimmed" : !lit ? "is-soft" : "",
+                        hop === 2 ? "is-hop-2" : "",
+                        !lit ? "is-dimmed" : hop === 2 ? "is-soft" : "",
                       ].filter(Boolean).join(" ")}
                       transform={`translate(${node.x}, ${node.y})`}
                       onClick={(event) => {
@@ -1875,6 +1915,18 @@ function StakeholderMapPage() {
                           {line}
                         </text>
                       ))}
+                      {hop != null && hop > 0 && (
+                        <text
+                          x={rw / 2 - 2}
+                          y={-rh / 2 + 2}
+                          textAnchor="end"
+                          className="stakeholder-map__hop-badge"
+                          fontSize={9}
+                          fill={side.color}
+                        >
+                          {hop === 1 ? "1°" : "2°"}
+                        </text>
+                      )}
                     </g>
                   );
                 })
