@@ -883,30 +883,96 @@
       nodes
     };
   }
+  function nodeLabelLines(label, maxChars = 18) {
+    if (label.length <= maxChars) return [label];
+    const words = label.split(" ");
+    const mid = Math.ceil(words.length / 2);
+    return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+  }
+  function nodeBox(node) {
+    const lines = node.lines || nodeLabelLines(node.label);
+    const rw = node.rw ?? Math.min(148, Math.max(96, ...lines.map((l) => l.length * 7.2 + 20)));
+    const rh = node.rh ?? (lines.length > 1 ? 36 : 28);
+    return { lines, rw, rh, hw: rw / 2, hh: rh / 2 };
+  }
+  function cardSideAnchors(node) {
+    const { hw, hh } = nodeBox(node);
+    return {
+      n: { x: node.x, y: node.y - hh, side: "n" },
+      e: { x: node.x + hw, y: node.y, side: "e" },
+      s: { x: node.x, y: node.y + hh, side: "s" },
+      w: { x: node.x - hw, y: node.y, side: "w" }
+    };
+  }
+  function outwardNormal(side) {
+    if (side === "n") return { x: 0, y: -1 };
+    if (side === "e") return { x: 1, y: 0 };
+    if (side === "s") return { x: 0, y: 1 };
+    return { x: -1, y: 0 };
+  }
+  function routeBetweenCards(a, b) {
+    const A = cardSideAnchors(a);
+    const B = cardSideAnchors(b);
+    const sides = ["n", "e", "s", "w"];
+    let best = null;
+    for (const sa of sides) {
+      for (const sb of sides) {
+        const pa = A[sa];
+        const pb = B[sb];
+        const dx = pb.x - pa.x;
+        const dy = pb.y - pa.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const na2 = outwardNormal(sa);
+        const nb2 = outwardNormal(sb);
+        const leave = (dx * na2.x + dy * na2.y) / dist;
+        const arrive = (-dx * nb2.x - dy * nb2.y) / dist;
+        const score = leave * 1.35 + arrive * 1.35 - dist / 2400;
+        if (!best || score > best.score) {
+          best = { from: pa, to: pb, fromSide: sa, toSide: sb, score, dist };
+        }
+      }
+    }
+    const na = outwardNormal(best.fromSide);
+    const nb = outwardNormal(best.toSide);
+    const pad = 2;
+    const x1 = best.from.x + na.x * pad;
+    const y1 = best.from.y + na.y * pad;
+    const tipClear = 1;
+    const x2 = best.to.x + nb.x * tipClear;
+    const y2 = best.to.y + nb.y * tipClear;
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    const bow = 0.08;
+    const cx = mx - (y2 - y1) * bow;
+    const cy = my + (x2 - x1) * bow;
+    return {
+      x1,
+      y1,
+      x2,
+      y2,
+      fromSide: best.fromSide,
+      toSide: best.toSide,
+      d: `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`
+    };
+  }
   var networkGraph = networkSides.map(placeCluster);
   var sideById = Object.fromEntries(networkGraph.map((s) => [s.id, s]));
   var nodeById = (() => {
     const map = {};
     for (const side of networkGraph) {
       for (const node of side.nodes) {
-        map[node.id] = { ...node, sideId: side.id, sideName: side.name, color: side.color };
+        const box = nodeBox(node);
+        map[node.id] = {
+          ...node,
+          ...box,
+          sideId: side.id,
+          sideName: side.name,
+          color: side.color
+        };
       }
     }
     return map;
   })();
-  function shortenEdge(ax, ay, bx, by, trimStart, trimEnd) {
-    const dx = bx - ax;
-    const dy = by - ay;
-    const len = Math.hypot(dx, dy) || 1;
-    const ux = dx / len;
-    const uy = dy / len;
-    return {
-      x1: ax + ux * trimStart,
-      y1: ay + uy * trimStart,
-      x2: bx - ux * trimEnd,
-      y2: by - uy * trimEnd
-    };
-  }
   function StakeholderMapPage() {
     const [focusMode, setFocusMode] = useState("overview");
     const [activeTypeId, setActiveTypeId] = useState("emotional");
@@ -1085,14 +1151,14 @@
         key: `arrow-${t.id}`,
         id: `inf-arrow-${t.id}`,
         viewBox: "0 0 12 12",
-        refX: "10",
+        refX: "11",
         refY: "6",
-        markerWidth: "10",
-        markerHeight: "10",
+        markerWidth: "11",
+        markerHeight: "11",
         markerUnits: "userSpaceOnUse",
-        orient: "auto"
+        orient: "auto-start-reverse"
       },
-      /* @__PURE__ */ React.createElement("path", { d: "M 0 1 L 11 6 L 0 11 z", fill: t.color })
+      /* @__PURE__ */ React.createElement("path", { d: "M 0 1.5 L 11 6 L 0 10.5 z", fill: t.color })
     ))), /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, networkGraph.map((side) => {
       const inFocus = focusSet.has(side.id);
       const isActive = activeSideId === side.id && focusMode === "side";
@@ -1124,18 +1190,15 @@
       if (!a || !b) return null;
       const typeMeta = influenceTypeById[edge.type];
       const dimmed = focusMode === "overview" ? edge.type !== activeTypeId : false;
-      const trimmed = shortenEdge(a.x, a.y, b.x, b.y, 36, 40);
-      const mx = (trimmed.x1 + trimmed.x2) / 2;
-      const my = (trimmed.y1 + trimmed.y2) / 2;
-      const cx = mx + (a.y - b.y) * 0.1;
-      const cy = my + (b.x - a.x) * 0.1;
-      const d = `M ${trimmed.x1} ${trimmed.y1} Q ${cx} ${cy} ${trimmed.x2} ${trimmed.y2}`;
+      const route = routeBetweenCards(a, b);
       const hot = activeNodeId && (edge.from === activeNodeId || edge.to === activeNodeId) || focusMode === "type" && edge.type === activeTypeId || hoverEdge && hoverEdge.edge === edge;
       return /* @__PURE__ */ React.createElement(
         "g",
         {
           key: `inf-${edge.from}-${edge.to}-${i}`,
           className: `stakeholder-map__influence-hit ${hot ? "is-hot" : ""} ${dimmed ? "is-dim" : ""}`,
+          "data-from-side": route.fromSide,
+          "data-to-side": route.toSide,
           onMouseEnter: (event) => {
             const rect = mapRef.current?.getBoundingClientRect();
             if (!rect) return;
@@ -1158,11 +1221,11 @@
           onClick: () => goType(edge.type),
           style: { cursor: "pointer" }
         },
-        /* @__PURE__ */ React.createElement("path", { d, fill: "none", stroke: "transparent", strokeWidth: "14" }),
+        /* @__PURE__ */ React.createElement("path", { d: route.d, fill: "none", stroke: "transparent", strokeWidth: "14" }),
         /* @__PURE__ */ React.createElement(
           "path",
           {
-            d,
+            d: route.d,
             className: `stakeholder-map__influence is-${edge.type}`,
             fill: "none",
             stroke: typeMeta?.color || "#111c4e",
@@ -1174,17 +1237,11 @@
       );
     }), networkGraph.flatMap(
       (side) => side.nodes.map((node) => {
+        const laid = nodeById[node.id] || { ...node, ...nodeBox(node) };
         const isActive = node.id === activeNodeId;
         const lit = litNodeIds.has(node.id);
         const inFocusSide = focusSet.has(side.id);
-        const maxChars = 18;
-        const lines = node.label.length > maxChars ? (() => {
-          const words = node.label.split(" ");
-          const mid = Math.ceil(words.length / 2);
-          return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-        })() : [node.label];
-        const rw = Math.min(148, Math.max(96, ...lines.map((l) => l.length * 7.2 + 20)));
-        const rh = lines.length > 1 ? 36 : 28;
+        const { lines, rw, rh } = laid;
         return /* @__PURE__ */ React.createElement(
           "g",
           {
