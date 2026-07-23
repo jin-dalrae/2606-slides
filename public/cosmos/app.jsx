@@ -450,10 +450,8 @@ function buildWavePath(stages, padL, padT, chartW, chartH) {
   return { points, lineD };
 }
 
-// All experience waves on one chart. Stage axis is shared; click a stage or a
-// curve point to inspect that wave × stage in the detail panel.
-function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStage, onSelectWave }) {
-  // Taller plot — open analysis page, not a 16:9 slide crop.
+// Static comparison chart — no hover/click state (printable document).
+function WavelineCompareChart({ waves }) {
   const width = 1680;
   const height = 520;
   const padL = 118;
@@ -463,13 +461,10 @@ function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStag
   const chartW = width - padL - padR;
   const chartH = height - padT - padB;
   const baselineY = padT + chartH;
-  // Shared stage labels from the first wave (same spine across all three).
   const stageSpine = waves[0]?.stages || [];
   const n = stageSpine.length;
-
   const stageXs = stageSpine.map((_, index) => padL + (index / Math.max(n - 1, 1)) * chartW);
 
-  // Y-axis: wave height encodes felt intensity (0 at baseline → 1 at top of plot).
   const yTicks = [
     { t: 1, label: "High" },
     { t: 0.5, label: "Mid" },
@@ -482,8 +477,13 @@ function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStag
   });
 
   return (
-    <svg className="waveline-chart waveline-chart--compare" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Compared experience wavelines. Vertical axis: wave height is felt intensity. Horizontal axis: session stages.">
-      {/* Y-axis grid + ticks */}
+    <svg
+      className="waveline-chart waveline-chart--compare"
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="Compared experience wavelines. Vertical axis: wave height is felt intensity. Horizontal axis: session stages."
+    >
       {yTicks.map(({ t, label }) => {
         const y = padT + chartH * (1 - t);
         return (
@@ -503,9 +503,7 @@ function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStag
           </g>
         );
       })}
-      {/* Y-axis spine */}
       <line x1={padL} y1={padT} x2={padL} y2={baselineY} stroke="rgba(17,28,78,0.28)" strokeWidth="1.5" />
-      {/* Rotated Y-axis title */}
       <text
         className="waveline-y-axis-title"
         transform={`translate(28, ${(padT + baselineY) / 2}) rotate(-90)`}
@@ -521,25 +519,18 @@ function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStag
         (engagement / fulfillment, not time-on-app)
       </text>
 
-      {/* Shared vertical guides + stage labels (X-axis) */}
       {stageSpine.map((stage, index) => {
         const x = stageXs[index];
-        const active = stage.id === activeStageId;
         return (
-          <g
-            key={stage.id}
-            className="waveline-stage-guide"
-            onClick={() => onSelectStage(stage.id)}
-            style={{ cursor: "pointer" }}
-          >
+          <g key={stage.id} className="waveline-stage-guide">
             <line
               x1={x}
               y1={padT}
               x2={x}
               y2={baselineY}
-              stroke={active ? "rgba(17,28,78,0.28)" : "rgba(17,28,78,0.08)"}
-              strokeWidth={active ? 1.5 : 1}
-              strokeDasharray={active ? "0" : "2 5"}
+              stroke="rgba(17,28,78,0.1)"
+              strokeWidth={1}
+              strokeDasharray="2 5"
             />
             <text x={x} y={baselineY + 22} textAnchor="middle" className="stage-num">
               {stage.stage}
@@ -554,152 +545,147 @@ function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStag
         Session stages →
       </text>
 
-      {/* Three curves */}
-      {series.map(({ wave, points, lineD }) => {
-        const isFocusWave = wave.id === activeWaveId;
-        return (
-          <g key={wave.id} className={`waveline-series ${isFocusWave ? "is-focus" : ""}`} opacity={isFocusWave ? 1 : 0.72}>
-            <path
-              d={lineD}
-              fill="none"
-              stroke={wave.stroke}
-              strokeWidth={isFocusWave ? 4 : 2.75}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              onClick={() => onSelectWave(wave.id)}
-              style={{ cursor: "pointer" }}
+      {series.map(({ wave, points, lineD }) => (
+        <g key={wave.id} className="waveline-series" opacity={0.95}>
+          <path
+            d={lineD}
+            fill="none"
+            stroke={wave.stroke}
+            strokeWidth={3.25}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {points.map((p) => (
+            <circle
+              key={`${wave.id}-${p.id}`}
+              cx={p.x}
+              cy={p.y}
+              r={6}
+              fill={wave.stroke}
+              stroke="#f7f4ed"
+              strokeWidth={1.75}
             />
-            {points.map((p) => {
-              const stageActive = p.id === activeStageId;
-              const hot = stageActive && isFocusWave;
-              return (
-                <g
-                  key={`${wave.id}-${p.id}`}
-                  onClick={() => {
-                    onSelectWave(wave.id);
-                    onSelectStage(p.id);
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  <circle
-                    cx={p.x}
-                    cy={p.y}
-                    r={hot ? 11 : stageActive ? 8 : 5.5}
-                    fill={wave.stroke}
-                    stroke="#f7f4ed"
-                    strokeWidth={hot ? 2.5 : 1.75}
-                  />
-                  {hot && <circle cx={p.x} cy={p.y} r={3.5} fill="#f2f04f" />}
-                </g>
-              );
-            })}
-          </g>
-        );
-      })}
-
-      {/* Peak label only for the focused wave at the active stage — avoids three-way collision */}
-      {series.map(({ wave, points }) => {
-        if (wave.id !== activeWaveId) return null;
-        const p = points.find((pt) => pt.id === activeStageId) || points[0];
-        if (!p) return null;
-        return (
-          <text
-            key={`peak-${wave.id}`}
-            x={p.x}
-            y={Math.max(padT + 14, p.y - 16)}
-            textAnchor="middle"
-            className="peak-label is-active"
-            fill={wave.stroke}
-          >
-            {p.peakLabel}
-          </text>
-        );
-      })}
+          ))}
+        </g>
+      ))}
     </svg>
   );
 }
 
+// Plain document layout: chart + full stage write-ups for every wave (print-friendly).
 function UserWavelinePage() {
-  const [waveId, setWaveId] = useState("cosmos");
-  const [activeId, setActiveId] = useState("immerse");
-  const wave = experienceWaves.find((w) => w.id === waveId) || experienceWaves[0];
-  const active = wave.stages.find((s) => s.id === activeId) || wave.stages[0];
+  const stageSpine = experienceWaves[0]?.stages || [];
 
   return (
-    <section className="report-section waveline-page" id="user-waveline">
-      <div className="waveline-frame" aria-label="Compared experience wavelines">
-        <header className="waveline-frame__head">
-          <div>
-            <p className="waveline-kicker">04 · User wavelines · three sessions</p>
-            <h1>Three sessions, one stage spine</h1>
-          </div>
-          <p className="waveline-lede">
-            Same eight stages across Cosmos, feed platforms, and VR without a game loop.
-            Height is felt intensity — not time-on-app. Click a curve or stage to open the full stage reading.
-          </p>
-        </header>
+    <section className="report-section waveline-page waveline-page--document" id="user-waveline">
+      <ChapterLabel number="04">User waveline</ChapterLabel>
 
-        <div className="waveline-frame__legend-row" role="list" aria-label="Wave legend">
-          {experienceWaves.map((w) => (
-            <button
-              key={w.id}
-              type="button"
-              role="listitem"
-              className={`waveline-legend-item ${w.id === waveId ? "is-active" : ""}`}
-              onClick={() => setWaveId(w.id)}
-            >
-              <i style={{ background: w.stroke }} />
-              <span>{w.label}</span>
-            </button>
-          ))}
+      <header className="waveline-doc-intro">
+        <div>
+          <p className="waveline-kicker">Three sessions · one stage spine</p>
+          <h1>User experience wavelines</h1>
         </div>
+        <p className="waveline-lede">
+          Same eight stages across Cosmos VR, feed platforms, and VR without a game loop.
+          Wave height is felt intensity (engagement / fulfillment) — not time-on-app.
+          This page is a static document: the chart and every stage description are fully visible for reading and print.
+        </p>
+      </header>
 
-        <div className="waveline-frame__chart" aria-label="Compared waveline chart">
-          <WavelineCompareChart
-            waves={experienceWaves}
-            activeStageId={activeId}
-            activeWaveId={waveId}
-            onSelectStage={setActiveId}
-            onSelectWave={setWaveId}
-          />
-        </div>
-
-        <div className="waveline-frame__detail" aria-live="polite">
-          <div className="waveline-frame__detail-title">
-            <span style={{ color: wave.stroke }}>{active.stage}</span>
-            <div>
-              <h2>
-                <em style={{ color: wave.stroke, fontStyle: "normal" }}>{wave.label}</em>
-                {" · "}
-                {active.name}
-              </h2>
-              <p>{active.short} · peak: {active.peakLabel}</p>
-            </div>
-          </div>
-          <div className="waveline-frame__cols">
-            <article>
-              <b>Behavior</b>
-              <p>{active.behavior}</p>
-            </article>
-            <article>
-              <b>Feelings</b>
-              <p>{active.feelings}</p>
-            </article>
-            <article>
-              <b>Achievements</b>
-              <p>{active.achievements}</p>
-            </article>
-          </div>
-          <ul className="waveline-frame__chips">
-            {active.mechanics.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-        </div>
+      <div className="waveline-doc-legend" aria-label="Wave legend">
+        {experienceWaves.map((w) => (
+          <span key={w.id} className="waveline-legend-item waveline-legend-item--static">
+            <i style={{ background: w.stroke }} />
+            <span>{w.label}</span>
+          </span>
+        ))}
       </div>
 
+      <figure className="waveline-doc-chart">
+        <WavelineCompareChart waves={experienceWaves} />
+        <figcaption>
+          Compared experience wavelines. Vertical axis: felt intensity (high / mid / low).
+          Horizontal axis: shared session stages 01–08.
+        </figcaption>
+      </figure>
+
+      <article className="waveline-document">
+        <section className="report-chapter waveline-doc-overview">
+          <span className="report-number">0</span>
+          <h2>How to read this document</h2>
+          <p className="report-lead">
+            Each experience uses the same spine — Entice → Enter → Orient → Explore → Discover → Immerse → Interact → Exit —
+            so the curves can be compared without changing axes.
+          </p>
+          <p>
+            Below, every wave is written out in full: stage name, short intent, peak label, behavior, feelings,
+            achievements, and mechanics. Nothing is hidden behind hover or selection.
+          </p>
+          <div className="waveline-spine-list">
+            {stageSpine.map((s) => (
+              <div key={s.id}>
+                <b>{s.stage}</b>
+                <span>{s.name}</span>
+                <i>{s.short}</i>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {experienceWaves.map((wave, wi) => (
+          <section
+            key={wave.id}
+            className="report-chapter waveline-wave-chapter"
+            id={`wave-${wave.id}`}
+            style={{ ["--wave-accent"]: wave.stroke }}
+          >
+            <span className="report-number">{String(wi + 1).padStart(2, "0")}</span>
+            <h2 style={{ color: wave.stroke }}>{wave.label}</h2>
+            <p className="report-lead">{wave.lede}</p>
+
+            {wave.stages.map((stage) => (
+              <div key={`${wave.id}-${stage.id}`} className="waveline-stage-block" id={`${wave.id}-${stage.id}`}>
+                <header className="waveline-stage-block__head">
+                  <span style={{ color: wave.stroke }}>{stage.stage}</span>
+                  <div>
+                    <h3>
+                      {stage.name}
+                      <em> · {stage.short}</em>
+                    </h3>
+                    <p>
+                      Peak label: <b>{stage.peakLabel}</b>
+                      {" · "}
+                      Felt intensity: <b>{Math.round(stage.intensity * 100)}%</b> of plot height
+                    </p>
+                  </div>
+                </header>
+                <div className="waveline-frame__cols waveline-stage-block__cols">
+                  <article>
+                    <b>Behavior</b>
+                    <p>{stage.behavior}</p>
+                  </article>
+                  <article>
+                    <b>Feelings</b>
+                    <p>{stage.feelings}</p>
+                  </article>
+                  <article>
+                    <b>Achievements</b>
+                    <p>{stage.achievements}</p>
+                  </article>
+                </div>
+                <ul className="waveline-frame__chips">
+                  {stage.mechanics.map((m) => (
+                    <li key={m}>{m}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        ))}
+      </article>
+
       <p className="waveline-share-hint">
-        Tip: close the left sidebar (‹). All three curves share the stage axis — click a colored line or point to switch the detail panel.
+        Print tip: close the left sidebar (‹), then use the browser print dialog. All three waves and all eight stages are on the page — no interaction required.
       </p>
 
       <div className="report-next-links">

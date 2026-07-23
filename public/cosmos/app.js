@@ -1368,7 +1368,7 @@
     }).join(" ");
     return { points, lineD };
   }
-  function WavelineCompareChart({ waves, activeStageId, activeWaveId, onSelectStage, onSelectWave }) {
+  function WavelineCompareChart({ waves }) {
     const width = 1680;
     const height = 520;
     const padL = 118;
@@ -1390,147 +1390,104 @@
       const { points, lineD } = buildWavePath(wave.stages, padL, padT, chartW, chartH);
       return { wave, points, lineD };
     });
-    return /* @__PURE__ */ React.createElement("svg", { className: "waveline-chart waveline-chart--compare", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet", role: "img", "aria-label": "Compared experience wavelines. Vertical axis: wave height is felt intensity. Horizontal axis: session stages." }, yTicks.map(({ t, label }) => {
-      const y3 = padT + chartH * (1 - t);
-      return /* @__PURE__ */ React.createElement("g", { key: label, className: "waveline-y-tick" }, /* @__PURE__ */ React.createElement(
-        "line",
-        {
-          x1: padL,
-          y1: y3,
-          x2: width - padR,
-          y2: y3,
-          stroke: "rgba(17,28,78,0.1)",
-          strokeDasharray: t === 0 ? "0" : "3 5",
-          strokeWidth: t === 0 ? 1.35 : 1
-        }
-      ), /* @__PURE__ */ React.createElement("text", { x: padL - 12, y: y3 + 4, textAnchor: "end", className: "waveline-y-tick-label" }, label));
-    }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: padT, x2: padL, y2: baselineY, stroke: "rgba(17,28,78,0.28)", strokeWidth: "1.5" }), /* @__PURE__ */ React.createElement(
-      "text",
+    return /* @__PURE__ */ React.createElement(
+      "svg",
       {
-        className: "waveline-y-axis-title",
-        transform: `translate(28, ${(padT + baselineY) / 2}) rotate(-90)`,
-        textAnchor: "middle"
+        className: "waveline-chart waveline-chart--compare",
+        viewBox: `0 0 ${width} ${height}`,
+        preserveAspectRatio: "xMidYMid meet",
+        role: "img",
+        "aria-label": "Compared experience wavelines. Vertical axis: wave height is felt intensity. Horizontal axis: session stages."
       },
-      "Wave height = felt intensity"
-    ), /* @__PURE__ */ React.createElement(
-      "text",
-      {
-        className: "waveline-y-axis-sub",
-        transform: `translate(48, ${(padT + baselineY) / 2}) rotate(-90)`,
-        textAnchor: "middle"
-      },
-      "(engagement / fulfillment, not time-on-app)"
-    ), stageSpine.map((stage, index2) => {
-      const x3 = stageXs[index2];
-      const active = stage.id === activeStageId;
-      return /* @__PURE__ */ React.createElement(
-        "g",
+      yTicks.map(({ t, label }) => {
+        const y3 = padT + chartH * (1 - t);
+        return /* @__PURE__ */ React.createElement("g", { key: label, className: "waveline-y-tick" }, /* @__PURE__ */ React.createElement(
+          "line",
+          {
+            x1: padL,
+            y1: y3,
+            x2: width - padR,
+            y2: y3,
+            stroke: "rgba(17,28,78,0.1)",
+            strokeDasharray: t === 0 ? "0" : "3 5",
+            strokeWidth: t === 0 ? 1.35 : 1
+          }
+        ), /* @__PURE__ */ React.createElement("text", { x: padL - 12, y: y3 + 4, textAnchor: "end", className: "waveline-y-tick-label" }, label));
+      }),
+      /* @__PURE__ */ React.createElement("line", { x1: padL, y1: padT, x2: padL, y2: baselineY, stroke: "rgba(17,28,78,0.28)", strokeWidth: "1.5" }),
+      /* @__PURE__ */ React.createElement(
+        "text",
         {
-          key: stage.id,
-          className: "waveline-stage-guide",
-          onClick: () => onSelectStage(stage.id),
-          style: { cursor: "pointer" }
+          className: "waveline-y-axis-title",
+          transform: `translate(28, ${(padT + baselineY) / 2}) rotate(-90)`,
+          textAnchor: "middle"
         },
-        /* @__PURE__ */ React.createElement(
+        "Wave height = felt intensity"
+      ),
+      /* @__PURE__ */ React.createElement(
+        "text",
+        {
+          className: "waveline-y-axis-sub",
+          transform: `translate(48, ${(padT + baselineY) / 2}) rotate(-90)`,
+          textAnchor: "middle"
+        },
+        "(engagement / fulfillment, not time-on-app)"
+      ),
+      stageSpine.map((stage, index2) => {
+        const x3 = stageXs[index2];
+        return /* @__PURE__ */ React.createElement("g", { key: stage.id, className: "waveline-stage-guide" }, /* @__PURE__ */ React.createElement(
           "line",
           {
             x1: x3,
             y1: padT,
             x2: x3,
             y2: baselineY,
-            stroke: active ? "rgba(17,28,78,0.28)" : "rgba(17,28,78,0.08)",
-            strokeWidth: active ? 1.5 : 1,
-            strokeDasharray: active ? "0" : "2 5"
+            stroke: "rgba(17,28,78,0.1)",
+            strokeWidth: 1,
+            strokeDasharray: "2 5"
           }
-        ),
-        /* @__PURE__ */ React.createElement("text", { x: x3, y: baselineY + 22, textAnchor: "middle", className: "stage-num" }, stage.stage),
-        /* @__PURE__ */ React.createElement("text", { x: x3, y: baselineY + 46, textAnchor: "middle", className: "stage-name" }, stage.name)
-      );
-    }), /* @__PURE__ */ React.createElement("text", { x: (padL + width - padR) / 2, y: height - 6, textAnchor: "middle", className: "waveline-x-axis-title" }, "Session stages \u2192"), series.map(({ wave, points, lineD }) => {
-      const isFocusWave = wave.id === activeWaveId;
-      return /* @__PURE__ */ React.createElement("g", { key: wave.id, className: `waveline-series ${isFocusWave ? "is-focus" : ""}`, opacity: isFocusWave ? 1 : 0.72 }, /* @__PURE__ */ React.createElement(
+        ), /* @__PURE__ */ React.createElement("text", { x: x3, y: baselineY + 22, textAnchor: "middle", className: "stage-num" }, stage.stage), /* @__PURE__ */ React.createElement("text", { x: x3, y: baselineY + 46, textAnchor: "middle", className: "stage-name" }, stage.name));
+      }),
+      /* @__PURE__ */ React.createElement("text", { x: (padL + width - padR) / 2, y: height - 6, textAnchor: "middle", className: "waveline-x-axis-title" }, "Session stages \u2192"),
+      series.map(({ wave, points, lineD }) => /* @__PURE__ */ React.createElement("g", { key: wave.id, className: "waveline-series", opacity: 0.95 }, /* @__PURE__ */ React.createElement(
         "path",
         {
           d: lineD,
           fill: "none",
           stroke: wave.stroke,
-          strokeWidth: isFocusWave ? 4 : 2.75,
+          strokeWidth: 3.25,
           strokeLinecap: "round",
-          strokeLinejoin: "round",
-          onClick: () => onSelectWave(wave.id),
-          style: { cursor: "pointer" }
+          strokeLinejoin: "round"
         }
-      ), points.map((p) => {
-        const stageActive = p.id === activeStageId;
-        const hot = stageActive && isFocusWave;
-        return /* @__PURE__ */ React.createElement(
-          "g",
-          {
-            key: `${wave.id}-${p.id}`,
-            onClick: () => {
-              onSelectWave(wave.id);
-              onSelectStage(p.id);
-            },
-            style: { cursor: "pointer" }
-          },
-          /* @__PURE__ */ React.createElement(
-            "circle",
-            {
-              cx: p.x,
-              cy: p.y,
-              r: hot ? 11 : stageActive ? 8 : 5.5,
-              fill: wave.stroke,
-              stroke: "#f7f4ed",
-              strokeWidth: hot ? 2.5 : 1.75
-            }
-          ),
-          hot && /* @__PURE__ */ React.createElement("circle", { cx: p.x, cy: p.y, r: 3.5, fill: "#f2f04f" })
-        );
-      }));
-    }), series.map(({ wave, points }) => {
-      if (wave.id !== activeWaveId) return null;
-      const p = points.find((pt) => pt.id === activeStageId) || points[0];
-      if (!p) return null;
-      return /* @__PURE__ */ React.createElement(
-        "text",
+      ), points.map((p) => /* @__PURE__ */ React.createElement(
+        "circle",
         {
-          key: `peak-${wave.id}`,
-          x: p.x,
-          y: Math.max(padT + 14, p.y - 16),
-          textAnchor: "middle",
-          className: "peak-label is-active",
-          fill: wave.stroke
-        },
-        p.peakLabel
-      );
-    }));
+          key: `${wave.id}-${p.id}`,
+          cx: p.x,
+          cy: p.y,
+          r: 6,
+          fill: wave.stroke,
+          stroke: "#f7f4ed",
+          strokeWidth: 1.75
+        }
+      ))))
+    );
   }
   function UserWavelinePage() {
-    const [waveId, setWaveId] = useState("cosmos");
-    const [activeId, setActiveId] = useState("immerse");
-    const wave = experienceWaves.find((w) => w.id === waveId) || experienceWaves[0];
-    const active = wave.stages.find((s) => s.id === activeId) || wave.stages[0];
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page", id: "user-waveline" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame", "aria-label": "Compared experience wavelines" }, /* @__PURE__ */ React.createElement("header", { className: "waveline-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "04 \xB7 User wavelines \xB7 three sessions"), /* @__PURE__ */ React.createElement("h1", null, "Three sessions, one stage spine")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Same eight stages across Cosmos, feed platforms, and VR without a game loop. Height is felt intensity \u2014 not time-on-app. Click a curve or stage to open the full stage reading.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__legend-row", role: "list", "aria-label": "Wave legend" }, experienceWaves.map((w) => /* @__PURE__ */ React.createElement(
-      "button",
+    const stageSpine = experienceWaves[0]?.stages || [];
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section waveline-page waveline-page--document", id: "user-waveline" }, /* @__PURE__ */ React.createElement(ChapterLabel, { number: "04" }, "User waveline"), /* @__PURE__ */ React.createElement("header", { className: "waveline-doc-intro" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "waveline-kicker" }, "Three sessions \xB7 one stage spine"), /* @__PURE__ */ React.createElement("h1", null, "User experience wavelines")), /* @__PURE__ */ React.createElement("p", { className: "waveline-lede" }, "Same eight stages across Cosmos VR, feed platforms, and VR without a game loop. Wave height is felt intensity (engagement / fulfillment) \u2014 not time-on-app. This page is a static document: the chart and every stage description are fully visible for reading and print.")), /* @__PURE__ */ React.createElement("div", { className: "waveline-doc-legend", "aria-label": "Wave legend" }, experienceWaves.map((w) => /* @__PURE__ */ React.createElement("span", { key: w.id, className: "waveline-legend-item waveline-legend-item--static" }, /* @__PURE__ */ React.createElement("i", { style: { background: w.stroke } }), /* @__PURE__ */ React.createElement("span", null, w.label)))), /* @__PURE__ */ React.createElement("figure", { className: "waveline-doc-chart" }, /* @__PURE__ */ React.createElement(WavelineCompareChart, { waves: experienceWaves }), /* @__PURE__ */ React.createElement("figcaption", null, "Compared experience wavelines. Vertical axis: felt intensity (high / mid / low). Horizontal axis: shared session stages 01\u201308.")), /* @__PURE__ */ React.createElement("article", { className: "waveline-document" }, /* @__PURE__ */ React.createElement("section", { className: "report-chapter waveline-doc-overview" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "0"), /* @__PURE__ */ React.createElement("h2", null, "How to read this document"), /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, "Each experience uses the same spine \u2014 Entice \u2192 Enter \u2192 Orient \u2192 Explore \u2192 Discover \u2192 Immerse \u2192 Interact \u2192 Exit \u2014 so the curves can be compared without changing axes."), /* @__PURE__ */ React.createElement("p", null, "Below, every wave is written out in full: stage name, short intent, peak label, behavior, feelings, achievements, and mechanics. Nothing is hidden behind hover or selection."), /* @__PURE__ */ React.createElement("div", { className: "waveline-spine-list" }, stageSpine.map((s) => /* @__PURE__ */ React.createElement("div", { key: s.id }, /* @__PURE__ */ React.createElement("b", null, s.stage), /* @__PURE__ */ React.createElement("span", null, s.name), /* @__PURE__ */ React.createElement("i", null, s.short))))), experienceWaves.map((wave, wi) => /* @__PURE__ */ React.createElement(
+      "section",
       {
-        key: w.id,
-        type: "button",
-        role: "listitem",
-        className: `waveline-legend-item ${w.id === waveId ? "is-active" : ""}`,
-        onClick: () => setWaveId(w.id)
+        key: wave.id,
+        className: "report-chapter waveline-wave-chapter",
+        id: `wave-${wave.id}`,
+        style: { ["--wave-accent"]: wave.stroke }
       },
-      /* @__PURE__ */ React.createElement("i", { style: { background: w.stroke } }),
-      /* @__PURE__ */ React.createElement("span", null, w.label)
-    ))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__chart", "aria-label": "Compared waveline chart" }, /* @__PURE__ */ React.createElement(
-      WavelineCompareChart,
-      {
-        waves: experienceWaves,
-        activeStageId: activeId,
-        activeWaveId: waveId,
-        onSelectStage: setActiveId,
-        onSelectWave: setWaveId
-      }
-    )), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", { style: { color: wave.stroke } }, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, /* @__PURE__ */ React.createElement("em", { style: { color: wave.stroke, fontStyle: "normal" } }, wave.label), " \xB7 ", active.name), /* @__PURE__ */ React.createElement("p", null, active.short, " \xB7 peak: ", active.peakLabel))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, active.mechanics.map((m2) => /* @__PURE__ */ React.createElement("li", { key: m2 }, m2))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039). All three curves share the stage axis \u2014 click a colored line or point to switch the detail panel."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "Next: Stakeholder map \u2192")));
+      /* @__PURE__ */ React.createElement("span", { className: "report-number" }, String(wi + 1).padStart(2, "0")),
+      /* @__PURE__ */ React.createElement("h2", { style: { color: wave.stroke } }, wave.label),
+      /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, wave.lede),
+      wave.stages.map((stage) => /* @__PURE__ */ React.createElement("div", { key: `${wave.id}-${stage.id}`, className: "waveline-stage-block", id: `${wave.id}-${stage.id}` }, /* @__PURE__ */ React.createElement("header", { className: "waveline-stage-block__head" }, /* @__PURE__ */ React.createElement("span", { style: { color: wave.stroke } }, stage.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", null, stage.name, /* @__PURE__ */ React.createElement("em", null, " \xB7 ", stage.short)), /* @__PURE__ */ React.createElement("p", null, "Peak label: ", /* @__PURE__ */ React.createElement("b", null, stage.peakLabel), " \xB7 ", "Felt intensity: ", /* @__PURE__ */ React.createElement("b", null, Math.round(stage.intensity * 100), "%"), " of plot height"))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols waveline-stage-block__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, stage.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, stage.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, stage.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, stage.mechanics.map((m2) => /* @__PURE__ */ React.createElement("li", { key: m2 }, m2)))))
+    ))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Print tip: close the left sidebar (\u2039), then use the browser print dialog. All three waves and all eight stages are on the page \u2014 no interaction required."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "Next: Stakeholder map \u2192")));
   }
   var influenceTypes = [
     { id: "functional", label: "Functional", short: "Can / workflow", color: "#111c4e", desc: "Capability, access, workflow \u2014 whether the job can be done." },
