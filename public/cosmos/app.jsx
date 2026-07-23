@@ -755,13 +755,14 @@ const networkEntities = [
   { id: "reddit", label: "Reddit", cluster: "competitors", parentId: "feed-social" },
   { id: "x-twitter", label: "X", cluster: "competitors", parentId: "feed-social" },
   { id: "tiktok", label: "TikTok", cluster: "competitors", parentId: "feed-social" },
+  // Sits with feed platforms (same attention market), not as a distant root.
+  { id: "attention-ads", label: "Ad / Attention Economy", cluster: "competitors", parentId: "feed-social" },
   { id: "chat-platforms", label: "Chat Platforms", cluster: "competitors" },
   { id: "discord", label: "Discord", cluster: "competitors", parentId: "chat-platforms" },
   { id: "social-vr", label: "Social VR", cluster: "competitors" },
   { id: "vrchat", label: "VRChat", cluster: "competitors", parentId: "social-vr" },
   { id: "horizon", label: "Horizon Worlds", cluster: "competitors", parentId: "social-vr" },
   { id: "rec-room", label: "Rec Room", cluster: "competitors", parentId: "social-vr" },
-  { id: "attention-ads", label: "Ad / Attention Economy", cluster: "competitors" },
   { id: "knowledge-apps", label: "2D Knowledge Apps", cluster: "competitors" },
   { id: "notion", label: "Notion", cluster: "competitors", parentId: "knowledge-apps" },
   { id: "are-na", label: "Are.na", cluster: "competitors", parentId: "knowledge-apps" },
@@ -1008,10 +1009,11 @@ function layoutNetworkGraph(clusters, entities, influence) {
         y: hub.y + Math.sin(ang) * rootR,
       };
       const kids = kidsByParent[root.id] || [];
-      const childStep = kids.length >= 3 ? 100 : kids.length === 2 ? 90 : 82;
+      // Wider brand ring for large categories (e.g. Feed Social + ads + platforms).
+      const childStep = kids.length >= 4 ? 108 : kids.length >= 3 ? 100 : kids.length === 2 ? 90 : 82;
       const childR = rootR + childStep;
       kids.forEach((kid, ki) => {
-        const kfan = Math.min(0.9, 0.3 * Math.max(kids.length, 1));
+        const kfan = Math.min(1.15, 0.34 * Math.max(kids.length, 1));
         const kang =
           ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : (ki / (kids.length - 1)) * kfan);
         into[kid.id] = {
