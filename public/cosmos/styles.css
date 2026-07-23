@@ -2038,6 +2038,286 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   max-width: min(1080px, 100%);
   margin: 40px auto 0;
 }
+
+/* Harms SIA · dual passage + matrix + mitigation playbook */
+.harm-dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 28px 0 24px;
+  align-items: start;
+}
+.harm-dual__label {
+  margin: 0 0 10px;
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.harm-dual__passage,
+.harm-dual__visual {
+  padding: 18px 18px 16px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.harm-passage-lead {
+  margin: 0 0 14px;
+  color: #39415f;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.harm-passage-lead strong {
+  color: var(--navy);
+  font-weight: 700;
+}
+.harm-passage-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.harm-passage-list button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+  color: var(--navy);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.harm-passage-list button b {
+  grid-row: 1 / 3;
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 15px;
+  align-self: center;
+}
+.harm-passage-list button span {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.harm-passage-list button.is-active,
+.harm-passage-list button:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+.harm-dual__visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fbfaf6;
+}
+.harm-matrix {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+}
+.harm-matrix__axis {
+  fill: var(--navy);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+.harm-matrix__tick {
+  fill: var(--muted);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+}
+.harm-matrix__title {
+  fill: var(--muted);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.harm-matrix__code {
+  fill: white;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 800;
+  pointer-events: none;
+}
+.harm-matrix__hover-label {
+  fill: var(--navy);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+}
+.harm-matrix__point circle {
+  transition: r 0.15s ease, fill 0.15s ease;
+}
+.harm-matrix-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+.harm-detail-card {
+  margin: 8px 0 28px;
+  padding: 22px 24px;
+  border: 1px solid var(--navy);
+  background: var(--paper-deep);
+}
+.harm-detail-card header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.harm-detail-card header > span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1;
+}
+.harm-detail-card h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 600;
+}
+.harm-detail-card header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.harm-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+}
+.harm-detail-grid b {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--pink);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.harm-detail-grid p {
+  margin: 0;
+  color: #39415f;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.harm-sia-table tr.is-active td {
+  background: rgba(242, 240, 79, 0.45);
+}
+.harm-mitigate-focus {
+  margin: 22px 0 28px;
+  padding: 24px 26px;
+  border: 1px solid var(--navy);
+  background: var(--yellow);
+}
+.harm-mitigate-focus header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.harm-mitigate-focus header span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 600;
+}
+.harm-mitigate-focus h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+}
+.harm-mitigate-why {
+  margin: 0 0 14px;
+  color: #2f3758;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.harm-mitigate-focus ol {
+  margin: 0;
+  padding-left: 22px;
+  color: var(--navy);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.harm-mitigate-focus li {
+  margin-bottom: 8px;
+}
+.harm-mitigate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.harm-mitigate-grid article {
+  padding: 18px 18px 16px;
+  border: 1px solid var(--line);
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.harm-mitigate-grid article.is-active {
+  border-color: var(--navy);
+  background: #fffef6;
+  box-shadow: 0 0 0 1px var(--navy);
+}
+.harm-mitigate-grid header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.harm-mitigate-grid header span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 600;
+}
+.harm-mitigate-grid header i {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+.harm-mitigate-grid h3 {
+  margin: 0 0 4px;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+}
+.harm-mitigate-domain {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.harm-mitigate-grid ol {
+  margin: 0;
+  padding-left: 18px;
+  color: #39415f;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.harm-mitigate-grid li {
+  margin-bottom: 5px;
+}
+
 @media (max-width: 900px) {
   .impact-heading { grid-template-columns: 1fr; }
   .impact-toc { grid-template-columns: 1fr 1fr; }
@@ -2046,7 +2326,10 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   .impact-scenario-grid,
   .impact-metric-grid,
   .impact-risk-grid,
-  .impact-claim-grid {
+  .impact-claim-grid,
+  .harm-dual,
+  .harm-detail-grid,
+  .harm-mitigate-grid {
     grid-template-columns: 1fr;
   }
 }

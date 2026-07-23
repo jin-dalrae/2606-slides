@@ -3021,38 +3021,253 @@
       falsifier: "Local-first / optional voice with clear trust and still high reading value"
     }
   ];
-  var impactRisks = [
+  var socialHarms = [
     {
+      id: "access",
+      code: "H1",
       title: "Premium access wall",
-      body: "If the best experience requires high-end HMDs, impact concentrates among people who already have spatial gear \u2014 the opposite of a public community wall.",
-      mitigate: "Desktop/bridge path; pilot on accessible headsets (Quest/Pico-class); measure who cannot enter."
+      domain: "Equity / access",
+      severity: 3,
+      likelihood: 3,
+      affected: "People without headsets, with comfort limits, or on constrained devices",
+      pathway: "If the best Cosmos experience requires high-end HMDs, impact concentrates among people who already own spatial gear \u2014 the opposite of a public community wall.",
+      rights: "Equal access to public discourse \xB7 non-discrimination by means",
+      owner: "Product + research design",
+      mitigate: [
+        "Ship and study a desktop / cross-device bridge as a first-class path, not a demotion.",
+        "Pilot on accessible headsets (Quest / Pico-class), not Vision Pro alone.",
+        "Instrument who drops at setup; publish exclusion rates next to \u201Csuccess\u201D metrics.",
+        "Avoid demos that only show the premium path as the product."
+      ]
     },
     {
-      title: "Empty-wall death spiral",
-      body: "Without seed discourse and return, contributors stop; readers find silence; the place never becomes a place.",
-      mitigate: "Rights-safe import of real threads for studies; stewarded pilot communities before open UGC."
+      id: "attention",
+      code: "H2",
+      title: "Doomscroll in a sphere",
+      domain: "Attention / agency",
+      severity: 3,
+      likelihood: 2,
+      affected: "Readers and intentional users seeking calm sense-making",
+      pathway: "Store metrics, ranking habits, and capital pressure can recreate feed urgency inside VR \u2014 inverted impact relative to the thesis.",
+      rights: "Cognitive autonomy \xB7 freedom from manipulative design",
+      owner: "Product metrics + leadership",
+      mitigate: [
+        "Define success as comprehension, place memory, and calm exit \u2014 never raw dwell.",
+        "Pre-register anti-metrics: infinite scroll depth, notification dependence, FOMO at exit.",
+        "Refuse growth experiments that optimize heat clusters over understanding.",
+        "Publish the kill criterion: if Cosmos loses to a flat feed on sense-making, narrow or stop."
+      ]
     },
     {
-      title: "Doomscroll with better graphics",
-      body: "Optimization for session length or \u201Cengagement\u201D recreates feed incentives inside a sphere.",
-      mitigate: "Define success as sense-making and calm exit; instrument against infinite scroll proxies."
+      id: "safety",
+      code: "H3",
+      title: "Spatial harassment & steward overload",
+      domain: "Safety / labor",
+      severity: 3,
+      likelihood: 2,
+      affected: "Stewards, targeted users, quieter readers",
+      pathway: "Harassment, spam, and voice abuse get new spatial forms while mod tools lag Discord/Reddit norms; unpaid steward labor burns out.",
+      rights: "Safety \xB7 dignity \xB7 fair labor for community care",
+      owner: "Trust & safety + product",
+      mitigate: [
+        "Ship moderation tooling before multi-user scale (report, mute zone, remove, audit log).",
+        "Study steward workflows as a first-class path in primary research.",
+        "Cap open UGC until norms and tools exist; start with stewarded pilot communities.",
+        "Track steward time and incident resolution \u2014 not only user growth."
+      ]
     },
     {
-      title: "Steward overload in 3D",
-      body: "Harassment and spam get new spatial forms while mod tools lag 2D Discord/Reddit norms.",
-      mitigate: "Ship moderation tooling before scale; study steward workflows as a first-class path."
+      id: "privacy",
+      code: "H4",
+      title: "Voice & biometric exposure",
+      domain: "Privacy / body data",
+      severity: 3,
+      likelihood: 2,
+      affected: "Anyone who speaks, is tracked, or is recorded nearby",
+      pathway: "Voice, gaze, and presence can deepen place-feeling and expand surveillance anxiety; law and OS policy will constrain what ships.",
+      rights: "Privacy \xB7 consent \xB7 data minimization",
+      owner: "Engineering + policy review",
+      mitigate: [
+        "Default voice off; opt-in with clear retention and deletion.",
+        "Prefer on-device or short-lived processing; no silent always-on capture.",
+        "Document biometric/XR policy dependencies for Meta OS and Pico OS.",
+        "Offer text-first contribution so participation never requires a body signal."
+      ]
     },
     {
-      title: "Platform capture",
-      body: "Featuring, API limits, or store policy can force Cosmos into a thin client of Meta/Apple/ByteDance rules.",
-      mitigate: "Multi-target runtime only after single-platform proof; document policy dependencies openly."
+      id: "empty",
+      code: "H5",
+      title: "Empty-wall social failure",
+      domain: "Community health",
+      severity: 2,
+      likelihood: 3,
+      affected: "Early contributors, pilot communities, readers who arrive to silence",
+      pathway: "Without seed discourse and return, contribution feels pointless; the place never becomes a place.",
+      rights: "Meaningful participation \xB7 non-wasted labor",
+      owner: "Community design + content partnerships",
+      mitigate: [
+        "Rights-safe import of real threads for studies and early walls.",
+        "Stewarded pilot cohorts before open public UGC.",
+        "Measure return without notification bait, not only first-session wow.",
+        "Do not market \u201Cliving community\u201D until density and norms exist."
+      ]
     },
     {
-      title: "Research theater",
-      body: "Beautiful prototypes and maps without comparative tests leave impact as storytelling.",
-      mitigate: "Pre-register measures; run wall vs feed study before platform-building phases."
+      id: "body",
+      code: "H6",
+      title: "Comfort & vestibular harm",
+      domain: "Health / inclusion",
+      severity: 2,
+      likelihood: 2,
+      affected: "Users with motion sensitivity, fatigue, or long-session limits",
+      pathway: "Long spatial reading can induce discomfort; people who need the calmest tools may be the least able to stay.",
+      rights: "Health \xB7 reasonable accommodation",
+      owner: "Interaction design + study protocol",
+      mitigate: [
+        "Comfort budgets in prototype tests (session length, locomotion, text scale).",
+        "Seated, low-motion defaults; no forced continuous locomotion for reading.",
+        "Screen for cybersickness; allow early exit without losing progress (continuity).",
+        "Desktop bridge as an equal reading path when headset comfort fails."
+      ]
+    },
+    {
+      id: "capture",
+      code: "H7",
+      title: "Platform & policy capture",
+      domain: "Governance / dependency",
+      severity: 2,
+      likelihood: 3,
+      affected: "Team, users locked to one store, researchers depending on APIs",
+      pathway: "Featuring, fees, and OS rules can force design compromises that hollow the wall metaphor.",
+      rights: "User autonomy \xB7 research independence",
+      owner: "Strategy + engineering",
+      mitigate: [
+        "Prove the wall on one platform before multi-HMD sprawl.",
+        "Document store/OS policy dependencies in public research notes.",
+        "Keep a non-store or sideload path for research builds where allowed.",
+        "Treat platform compliance cost as a first-class risk in Making phases."
+      ]
+    },
+    {
+      id: "theater",
+      code: "H8",
+      title: "Research theater / false impact",
+      domain: "Epistemic / accountability",
+      severity: 2,
+      likelihood: 2,
+      affected: "Funders, participants, the public who trust the narrative",
+      pathway: "Beautiful maps and prototypes without comparative tests sell impact as storytelling.",
+      rights: "Honest communication \xB7 non-deception",
+      owner: "Research lead",
+      mitigate: [
+        "Pre-register outcomes before the wall-vs-feed study.",
+        "Separate demo narrative from validated claims in the report.",
+        "Publish falsifiers and negative results, not only inspiring frames.",
+        "No impact claims stronger than the current evidence tier."
+      ]
     }
   ];
+  var severityLabel = { 1: "Low", 2: "Med", 3: "High" };
+  var likelihoodLabel = { 1: "Low", 2: "Med", 3: "High" };
+  function HarmMatrixVisual({ harms, activeId, onSelect }) {
+    const size = 420;
+    const padL = 72;
+    const padB = 56;
+    const padT = 28;
+    const padR = 24;
+    const plotW = size - padL - padR;
+    const plotH = size - padT - padB;
+    const cell = plotW / 3;
+    const toXY = (likelihood, severity) => ({
+      x: padL + (likelihood - 0.5) * cell,
+      y: padT + (3 - severity + 0.5) * cell
+    });
+    return /* @__PURE__ */ React.createElement(
+      "svg",
+      {
+        className: "harm-matrix",
+        viewBox: `0 0 ${size} ${size}`,
+        role: "img",
+        "aria-label": "Potential harms plotted by likelihood and severity. Click a point to open its mitigation."
+      },
+      [1, 2, 3].map(
+        (lx) => [1, 2, 3].map((sy) => {
+          const heat = lx + sy;
+          const fill = heat >= 6 ? "rgba(241,79,155,0.18)" : heat >= 4 ? "rgba(242,240,79,0.28)" : "rgba(17,28,78,0.04)";
+          return /* @__PURE__ */ React.createElement(
+            "rect",
+            {
+              key: `${lx}-${sy}`,
+              x: padL + (lx - 1) * cell,
+              y: padT + (3 - sy) * cell,
+              width: cell,
+              height: cell,
+              fill,
+              stroke: "rgba(17,28,78,0.12)",
+              strokeWidth: "1"
+            }
+          );
+        })
+      ),
+      /* @__PURE__ */ React.createElement("line", { x1: padL, y1: padT, x2: padL, y2: padT + plotH, stroke: "#111c4e", strokeWidth: "1.5" }),
+      /* @__PURE__ */ React.createElement("line", { x1: padL, y1: padT + plotH, x2: padL + plotW, y2: padT + plotH, stroke: "#111c4e", strokeWidth: "1.5" }),
+      /* @__PURE__ */ React.createElement("text", { x: padL + plotW / 2, y: size - 12, textAnchor: "middle", className: "harm-matrix__axis" }, "Likelihood \u2192"),
+      /* @__PURE__ */ React.createElement(
+        "text",
+        {
+          x: 18,
+          y: padT + plotH / 2,
+          textAnchor: "middle",
+          className: "harm-matrix__axis",
+          transform: `rotate(-90 18 ${padT + plotH / 2})`
+        },
+        "Severity \u2192"
+      ),
+      [1, 2, 3].map((n) => /* @__PURE__ */ React.createElement(
+        "text",
+        {
+          key: `lx-${n}`,
+          x: padL + (n - 0.5) * cell,
+          y: padT + plotH + 22,
+          textAnchor: "middle",
+          className: "harm-matrix__tick"
+        },
+        likelihoodLabel[n]
+      )),
+      [1, 2, 3].map((n) => /* @__PURE__ */ React.createElement(
+        "text",
+        {
+          key: `sy-${n}`,
+          x: padL - 12,
+          y: padT + (3 - n + 0.5) * cell + 4,
+          textAnchor: "end",
+          className: "harm-matrix__tick"
+        },
+        severityLabel[n]
+      )),
+      harms.map((h) => {
+        const { x: x3, y: y3 } = toXY(h.likelihood, h.severity);
+        const peers = harms.filter((p) => p.likelihood === h.likelihood && p.severity === h.severity);
+        const idx = peers.findIndex((p) => p.id === h.id);
+        const ox = peers.length > 1 ? (idx - (peers.length - 1) / 2) * 22 : 0;
+        const active = h.id === activeId;
+        return /* @__PURE__ */ React.createElement(
+          "g",
+          {
+            key: h.id,
+            className: `harm-matrix__point ${active ? "is-active" : ""}`,
+            transform: `translate(${x3 + ox}, ${y3})`,
+            onClick: () => onSelect(h.id),
+            style: { cursor: "pointer" }
+          },
+          /* @__PURE__ */ React.createElement("circle", { r: active ? 18 : 15, fill: active ? "#f14f9b" : "#111c4e" }),
+          /* @__PURE__ */ React.createElement("text", { y: 5, textAnchor: "middle", className: "harm-matrix__code" }, h.code),
+          active && /* @__PURE__ */ React.createElement("text", { y: -28, textAnchor: "middle", className: "harm-matrix__hover-label" }, h.title)
+        );
+      }),
+      /* @__PURE__ */ React.createElement("text", { x: padL, y: 16, className: "harm-matrix__title" }, "Harm map \xB7 severity \xD7 likelihood")
+    );
+  }
   var impactMetrics = [
     { group: "Sense-making", items: ["Thread-cluster comprehension score", "Source-inspection rate", "Retell accuracy after delay", "\u201CWhat was this place about?\u201D free response"] },
     { group: "Felt quality", items: ["Calm vs urgency (session end)", "Agency / intentionality scale", "Comfort / cybersickness", "Willingness to return without push"] },
@@ -3061,7 +3276,46 @@
     { group: "Boundary health", items: ["Live-room feature demand", "Feed-like scroll depth", "Notification dependence", "Session ends on purpose vs fatigue"] }
   ];
   function ImpactAnalysisPage() {
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section impact-page", id: "impact-analysis" }, /* @__PURE__ */ React.createElement(ChapterLabel, { number: "06" }, "Impact analysis"), /* @__PURE__ */ React.createElement("div", { className: "section-heading impact-heading" }, /* @__PURE__ */ React.createElement("h2", null, "If the wall works,", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("em", null, "who is changed?")), /* @__PURE__ */ React.createElement("p", null, "Impact here is not a growth story. It is a research frame: intended effects, burdens, time horizons, and the evidence that would force Cosmos to revise or stop. Built from the waveline, stakeholder map, and primary critique that \u201Ceasier doomscroll\u201D is the wrong win.")), /* @__PURE__ */ React.createElement("nav", { className: "impact-toc", "aria-label": "Impact analysis contents" }, /* @__PURE__ */ React.createElement("p", null, "On this page"), /* @__PURE__ */ React.createElement("a", { href: "#impact-frame" }, /* @__PURE__ */ React.createElement("span", null, "1"), "Impact frame"), /* @__PURE__ */ React.createElement("a", { href: "#impact-horizons" }, /* @__PURE__ */ React.createElement("span", null, "2"), "Three horizons"), /* @__PURE__ */ React.createElement("a", { href: "#impact-actors" }, /* @__PURE__ */ React.createElement("span", null, "3"), "Who is affected"), /* @__PURE__ */ React.createElement("a", { href: "#impact-claims" }, /* @__PURE__ */ React.createElement("span", null, "4"), "Claims & falsifiers"), /* @__PURE__ */ React.createElement("a", { href: "#impact-risks" }, /* @__PURE__ */ React.createElement("span", null, "5"), "Risk register"), /* @__PURE__ */ React.createElement("a", { href: "#impact-measure" }, /* @__PURE__ */ React.createElement("span", null, "6"), "How we would know"), /* @__PURE__ */ React.createElement("a", { href: "#impact-scenarios" }, /* @__PURE__ */ React.createElement("span", null, "7"), "Scenarios"), /* @__PURE__ */ React.createElement("a", { href: "#impact-next" }, /* @__PURE__ */ React.createElement("span", null, "8"), "What this demands next")), /* @__PURE__ */ React.createElement("article", { className: "impact-document" }, /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-frame" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "1"), /* @__PURE__ */ React.createElement("h2", null, "Impact frame"), /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, "Cosmos only has impact if it changes how people understand asynchronous community \u2014 not if it merely relocates a feed into a headset."), /* @__PURE__ */ React.createElement("p", null, "The project\u2019s own research already rejected a shallow impact story. Making doomscroll easier in VR is not a success condition; structured sense-making is. So impact analysis starts from the wall metaphor: accumulation, low pressure, place memory, and the right to read without performing."), /* @__PURE__ */ React.createElement("div", { className: "impact-frame-grid" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("span", null, "Impact is"), /* @__PURE__ */ React.createElement("h3", null, "Change in understanding, agency, and burden"), /* @__PURE__ */ React.createElement("p", null, "Who leaves a session smarter, calmer, or more able to contribute \u2014 and who pays in comfort, money, labor, or privacy.")), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("span", null, "Impact is not"), /* @__PURE__ */ React.createElement("h3", null, "Downloads, dwell, or \u201Cspatial engagement\u201D"), /* @__PURE__ */ React.createElement("p", null, "Those can be symptoms. Without comprehension and intentional exit, they are how Cosmos becomes another attention product.")), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("span", null, "Method"), /* @__PURE__ */ React.createElement("h3", null, "Claim \u2192 evidence \u2192 falsifier"), /* @__PURE__ */ React.createElement("p", null, "Every hoped-for effect needs a way to fail. The stakeholder map shows forces; this page names consequences."))), /* @__PURE__ */ React.createElement("aside", { className: "report-note" }, /* @__PURE__ */ React.createElement("b", null, "Working stance"), /* @__PURE__ */ React.createElement("p", null, "Treat impact as provisional. Primary interviews and secondary literature justify the research direction; they do not yet prove product impact. Comparative studies and stewarded pilots are the proof path."))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-horizons" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "2"), /* @__PURE__ */ React.createElement("h2", null, "Three horizons"), /* @__PURE__ */ React.createElement("p", null, "Effects do not arrive at once. Session-level wins can exist while community impact fails; ecosystem impact is mostly out of the project\u2019s control but shapes what \u201Csuccess\u201D is allowed to mean."), /* @__PURE__ */ React.createElement("div", { className: "impact-horizon-grid" }, impactHorizons.map((h) => /* @__PURE__ */ React.createElement("article", { key: h.id }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, h.number), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", null, h.title), /* @__PURE__ */ React.createElement("p", null, h.window))), /* @__PURE__ */ React.createElement("p", { className: "impact-horizon-q" }, h.question), /* @__PURE__ */ React.createElement("ul", null, h.signals.map((s) => /* @__PURE__ */ React.createElement("li", { key: s }, s))))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-actors" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "3"), /* @__PURE__ */ React.createElement("h2", null, "Who is affected"), /* @__PURE__ */ React.createElement("p", null, "Drawn from the stakeholder map\u2019s people, product team, platforms, and institutions \u2014 rewritten as impact roles rather than org-chart nodes."), /* @__PURE__ */ React.createElement("div", { className: "impact-actor-table-wrap" }, /* @__PURE__ */ React.createElement("table", { className: "report-table impact-actor-table" }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "Role"), /* @__PURE__ */ React.createElement("th", null, "Intended change"), /* @__PURE__ */ React.createElement("th", null, "Burden / risk"), /* @__PURE__ */ React.createElement("th", null, "What would show it"))), /* @__PURE__ */ React.createElement("tbody", null, impactActors.map((a2) => /* @__PURE__ */ React.createElement("tr", { key: a2.id }, /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("b", null, a2.role), /* @__PURE__ */ React.createElement("span", null, a2.stake)), /* @__PURE__ */ React.createElement("td", null, a2.intended), /* @__PURE__ */ React.createElement("td", null, a2.risk), /* @__PURE__ */ React.createElement("td", null, a2.measure))))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-claims" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "4"), /* @__PURE__ */ React.createElement("h2", null, "Claims & falsifiers"), /* @__PURE__ */ React.createElement("p", null, "Impact claims Cosmos is allowed to make only as far as evidence and design hold. Each row is a bet that Making Cosmos must either validate or abandon."), /* @__PURE__ */ React.createElement("div", { className: "impact-claim-list" }, impactClaims.map((c2) => /* @__PURE__ */ React.createElement("article", { key: c2.claim }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, c2.type), /* @__PURE__ */ React.createElement("i", null, c2.confidence)), /* @__PURE__ */ React.createElement("h3", null, c2.claim), /* @__PURE__ */ React.createElement("div", { className: "impact-claim-grid" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Grounding now"), /* @__PURE__ */ React.createElement("p", null, c2.evidence)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Falsifier"), /* @__PURE__ */ React.createElement("p", null, c2.falsifier))))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-risks" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "5"), /* @__PURE__ */ React.createElement("h2", null, "Risk register"), /* @__PURE__ */ React.createElement("p", null, "Unintended impacts that are plausible even if the wall metaphor is right."), /* @__PURE__ */ React.createElement("div", { className: "impact-risk-grid" }, impactRisks.map((r, i) => /* @__PURE__ */ React.createElement("article", { key: r.title }, /* @__PURE__ */ React.createElement("span", null, String(i + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("h3", null, r.title), /* @__PURE__ */ React.createElement("p", null, r.body), /* @__PURE__ */ React.createElement("p", { className: "impact-risk-mitigate" }, /* @__PURE__ */ React.createElement("b", null, "Mitigate"), " ", r.mitigate))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-measure" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "6"), /* @__PURE__ */ React.createElement("h2", null, "How we would know"), /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, "Prefer measures that can embarrass the project. If Cosmos only tracks time-in-headset, it will optimize for the wrong impact."), /* @__PURE__ */ React.createElement("div", { className: "impact-metric-grid" }, impactMetrics.map((m2) => /* @__PURE__ */ React.createElement("article", { key: m2.group }, /* @__PURE__ */ React.createElement("h3", null, m2.group), /* @__PURE__ */ React.createElement("ul", null, m2.items.map((item) => /* @__PURE__ */ React.createElement("li", { key: item }, item)))))), /* @__PURE__ */ React.createElement("aside", { className: "report-note report-note-yellow" }, /* @__PURE__ */ React.createElement("b", null, "Study design sketch"), /* @__PURE__ */ React.createElement("p", null, "Comparative: same seed discourse as (A) flat feed, (B) Cosmos wall prototype. Primary outcomes: comprehension + place memory + calm/agency at exit. Secondary: contribution quality, steward load, access drop-off. Kill criterion: no advantage on primary outcomes after controlling for novelty."))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-scenarios" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "7"), /* @__PURE__ */ React.createElement("h2", null, "Scenarios (imagined futures)"), /* @__PURE__ */ React.createElement("p", null, "Three story-shaped outcomes so the team can argue about impact without pretending one path is destiny."), /* @__PURE__ */ React.createElement("div", { className: "impact-scenario-grid" }, /* @__PURE__ */ React.createElement("article", { className: "impact-scenario impact-scenario--good" }, /* @__PURE__ */ React.createElement("span", null, "Scenario A"), /* @__PURE__ */ React.createElement("h3", null, "The wall holds"), /* @__PURE__ */ React.createElement("p", null, "Pilot communities return because place memory works. Readers can retell a debate after a day. Stewards use spatial density as a signal. Stores treat Cosmos as a niche non-game social app. Capital is patient or grant-like. Impact is local and real: better sense-making for people who enter."), /* @__PURE__ */ React.createElement("p", { className: "impact-scenario-foot" }, "Impact type: session + community \xB7 limited ecosystem")), /* @__PURE__ */ React.createElement("article", { className: "impact-scenario impact-scenario--mixed" }, /* @__PURE__ */ React.createElement("span", null, "Scenario B"), /* @__PURE__ */ React.createElement("h3", null, "Beautiful, empty, expensive"), /* @__PURE__ */ React.createElement("p", null, "The prototype impresses in demos. Multi-HMD support and AI organization burn cost. Without seed content and return loops, contribution dies. Press calls it visionary; users call it quiet. Impact is mostly on the team\u2019s learning, not the public\u2019s reading life."), /* @__PURE__ */ React.createElement("p", { className: "impact-scenario-foot" }, "Impact type: research artifact \xB7 weak community")), /* @__PURE__ */ React.createElement("article", { className: "impact-scenario impact-scenario--bad" }, /* @__PURE__ */ React.createElement("span", null, "Scenario C"), /* @__PURE__ */ React.createElement("h3", null, "Feed in a sphere"), /* @__PURE__ */ React.createElement("p", null, "To survive store metrics and funding, Cosmos optimizes for dwell and hot clusters. Voice and ranking recreate urgency. The wall becomes d\xE9cor around an attention machine. Impact is negative relative to the thesis: another immersive path to the same harm."), /* @__PURE__ */ React.createElement("p", { className: "impact-scenario-foot" }, "Impact type: inverted \xB7 thesis failure")))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-next" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "8"), /* @__PURE__ */ React.createElement("h2", null, "What this demands next"), /* @__PURE__ */ React.createElement("p", null, "Making Cosmos should sequence work so impact bets are tested early \u2014 not after platform sprawl."), /* @__PURE__ */ React.createElement("ol", { className: "impact-next-list" }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Lock success metrics"), " to sense-making and intentional exit before any growth dashboard."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Run wall vs feed comparative study"), " with shared seed material and pre-registered outcomes."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Pilot steward and safety paths"), " as soon as multi-user walls exist \u2014 not as a late compliance patch."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Prove on one accessible platform first"), "; treat multi-HMD as cost after the metaphor works."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Keep desktop/bridge honest"), " so impact is not gated only by premium headsets."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Publish falsifiers"), " \u2014 if the wall does not beat the feed, narrow or stop rather than rebrand.")), /* @__PURE__ */ React.createElement("blockquote", { className: "report-quote" }, "Impact is earned when someone understands a community better because they walked a wall \u2014 and can leave without the product punishing them for going."))), /* @__PURE__ */ React.createElement("div", { className: "report-next-links impact-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "\u2190 Stakeholder map"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
+    const [activeHarmId, setActiveHarmId] = useState("attention");
+    const activeHarm = socialHarms.find((h) => h.id === activeHarmId) || socialHarms[0];
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section impact-page", id: "impact-analysis" }, /* @__PURE__ */ React.createElement(ChapterLabel, { number: "06" }, "Impact analysis"), /* @__PURE__ */ React.createElement("div", { className: "section-heading impact-heading" }, /* @__PURE__ */ React.createElement("h2", null, "If the wall works,", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("em", null, "who is changed?")), /* @__PURE__ */ React.createElement("p", null, "Impact here is not a growth story. It is a research frame: intended effects, burdens, potential harms, social impact assessment, and how you mitigate each harm. Built from the waveline, stakeholder map, and primary critique that \u201Ceasier doomscroll\u201D is the wrong win.")), /* @__PURE__ */ React.createElement("nav", { className: "impact-toc", "aria-label": "Impact analysis contents" }, /* @__PURE__ */ React.createElement("p", null, "On this page"), /* @__PURE__ */ React.createElement("a", { href: "#impact-frame" }, /* @__PURE__ */ React.createElement("span", null, "1"), "Impact frame"), /* @__PURE__ */ React.createElement("a", { href: "#impact-horizons" }, /* @__PURE__ */ React.createElement("span", null, "2"), "Three horizons"), /* @__PURE__ */ React.createElement("a", { href: "#impact-actors" }, /* @__PURE__ */ React.createElement("span", null, "3"), "Who is affected"), /* @__PURE__ */ React.createElement("a", { href: "#impact-claims" }, /* @__PURE__ */ React.createElement("span", null, "4"), "Claims & falsifiers"), /* @__PURE__ */ React.createElement("a", { href: "#impact-harms" }, /* @__PURE__ */ React.createElement("span", null, "5"), "Harms & SIA"), /* @__PURE__ */ React.createElement("a", { href: "#impact-mitigate" }, /* @__PURE__ */ React.createElement("span", null, "6"), "How to mitigate"), /* @__PURE__ */ React.createElement("a", { href: "#impact-measure" }, /* @__PURE__ */ React.createElement("span", null, "7"), "How we would know"), /* @__PURE__ */ React.createElement("a", { href: "#impact-scenarios" }, /* @__PURE__ */ React.createElement("span", null, "8"), "Scenarios"), /* @__PURE__ */ React.createElement("a", { href: "#impact-next" }, /* @__PURE__ */ React.createElement("span", null, "9"), "What this demands next")), /* @__PURE__ */ React.createElement("article", { className: "impact-document" }, /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-frame" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "1"), /* @__PURE__ */ React.createElement("h2", null, "Impact frame"), /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, "Cosmos only has impact if it changes how people understand asynchronous community \u2014 not if it merely relocates a feed into a headset."), /* @__PURE__ */ React.createElement("p", null, "The project\u2019s own research already rejected a shallow impact story. Making doomscroll easier in VR is not a success condition; structured sense-making is. So impact analysis starts from the wall metaphor: accumulation, low pressure, place memory, and the right to read without performing."), /* @__PURE__ */ React.createElement("div", { className: "impact-frame-grid" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("span", null, "Impact is"), /* @__PURE__ */ React.createElement("h3", null, "Change in understanding, agency, and burden"), /* @__PURE__ */ React.createElement("p", null, "Who leaves a session smarter, calmer, or more able to contribute \u2014 and who pays in comfort, money, labor, or privacy.")), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("span", null, "Impact is not"), /* @__PURE__ */ React.createElement("h3", null, "Downloads, dwell, or \u201Cspatial engagement\u201D"), /* @__PURE__ */ React.createElement("p", null, "Those can be symptoms. Without comprehension and intentional exit, they are how Cosmos becomes another attention product.")), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("span", null, "Method"), /* @__PURE__ */ React.createElement("h3", null, "Claim \u2192 evidence \u2192 falsifier"), /* @__PURE__ */ React.createElement("p", null, "Every hoped-for effect needs a way to fail. The stakeholder map shows forces; this page names consequences."))), /* @__PURE__ */ React.createElement("aside", { className: "report-note" }, /* @__PURE__ */ React.createElement("b", null, "Working stance"), /* @__PURE__ */ React.createElement("p", null, "Treat impact as provisional. Primary interviews and secondary literature justify the research direction; they do not yet prove product impact. Comparative studies and stewarded pilots are the proof path."))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-horizons" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "2"), /* @__PURE__ */ React.createElement("h2", null, "Three horizons"), /* @__PURE__ */ React.createElement("p", null, "Effects do not arrive at once. Session-level wins can exist while community impact fails; ecosystem impact is mostly out of the project\u2019s control but shapes what \u201Csuccess\u201D is allowed to mean."), /* @__PURE__ */ React.createElement("div", { className: "impact-horizon-grid" }, impactHorizons.map((h) => /* @__PURE__ */ React.createElement("article", { key: h.id }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, h.number), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", null, h.title), /* @__PURE__ */ React.createElement("p", null, h.window))), /* @__PURE__ */ React.createElement("p", { className: "impact-horizon-q" }, h.question), /* @__PURE__ */ React.createElement("ul", null, h.signals.map((s) => /* @__PURE__ */ React.createElement("li", { key: s }, s))))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-actors" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "3"), /* @__PURE__ */ React.createElement("h2", null, "Who is affected"), /* @__PURE__ */ React.createElement("p", null, "Drawn from the stakeholder map\u2019s people, product team, platforms, and institutions \u2014 rewritten as impact roles rather than org-chart nodes."), /* @__PURE__ */ React.createElement("div", { className: "impact-actor-table-wrap" }, /* @__PURE__ */ React.createElement("table", { className: "report-table impact-actor-table" }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "Role"), /* @__PURE__ */ React.createElement("th", null, "Intended change"), /* @__PURE__ */ React.createElement("th", null, "Burden / risk"), /* @__PURE__ */ React.createElement("th", null, "What would show it"))), /* @__PURE__ */ React.createElement("tbody", null, impactActors.map((a2) => /* @__PURE__ */ React.createElement("tr", { key: a2.id }, /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("b", null, a2.role), /* @__PURE__ */ React.createElement("span", null, a2.stake)), /* @__PURE__ */ React.createElement("td", null, a2.intended), /* @__PURE__ */ React.createElement("td", null, a2.risk), /* @__PURE__ */ React.createElement("td", null, a2.measure))))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-claims" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "4"), /* @__PURE__ */ React.createElement("h2", null, "Claims & falsifiers"), /* @__PURE__ */ React.createElement("p", null, "Impact claims Cosmos is allowed to make only as far as evidence and design hold. Each row is a bet that Making Cosmos must either validate or abandon."), /* @__PURE__ */ React.createElement("div", { className: "impact-claim-list" }, impactClaims.map((c2) => /* @__PURE__ */ React.createElement("article", { key: c2.claim }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, c2.type), /* @__PURE__ */ React.createElement("i", null, c2.confidence)), /* @__PURE__ */ React.createElement("h3", null, c2.claim), /* @__PURE__ */ React.createElement("div", { className: "impact-claim-grid" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Grounding now"), /* @__PURE__ */ React.createElement("p", null, c2.evidence)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Falsifier"), /* @__PURE__ */ React.createElement("p", null, c2.falsifier))))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-harms" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "5"), /* @__PURE__ */ React.createElement("h2", null, "Potential harms & social impact assessment"), /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, "A light social impact assessment (SIA): name the harm, who is affected, the pathway, the rights at stake, severity \xD7 likelihood, who owns mitigation, and what would reduce it."), /* @__PURE__ */ React.createElement("p", null, "Scores are research judgments for prioritization \u2014 not actuarial truth. High\u2013high cells are the harms you should be able to explain and mitigate in a presentation."), /* @__PURE__ */ React.createElement("div", { className: "harm-dual" }, /* @__PURE__ */ React.createElement("div", { className: "harm-dual__passage" }, /* @__PURE__ */ React.createElement("p", { className: "harm-dual__label" }, "Passage \xB7 full harm set"), /* @__PURE__ */ React.createElement("p", { className: "harm-passage-lead" }, "Cosmos can fail socially even if the wall metaphor is right. The main failure modes are", /* @__PURE__ */ React.createElement("strong", null, " exclusion by hardware"), ", ", /* @__PURE__ */ React.createElement("strong", null, "attention capture"), " that recreates the feed,", /* @__PURE__ */ React.createElement("strong", null, " safety labor without tools"), ", ", /* @__PURE__ */ React.createElement("strong", null, "body-data exposure"), ",", /* @__PURE__ */ React.createElement("strong", null, " empty communities"), ", ", /* @__PURE__ */ React.createElement("strong", null, "comfort barriers"), ",", /* @__PURE__ */ React.createElement("strong", null, " platform capture"), ", and ", /* @__PURE__ */ React.createElement("strong", null, "claiming impact without evidence"), ". Each harm below is the same set plotted on the matrix."), /* @__PURE__ */ React.createElement("ul", { className: "harm-passage-list" }, socialHarms.map((h) => /* @__PURE__ */ React.createElement("li", { key: h.id }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: h.id === activeHarmId ? "is-active" : "",
+        onClick: () => setActiveHarmId(h.id)
+      },
+      /* @__PURE__ */ React.createElement("b", null, h.code),
+      " ",
+      h.title,
+      /* @__PURE__ */ React.createElement("span", null, h.domain, " \xB7 S", h.severity, "/L", h.likelihood)
+    ))))), /* @__PURE__ */ React.createElement("div", { className: "harm-dual__visual" }, /* @__PURE__ */ React.createElement("p", { className: "harm-dual__label" }, "Visualization \xB7 same set"), /* @__PURE__ */ React.createElement(HarmMatrixVisual, { harms: socialHarms, activeId: activeHarmId, onSelect: setActiveHarmId }), /* @__PURE__ */ React.createElement("p", { className: "harm-matrix-hint" }, "Pink / yellow cells = higher combined risk. Click a code to open mitigations below."))), /* @__PURE__ */ React.createElement("div", { className: "harm-detail-card", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, activeHarm.code), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", null, activeHarm.title), /* @__PURE__ */ React.createElement("p", null, activeHarm.domain, " \xB7 severity ", severityLabel[activeHarm.severity], " \xB7 likelihood", " ", likelihoodLabel[activeHarm.likelihood]))), /* @__PURE__ */ React.createElement("div", { className: "harm-detail-grid" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Who is affected"), /* @__PURE__ */ React.createElement("p", null, activeHarm.affected)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Pathway"), /* @__PURE__ */ React.createElement("p", null, activeHarm.pathway)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Rights / social stakes"), /* @__PURE__ */ React.createElement("p", null, activeHarm.rights)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Accountable owner"), /* @__PURE__ */ React.createElement("p", null, activeHarm.owner)))), /* @__PURE__ */ React.createElement("div", { className: "impact-actor-table-wrap harm-sia-table-wrap" }, /* @__PURE__ */ React.createElement("table", { className: "report-table impact-actor-table harm-sia-table" }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "ID"), /* @__PURE__ */ React.createElement("th", null, "Harm"), /* @__PURE__ */ React.createElement("th", null, "Domain"), /* @__PURE__ */ React.createElement("th", null, "Sev"), /* @__PURE__ */ React.createElement("th", null, "Lik"), /* @__PURE__ */ React.createElement("th", null, "Owner"))), /* @__PURE__ */ React.createElement("tbody", null, socialHarms.map((h) => /* @__PURE__ */ React.createElement(
+      "tr",
+      {
+        key: h.id,
+        className: h.id === activeHarmId ? "is-active" : "",
+        onClick: () => setActiveHarmId(h.id),
+        style: { cursor: "pointer" }
+      },
+      /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("b", null, h.code)),
+      /* @__PURE__ */ React.createElement("td", null, h.title),
+      /* @__PURE__ */ React.createElement("td", null, h.domain),
+      /* @__PURE__ */ React.createElement("td", null, severityLabel[h.severity]),
+      /* @__PURE__ */ React.createElement("td", null, likelihoodLabel[h.likelihood]),
+      /* @__PURE__ */ React.createElement("td", null, h.owner)
+    )))))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-mitigate" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "6"), /* @__PURE__ */ React.createElement("h2", null, "How to mitigate them"), /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, "Use this as a speaking script: name the harm, then walk the steps. Steps are design and research commitments \u2014 not marketing claims."), /* @__PURE__ */ React.createElement("p", null, "Selected now: ", /* @__PURE__ */ React.createElement("strong", { style: { color: "var(--pink)" } }, activeHarm.code, " \xB7 ", activeHarm.title), " \u2014 ", "or scroll the full playbook."), /* @__PURE__ */ React.createElement("article", { className: "harm-mitigate-focus" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, activeHarm.code), /* @__PURE__ */ React.createElement("h3", null, "Mitigate: ", activeHarm.title)), /* @__PURE__ */ React.createElement("p", { className: "harm-mitigate-why" }, activeHarm.pathway), /* @__PURE__ */ React.createElement("ol", null, activeHarm.mitigate.map((step) => /* @__PURE__ */ React.createElement("li", { key: step }, step)))), /* @__PURE__ */ React.createElement("div", { className: "harm-mitigate-grid" }, socialHarms.map((h) => /* @__PURE__ */ React.createElement(
+      "article",
+      {
+        key: h.id,
+        id: `mitigate-${h.id}`,
+        className: h.id === activeHarmId ? "is-active" : "",
+        onClick: () => setActiveHarmId(h.id)
+      },
+      /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, h.code), /* @__PURE__ */ React.createElement("i", null, "S", h.severity, " \xB7 L", h.likelihood)),
+      /* @__PURE__ */ React.createElement("h3", null, h.title),
+      /* @__PURE__ */ React.createElement("p", { className: "harm-mitigate-domain" }, h.domain),
+      /* @__PURE__ */ React.createElement("ol", null, h.mitigate.map((step) => /* @__PURE__ */ React.createElement("li", { key: step }, step)))
+    )))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-measure" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "7"), /* @__PURE__ */ React.createElement("h2", null, "How we would know"), /* @__PURE__ */ React.createElement("p", { className: "report-lead" }, "Prefer measures that can embarrass the project. If Cosmos only tracks time-in-headset, it will optimize for the wrong impact."), /* @__PURE__ */ React.createElement("div", { className: "impact-metric-grid" }, impactMetrics.map((m2) => /* @__PURE__ */ React.createElement("article", { key: m2.group }, /* @__PURE__ */ React.createElement("h3", null, m2.group), /* @__PURE__ */ React.createElement("ul", null, m2.items.map((item) => /* @__PURE__ */ React.createElement("li", { key: item }, item)))))), /* @__PURE__ */ React.createElement("aside", { className: "report-note report-note-yellow" }, /* @__PURE__ */ React.createElement("b", null, "Study design sketch"), /* @__PURE__ */ React.createElement("p", null, "Comparative: same seed discourse as (A) flat feed, (B) Cosmos wall prototype. Primary outcomes: comprehension + place memory + calm/agency at exit. Secondary: contribution quality, steward load, access drop-off. Kill criterion: no advantage on primary outcomes after controlling for novelty."))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-scenarios" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "8"), /* @__PURE__ */ React.createElement("h2", null, "Scenarios (imagined futures)"), /* @__PURE__ */ React.createElement("p", null, "Three story-shaped outcomes so the team can argue about impact without pretending one path is destiny."), /* @__PURE__ */ React.createElement("div", { className: "impact-scenario-grid" }, /* @__PURE__ */ React.createElement("article", { className: "impact-scenario impact-scenario--good" }, /* @__PURE__ */ React.createElement("span", null, "Scenario A"), /* @__PURE__ */ React.createElement("h3", null, "The wall holds"), /* @__PURE__ */ React.createElement("p", null, "Pilot communities return because place memory works. Readers can retell a debate after a day. Stewards use spatial density as a signal. Stores treat Cosmos as a niche non-game social app. Capital is patient or grant-like. Impact is local and real: better sense-making for people who enter."), /* @__PURE__ */ React.createElement("p", { className: "impact-scenario-foot" }, "Impact type: session + community \xB7 limited ecosystem")), /* @__PURE__ */ React.createElement("article", { className: "impact-scenario impact-scenario--mixed" }, /* @__PURE__ */ React.createElement("span", null, "Scenario B"), /* @__PURE__ */ React.createElement("h3", null, "Beautiful, empty, expensive"), /* @__PURE__ */ React.createElement("p", null, "The prototype impresses in demos. Multi-HMD support and AI organization burn cost. Without seed content and return loops, contribution dies. Press calls it visionary; users call it quiet. Impact is mostly on the team\u2019s learning, not the public\u2019s reading life."), /* @__PURE__ */ React.createElement("p", { className: "impact-scenario-foot" }, "Impact type: research artifact \xB7 weak community")), /* @__PURE__ */ React.createElement("article", { className: "impact-scenario impact-scenario--bad" }, /* @__PURE__ */ React.createElement("span", null, "Scenario C"), /* @__PURE__ */ React.createElement("h3", null, "Feed in a sphere"), /* @__PURE__ */ React.createElement("p", null, "To survive store metrics and funding, Cosmos optimizes for dwell and hot clusters. Voice and ranking recreate urgency. The wall becomes d\xE9cor around an attention machine. Impact is negative relative to the thesis: another immersive path to the same harm."), /* @__PURE__ */ React.createElement("p", { className: "impact-scenario-foot" }, "Impact type: inverted \xB7 thesis failure")))), /* @__PURE__ */ React.createElement("section", { className: "report-chapter", id: "impact-next" }, /* @__PURE__ */ React.createElement("span", { className: "report-number" }, "9"), /* @__PURE__ */ React.createElement("h2", null, "What this demands next"), /* @__PURE__ */ React.createElement("p", null, "Making Cosmos should sequence work so impact bets and harm mitigations are tested early \u2014 not after platform sprawl."), /* @__PURE__ */ React.createElement("ol", { className: "impact-next-list" }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Lock success metrics"), " to sense-making and intentional exit before any growth dashboard."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Run wall vs feed comparative study"), " with shared seed material and pre-registered outcomes."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Pilot steward and safety paths"), " as soon as multi-user walls exist \u2014 not as a late compliance patch."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Prove on one accessible platform first"), "; treat multi-HMD as cost after the metaphor works."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Keep desktop/bridge honest"), " so impact is not gated only by premium headsets."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Walk the harm matrix in reviews"), " \u2014 each H1\u2013H8 should have an owner and a current mitigation status."), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("b", null, "Publish falsifiers"), " \u2014 if the wall does not beat the feed, narrow or stop rather than rebrand.")), /* @__PURE__ */ React.createElement("blockquote", { className: "report-quote" }, "Impact is earned when someone understands a community better because they walked a wall \u2014 and can leave without the product punishing them for going."))), /* @__PURE__ */ React.createElement("div", { className: "report-next-links impact-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "\u2190 Stakeholder map"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/making/" }, "Next: Making Cosmos \u2192")));
   }
   function TranscriptAppendix({ src }) {
     const [transcript, setTranscript] = useState("Loading transcript\u2026");

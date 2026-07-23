@@ -2567,38 +2567,281 @@ const impactClaims = [
   },
 ];
 
-const impactRisks = [
+// Social impact / potential harms assessment.
+// severity & likelihood: 1 = low, 2 = medium, 3 = high (for matrix placement).
+// mitigations are presentation-ready steps you can walk through.
+const socialHarms = [
   {
+    id: "access",
+    code: "H1",
     title: "Premium access wall",
-    body: "If the best experience requires high-end HMDs, impact concentrates among people who already have spatial gear — the opposite of a public community wall.",
-    mitigate: "Desktop/bridge path; pilot on accessible headsets (Quest/Pico-class); measure who cannot enter.",
+    domain: "Equity / access",
+    severity: 3,
+    likelihood: 3,
+    affected: "People without headsets, with comfort limits, or on constrained devices",
+    pathway:
+      "If the best Cosmos experience requires high-end HMDs, impact concentrates among people who already own spatial gear — the opposite of a public community wall.",
+    rights: "Equal access to public discourse · non-discrimination by means",
+    owner: "Product + research design",
+    mitigate: [
+      "Ship and study a desktop / cross-device bridge as a first-class path, not a demotion.",
+      "Pilot on accessible headsets (Quest / Pico-class), not Vision Pro alone.",
+      "Instrument who drops at setup; publish exclusion rates next to “success” metrics.",
+      "Avoid demos that only show the premium path as the product.",
+    ],
   },
   {
-    title: "Empty-wall death spiral",
-    body: "Without seed discourse and return, contributors stop; readers find silence; the place never becomes a place.",
-    mitigate: "Rights-safe import of real threads for studies; stewarded pilot communities before open UGC.",
+    id: "attention",
+    code: "H2",
+    title: "Doomscroll in a sphere",
+    domain: "Attention / agency",
+    severity: 3,
+    likelihood: 2,
+    affected: "Readers and intentional users seeking calm sense-making",
+    pathway:
+      "Store metrics, ranking habits, and capital pressure can recreate feed urgency inside VR — inverted impact relative to the thesis.",
+    rights: "Cognitive autonomy · freedom from manipulative design",
+    owner: "Product metrics + leadership",
+    mitigate: [
+      "Define success as comprehension, place memory, and calm exit — never raw dwell.",
+      "Pre-register anti-metrics: infinite scroll depth, notification dependence, FOMO at exit.",
+      "Refuse growth experiments that optimize heat clusters over understanding.",
+      "Publish the kill criterion: if Cosmos loses to a flat feed on sense-making, narrow or stop.",
+    ],
   },
   {
-    title: "Doomscroll with better graphics",
-    body: "Optimization for session length or “engagement” recreates feed incentives inside a sphere.",
-    mitigate: "Define success as sense-making and calm exit; instrument against infinite scroll proxies.",
+    id: "safety",
+    code: "H3",
+    title: "Spatial harassment & steward overload",
+    domain: "Safety / labor",
+    severity: 3,
+    likelihood: 2,
+    affected: "Stewards, targeted users, quieter readers",
+    pathway:
+      "Harassment, spam, and voice abuse get new spatial forms while mod tools lag Discord/Reddit norms; unpaid steward labor burns out.",
+    rights: "Safety · dignity · fair labor for community care",
+    owner: "Trust & safety + product",
+    mitigate: [
+      "Ship moderation tooling before multi-user scale (report, mute zone, remove, audit log).",
+      "Study steward workflows as a first-class path in primary research.",
+      "Cap open UGC until norms and tools exist; start with stewarded pilot communities.",
+      "Track steward time and incident resolution — not only user growth.",
+    ],
   },
   {
-    title: "Steward overload in 3D",
-    body: "Harassment and spam get new spatial forms while mod tools lag 2D Discord/Reddit norms.",
-    mitigate: "Ship moderation tooling before scale; study steward workflows as a first-class path.",
+    id: "privacy",
+    code: "H4",
+    title: "Voice & biometric exposure",
+    domain: "Privacy / body data",
+    severity: 3,
+    likelihood: 2,
+    affected: "Anyone who speaks, is tracked, or is recorded nearby",
+    pathway:
+      "Voice, gaze, and presence can deepen place-feeling and expand surveillance anxiety; law and OS policy will constrain what ships.",
+    rights: "Privacy · consent · data minimization",
+    owner: "Engineering + policy review",
+    mitigate: [
+      "Default voice off; opt-in with clear retention and deletion.",
+      "Prefer on-device or short-lived processing; no silent always-on capture.",
+      "Document biometric/XR policy dependencies for Meta OS and Pico OS.",
+      "Offer text-first contribution so participation never requires a body signal.",
+    ],
   },
   {
-    title: "Platform capture",
-    body: "Featuring, API limits, or store policy can force Cosmos into a thin client of Meta/Apple/ByteDance rules.",
-    mitigate: "Multi-target runtime only after single-platform proof; document policy dependencies openly.",
+    id: "empty",
+    code: "H5",
+    title: "Empty-wall social failure",
+    domain: "Community health",
+    severity: 2,
+    likelihood: 3,
+    affected: "Early contributors, pilot communities, readers who arrive to silence",
+    pathway:
+      "Without seed discourse and return, contribution feels pointless; the place never becomes a place.",
+    rights: "Meaningful participation · non-wasted labor",
+    owner: "Community design + content partnerships",
+    mitigate: [
+      "Rights-safe import of real threads for studies and early walls.",
+      "Stewarded pilot cohorts before open public UGC.",
+      "Measure return without notification bait, not only first-session wow.",
+      "Do not market “living community” until density and norms exist.",
+    ],
   },
   {
-    title: "Research theater",
-    body: "Beautiful prototypes and maps without comparative tests leave impact as storytelling.",
-    mitigate: "Pre-register measures; run wall vs feed study before platform-building phases.",
+    id: "body",
+    code: "H6",
+    title: "Comfort & vestibular harm",
+    domain: "Health / inclusion",
+    severity: 2,
+    likelihood: 2,
+    affected: "Users with motion sensitivity, fatigue, or long-session limits",
+    pathway:
+      "Long spatial reading can induce discomfort; people who need the calmest tools may be the least able to stay.",
+    rights: "Health · reasonable accommodation",
+    owner: "Interaction design + study protocol",
+    mitigate: [
+      "Comfort budgets in prototype tests (session length, locomotion, text scale).",
+      "Seated, low-motion defaults; no forced continuous locomotion for reading.",
+      "Screen for cybersickness; allow early exit without losing progress (continuity).",
+      "Desktop bridge as an equal reading path when headset comfort fails.",
+    ],
+  },
+  {
+    id: "capture",
+    code: "H7",
+    title: "Platform & policy capture",
+    domain: "Governance / dependency",
+    severity: 2,
+    likelihood: 3,
+    affected: "Team, users locked to one store, researchers depending on APIs",
+    pathway:
+      "Featuring, fees, and OS rules can force design compromises that hollow the wall metaphor.",
+    rights: "User autonomy · research independence",
+    owner: "Strategy + engineering",
+    mitigate: [
+      "Prove the wall on one platform before multi-HMD sprawl.",
+      "Document store/OS policy dependencies in public research notes.",
+      "Keep a non-store or sideload path for research builds where allowed.",
+      "Treat platform compliance cost as a first-class risk in Making phases.",
+    ],
+  },
+  {
+    id: "theater",
+    code: "H8",
+    title: "Research theater / false impact",
+    domain: "Epistemic / accountability",
+    severity: 2,
+    likelihood: 2,
+    affected: "Funders, participants, the public who trust the narrative",
+    pathway:
+      "Beautiful maps and prototypes without comparative tests sell impact as storytelling.",
+    rights: "Honest communication · non-deception",
+    owner: "Research lead",
+    mitigate: [
+      "Pre-register outcomes before the wall-vs-feed study.",
+      "Separate demo narrative from validated claims in the report.",
+      "Publish falsifiers and negative results, not only inspiring frames.",
+      "No impact claims stronger than the current evidence tier.",
+    ],
   },
 ];
+
+const severityLabel = { 1: "Low", 2: "Med", 3: "High" };
+const likelihoodLabel = { 1: "Low", 2: "Med", 3: "High" };
+
+/** Severity × likelihood matrix — same harm set as the written assessment. */
+function HarmMatrixVisual({ harms, activeId, onSelect }) {
+  const size = 420;
+  const padL = 72;
+  const padB = 56;
+  const padT = 28;
+  const padR = 24;
+  const plotW = size - padL - padR;
+  const plotH = size - padT - padB;
+  const cell = plotW / 3;
+
+  const toXY = (likelihood, severity) => ({
+    x: padL + (likelihood - 0.5) * cell,
+    y: padT + (3 - severity + 0.5) * cell,
+  });
+
+  return (
+    <svg
+      className="harm-matrix"
+      viewBox={`0 0 ${size} ${size}`}
+      role="img"
+      aria-label="Potential harms plotted by likelihood and severity. Click a point to open its mitigation."
+    >
+      {/* background cells */}
+      {[1, 2, 3].map((lx) =>
+        [1, 2, 3].map((sy) => {
+          const heat = lx + sy;
+          const fill =
+            heat >= 6 ? "rgba(241,79,155,0.18)" : heat >= 4 ? "rgba(242,240,79,0.28)" : "rgba(17,28,78,0.04)";
+          return (
+            <rect
+              key={`${lx}-${sy}`}
+              x={padL + (lx - 1) * cell}
+              y={padT + (3 - sy) * cell}
+              width={cell}
+              height={cell}
+              fill={fill}
+              stroke="rgba(17,28,78,0.12)"
+              strokeWidth="1"
+            />
+          );
+        })
+      )}
+      {/* axes */}
+      <line x1={padL} y1={padT} x2={padL} y2={padT + plotH} stroke="#111c4e" strokeWidth="1.5" />
+      <line x1={padL} y1={padT + plotH} x2={padL + plotW} y2={padT + plotH} stroke="#111c4e" strokeWidth="1.5" />
+      <text x={padL + plotW / 2} y={size - 12} textAnchor="middle" className="harm-matrix__axis">
+        Likelihood →
+      </text>
+      <text
+        x={18}
+        y={padT + plotH / 2}
+        textAnchor="middle"
+        className="harm-matrix__axis"
+        transform={`rotate(-90 18 ${padT + plotH / 2})`}
+      >
+        Severity →
+      </text>
+      {[1, 2, 3].map((n) => (
+        <text
+          key={`lx-${n}`}
+          x={padL + (n - 0.5) * cell}
+          y={padT + plotH + 22}
+          textAnchor="middle"
+          className="harm-matrix__tick"
+        >
+          {likelihoodLabel[n]}
+        </text>
+      ))}
+      {[1, 2, 3].map((n) => (
+        <text
+          key={`sy-${n}`}
+          x={padL - 12}
+          y={padT + (3 - n + 0.5) * cell + 4}
+          textAnchor="end"
+          className="harm-matrix__tick"
+        >
+          {severityLabel[n]}
+        </text>
+      ))}
+      {/* harm points */}
+      {harms.map((h) => {
+        const { x, y } = toXY(h.likelihood, h.severity);
+        // slight offset if two share a cell
+        const peers = harms.filter((p) => p.likelihood === h.likelihood && p.severity === h.severity);
+        const idx = peers.findIndex((p) => p.id === h.id);
+        const ox = peers.length > 1 ? (idx - (peers.length - 1) / 2) * 22 : 0;
+        const active = h.id === activeId;
+        return (
+          <g
+            key={h.id}
+            className={`harm-matrix__point ${active ? "is-active" : ""}`}
+            transform={`translate(${x + ox}, ${y})`}
+            onClick={() => onSelect(h.id)}
+            style={{ cursor: "pointer" }}
+          >
+            <circle r={active ? 18 : 15} fill={active ? "#f14f9b" : "#111c4e"} />
+            <text y={5} textAnchor="middle" className="harm-matrix__code">
+              {h.code}
+            </text>
+            {active && (
+              <text y={-28} textAnchor="middle" className="harm-matrix__hover-label">
+                {h.title}
+              </text>
+            )}
+          </g>
+        );
+      })}
+      <text x={padL} y={16} className="harm-matrix__title">
+        Harm map · severity × likelihood
+      </text>
+    </svg>
+  );
+}
 
 const impactMetrics = [
   { group: "Sense-making", items: ["Thread-cluster comprehension score", "Source-inspection rate", "Retell accuracy after delay", "“What was this place about?” free response"] },
@@ -2609,6 +2852,9 @@ const impactMetrics = [
 ];
 
 function ImpactAnalysisPage() {
+  const [activeHarmId, setActiveHarmId] = useState("attention");
+  const activeHarm = socialHarms.find((h) => h.id === activeHarmId) || socialHarms[0];
+
   return (
     <section className="report-section impact-page" id="impact-analysis">
       <ChapterLabel number="06">Impact analysis</ChapterLabel>
@@ -2619,8 +2865,8 @@ function ImpactAnalysisPage() {
           <em>who is changed?</em>
         </h2>
         <p>
-          Impact here is not a growth story. It is a research frame: intended effects, burdens, time horizons,
-          and the evidence that would force Cosmos to revise or stop. Built from the waveline, stakeholder map,
+          Impact here is not a growth story. It is a research frame: intended effects, burdens, potential harms,
+          social impact assessment, and how you mitigate each harm. Built from the waveline, stakeholder map,
           and primary critique that “easier doomscroll” is the wrong win.
         </p>
       </div>
@@ -2631,10 +2877,11 @@ function ImpactAnalysisPage() {
         <a href="#impact-horizons"><span>2</span>Three horizons</a>
         <a href="#impact-actors"><span>3</span>Who is affected</a>
         <a href="#impact-claims"><span>4</span>Claims &amp; falsifiers</a>
-        <a href="#impact-risks"><span>5</span>Risk register</a>
-        <a href="#impact-measure"><span>6</span>How we would know</a>
-        <a href="#impact-scenarios"><span>7</span>Scenarios</a>
-        <a href="#impact-next"><span>8</span>What this demands next</a>
+        <a href="#impact-harms"><span>5</span>Harms &amp; SIA</a>
+        <a href="#impact-mitigate"><span>6</span>How to mitigate</a>
+        <a href="#impact-measure"><span>7</span>How we would know</a>
+        <a href="#impact-scenarios"><span>8</span>Scenarios</a>
+        <a href="#impact-next"><span>9</span>What this demands next</a>
       </nav>
 
       <article className="impact-document">
@@ -2768,26 +3015,171 @@ function ImpactAnalysisPage() {
           </div>
         </section>
 
-        <section className="report-chapter" id="impact-risks">
+        <section className="report-chapter" id="impact-harms">
           <span className="report-number">5</span>
-          <h2>Risk register</h2>
-          <p>Unintended impacts that are plausible even if the wall metaphor is right.</p>
-          <div className="impact-risk-grid">
-            {impactRisks.map((r, i) => (
-              <article key={r.title}>
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <h3>{r.title}</h3>
-                <p>{r.body}</p>
-                <p className="impact-risk-mitigate">
-                  <b>Mitigate</b> {r.mitigate}
+          <h2>Potential harms &amp; social impact assessment</h2>
+          <p className="report-lead">
+            A light social impact assessment (SIA): name the harm, who is affected, the pathway,
+            the rights at stake, severity × likelihood, who owns mitigation, and what would reduce it.
+          </p>
+          <p>
+            Scores are research judgments for prioritization — not actuarial truth. High–high cells are
+            the harms you should be able to explain and mitigate in a presentation.
+          </p>
+
+          {/* Dual: same content as passage list + interactive matrix visualization */}
+          <div className="harm-dual">
+            <div className="harm-dual__passage">
+              <p className="harm-dual__label">Passage · full harm set</p>
+              <p className="harm-passage-lead">
+                Cosmos can fail socially even if the wall metaphor is right. The main failure modes are
+                <strong> exclusion by hardware</strong>, <strong>attention capture</strong> that recreates the feed,
+                <strong> safety labor without tools</strong>, <strong>body-data exposure</strong>,
+                <strong> empty communities</strong>, <strong>comfort barriers</strong>,
+                <strong> platform capture</strong>, and <strong>claiming impact without evidence</strong>.
+                Each harm below is the same set plotted on the matrix.
+              </p>
+              <ul className="harm-passage-list">
+                {socialHarms.map((h) => (
+                  <li key={h.id}>
+                    <button
+                      type="button"
+                      className={h.id === activeHarmId ? "is-active" : ""}
+                      onClick={() => setActiveHarmId(h.id)}
+                    >
+                      <b>{h.code}</b> {h.title}
+                      <span>
+                        {h.domain} · S{h.severity}/L{h.likelihood}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="harm-dual__visual">
+              <p className="harm-dual__label">Visualization · same set</p>
+              <HarmMatrixVisual harms={socialHarms} activeId={activeHarmId} onSelect={setActiveHarmId} />
+              <p className="harm-matrix-hint">Pink / yellow cells = higher combined risk. Click a code to open mitigations below.</p>
+            </div>
+          </div>
+
+          <div className="harm-detail-card" aria-live="polite">
+            <header>
+              <span>{activeHarm.code}</span>
+              <div>
+                <h3>{activeHarm.title}</h3>
+                <p>
+                  {activeHarm.domain} · severity {severityLabel[activeHarm.severity]} · likelihood{" "}
+                  {likelihoodLabel[activeHarm.likelihood]}
                 </p>
+              </div>
+            </header>
+            <div className="harm-detail-grid">
+              <div>
+                <b>Who is affected</b>
+                <p>{activeHarm.affected}</p>
+              </div>
+              <div>
+                <b>Pathway</b>
+                <p>{activeHarm.pathway}</p>
+              </div>
+              <div>
+                <b>Rights / social stakes</b>
+                <p>{activeHarm.rights}</p>
+              </div>
+              <div>
+                <b>Accountable owner</b>
+                <p>{activeHarm.owner}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="impact-actor-table-wrap harm-sia-table-wrap">
+            <table className="report-table impact-actor-table harm-sia-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Harm</th>
+                  <th>Domain</th>
+                  <th>Sev</th>
+                  <th>Lik</th>
+                  <th>Owner</th>
+                </tr>
+              </thead>
+              <tbody>
+                {socialHarms.map((h) => (
+                  <tr
+                    key={h.id}
+                    className={h.id === activeHarmId ? "is-active" : ""}
+                    onClick={() => setActiveHarmId(h.id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td><b>{h.code}</b></td>
+                    <td>{h.title}</td>
+                    <td>{h.domain}</td>
+                    <td>{severityLabel[h.severity]}</td>
+                    <td>{likelihoodLabel[h.likelihood]}</td>
+                    <td>{h.owner}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="report-chapter" id="impact-mitigate">
+          <span className="report-number">6</span>
+          <h2>How to mitigate them</h2>
+          <p className="report-lead">
+            Use this as a speaking script: name the harm, then walk the steps. Steps are design and research
+            commitments — not marketing claims.
+          </p>
+          <p>
+            Selected now: <strong style={{ color: "var(--pink)" }}>{activeHarm.code} · {activeHarm.title}</strong>
+            {" — "}or scroll the full playbook.
+          </p>
+
+          <article className="harm-mitigate-focus">
+            <header>
+              <span>{activeHarm.code}</span>
+              <h3>Mitigate: {activeHarm.title}</h3>
+            </header>
+            <p className="harm-mitigate-why">{activeHarm.pathway}</p>
+            <ol>
+              {activeHarm.mitigate.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          </article>
+
+          <div className="harm-mitigate-grid">
+            {socialHarms.map((h) => (
+              <article
+                key={h.id}
+                id={`mitigate-${h.id}`}
+                className={h.id === activeHarmId ? "is-active" : ""}
+                onClick={() => setActiveHarmId(h.id)}
+              >
+                <header>
+                  <span>{h.code}</span>
+                  <i>
+                    S{h.severity} · L{h.likelihood}
+                  </i>
+                </header>
+                <h3>{h.title}</h3>
+                <p className="harm-mitigate-domain">{h.domain}</p>
+                <ol>
+                  {h.mitigate.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
               </article>
             ))}
           </div>
         </section>
 
         <section className="report-chapter" id="impact-measure">
-          <span className="report-number">6</span>
+          <span className="report-number">7</span>
           <h2>How we would know</h2>
           <p className="report-lead">
             Prefer measures that can embarrass the project. If Cosmos only tracks time-in-headset, it will optimize for the wrong impact.
@@ -2816,7 +3208,7 @@ function ImpactAnalysisPage() {
         </section>
 
         <section className="report-chapter" id="impact-scenarios">
-          <span className="report-number">7</span>
+          <span className="report-number">8</span>
           <h2>Scenarios (imagined futures)</h2>
           <p>Three story-shaped outcomes so the team can argue about impact without pretending one path is destiny.</p>
           <div className="impact-scenario-grid">
@@ -2854,10 +3246,11 @@ function ImpactAnalysisPage() {
         </section>
 
         <section className="report-chapter" id="impact-next">
-          <span className="report-number">8</span>
+          <span className="report-number">9</span>
           <h2>What this demands next</h2>
           <p>
-            Making Cosmos should sequence work so impact bets are tested early — not after platform sprawl.
+            Making Cosmos should sequence work so impact bets and harm mitigations are tested early —
+            not after platform sprawl.
           </p>
           <ol className="impact-next-list">
             <li>
@@ -2874,6 +3267,9 @@ function ImpactAnalysisPage() {
             </li>
             <li>
               <b>Keep desktop/bridge honest</b> so impact is not gated only by premium headsets.
+            </li>
+            <li>
+              <b>Walk the harm matrix in reviews</b> — each H1–H8 should have an owner and a current mitigation status.
             </li>
             <li>
               <b>Publish falsifiers</b> — if the wall does not beat the feed, narrow or stop rather than rebrand.
