@@ -1,4 +1,12 @@
 import { CosmosHeader, CosmosSidebar } from "./shell.jsx";
+import {
+  forceSimulation,
+  forceLink,
+  forceManyBody,
+  forceCollide,
+  forceX,
+  forceY,
+} from "d3-force";
 
 const { useEffect, useState, useRef } = React;
 
@@ -712,14 +720,14 @@ const influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]
 // 1) Relationship — structural: cluster → category → brand (gray backbone)
 // 2) Influence — typed forces between entities (colored; filters by type)
 // parentId = brand under a category (Reddit under Feed Social). Never drop entities here casually.
-// Hub ring ~400px from App — tight enough, but trees (~200px) no longer collide in the middle.
+// Pinned hub seeds for d3-force (App center; others only linked to App).
 const networkClusters = [
-  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 480, y: 820 },
+  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 420, y: 860 },
   { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 880, y: 760, isHub: true },
-  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1280, y: 820 },
-  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 540, y: 380 },
-  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1220, y: 380 },
-  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 880, y: 1180 },
+  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1340, y: 860 },
+  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 480, y: 340 },
+  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1280, y: 340 },
+  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 880, y: 1220 },
 ];
 
 // Entities: as many relatable names as useful. parentId = branch from a category entity.
@@ -811,18 +819,13 @@ const clusterMembershipEdges = networkEntities
     clusterId: e.cluster,
   }));
 
-// Cluster hubs connected to each other (star through App + outer ring).
+// Cluster hubs: App is the center; other clusters connect only to App (not to each other).
 const hubLinkPairs = [
   ["app", "people"],
   ["app", "hardware"],
   ["app", "competitors"],
   ["app", "partners"],
   ["app", "institutions"],
-  ["people", "competitors"],
-  ["competitors", "partners"],
-  ["partners", "hardware"],
-  ["hardware", "institutions"],
-  ["institutions", "people"],
 ];
 const hubHubEdges = hubLinkPairs.map(([a, b]) => ({
   from: clusterHubId(a),
@@ -982,366 +985,165 @@ const MAP_H = 1440;
 const MAP_PAD = 50;
 
 /**
- * Category structure: fixed hubs + full 360° trees.
- * Angle optimization: order/rotate rings so influence-linked entities face each
- * other (e.g. ads near feed platforms) without reparenting the category tree.
+ * d3-force category layout:
+ * - Hubs pinned (App center, others around)
+ * - Strong short links for category trees (hub→root, parent→brand)
+ * - Weak influence links only to rotate entities toward partners
+ * - Collision so pills don’t stack
  */
-function layoutNetworkGraph(clusters, entities, influence) {
-  const canvasCx = MAP_W / 2;
-  const canvasCy = MAP_H / 2;
-  const entityById = Object.fromEntries(entities.map((e) => [e.id, e]));
-  const kidsByParent = {};
+function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks) {
+  const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
+
+  // Simulation nodes: real entities + pinned hub nodes
+  const nodes = [];
+  const byId = {};
+  clusters.forEach((c) => {
+    const id = `hub:${c.id}`;
+    const n = { id, kind: "hub", cluster: c.id, fx: c.x, fy: c.y, x: c.x, y: c.y };
+    nodes.push(n);
+    byId[id] = n;
+  });
+  entities.forEach((e, i) => {
+    const home = clusterById[e.cluster];
+    // Seed near home hub so simulation settles as a tree, not a ball in the center
+    const ang = (i / Math.max(entities.length, 1)) * Math.PI * 2;
+    const n = {
+      id: e.id,
+      kind: "entity",
+      cluster: e.cluster,
+      parentId: e.parentId || null,
+      x: home.x + Math.cos(ang) * 90,
+      y: home.y + Math.sin(ang) * 90,
+    };
+    nodes.push(n);
+    byId[e.id] = n;
+  });
+
+  const links = [];
+  // Hub star (App ↔ each other cluster only)
+  hubLinks.forEach(([a, b]) => {
+    links.push({
+      source: `hub:${a}`,
+      target: `hub:${b}`,
+      kind: "hub",
+      distance: 380,
+      strength: 0.35,
+    });
+  });
+  // Hub → category roots
+  entities
+    .filter((e) => !e.parentId)
+    .forEach((e) => {
+      links.push({
+        source: `hub:${e.cluster}`,
+        target: e.id,
+        kind: "cluster",
+        distance: 100,
+        strength: 1.1,
+      });
+    });
+  // Parent → brand
+  membership.forEach((e) => {
+    links.push({
+      source: e.from,
+      target: e.to,
+      kind: "branch",
+      distance: 88,
+      strength: 1.35,
+    });
+  });
+  // Weak influence (layout only — does not draw as category)
+  influence.forEach((e) => {
+    if (!byId[e.from] || !byId[e.to]) return;
+    links.push({
+      source: e.from,
+      target: e.to,
+      kind: "influence",
+      distance: 220,
+      strength: 0.06,
+    });
+  });
+
+  const sim = forceSimulation(nodes)
+    .force(
+      "link",
+      forceLink(links)
+        .id((d) => d.id)
+        .distance((d) => d.distance)
+        .strength((d) => d.strength)
+    )
+    .force(
+      "charge",
+      forceManyBody().strength((d) => (d.kind === "hub" ? -40 : -220))
+    )
+    .force(
+      "collide",
+      forceCollide()
+        .radius((d) => (d.kind === "hub" ? 36 : 46))
+        .strength(0.9)
+        .iterations(3)
+    )
+    // Soft pull entities toward their home hub (keeps category trees local)
+    .force(
+      "homeX",
+      forceX((d) => (d.kind === "hub" ? d.fx : clusterById[d.cluster].x)).strength((d) =>
+        d.kind === "hub" ? 0 : 0.12
+      )
+    )
+    .force(
+      "homeY",
+      forceY((d) => (d.kind === "hub" ? d.fy : clusterById[d.cluster].y)).strength((d) =>
+        d.kind === "hub" ? 0 : 0.12
+      )
+    )
+    .stop();
+
+  for (let i = 0; i < 320; i++) sim.tick();
+
+  // Clamp to canvas; re-pin hubs
+  nodes.forEach((n) => {
+    if (n.kind === "hub") {
+      n.x = n.fx;
+      n.y = n.fy;
+      return;
+    }
+    n.x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, n.x));
+    n.y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, n.y));
+  });
+
+  // Keep entities out of foreign hub cores
   entities.forEach((e) => {
-    if (!e.parentId) return;
-    if (!kidsByParent[e.parentId]) kidsByParent[e.parentId] = [];
-    kidsByParent[e.parentId].push(e);
+    const n = byId[e.id];
+    clusters.forEach((c) => {
+      if (c.id === e.cluster) return;
+      const dx = n.x - c.x;
+      const dy = n.y - c.y;
+      const d = Math.hypot(dx, dy) || 0.01;
+      const excl = c.isHub ? 125 : 110;
+      if (d < excl) {
+        n.x = c.x + (dx / d) * excl;
+        n.y = c.y + (dy / d) * excl;
+      }
+    });
   });
-
-  // Undirected influence adjacency with weights for co-location.
-  const adj = {};
-  const touch = (a, b, w) => {
-    if (!adj[a]) adj[a] = {};
-    if (!adj[b]) adj[b] = {};
-    adj[a][b] = (adj[a][b] || 0) + w;
-    adj[b][a] = (adj[b][a] || 0) + w;
-  };
-  influence.forEach((e) => touch(e.from, e.to, 1));
-  // Category siblings (same parent) also prefer to stay together.
-  Object.values(kidsByParent).forEach((kids) => {
-    for (let i = 0; i < kids.length; i++) {
-      for (let j = i + 1; j < kids.length; j++) {
-        touch(kids[i].id, kids[j].id, 0.35);
-      }
-    }
-  });
-  // Same-cluster roots that share many influence neighbors should sit near each other.
-  // (Handled via scoring on placement.)
-
-  function placeCluster(c, rootOrder, startAng, into, childOrders) {
-    const hub = { x: c.x, y: c.y };
-    const n = Math.max(rootOrder.length, 1);
-    const busy = rootOrder.length >= 6;
-    const isCenter = Boolean(c.isHub);
-    // Slightly smaller trees so neighboring hubs' rings don't crush into App.
-    const rootR = isCenter ? (busy ? 108 : 96) : busy ? 92 : 82;
-    rootOrder.forEach((root, i) => {
-      const ang = startAng + (i / n) * Math.PI * 2;
-      into[root.id] = {
-        x: hub.x + Math.cos(ang) * rootR,
-        y: hub.y + Math.sin(ang) * rootR,
-      };
-      const kids = childOrders[root.id] || kidsByParent[root.id] || [];
-      const childStep = kids.length >= 4 ? 92 : kids.length >= 3 ? 86 : kids.length === 2 ? 78 : 72;
-      const childR = rootR + childStep;
-      kids.forEach((kid, ki) => {
-        const kfan = Math.min(1.05, 0.32 * Math.max(kids.length, 1));
-        const kang =
-          ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : (ki / (kids.length - 1)) * kfan);
-        into[kid.id] = {
-          x: hub.x + Math.cos(kang) * childR,
-          y: hub.y + Math.sin(kang) * childR,
-        };
-      });
-    });
-  }
-
-  function orient2d(ax, ay, bx, by, cx, cy) {
-    return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
-  }
-
-  function segmentsCross(pa, pb, pc, pd) {
-    const o1 = orient2d(pa.x, pa.y, pb.x, pb.y, pc.x, pc.y);
-    const o2 = orient2d(pa.x, pa.y, pb.x, pb.y, pd.x, pd.y);
-    const o3 = orient2d(pc.x, pc.y, pd.x, pd.y, pa.x, pa.y);
-    const o4 = orient2d(pc.x, pc.y, pd.x, pd.y, pb.x, pb.y);
-    return o1 * o2 < 0 && o3 * o4 < 0;
-  }
-
-  function scorePlacement(p) {
-    let len = 0;
-    for (const e of influence) {
-      const a = p[e.from];
-      const b = p[e.to];
-      if (!a || !b) continue;
-      len += Math.hypot(a.x - b.x, a.y - b.y);
-    }
-    // Extra weight: pull strongly-linked pairs that are same-cluster roots.
-    let nearBonus = 0;
-    for (const id of Object.keys(adj)) {
-      const ea = entityById[id];
-      if (!ea || ea.parentId) continue;
-      for (const [oid, w] of Object.entries(adj[id])) {
-        if (id >= oid) continue;
-        const eb = entityById[oid];
-        if (!eb || ea.cluster !== eb.cluster) continue;
-        const a = p[id];
-        const b = p[oid];
-        if (!a || !b) continue;
-        // Prefer small chord distance on the ring for high-weight pairs.
-        nearBonus += w * Math.hypot(a.x - b.x, a.y - b.y);
-      }
-    }
-    let crosses = 0;
-    for (let i = 0; i < influence.length; i++) {
-      for (let j = i + 1; j < influence.length; j++) {
-        const e1 = influence[i];
-        const e2 = influence[j];
-        if (e1.from === e2.from || e1.from === e2.to || e1.to === e2.from || e1.to === e2.to) {
-          continue;
-        }
-        const a = p[e1.from];
-        const b = p[e1.to];
-        const c = p[e2.from];
-        const d = p[e2.to];
-        if (!a || !b || !c || !d) continue;
-        if (segmentsCross(a, b, c, d)) crosses += 1;
-      }
-    }
-    return len + nearBonus * 1.4 + crosses * 200;
-  }
-
-  // Seed root order by affinity (greedy nearest-neighbor on influence weights).
-  function affinityOrder(roots) {
-    if (roots.length <= 1) return roots.slice();
-    const remaining = new Set(roots.map((r) => r.id));
-    // Start with root that has strongest external influence weight.
-    let start = roots[0];
-    let bestW = -1;
-    roots.forEach((r) => {
-      let w = 0;
-      const m = adj[r.id] || {};
-      Object.entries(m).forEach(([oid, wt]) => {
-        const o = entityById[oid];
-        if (o && o.cluster !== r.cluster) w += wt;
-        // Include links to this root's children's partners via children
-        (kidsByParent[r.id] || []).forEach((kid) => {
-          Object.entries(adj[kid.id] || {}).forEach(([, kwt]) => {
-            w += kwt * 0.5;
-          });
-        });
-      });
-      if (w > bestW) {
-        bestW = w;
-        start = r;
-      }
-    });
-    const ordered = [start];
-    remaining.delete(start.id);
-    while (remaining.size) {
-      const last = ordered[ordered.length - 1];
-      let nextId = null;
-      let nextScore = -1;
-      remaining.forEach((id) => {
-        let s = adj[last.id]?.[id] || 0;
-        // Affinity through children (ads ↔ reddit/x/tiktok via feed-social children)
-        (kidsByParent[last.id] || []).forEach((kid) => {
-          s += (adj[kid.id]?.[id] || 0) * 0.8;
-          (kidsByParent[id] || []).forEach((ok) => {
-            s += (adj[kid.id]?.[ok.id] || 0) * 1.2;
-          });
-        });
-        (kidsByParent[id] || []).forEach((ok) => {
-          s += (adj[last.id]?.[ok.id] || 0) * 0.8;
-        });
-        if (s > nextScore) {
-          nextScore = s;
-          nextId = id;
-        }
-      });
-      if (!nextId) nextId = remaining.values().next().value;
-      remaining.delete(nextId);
-      ordered.push(entityById[nextId]);
-    }
-    return ordered;
-  }
-
-  function orderKids(root, hub) {
-    const kids = (kidsByParent[root.id] || []).slice();
-    if (kids.length <= 2) return kids;
-    // Order children by ideal angle toward their influence partners.
-    const scored = kids.map((kid) => {
-      let sx = 0;
-      let sy = 0;
-      let w = 0;
-      Object.entries(adj[kid.id] || {}).forEach(([oid, wt]) => {
-        // Prefer partners outside this parent’s own kids
-        const o = entityById[oid];
-        if (!o) return;
-        // Use hub-relative direction to sibling-heavy partners later via parent order;
-        // for external partners use current pos if available, else cluster centers.
-        let tx;
-        let ty;
-        if (pos[oid]) {
-          tx = pos[oid].x;
-          ty = pos[oid].y;
-        } else if (o.cluster) {
-          const oc = clusters.find((cl) => cl.id === o.cluster);
-          tx = oc ? oc.x : canvasCx;
-          ty = oc ? oc.y : canvasCy;
-        } else {
-          return;
-        }
-        sx += tx * wt;
-        sy += ty * wt;
-        w += wt;
-      });
-      const ang =
-        w > 0
-          ? Math.atan2(sy / w - hub.y, sx / w - hub.x)
-          : 0;
-      return { kid, ang };
-    });
-    scored.sort((a, b) => a.ang - b.ang);
-    return scored.map((s) => s.kid);
-  }
-
-  let pos = {};
-  const rootOrders = {};
-  const startAngles = {};
-  const childOrders = {};
-
-  // Initial placement with affinity-sorted roots
-  clusters.forEach((c) => {
-    const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
-    rootOrders[c.id] = affinityOrder(roots);
-    startAngles[c.id] = Math.atan2(c.y - canvasCy, c.x - canvasCx) - Math.PI / 2;
-    roots.forEach((r) => {
-      childOrders[r.id] = (kidsByParent[r.id] || []).slice();
-    });
-    placeCluster(c, rootOrders[c.id], startAngles[c.id], pos, childOrders);
-  });
-
-  // Recompute child orders once positions exist, then re-place.
-  clusters.forEach((c) => {
-    rootOrders[c.id].forEach((r) => {
-      childOrders[r.id] = orderKids(r, { x: c.x, y: c.y });
-    });
-    placeCluster(c, rootOrders[c.id], startAngles[c.id], pos, childOrders);
-  });
-
-  // Coordinate descent: rotation + cyclic root order + reverse order.
-  const angleSteps = 48;
-  for (let pass = 0; pass < 4; pass++) {
-    for (const c of clusters) {
-      const baseOrder = rootOrders[c.id];
-      const n = baseOrder.length;
-      if (n < 1) continue;
-      let best = {
-        score: Infinity,
-        order: baseOrder,
-        start: startAngles[c.id],
-      };
-      const candidates = [];
-      for (let sh = 0; sh < n; sh++) {
-        candidates.push(baseOrder.map((_, i) => baseOrder[(i + sh) % n]));
-      }
-      // Also try reverse of affinity order
-      const rev = baseOrder.slice().reverse();
-      for (let sh = 0; sh < n; sh++) {
-        candidates.push(rev.map((_, i) => rev[(i + sh) % n]));
-      }
-      for (const order of candidates) {
-        for (let s = 0; s < angleSteps; s++) {
-          const start = (s / angleSteps) * Math.PI * 2;
-          const trial = { ...pos };
-          placeCluster(c, order, start, trial, childOrders);
-          const sc = scorePlacement(trial);
-          if (sc < best.score) best = { score: sc, order, start };
-        }
-      }
-      rootOrders[c.id] = best.order;
-      startAngles[c.id] = best.start;
-      // Refresh child angular order for this cluster after choosing root ring
-      placeCluster(c, best.order, best.start, pos, childOrders);
-      best.order.forEach((r) => {
-        childOrders[r.id] = orderKids(r, { x: c.x, y: c.y });
-      });
-      placeCluster(c, best.order, best.start, pos, childOrders);
-    }
-  }
-
-  // Stronger anti-overlap + keep entities out of foreign hub cores (fixes center pile-up).
-  for (let pass = 0; pass < 80; pass++) {
-    for (let i = 0; i < entities.length; i++) {
-      for (let j = i + 1; j < entities.length; j++) {
-        const a = entities[i];
-        const b = entities[j];
-        const family =
-          a.parentId === b.id ||
-          b.parentId === a.id ||
-          (a.parentId && a.parentId === b.parentId);
-        if (family) continue;
-        const pa = pos[a.id];
-        const pb = pos[b.id];
-        let dx = pb.x - pa.x;
-        let dy = pb.y - pa.y;
-        let d = Math.hypot(dx, dy) || 0.01;
-        const minD = a.cluster === b.cluster ? 88 : 100;
-        if (d >= minD) continue;
-        const push = ((minD - d) / d) * 0.65;
-        const ux = dx / d;
-        const uy = dy / d;
-        pa.x -= ux * push * 0.5;
-        pa.y -= uy * push * 0.5;
-        pb.x += ux * push * 0.5;
-        pb.y += uy * push * 0.5;
-      }
-    }
-    // Push any entity out of another cluster's hub exclusion zone.
-    entities.forEach((e) => {
-      const p = pos[e.id];
-      clusters.forEach((c) => {
-        if (c.id === e.cluster) return;
-        const dx = p.x - c.x;
-        const dy = p.y - c.y;
-        const d = Math.hypot(dx, dy) || 0.01;
-        const excl = c.isHub ? 130 : 115;
-        if (d >= excl) return;
-        const push = (excl - d) / d;
-        p.x += (dx / d) * push * 0.85;
-        p.y += (dy / d) * push * 0.85;
-      });
-      // Keep near own hub (don't drift into the void / center)
-      const home = clusters.find((c) => c.id === e.cluster);
-      if (!home) return;
-      const hx = p.x - home.x;
-      const hy = p.y - home.y;
-      const hd = Math.hypot(hx, hy) || 0.01;
-      const maxOrbit = home.isHub ? 210 : 195;
-      if (hd > maxOrbit) {
-        p.x = home.x + (hx / hd) * maxOrbit;
-        p.y = home.y + (hy / hd) * maxOrbit;
-      }
-      const minOrbit = 48;
-      if (hd < minOrbit) {
-        p.x = home.x + (hx / hd) * minOrbit;
-        p.y = home.y + (hy / hd) * minOrbit;
-      }
-    });
-  }
-
-  for (const e of entities) {
-    pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
-    pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
-  }
 
   return clusters.map((c) => {
-    const nodes = entities
+    const cNodes = entities
       .filter((e) => e.cluster === c.id)
       .map((e) => ({
         ...e,
         sideId: c.id,
-        x: pos[e.id].x,
-        y: pos[e.id].y,
+        x: byId[e.id].x,
+        y: byId[e.id].y,
       }));
     const radius =
-      nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - c.x, n.y - c.y)), 0) + 40;
+      cNodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - c.x, n.y - c.y)), 0) + 40;
     return {
       ...c,
       anchor: { x: c.x, y: c.y },
       radius: Math.max(radius, 140),
       labelY: c.y - Math.max(radius, 140) - 18,
-      nodes,
+      nodes: cNodes,
     };
   });
 }
@@ -1349,7 +1151,9 @@ function layoutNetworkGraph(clusters, entities, influence) {
 const networkGraph = layoutNetworkGraph(
   networkClusters,
   networkEntities,
-  influenceEdges
+  influenceEdges,
+  membershipEdges,
+  hubLinkPairs
 );
 
 // Shared pill metrics so edge anchors match the drawn rects.
@@ -1925,7 +1729,7 @@ function StakeholderMapPage() {
         <div className="stakeholder-map-legend" aria-hidden="true">
           <span className="stakeholder-map-legend__item">
             <i className="stakeholder-map-legend__rel" />
-            Category: hubs linked · hub → category → brand (straight gray)
+            Category: App↔clusters · hub → category → brand (straight gray)
           </span>
           {showInfluence && (
             <span className="stakeholder-map-legend__item">

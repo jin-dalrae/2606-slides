@@ -74,6 +74,899 @@
     ));
   }
 
+  // node_modules/d3-quadtree/src/add.js
+  function add_default(d) {
+    const x3 = +this._x.call(null, d), y3 = +this._y.call(null, d);
+    return add(this.cover(x3, y3), x3, y3, d);
+  }
+  function add(tree, x3, y3, d) {
+    if (isNaN(x3) || isNaN(y3)) return tree;
+    var parent, node = tree._root, leaf = { data: d }, x0 = tree._x0, y0 = tree._y0, x1 = tree._x1, y1 = tree._y1, xm, ym, xp, yp, right, bottom, i, j;
+    if (!node) return tree._root = leaf, tree;
+    while (node.length) {
+      if (right = x3 >= (xm = (x0 + x1) / 2)) x0 = xm;
+      else x1 = xm;
+      if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
+      else y1 = ym;
+      if (parent = node, !(node = node[i = bottom << 1 | right])) return parent[i] = leaf, tree;
+    }
+    xp = +tree._x.call(null, node.data);
+    yp = +tree._y.call(null, node.data);
+    if (x3 === xp && y3 === yp) return leaf.next = node, parent ? parent[i] = leaf : tree._root = leaf, tree;
+    do {
+      parent = parent ? parent[i] = new Array(4) : tree._root = new Array(4);
+      if (right = x3 >= (xm = (x0 + x1) / 2)) x0 = xm;
+      else x1 = xm;
+      if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
+      else y1 = ym;
+    } while ((i = bottom << 1 | right) === (j = (yp >= ym) << 1 | xp >= xm));
+    return parent[j] = node, parent[i] = leaf, tree;
+  }
+  function addAll(data) {
+    var d, i, n = data.length, x3, y3, xz = new Array(n), yz = new Array(n), x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (i = 0; i < n; ++i) {
+      if (isNaN(x3 = +this._x.call(null, d = data[i])) || isNaN(y3 = +this._y.call(null, d))) continue;
+      xz[i] = x3;
+      yz[i] = y3;
+      if (x3 < x0) x0 = x3;
+      if (x3 > x1) x1 = x3;
+      if (y3 < y0) y0 = y3;
+      if (y3 > y1) y1 = y3;
+    }
+    if (x0 > x1 || y0 > y1) return this;
+    this.cover(x0, y0).cover(x1, y1);
+    for (i = 0; i < n; ++i) {
+      add(this, xz[i], yz[i], data[i]);
+    }
+    return this;
+  }
+
+  // node_modules/d3-quadtree/src/cover.js
+  function cover_default(x3, y3) {
+    if (isNaN(x3 = +x3) || isNaN(y3 = +y3)) return this;
+    var x0 = this._x0, y0 = this._y0, x1 = this._x1, y1 = this._y1;
+    if (isNaN(x0)) {
+      x1 = (x0 = Math.floor(x3)) + 1;
+      y1 = (y0 = Math.floor(y3)) + 1;
+    } else {
+      var z = x1 - x0 || 1, node = this._root, parent, i;
+      while (x0 > x3 || x3 >= x1 || y0 > y3 || y3 >= y1) {
+        i = (y3 < y0) << 1 | x3 < x0;
+        parent = new Array(4), parent[i] = node, node = parent, z *= 2;
+        switch (i) {
+          case 0:
+            x1 = x0 + z, y1 = y0 + z;
+            break;
+          case 1:
+            x0 = x1 - z, y1 = y0 + z;
+            break;
+          case 2:
+            x1 = x0 + z, y0 = y1 - z;
+            break;
+          case 3:
+            x0 = x1 - z, y0 = y1 - z;
+            break;
+        }
+      }
+      if (this._root && this._root.length) this._root = node;
+    }
+    this._x0 = x0;
+    this._y0 = y0;
+    this._x1 = x1;
+    this._y1 = y1;
+    return this;
+  }
+
+  // node_modules/d3-quadtree/src/data.js
+  function data_default() {
+    var data = [];
+    this.visit(function(node) {
+      if (!node.length) do
+        data.push(node.data);
+      while (node = node.next);
+    });
+    return data;
+  }
+
+  // node_modules/d3-quadtree/src/extent.js
+  function extent_default(_) {
+    return arguments.length ? this.cover(+_[0][0], +_[0][1]).cover(+_[1][0], +_[1][1]) : isNaN(this._x0) ? void 0 : [[this._x0, this._y0], [this._x1, this._y1]];
+  }
+
+  // node_modules/d3-quadtree/src/quad.js
+  function quad_default(node, x0, y0, x1, y1) {
+    this.node = node;
+    this.x0 = x0;
+    this.y0 = y0;
+    this.x1 = x1;
+    this.y1 = y1;
+  }
+
+  // node_modules/d3-quadtree/src/find.js
+  function find_default(x3, y3, radius) {
+    var data, x0 = this._x0, y0 = this._y0, x1, y1, x22, y22, x32 = this._x1, y32 = this._y1, quads = [], node = this._root, q, i;
+    if (node) quads.push(new quad_default(node, x0, y0, x32, y32));
+    if (radius == null) radius = Infinity;
+    else {
+      x0 = x3 - radius, y0 = y3 - radius;
+      x32 = x3 + radius, y32 = y3 + radius;
+      radius *= radius;
+    }
+    while (q = quads.pop()) {
+      if (!(node = q.node) || (x1 = q.x0) > x32 || (y1 = q.y0) > y32 || (x22 = q.x1) < x0 || (y22 = q.y1) < y0) continue;
+      if (node.length) {
+        var xm = (x1 + x22) / 2, ym = (y1 + y22) / 2;
+        quads.push(
+          new quad_default(node[3], xm, ym, x22, y22),
+          new quad_default(node[2], x1, ym, xm, y22),
+          new quad_default(node[1], xm, y1, x22, ym),
+          new quad_default(node[0], x1, y1, xm, ym)
+        );
+        if (i = (y3 >= ym) << 1 | x3 >= xm) {
+          q = quads[quads.length - 1];
+          quads[quads.length - 1] = quads[quads.length - 1 - i];
+          quads[quads.length - 1 - i] = q;
+        }
+      } else {
+        var dx = x3 - +this._x.call(null, node.data), dy = y3 - +this._y.call(null, node.data), d2 = dx * dx + dy * dy;
+        if (d2 < radius) {
+          var d = Math.sqrt(radius = d2);
+          x0 = x3 - d, y0 = y3 - d;
+          x32 = x3 + d, y32 = y3 + d;
+          data = node.data;
+        }
+      }
+    }
+    return data;
+  }
+
+  // node_modules/d3-quadtree/src/remove.js
+  function remove_default(d) {
+    if (isNaN(x3 = +this._x.call(null, d)) || isNaN(y3 = +this._y.call(null, d))) return this;
+    var parent, node = this._root, retainer, previous, next, x0 = this._x0, y0 = this._y0, x1 = this._x1, y1 = this._y1, x3, y3, xm, ym, right, bottom, i, j;
+    if (!node) return this;
+    if (node.length) while (true) {
+      if (right = x3 >= (xm = (x0 + x1) / 2)) x0 = xm;
+      else x1 = xm;
+      if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
+      else y1 = ym;
+      if (!(parent = node, node = node[i = bottom << 1 | right])) return this;
+      if (!node.length) break;
+      if (parent[i + 1 & 3] || parent[i + 2 & 3] || parent[i + 3 & 3]) retainer = parent, j = i;
+    }
+    while (node.data !== d) if (!(previous = node, node = node.next)) return this;
+    if (next = node.next) delete node.next;
+    if (previous) return next ? previous.next = next : delete previous.next, this;
+    if (!parent) return this._root = next, this;
+    next ? parent[i] = next : delete parent[i];
+    if ((node = parent[0] || parent[1] || parent[2] || parent[3]) && node === (parent[3] || parent[2] || parent[1] || parent[0]) && !node.length) {
+      if (retainer) retainer[j] = node;
+      else this._root = node;
+    }
+    return this;
+  }
+  function removeAll(data) {
+    for (var i = 0, n = data.length; i < n; ++i) this.remove(data[i]);
+    return this;
+  }
+
+  // node_modules/d3-quadtree/src/root.js
+  function root_default() {
+    return this._root;
+  }
+
+  // node_modules/d3-quadtree/src/size.js
+  function size_default() {
+    var size = 0;
+    this.visit(function(node) {
+      if (!node.length) do
+        ++size;
+      while (node = node.next);
+    });
+    return size;
+  }
+
+  // node_modules/d3-quadtree/src/visit.js
+  function visit_default(callback) {
+    var quads = [], q, node = this._root, child, x0, y0, x1, y1;
+    if (node) quads.push(new quad_default(node, this._x0, this._y0, this._x1, this._y1));
+    while (q = quads.pop()) {
+      if (!callback(node = q.node, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1) && node.length) {
+        var xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;
+        if (child = node[3]) quads.push(new quad_default(child, xm, ym, x1, y1));
+        if (child = node[2]) quads.push(new quad_default(child, x0, ym, xm, y1));
+        if (child = node[1]) quads.push(new quad_default(child, xm, y0, x1, ym));
+        if (child = node[0]) quads.push(new quad_default(child, x0, y0, xm, ym));
+      }
+    }
+    return this;
+  }
+
+  // node_modules/d3-quadtree/src/visitAfter.js
+  function visitAfter_default(callback) {
+    var quads = [], next = [], q;
+    if (this._root) quads.push(new quad_default(this._root, this._x0, this._y0, this._x1, this._y1));
+    while (q = quads.pop()) {
+      var node = q.node;
+      if (node.length) {
+        var child, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1, xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;
+        if (child = node[0]) quads.push(new quad_default(child, x0, y0, xm, ym));
+        if (child = node[1]) quads.push(new quad_default(child, xm, y0, x1, ym));
+        if (child = node[2]) quads.push(new quad_default(child, x0, ym, xm, y1));
+        if (child = node[3]) quads.push(new quad_default(child, xm, ym, x1, y1));
+      }
+      next.push(q);
+    }
+    while (q = next.pop()) {
+      callback(q.node, q.x0, q.y0, q.x1, q.y1);
+    }
+    return this;
+  }
+
+  // node_modules/d3-quadtree/src/x.js
+  function defaultX(d) {
+    return d[0];
+  }
+  function x_default(_) {
+    return arguments.length ? (this._x = _, this) : this._x;
+  }
+
+  // node_modules/d3-quadtree/src/y.js
+  function defaultY(d) {
+    return d[1];
+  }
+  function y_default(_) {
+    return arguments.length ? (this._y = _, this) : this._y;
+  }
+
+  // node_modules/d3-quadtree/src/quadtree.js
+  function quadtree(nodes, x3, y3) {
+    var tree = new Quadtree(x3 == null ? defaultX : x3, y3 == null ? defaultY : y3, NaN, NaN, NaN, NaN);
+    return nodes == null ? tree : tree.addAll(nodes);
+  }
+  function Quadtree(x3, y3, x0, y0, x1, y1) {
+    this._x = x3;
+    this._y = y3;
+    this._x0 = x0;
+    this._y0 = y0;
+    this._x1 = x1;
+    this._y1 = y1;
+    this._root = void 0;
+  }
+  function leaf_copy(leaf) {
+    var copy = { data: leaf.data }, next = copy;
+    while (leaf = leaf.next) next = next.next = { data: leaf.data };
+    return copy;
+  }
+  var treeProto = quadtree.prototype = Quadtree.prototype;
+  treeProto.copy = function() {
+    var copy = new Quadtree(this._x, this._y, this._x0, this._y0, this._x1, this._y1), node = this._root, nodes, child;
+    if (!node) return copy;
+    if (!node.length) return copy._root = leaf_copy(node), copy;
+    nodes = [{ source: node, target: copy._root = new Array(4) }];
+    while (node = nodes.pop()) {
+      for (var i = 0; i < 4; ++i) {
+        if (child = node.source[i]) {
+          if (child.length) nodes.push({ source: child, target: node.target[i] = new Array(4) });
+          else node.target[i] = leaf_copy(child);
+        }
+      }
+    }
+    return copy;
+  };
+  treeProto.add = add_default;
+  treeProto.addAll = addAll;
+  treeProto.cover = cover_default;
+  treeProto.data = data_default;
+  treeProto.extent = extent_default;
+  treeProto.find = find_default;
+  treeProto.remove = remove_default;
+  treeProto.removeAll = removeAll;
+  treeProto.root = root_default;
+  treeProto.size = size_default;
+  treeProto.visit = visit_default;
+  treeProto.visitAfter = visitAfter_default;
+  treeProto.x = x_default;
+  treeProto.y = y_default;
+
+  // node_modules/d3-force/src/constant.js
+  function constant_default(x3) {
+    return function() {
+      return x3;
+    };
+  }
+
+  // node_modules/d3-force/src/jiggle.js
+  function jiggle_default(random) {
+    return (random() - 0.5) * 1e-6;
+  }
+
+  // node_modules/d3-force/src/collide.js
+  function x(d) {
+    return d.x + d.vx;
+  }
+  function y(d) {
+    return d.y + d.vy;
+  }
+  function collide_default(radius) {
+    var nodes, radii, random, strength = 1, iterations = 1;
+    if (typeof radius !== "function") radius = constant_default(radius == null ? 1 : +radius);
+    function force() {
+      var i, n = nodes.length, tree, node, xi, yi, ri, ri2;
+      for (var k = 0; k < iterations; ++k) {
+        tree = quadtree(nodes, x, y).visitAfter(prepare);
+        for (i = 0; i < n; ++i) {
+          node = nodes[i];
+          ri = radii[node.index], ri2 = ri * ri;
+          xi = node.x + node.vx;
+          yi = node.y + node.vy;
+          tree.visit(apply);
+        }
+      }
+      function apply(quad, x0, y0, x1, y1) {
+        var data = quad.data, rj = quad.r, r = ri + rj;
+        if (data) {
+          if (data.index > node.index) {
+            var x3 = xi - data.x - data.vx, y3 = yi - data.y - data.vy, l = x3 * x3 + y3 * y3;
+            if (l < r * r) {
+              if (x3 === 0) x3 = jiggle_default(random), l += x3 * x3;
+              if (y3 === 0) y3 = jiggle_default(random), l += y3 * y3;
+              l = (r - (l = Math.sqrt(l))) / l * strength;
+              node.vx += (x3 *= l) * (r = (rj *= rj) / (ri2 + rj));
+              node.vy += (y3 *= l) * r;
+              data.vx -= x3 * (r = 1 - r);
+              data.vy -= y3 * r;
+            }
+          }
+          return;
+        }
+        return x0 > xi + r || x1 < xi - r || y0 > yi + r || y1 < yi - r;
+      }
+    }
+    function prepare(quad) {
+      if (quad.data) return quad.r = radii[quad.data.index];
+      for (var i = quad.r = 0; i < 4; ++i) {
+        if (quad[i] && quad[i].r > quad.r) {
+          quad.r = quad[i].r;
+        }
+      }
+    }
+    function initialize() {
+      if (!nodes) return;
+      var i, n = nodes.length, node;
+      radii = new Array(n);
+      for (i = 0; i < n; ++i) node = nodes[i], radii[node.index] = +radius(node, i, nodes);
+    }
+    force.initialize = function(_nodes, _random) {
+      nodes = _nodes;
+      random = _random;
+      initialize();
+    };
+    force.iterations = function(_) {
+      return arguments.length ? (iterations = +_, force) : iterations;
+    };
+    force.strength = function(_) {
+      return arguments.length ? (strength = +_, force) : strength;
+    };
+    force.radius = function(_) {
+      return arguments.length ? (radius = typeof _ === "function" ? _ : constant_default(+_), initialize(), force) : radius;
+    };
+    return force;
+  }
+
+  // node_modules/d3-force/src/link.js
+  function index(d) {
+    return d.index;
+  }
+  function find(nodeById2, nodeId) {
+    var node = nodeById2.get(nodeId);
+    if (!node) throw new Error("node not found: " + nodeId);
+    return node;
+  }
+  function link_default(links) {
+    var id = index, strength = defaultStrength, strengths, distance = constant_default(30), distances, nodes, count, bias, random, iterations = 1;
+    if (links == null) links = [];
+    function defaultStrength(link) {
+      return 1 / Math.min(count[link.source.index], count[link.target.index]);
+    }
+    function force(alpha) {
+      for (var k = 0, n = links.length; k < iterations; ++k) {
+        for (var i = 0, link, source, target, x3, y3, l, b; i < n; ++i) {
+          link = links[i], source = link.source, target = link.target;
+          x3 = target.x + target.vx - source.x - source.vx || jiggle_default(random);
+          y3 = target.y + target.vy - source.y - source.vy || jiggle_default(random);
+          l = Math.sqrt(x3 * x3 + y3 * y3);
+          l = (l - distances[i]) / l * alpha * strengths[i];
+          x3 *= l, y3 *= l;
+          target.vx -= x3 * (b = bias[i]);
+          target.vy -= y3 * b;
+          source.vx += x3 * (b = 1 - b);
+          source.vy += y3 * b;
+        }
+      }
+    }
+    function initialize() {
+      if (!nodes) return;
+      var i, n = nodes.length, m2 = links.length, nodeById2 = new Map(nodes.map((d, i2) => [id(d, i2, nodes), d])), link;
+      for (i = 0, count = new Array(n); i < m2; ++i) {
+        link = links[i], link.index = i;
+        if (typeof link.source !== "object") link.source = find(nodeById2, link.source);
+        if (typeof link.target !== "object") link.target = find(nodeById2, link.target);
+        count[link.source.index] = (count[link.source.index] || 0) + 1;
+        count[link.target.index] = (count[link.target.index] || 0) + 1;
+      }
+      for (i = 0, bias = new Array(m2); i < m2; ++i) {
+        link = links[i], bias[i] = count[link.source.index] / (count[link.source.index] + count[link.target.index]);
+      }
+      strengths = new Array(m2), initializeStrength();
+      distances = new Array(m2), initializeDistance();
+    }
+    function initializeStrength() {
+      if (!nodes) return;
+      for (var i = 0, n = links.length; i < n; ++i) {
+        strengths[i] = +strength(links[i], i, links);
+      }
+    }
+    function initializeDistance() {
+      if (!nodes) return;
+      for (var i = 0, n = links.length; i < n; ++i) {
+        distances[i] = +distance(links[i], i, links);
+      }
+    }
+    force.initialize = function(_nodes, _random) {
+      nodes = _nodes;
+      random = _random;
+      initialize();
+    };
+    force.links = function(_) {
+      return arguments.length ? (links = _, initialize(), force) : links;
+    };
+    force.id = function(_) {
+      return arguments.length ? (id = _, force) : id;
+    };
+    force.iterations = function(_) {
+      return arguments.length ? (iterations = +_, force) : iterations;
+    };
+    force.strength = function(_) {
+      return arguments.length ? (strength = typeof _ === "function" ? _ : constant_default(+_), initializeStrength(), force) : strength;
+    };
+    force.distance = function(_) {
+      return arguments.length ? (distance = typeof _ === "function" ? _ : constant_default(+_), initializeDistance(), force) : distance;
+    };
+    return force;
+  }
+
+  // node_modules/d3-dispatch/src/dispatch.js
+  var noop = { value: () => {
+  } };
+  function dispatch() {
+    for (var i = 0, n = arguments.length, _ = {}, t; i < n; ++i) {
+      if (!(t = arguments[i] + "") || t in _ || /[\s.]/.test(t)) throw new Error("illegal type: " + t);
+      _[t] = [];
+    }
+    return new Dispatch(_);
+  }
+  function Dispatch(_) {
+    this._ = _;
+  }
+  function parseTypenames(typenames, types) {
+    return typenames.trim().split(/^|\s+/).map(function(t) {
+      var name = "", i = t.indexOf(".");
+      if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
+      if (t && !types.hasOwnProperty(t)) throw new Error("unknown type: " + t);
+      return { type: t, name };
+    });
+  }
+  Dispatch.prototype = dispatch.prototype = {
+    constructor: Dispatch,
+    on: function(typename, callback) {
+      var _ = this._, T = parseTypenames(typename + "", _), t, i = -1, n = T.length;
+      if (arguments.length < 2) {
+        while (++i < n) if ((t = (typename = T[i]).type) && (t = get(_[t], typename.name))) return t;
+        return;
+      }
+      if (callback != null && typeof callback !== "function") throw new Error("invalid callback: " + callback);
+      while (++i < n) {
+        if (t = (typename = T[i]).type) _[t] = set(_[t], typename.name, callback);
+        else if (callback == null) for (t in _) _[t] = set(_[t], typename.name, null);
+      }
+      return this;
+    },
+    copy: function() {
+      var copy = {}, _ = this._;
+      for (var t in _) copy[t] = _[t].slice();
+      return new Dispatch(copy);
+    },
+    call: function(type, that) {
+      if ((n = arguments.length - 2) > 0) for (var args = new Array(n), i = 0, n, t; i < n; ++i) args[i] = arguments[i + 2];
+      if (!this._.hasOwnProperty(type)) throw new Error("unknown type: " + type);
+      for (t = this._[type], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+    },
+    apply: function(type, that, args) {
+      if (!this._.hasOwnProperty(type)) throw new Error("unknown type: " + type);
+      for (var t = this._[type], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+    }
+  };
+  function get(type, name) {
+    for (var i = 0, n = type.length, c2; i < n; ++i) {
+      if ((c2 = type[i]).name === name) {
+        return c2.value;
+      }
+    }
+  }
+  function set(type, name, callback) {
+    for (var i = 0, n = type.length; i < n; ++i) {
+      if (type[i].name === name) {
+        type[i] = noop, type = type.slice(0, i).concat(type.slice(i + 1));
+        break;
+      }
+    }
+    if (callback != null) type.push({ name, value: callback });
+    return type;
+  }
+  var dispatch_default = dispatch;
+
+  // node_modules/d3-timer/src/timer.js
+  var frame = 0;
+  var timeout = 0;
+  var interval = 0;
+  var pokeDelay = 1e3;
+  var taskHead;
+  var taskTail;
+  var clockLast = 0;
+  var clockNow = 0;
+  var clockSkew = 0;
+  var clock = typeof performance === "object" && performance.now ? performance : Date;
+  var setFrame = typeof window === "object" && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : function(f) {
+    setTimeout(f, 17);
+  };
+  function now() {
+    return clockNow || (setFrame(clearNow), clockNow = clock.now() + clockSkew);
+  }
+  function clearNow() {
+    clockNow = 0;
+  }
+  function Timer() {
+    this._call = this._time = this._next = null;
+  }
+  Timer.prototype = timer.prototype = {
+    constructor: Timer,
+    restart: function(callback, delay, time) {
+      if (typeof callback !== "function") throw new TypeError("callback is not a function");
+      time = (time == null ? now() : +time) + (delay == null ? 0 : +delay);
+      if (!this._next && taskTail !== this) {
+        if (taskTail) taskTail._next = this;
+        else taskHead = this;
+        taskTail = this;
+      }
+      this._call = callback;
+      this._time = time;
+      sleep();
+    },
+    stop: function() {
+      if (this._call) {
+        this._call = null;
+        this._time = Infinity;
+        sleep();
+      }
+    }
+  };
+  function timer(callback, delay, time) {
+    var t = new Timer();
+    t.restart(callback, delay, time);
+    return t;
+  }
+  function timerFlush() {
+    now();
+    ++frame;
+    var t = taskHead, e;
+    while (t) {
+      if ((e = clockNow - t._time) >= 0) t._call.call(void 0, e);
+      t = t._next;
+    }
+    --frame;
+  }
+  function wake() {
+    clockNow = (clockLast = clock.now()) + clockSkew;
+    frame = timeout = 0;
+    try {
+      timerFlush();
+    } finally {
+      frame = 0;
+      nap();
+      clockNow = 0;
+    }
+  }
+  function poke() {
+    var now2 = clock.now(), delay = now2 - clockLast;
+    if (delay > pokeDelay) clockSkew -= delay, clockLast = now2;
+  }
+  function nap() {
+    var t0, t1 = taskHead, t2, time = Infinity;
+    while (t1) {
+      if (t1._call) {
+        if (time > t1._time) time = t1._time;
+        t0 = t1, t1 = t1._next;
+      } else {
+        t2 = t1._next, t1._next = null;
+        t1 = t0 ? t0._next = t2 : taskHead = t2;
+      }
+    }
+    taskTail = t0;
+    sleep(time);
+  }
+  function sleep(time) {
+    if (frame) return;
+    if (timeout) timeout = clearTimeout(timeout);
+    var delay = time - clockNow;
+    if (delay > 24) {
+      if (time < Infinity) timeout = setTimeout(wake, time - clock.now() - clockSkew);
+      if (interval) interval = clearInterval(interval);
+    } else {
+      if (!interval) clockLast = clock.now(), interval = setInterval(poke, pokeDelay);
+      frame = 1, setFrame(wake);
+    }
+  }
+
+  // node_modules/d3-force/src/lcg.js
+  var a = 1664525;
+  var c = 1013904223;
+  var m = 4294967296;
+  function lcg_default() {
+    let s = 1;
+    return () => (s = (a * s + c) % m) / m;
+  }
+
+  // node_modules/d3-force/src/simulation.js
+  function x2(d) {
+    return d.x;
+  }
+  function y2(d) {
+    return d.y;
+  }
+  var initialRadius = 10;
+  var initialAngle = Math.PI * (3 - Math.sqrt(5));
+  function simulation_default(nodes) {
+    var simulation, alpha = 1, alphaMin = 1e-3, alphaDecay = 1 - Math.pow(alphaMin, 1 / 300), alphaTarget = 0, velocityDecay = 0.6, forces = /* @__PURE__ */ new Map(), stepper = timer(step), event = dispatch_default("tick", "end"), random = lcg_default();
+    if (nodes == null) nodes = [];
+    function step() {
+      tick();
+      event.call("tick", simulation);
+      if (alpha < alphaMin) {
+        stepper.stop();
+        event.call("end", simulation);
+      }
+    }
+    function tick(iterations) {
+      var i, n = nodes.length, node;
+      if (iterations === void 0) iterations = 1;
+      for (var k = 0; k < iterations; ++k) {
+        alpha += (alphaTarget - alpha) * alphaDecay;
+        forces.forEach(function(force) {
+          force(alpha);
+        });
+        for (i = 0; i < n; ++i) {
+          node = nodes[i];
+          if (node.fx == null) node.x += node.vx *= velocityDecay;
+          else node.x = node.fx, node.vx = 0;
+          if (node.fy == null) node.y += node.vy *= velocityDecay;
+          else node.y = node.fy, node.vy = 0;
+        }
+      }
+      return simulation;
+    }
+    function initializeNodes() {
+      for (var i = 0, n = nodes.length, node; i < n; ++i) {
+        node = nodes[i], node.index = i;
+        if (node.fx != null) node.x = node.fx;
+        if (node.fy != null) node.y = node.fy;
+        if (isNaN(node.x) || isNaN(node.y)) {
+          var radius = initialRadius * Math.sqrt(0.5 + i), angle = i * initialAngle;
+          node.x = radius * Math.cos(angle);
+          node.y = radius * Math.sin(angle);
+        }
+        if (isNaN(node.vx) || isNaN(node.vy)) {
+          node.vx = node.vy = 0;
+        }
+      }
+    }
+    function initializeForce(force) {
+      if (force.initialize) force.initialize(nodes, random);
+      return force;
+    }
+    initializeNodes();
+    return simulation = {
+      tick,
+      restart: function() {
+        return stepper.restart(step), simulation;
+      },
+      stop: function() {
+        return stepper.stop(), simulation;
+      },
+      nodes: function(_) {
+        return arguments.length ? (nodes = _, initializeNodes(), forces.forEach(initializeForce), simulation) : nodes;
+      },
+      alpha: function(_) {
+        return arguments.length ? (alpha = +_, simulation) : alpha;
+      },
+      alphaMin: function(_) {
+        return arguments.length ? (alphaMin = +_, simulation) : alphaMin;
+      },
+      alphaDecay: function(_) {
+        return arguments.length ? (alphaDecay = +_, simulation) : +alphaDecay;
+      },
+      alphaTarget: function(_) {
+        return arguments.length ? (alphaTarget = +_, simulation) : alphaTarget;
+      },
+      velocityDecay: function(_) {
+        return arguments.length ? (velocityDecay = 1 - _, simulation) : 1 - velocityDecay;
+      },
+      randomSource: function(_) {
+        return arguments.length ? (random = _, forces.forEach(initializeForce), simulation) : random;
+      },
+      force: function(name, _) {
+        return arguments.length > 1 ? (_ == null ? forces.delete(name) : forces.set(name, initializeForce(_)), simulation) : forces.get(name);
+      },
+      find: function(x3, y3, radius) {
+        var i = 0, n = nodes.length, dx, dy, d2, node, closest;
+        if (radius == null) radius = Infinity;
+        else radius *= radius;
+        for (i = 0; i < n; ++i) {
+          node = nodes[i];
+          dx = x3 - node.x;
+          dy = y3 - node.y;
+          d2 = dx * dx + dy * dy;
+          if (d2 < radius) closest = node, radius = d2;
+        }
+        return closest;
+      },
+      on: function(name, _) {
+        return arguments.length > 1 ? (event.on(name, _), simulation) : event.on(name);
+      }
+    };
+  }
+
+  // node_modules/d3-force/src/manyBody.js
+  function manyBody_default() {
+    var nodes, node, random, alpha, strength = constant_default(-30), strengths, distanceMin2 = 1, distanceMax2 = Infinity, theta2 = 0.81;
+    function force(_) {
+      var i, n = nodes.length, tree = quadtree(nodes, x2, y2).visitAfter(accumulate);
+      for (alpha = _, i = 0; i < n; ++i) node = nodes[i], tree.visit(apply);
+    }
+    function initialize() {
+      if (!nodes) return;
+      var i, n = nodes.length, node2;
+      strengths = new Array(n);
+      for (i = 0; i < n; ++i) node2 = nodes[i], strengths[node2.index] = +strength(node2, i, nodes);
+    }
+    function accumulate(quad) {
+      var strength2 = 0, q, c2, weight = 0, x3, y3, i;
+      if (quad.length) {
+        for (x3 = y3 = i = 0; i < 4; ++i) {
+          if ((q = quad[i]) && (c2 = Math.abs(q.value))) {
+            strength2 += q.value, weight += c2, x3 += c2 * q.x, y3 += c2 * q.y;
+          }
+        }
+        quad.x = x3 / weight;
+        quad.y = y3 / weight;
+      } else {
+        q = quad;
+        q.x = q.data.x;
+        q.y = q.data.y;
+        do
+          strength2 += strengths[q.data.index];
+        while (q = q.next);
+      }
+      quad.value = strength2;
+    }
+    function apply(quad, x1, _, x22) {
+      if (!quad.value) return true;
+      var x3 = quad.x - node.x, y3 = quad.y - node.y, w = x22 - x1, l = x3 * x3 + y3 * y3;
+      if (w * w / theta2 < l) {
+        if (l < distanceMax2) {
+          if (x3 === 0) x3 = jiggle_default(random), l += x3 * x3;
+          if (y3 === 0) y3 = jiggle_default(random), l += y3 * y3;
+          if (l < distanceMin2) l = Math.sqrt(distanceMin2 * l);
+          node.vx += x3 * quad.value * alpha / l;
+          node.vy += y3 * quad.value * alpha / l;
+        }
+        return true;
+      } else if (quad.length || l >= distanceMax2) return;
+      if (quad.data !== node || quad.next) {
+        if (x3 === 0) x3 = jiggle_default(random), l += x3 * x3;
+        if (y3 === 0) y3 = jiggle_default(random), l += y3 * y3;
+        if (l < distanceMin2) l = Math.sqrt(distanceMin2 * l);
+      }
+      do
+        if (quad.data !== node) {
+          w = strengths[quad.data.index] * alpha / l;
+          node.vx += x3 * w;
+          node.vy += y3 * w;
+        }
+      while (quad = quad.next);
+    }
+    force.initialize = function(_nodes, _random) {
+      nodes = _nodes;
+      random = _random;
+      initialize();
+    };
+    force.strength = function(_) {
+      return arguments.length ? (strength = typeof _ === "function" ? _ : constant_default(+_), initialize(), force) : strength;
+    };
+    force.distanceMin = function(_) {
+      return arguments.length ? (distanceMin2 = _ * _, force) : Math.sqrt(distanceMin2);
+    };
+    force.distanceMax = function(_) {
+      return arguments.length ? (distanceMax2 = _ * _, force) : Math.sqrt(distanceMax2);
+    };
+    force.theta = function(_) {
+      return arguments.length ? (theta2 = _ * _, force) : Math.sqrt(theta2);
+    };
+    return force;
+  }
+
+  // node_modules/d3-force/src/x.js
+  function x_default2(x3) {
+    var strength = constant_default(0.1), nodes, strengths, xz;
+    if (typeof x3 !== "function") x3 = constant_default(x3 == null ? 0 : +x3);
+    function force(alpha) {
+      for (var i = 0, n = nodes.length, node; i < n; ++i) {
+        node = nodes[i], node.vx += (xz[i] - node.x) * strengths[i] * alpha;
+      }
+    }
+    function initialize() {
+      if (!nodes) return;
+      var i, n = nodes.length;
+      strengths = new Array(n);
+      xz = new Array(n);
+      for (i = 0; i < n; ++i) {
+        strengths[i] = isNaN(xz[i] = +x3(nodes[i], i, nodes)) ? 0 : +strength(nodes[i], i, nodes);
+      }
+    }
+    force.initialize = function(_) {
+      nodes = _;
+      initialize();
+    };
+    force.strength = function(_) {
+      return arguments.length ? (strength = typeof _ === "function" ? _ : constant_default(+_), initialize(), force) : strength;
+    };
+    force.x = function(_) {
+      return arguments.length ? (x3 = typeof _ === "function" ? _ : constant_default(+_), initialize(), force) : x3;
+    };
+    return force;
+  }
+
+  // node_modules/d3-force/src/y.js
+  function y_default2(y3) {
+    var strength = constant_default(0.1), nodes, strengths, yz;
+    if (typeof y3 !== "function") y3 = constant_default(y3 == null ? 0 : +y3);
+    function force(alpha) {
+      for (var i = 0, n = nodes.length, node; i < n; ++i) {
+        node = nodes[i], node.vy += (yz[i] - node.y) * strengths[i] * alpha;
+      }
+    }
+    function initialize() {
+      if (!nodes) return;
+      var i, n = nodes.length;
+      strengths = new Array(n);
+      yz = new Array(n);
+      for (i = 0; i < n; ++i) {
+        strengths[i] = isNaN(yz[i] = +y3(nodes[i], i, nodes)) ? 0 : +strength(nodes[i], i, nodes);
+      }
+    }
+    force.initialize = function(_) {
+      nodes = _;
+      initialize();
+    };
+    force.strength = function(_) {
+      return arguments.length ? (strength = typeof _ === "function" ? _ : constant_default(+_), initialize(), force) : strength;
+    };
+    force.y = function(_) {
+      return arguments.length ? (y3 = typeof _ === "function" ? _ : constant_default(+_), initialize(), force) : y3;
+    };
+    return force;
+  }
+
   // public/cosmos/app.jsx
   var { useEffect, useState, useRef } = React;
   var experienceWaves = [
@@ -461,10 +1354,10 @@
   }
   function buildWavePath(stages, padL, padT, chartW, chartH) {
     const n = stages.length;
-    const points = stages.map((stage, index) => {
-      const x = padL + index / (n - 1) * chartW;
-      const y = padT + chartH * (1 - stage.intensity);
-      return { ...stage, x, y };
+    const points = stages.map((stage, index2) => {
+      const x3 = padL + index2 / (n - 1) * chartW;
+      const y3 = padT + chartH * (1 - stage.intensity);
+      return { ...stage, x: x3, y: y3 };
     });
     const lineD = points.map((p, i) => {
       if (i === 0) return `M ${p.x} ${p.y}`;
@@ -486,7 +1379,7 @@
     const baselineY = padT + chartH;
     const stageSpine = waves[0]?.stages || [];
     const n = stageSpine.length;
-    const stageXs = stageSpine.map((_, index) => padL + index / Math.max(n - 1, 1) * chartW);
+    const stageXs = stageSpine.map((_, index2) => padL + index2 / Math.max(n - 1, 1) * chartW);
     const yTicks = [
       { t: 1, label: "High" },
       { t: 0.5, label: "Mid" },
@@ -497,19 +1390,19 @@
       return { wave, points, lineD };
     });
     return /* @__PURE__ */ React.createElement("svg", { className: "waveline-chart waveline-chart--compare", viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "xMidYMid meet", role: "img", "aria-label": "Compared experience wavelines. Vertical axis: wave height is felt intensity. Horizontal axis: session stages." }, yTicks.map(({ t, label }) => {
-      const y = padT + chartH * (1 - t);
+      const y3 = padT + chartH * (1 - t);
       return /* @__PURE__ */ React.createElement("g", { key: label, className: "waveline-y-tick" }, /* @__PURE__ */ React.createElement(
         "line",
         {
           x1: padL,
-          y1: y,
+          y1: y3,
           x2: width - padR,
-          y2: y,
+          y2: y3,
           stroke: "rgba(17,28,78,0.1)",
           strokeDasharray: t === 0 ? "0" : "3 5",
           strokeWidth: t === 0 ? 1.35 : 1
         }
-      ), /* @__PURE__ */ React.createElement("text", { x: padL - 12, y: y + 4, textAnchor: "end", className: "waveline-y-tick-label" }, label));
+      ), /* @__PURE__ */ React.createElement("text", { x: padL - 12, y: y3 + 4, textAnchor: "end", className: "waveline-y-tick-label" }, label));
     }), /* @__PURE__ */ React.createElement("line", { x1: padL, y1: padT, x2: padL, y2: baselineY, stroke: "rgba(17,28,78,0.28)", strokeWidth: "1.5" }), /* @__PURE__ */ React.createElement(
       "text",
       {
@@ -526,8 +1419,8 @@
         textAnchor: "middle"
       },
       "(engagement / fulfillment, not time-on-app)"
-    ), stageSpine.map((stage, index) => {
-      const x = stageXs[index];
+    ), stageSpine.map((stage, index2) => {
+      const x3 = stageXs[index2];
       const active = stage.id === activeStageId;
       return /* @__PURE__ */ React.createElement(
         "g",
@@ -540,17 +1433,17 @@
         /* @__PURE__ */ React.createElement(
           "line",
           {
-            x1: x,
+            x1: x3,
             y1: padT,
-            x2: x,
+            x2: x3,
             y2: baselineY,
             stroke: active ? "rgba(17,28,78,0.28)" : "rgba(17,28,78,0.08)",
             strokeWidth: active ? 1.5 : 1,
             strokeDasharray: active ? "0" : "2 5"
           }
         ),
-        /* @__PURE__ */ React.createElement("text", { x, y: baselineY + 22, textAnchor: "middle", className: "stage-num" }, stage.stage),
-        /* @__PURE__ */ React.createElement("text", { x, y: baselineY + 46, textAnchor: "middle", className: "stage-name" }, stage.name)
+        /* @__PURE__ */ React.createElement("text", { x: x3, y: baselineY + 22, textAnchor: "middle", className: "stage-num" }, stage.stage),
+        /* @__PURE__ */ React.createElement("text", { x: x3, y: baselineY + 46, textAnchor: "middle", className: "stage-name" }, stage.name)
       );
     }), /* @__PURE__ */ React.createElement("text", { x: (padL + width - padR) / 2, y: height - 6, textAnchor: "middle", className: "waveline-x-axis-title" }, "Session stages \u2192"), series.map(({ wave, points, lineD }) => {
       const isFocusWave = wave.id === activeWaveId;
@@ -636,7 +1529,7 @@
         onSelectStage: setActiveId,
         onSelectWave: setWaveId
       }
-    )), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", { style: { color: wave.stroke } }, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, /* @__PURE__ */ React.createElement("em", { style: { color: wave.stroke, fontStyle: "normal" } }, wave.label), " \xB7 ", active.name), /* @__PURE__ */ React.createElement("p", null, active.short, " \xB7 peak: ", active.peakLabel))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, active.mechanics.map((m) => /* @__PURE__ */ React.createElement("li", { key: m }, m))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039). All three curves share the stage axis \u2014 click a colored line or point to switch the detail panel."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "Next: Stakeholder map \u2192")));
+    )), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__detail-title" }, /* @__PURE__ */ React.createElement("span", { style: { color: wave.stroke } }, active.stage), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, /* @__PURE__ */ React.createElement("em", { style: { color: wave.stroke, fontStyle: "normal" } }, wave.label), " \xB7 ", active.name), /* @__PURE__ */ React.createElement("p", null, active.short, " \xB7 peak: ", active.peakLabel))), /* @__PURE__ */ React.createElement("div", { className: "waveline-frame__cols" }, /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Behavior"), /* @__PURE__ */ React.createElement("p", null, active.behavior)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Feelings"), /* @__PURE__ */ React.createElement("p", null, active.feelings)), /* @__PURE__ */ React.createElement("article", null, /* @__PURE__ */ React.createElement("b", null, "Achievements"), /* @__PURE__ */ React.createElement("p", null, active.achievements))), /* @__PURE__ */ React.createElement("ul", { className: "waveline-frame__chips" }, active.mechanics.map((m2) => /* @__PURE__ */ React.createElement("li", { key: m2 }, m2))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039). All three curves share the stage axis \u2014 click a colored line or point to switch the detail panel."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/primary/version1-review/" }, "\u2190 Version 1 & review"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/stakeholder-map/" }, "Next: Stakeholder map \u2192")));
   }
   var influenceTypes = [
     { id: "functional", label: "Functional", short: "Can / workflow", color: "#111c4e", desc: "Capability, access, workflow \u2014 whether the job can be done." },
@@ -647,12 +1540,12 @@
   ];
   var influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
   var networkClusters = [
-    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 480, y: 820 },
+    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 420, y: 860 },
     { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 880, y: 760, isHub: true },
-    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1280, y: 820 },
-    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 540, y: 380 },
-    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1220, y: 380 },
-    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 880, y: 1180 }
+    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1340, y: 860 },
+    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 480, y: 340 },
+    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1280, y: 340 },
+    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 880, y: 1220 }
   ];
   var networkEntities = [
     // People
@@ -730,18 +1623,13 @@
     ["app", "hardware"],
     ["app", "competitors"],
     ["app", "partners"],
-    ["app", "institutions"],
-    ["people", "competitors"],
-    ["competitors", "partners"],
-    ["partners", "hardware"],
-    ["hardware", "institutions"],
-    ["institutions", "people"]
+    ["app", "institutions"]
   ];
-  var hubHubEdges = hubLinkPairs.map(([a, b]) => ({
-    from: clusterHubId(a),
+  var hubHubEdges = hubLinkPairs.map(([a2, b]) => ({
+    from: clusterHubId(a2),
     to: clusterHubId(b),
     rel: "hub",
-    fromCluster: a,
+    fromCluster: a2,
     toCluster: b
   }));
   var relationshipEdges = [...hubHubEdges, ...clusterMembershipEdges, ...membershipEdges];
@@ -870,329 +1758,142 @@
     { from: "community-orgs", to: "readers", type: "functional", note: "Orgs can migrate whole groups." },
     { from: "community-orgs", to: "discord", type: "identity", note: "Many still call Discord home." }
   ];
-  var networkSides = networkClusters.map((c) => ({
-    ...c,
-    nodes: networkEntities.filter((e) => e.cluster === c.id)
+  var networkSides = networkClusters.map((c2) => ({
+    ...c2,
+    nodes: networkEntities.filter((e) => e.cluster === c2.id)
   }));
   var MAP_W = 1760;
   var MAP_H = 1440;
   var MAP_PAD = 50;
-  function layoutNetworkGraph(clusters, entities, influence) {
-    const canvasCx = MAP_W / 2;
-    const canvasCy = MAP_H / 2;
-    const entityById = Object.fromEntries(entities.map((e) => [e.id, e]));
-    const kidsByParent = {};
+  function layoutNetworkGraph(clusters, entities, influence, membership, hubLinks) {
+    const clusterById = Object.fromEntries(clusters.map((c2) => [c2.id, c2]));
+    const nodes = [];
+    const byId = {};
+    clusters.forEach((c2) => {
+      const id = `hub:${c2.id}`;
+      const n = { id, kind: "hub", cluster: c2.id, fx: c2.x, fy: c2.y, x: c2.x, y: c2.y };
+      nodes.push(n);
+      byId[id] = n;
+    });
+    entities.forEach((e, i) => {
+      const home = clusterById[e.cluster];
+      const ang = i / Math.max(entities.length, 1) * Math.PI * 2;
+      const n = {
+        id: e.id,
+        kind: "entity",
+        cluster: e.cluster,
+        parentId: e.parentId || null,
+        x: home.x + Math.cos(ang) * 90,
+        y: home.y + Math.sin(ang) * 90
+      };
+      nodes.push(n);
+      byId[e.id] = n;
+    });
+    const links = [];
+    hubLinks.forEach(([a2, b]) => {
+      links.push({
+        source: `hub:${a2}`,
+        target: `hub:${b}`,
+        kind: "hub",
+        distance: 380,
+        strength: 0.35
+      });
+    });
+    entities.filter((e) => !e.parentId).forEach((e) => {
+      links.push({
+        source: `hub:${e.cluster}`,
+        target: e.id,
+        kind: "cluster",
+        distance: 100,
+        strength: 1.1
+      });
+    });
+    membership.forEach((e) => {
+      links.push({
+        source: e.from,
+        target: e.to,
+        kind: "branch",
+        distance: 88,
+        strength: 1.35
+      });
+    });
+    influence.forEach((e) => {
+      if (!byId[e.from] || !byId[e.to]) return;
+      links.push({
+        source: e.from,
+        target: e.to,
+        kind: "influence",
+        distance: 220,
+        strength: 0.06
+      });
+    });
+    const sim = simulation_default(nodes).force(
+      "link",
+      link_default(links).id((d) => d.id).distance((d) => d.distance).strength((d) => d.strength)
+    ).force(
+      "charge",
+      manyBody_default().strength((d) => d.kind === "hub" ? -40 : -220)
+    ).force(
+      "collide",
+      collide_default().radius((d) => d.kind === "hub" ? 36 : 46).strength(0.9).iterations(3)
+    ).force(
+      "homeX",
+      x_default2((d) => d.kind === "hub" ? d.fx : clusterById[d.cluster].x).strength(
+        (d) => d.kind === "hub" ? 0 : 0.12
+      )
+    ).force(
+      "homeY",
+      y_default2((d) => d.kind === "hub" ? d.fy : clusterById[d.cluster].y).strength(
+        (d) => d.kind === "hub" ? 0 : 0.12
+      )
+    ).stop();
+    for (let i = 0; i < 320; i++) sim.tick();
+    nodes.forEach((n) => {
+      if (n.kind === "hub") {
+        n.x = n.fx;
+        n.y = n.fy;
+        return;
+      }
+      n.x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, n.x));
+      n.y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, n.y));
+    });
     entities.forEach((e) => {
-      if (!e.parentId) return;
-      if (!kidsByParent[e.parentId]) kidsByParent[e.parentId] = [];
-      kidsByParent[e.parentId].push(e);
+      const n = byId[e.id];
+      clusters.forEach((c2) => {
+        if (c2.id === e.cluster) return;
+        const dx = n.x - c2.x;
+        const dy = n.y - c2.y;
+        const d = Math.hypot(dx, dy) || 0.01;
+        const excl = c2.isHub ? 125 : 110;
+        if (d < excl) {
+          n.x = c2.x + dx / d * excl;
+          n.y = c2.y + dy / d * excl;
+        }
+      });
     });
-    const adj = {};
-    const touch = (a, b, w) => {
-      if (!adj[a]) adj[a] = {};
-      if (!adj[b]) adj[b] = {};
-      adj[a][b] = (adj[a][b] || 0) + w;
-      adj[b][a] = (adj[b][a] || 0) + w;
-    };
-    influence.forEach((e) => touch(e.from, e.to, 1));
-    Object.values(kidsByParent).forEach((kids) => {
-      for (let i = 0; i < kids.length; i++) {
-        for (let j = i + 1; j < kids.length; j++) {
-          touch(kids[i].id, kids[j].id, 0.35);
-        }
-      }
-    });
-    function placeCluster(c, rootOrder, startAng, into, childOrders2) {
-      const hub = { x: c.x, y: c.y };
-      const n = Math.max(rootOrder.length, 1);
-      const busy = rootOrder.length >= 6;
-      const isCenter = Boolean(c.isHub);
-      const rootR = isCenter ? busy ? 108 : 96 : busy ? 92 : 82;
-      rootOrder.forEach((root, i) => {
-        const ang = startAng + i / n * Math.PI * 2;
-        into[root.id] = {
-          x: hub.x + Math.cos(ang) * rootR,
-          y: hub.y + Math.sin(ang) * rootR
-        };
-        const kids = childOrders2[root.id] || kidsByParent[root.id] || [];
-        const childStep = kids.length >= 4 ? 92 : kids.length >= 3 ? 86 : kids.length === 2 ? 78 : 72;
-        const childR = rootR + childStep;
-        kids.forEach((kid, ki) => {
-          const kfan = Math.min(1.05, 0.32 * Math.max(kids.length, 1));
-          const kang = ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : ki / (kids.length - 1) * kfan);
-          into[kid.id] = {
-            x: hub.x + Math.cos(kang) * childR,
-            y: hub.y + Math.sin(kang) * childR
-          };
-        });
-      });
-    }
-    function orient2d(ax, ay, bx, by, cx, cy) {
-      return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
-    }
-    function segmentsCross(pa, pb, pc, pd) {
-      const o1 = orient2d(pa.x, pa.y, pb.x, pb.y, pc.x, pc.y);
-      const o2 = orient2d(pa.x, pa.y, pb.x, pb.y, pd.x, pd.y);
-      const o3 = orient2d(pc.x, pc.y, pd.x, pd.y, pa.x, pa.y);
-      const o4 = orient2d(pc.x, pc.y, pd.x, pd.y, pb.x, pb.y);
-      return o1 * o2 < 0 && o3 * o4 < 0;
-    }
-    function scorePlacement(p) {
-      let len = 0;
-      for (const e of influence) {
-        const a = p[e.from];
-        const b = p[e.to];
-        if (!a || !b) continue;
-        len += Math.hypot(a.x - b.x, a.y - b.y);
-      }
-      let nearBonus = 0;
-      for (const id of Object.keys(adj)) {
-        const ea = entityById[id];
-        if (!ea || ea.parentId) continue;
-        for (const [oid, w] of Object.entries(adj[id])) {
-          if (id >= oid) continue;
-          const eb = entityById[oid];
-          if (!eb || ea.cluster !== eb.cluster) continue;
-          const a = p[id];
-          const b = p[oid];
-          if (!a || !b) continue;
-          nearBonus += w * Math.hypot(a.x - b.x, a.y - b.y);
-        }
-      }
-      let crosses = 0;
-      for (let i = 0; i < influence.length; i++) {
-        for (let j = i + 1; j < influence.length; j++) {
-          const e1 = influence[i];
-          const e2 = influence[j];
-          if (e1.from === e2.from || e1.from === e2.to || e1.to === e2.from || e1.to === e2.to) {
-            continue;
-          }
-          const a = p[e1.from];
-          const b = p[e1.to];
-          const c = p[e2.from];
-          const d = p[e2.to];
-          if (!a || !b || !c || !d) continue;
-          if (segmentsCross(a, b, c, d)) crosses += 1;
-        }
-      }
-      return len + nearBonus * 1.4 + crosses * 200;
-    }
-    function affinityOrder(roots) {
-      if (roots.length <= 1) return roots.slice();
-      const remaining = new Set(roots.map((r) => r.id));
-      let start = roots[0];
-      let bestW = -1;
-      roots.forEach((r) => {
-        let w = 0;
-        const m = adj[r.id] || {};
-        Object.entries(m).forEach(([oid, wt]) => {
-          const o = entityById[oid];
-          if (o && o.cluster !== r.cluster) w += wt;
-          (kidsByParent[r.id] || []).forEach((kid) => {
-            Object.entries(adj[kid.id] || {}).forEach(([, kwt]) => {
-              w += kwt * 0.5;
-            });
-          });
-        });
-        if (w > bestW) {
-          bestW = w;
-          start = r;
-        }
-      });
-      const ordered = [start];
-      remaining.delete(start.id);
-      while (remaining.size) {
-        const last = ordered[ordered.length - 1];
-        let nextId = null;
-        let nextScore = -1;
-        remaining.forEach((id) => {
-          let s = adj[last.id]?.[id] || 0;
-          (kidsByParent[last.id] || []).forEach((kid) => {
-            s += (adj[kid.id]?.[id] || 0) * 0.8;
-            (kidsByParent[id] || []).forEach((ok) => {
-              s += (adj[kid.id]?.[ok.id] || 0) * 1.2;
-            });
-          });
-          (kidsByParent[id] || []).forEach((ok) => {
-            s += (adj[last.id]?.[ok.id] || 0) * 0.8;
-          });
-          if (s > nextScore) {
-            nextScore = s;
-            nextId = id;
-          }
-        });
-        if (!nextId) nextId = remaining.values().next().value;
-        remaining.delete(nextId);
-        ordered.push(entityById[nextId]);
-      }
-      return ordered;
-    }
-    function orderKids(root, hub) {
-      const kids = (kidsByParent[root.id] || []).slice();
-      if (kids.length <= 2) return kids;
-      const scored = kids.map((kid) => {
-        let sx = 0;
-        let sy = 0;
-        let w = 0;
-        Object.entries(adj[kid.id] || {}).forEach(([oid, wt]) => {
-          const o = entityById[oid];
-          if (!o) return;
-          let tx;
-          let ty;
-          if (pos[oid]) {
-            tx = pos[oid].x;
-            ty = pos[oid].y;
-          } else if (o.cluster) {
-            const oc = clusters.find((cl) => cl.id === o.cluster);
-            tx = oc ? oc.x : canvasCx;
-            ty = oc ? oc.y : canvasCy;
-          } else {
-            return;
-          }
-          sx += tx * wt;
-          sy += ty * wt;
-          w += wt;
-        });
-        const ang = w > 0 ? Math.atan2(sy / w - hub.y, sx / w - hub.x) : 0;
-        return { kid, ang };
-      });
-      scored.sort((a, b) => a.ang - b.ang);
-      return scored.map((s) => s.kid);
-    }
-    let pos = {};
-    const rootOrders = {};
-    const startAngles = {};
-    const childOrders = {};
-    clusters.forEach((c) => {
-      const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
-      rootOrders[c.id] = affinityOrder(roots);
-      startAngles[c.id] = Math.atan2(c.y - canvasCy, c.x - canvasCx) - Math.PI / 2;
-      roots.forEach((r) => {
-        childOrders[r.id] = (kidsByParent[r.id] || []).slice();
-      });
-      placeCluster(c, rootOrders[c.id], startAngles[c.id], pos, childOrders);
-    });
-    clusters.forEach((c) => {
-      rootOrders[c.id].forEach((r) => {
-        childOrders[r.id] = orderKids(r, { x: c.x, y: c.y });
-      });
-      placeCluster(c, rootOrders[c.id], startAngles[c.id], pos, childOrders);
-    });
-    const angleSteps = 48;
-    for (let pass = 0; pass < 4; pass++) {
-      for (const c of clusters) {
-        const baseOrder = rootOrders[c.id];
-        const n = baseOrder.length;
-        if (n < 1) continue;
-        let best = {
-          score: Infinity,
-          order: baseOrder,
-          start: startAngles[c.id]
-        };
-        const candidates = [];
-        for (let sh = 0; sh < n; sh++) {
-          candidates.push(baseOrder.map((_, i) => baseOrder[(i + sh) % n]));
-        }
-        const rev = baseOrder.slice().reverse();
-        for (let sh = 0; sh < n; sh++) {
-          candidates.push(rev.map((_, i) => rev[(i + sh) % n]));
-        }
-        for (const order of candidates) {
-          for (let s = 0; s < angleSteps; s++) {
-            const start = s / angleSteps * Math.PI * 2;
-            const trial = { ...pos };
-            placeCluster(c, order, start, trial, childOrders);
-            const sc = scorePlacement(trial);
-            if (sc < best.score) best = { score: sc, order, start };
-          }
-        }
-        rootOrders[c.id] = best.order;
-        startAngles[c.id] = best.start;
-        placeCluster(c, best.order, best.start, pos, childOrders);
-        best.order.forEach((r) => {
-          childOrders[r.id] = orderKids(r, { x: c.x, y: c.y });
-        });
-        placeCluster(c, best.order, best.start, pos, childOrders);
-      }
-    }
-    for (let pass = 0; pass < 80; pass++) {
-      for (let i = 0; i < entities.length; i++) {
-        for (let j = i + 1; j < entities.length; j++) {
-          const a = entities[i];
-          const b = entities[j];
-          const family = a.parentId === b.id || b.parentId === a.id || a.parentId && a.parentId === b.parentId;
-          if (family) continue;
-          const pa = pos[a.id];
-          const pb = pos[b.id];
-          let dx = pb.x - pa.x;
-          let dy = pb.y - pa.y;
-          let d = Math.hypot(dx, dy) || 0.01;
-          const minD = a.cluster === b.cluster ? 88 : 100;
-          if (d >= minD) continue;
-          const push = (minD - d) / d * 0.65;
-          const ux = dx / d;
-          const uy = dy / d;
-          pa.x -= ux * push * 0.5;
-          pa.y -= uy * push * 0.5;
-          pb.x += ux * push * 0.5;
-          pb.y += uy * push * 0.5;
-        }
-      }
-      entities.forEach((e) => {
-        const p = pos[e.id];
-        clusters.forEach((c) => {
-          if (c.id === e.cluster) return;
-          const dx = p.x - c.x;
-          const dy = p.y - c.y;
-          const d = Math.hypot(dx, dy) || 0.01;
-          const excl = c.isHub ? 130 : 115;
-          if (d >= excl) return;
-          const push = (excl - d) / d;
-          p.x += dx / d * push * 0.85;
-          p.y += dy / d * push * 0.85;
-        });
-        const home = clusters.find((c) => c.id === e.cluster);
-        if (!home) return;
-        const hx = p.x - home.x;
-        const hy = p.y - home.y;
-        const hd = Math.hypot(hx, hy) || 0.01;
-        const maxOrbit = home.isHub ? 210 : 195;
-        if (hd > maxOrbit) {
-          p.x = home.x + hx / hd * maxOrbit;
-          p.y = home.y + hy / hd * maxOrbit;
-        }
-        const minOrbit = 48;
-        if (hd < minOrbit) {
-          p.x = home.x + hx / hd * minOrbit;
-          p.y = home.y + hy / hd * minOrbit;
-        }
-      });
-    }
-    for (const e of entities) {
-      pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
-      pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
-    }
-    return clusters.map((c) => {
-      const nodes = entities.filter((e) => e.cluster === c.id).map((e) => ({
+    return clusters.map((c2) => {
+      const cNodes = entities.filter((e) => e.cluster === c2.id).map((e) => ({
         ...e,
-        sideId: c.id,
-        x: pos[e.id].x,
-        y: pos[e.id].y
+        sideId: c2.id,
+        x: byId[e.id].x,
+        y: byId[e.id].y
       }));
-      const radius = nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - c.x, n.y - c.y)), 0) + 40;
+      const radius = cNodes.reduce((m2, n) => Math.max(m2, Math.hypot(n.x - c2.x, n.y - c2.y)), 0) + 40;
       return {
-        ...c,
-        anchor: { x: c.x, y: c.y },
+        ...c2,
+        anchor: { x: c2.x, y: c2.y },
         radius: Math.max(radius, 140),
-        labelY: c.y - Math.max(radius, 140) - 18,
-        nodes
+        labelY: c2.y - Math.max(radius, 140) - 18,
+        nodes: cNodes
       };
     });
   }
   var networkGraph = layoutNetworkGraph(
     networkClusters,
     networkEntities,
-    influenceEdges
+    influenceEdges,
+    membershipEdges,
+    hubLinkPairs
   );
   function nodeLabelLines(label, maxChars = 18) {
     if (label.length <= maxChars) return [label];
@@ -1221,8 +1922,8 @@
     if (side === "s") return { x: 0, y: 1 };
     return { x: -1, y: 0 };
   }
-  function routeBetweenCards(a, b, { curve = true } = {}) {
-    const A = cardSideAnchors(a);
+  function routeBetweenCards(a2, b, { curve = true } = {}) {
+    const A = cardSideAnchors(a2);
     const B = cardSideAnchors(b);
     const sides = ["n", "e", "s", "w"];
     let best = null;
@@ -1249,24 +1950,24 @@
     const x1 = best.from.x + na.x * pad;
     const y1 = best.from.y + na.y * pad;
     const tipClear = curve ? 1 : 0;
-    const x2 = best.to.x + nb.x * tipClear;
-    const y2 = best.to.y + nb.y * tipClear;
+    const x22 = best.to.x + nb.x * tipClear;
+    const y22 = best.to.y + nb.y * tipClear;
     let d;
     if (curve) {
-      const mx = (x1 + x2) / 2;
-      const my = (y1 + y2) / 2;
+      const mx = (x1 + x22) / 2;
+      const my = (y1 + y22) / 2;
       const bow = 0.1;
-      const cx = mx - (y2 - y1) * bow;
-      const cy = my + (x2 - x1) * bow;
-      d = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+      const cx = mx - (y22 - y1) * bow;
+      const cy = my + (x22 - x1) * bow;
+      d = `M ${x1} ${y1} Q ${cx} ${cy} ${x22} ${y22}`;
     } else {
-      d = `M ${x1} ${y1} L ${x2} ${y2}`;
+      d = `M ${x1} ${y1} L ${x22} ${y22}`;
     }
     return {
       x1,
       y1,
-      x2,
-      y2,
+      x2: x22,
+      y2: y22,
       fromSide: best.fromSide,
       toSide: best.toSide,
       d
@@ -1317,42 +2018,42 @@
       (e) => sideNodeIds.has(e.from) || sideNodeIds.has(e.to)
     );
     const litNodeIds = (() => {
-      const set = /* @__PURE__ */ new Set();
+      const set2 = /* @__PURE__ */ new Set();
       if (focusMode === "structure") {
-        networkEntities.forEach((e) => set.add(e.id));
-        return set;
+        networkEntities.forEach((e) => set2.add(e.id));
+        return set2;
       }
       if (selectedEdge) {
-        set.add(selectedEdge.from);
-        set.add(selectedEdge.to);
-        return set;
+        set2.add(selectedEdge.from);
+        set2.add(selectedEdge.to);
+        return set2;
       }
       if (focusMode === "type") {
         typedEdges.forEach((e) => {
-          set.add(e.from);
-          set.add(e.to);
+          set2.add(e.from);
+          set2.add(e.to);
         });
       } else if (focusMode === "side") {
         if (activeNodeId) {
-          set.add(activeNodeId);
+          set2.add(activeNodeId);
           nodeFocusEdges.forEach((e) => {
-            set.add(e.from);
-            set.add(e.to);
+            set2.add(e.from);
+            set2.add(e.to);
           });
         } else {
-          sideNodeIds.forEach((id) => set.add(id));
+          sideNodeIds.forEach((id) => set2.add(id));
           sideFocusEdges.forEach((e) => {
-            set.add(e.from);
-            set.add(e.to);
+            set2.add(e.from);
+            set2.add(e.to);
           });
         }
       } else {
         influenceEdges.forEach((e) => {
-          set.add(e.from);
-          set.add(e.to);
+          set2.add(e.from);
+          set2.add(e.to);
         });
       }
-      return set;
+      return set2;
     })();
     const focusSideIds = (() => {
       if (focusMode === "structure" || focusMode === "overview") {
@@ -1362,9 +2063,9 @@
       if (focusMode === "type") {
         const sides = /* @__PURE__ */ new Set();
         typedEdges.forEach((e) => {
-          const a = nodeById[e.from];
+          const a2 = nodeById[e.from];
           const b = nodeById[e.to];
-          if (a) sides.add(a.sideId);
+          if (a2) sides.add(a2.sideId);
           if (b) sides.add(b.sideId);
         });
         return [...sides];
@@ -1623,7 +2324,7 @@
     const detailEdges = !showInfluence ? [] : selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
     const title = focusMode === "structure" ? "Category relationship" : selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
     const subtitle = focusMode === "structure" ? "Straight gray lines only \xB7 cluster \u2192 category \u2192 brand \xB7 no influence arrows" : selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 color arrows = influence \xB7 type tabs filter influence";
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "structure" ? "is-active" : "", onClick: goStructure }, "Categories only"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "+ Influence"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous", disabled: focusMode === "structure" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "structure" ? "structure" : focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} groups` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next", disabled: focusMode === "structure" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Category: hubs linked \xB7 hub \u2192 category \u2192 brand (straight gray)"), showInfluence && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence: curved color \xB7 click one arrow")), showInfluence && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "structure" ? "is-active" : "", onClick: goStructure }, "Categories only"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "+ Influence"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous", disabled: focusMode === "structure" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "structure" ? "structure" : focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} groups` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next", disabled: focusMode === "structure" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Category: App\u2194clusters \xB7 hub \u2192 category \u2192 brand (straight gray)"), showInfluence && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence: curved color \xB7 click one arrow")), showInfluence && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: t.id,
@@ -1720,16 +2421,16 @@
               const trim = 28;
               const x1 = sa.anchor.x + ux * trim;
               const y1 = sa.anchor.y + uy * trim;
-              const x2 = sb.anchor.x - ux * trim;
-              const y2 = sb.anchor.y - uy * trim;
+              const x22 = sb.anchor.x - ux * trim;
+              const y22 = sb.anchor.y - uy * trim;
               return /* @__PURE__ */ React.createElement(
                 "line",
                 {
                   key: `rel-hub-${edge.fromCluster}-${edge.toCluster}`,
                   x1,
                   y1,
-                  x2,
-                  y2,
+                  x2: x22,
+                  y2: y22,
                   stroke: "#8a8780",
                   strokeWidth: 2.2,
                   strokeLinecap: "round",
@@ -1738,13 +2439,13 @@
                 }
               );
             }
-            let a;
+            let a2;
             let b = nodeById[edge.to];
             if (!b) return null;
             if (edge.rel === "cluster" && edge.clusterId) {
               const side = sideById[edge.clusterId];
               if (!side) return null;
-              a = {
+              a2 = {
                 x: side.anchor.x,
                 y: side.anchor.y,
                 hw: 26,
@@ -1754,10 +2455,10 @@
                 rh: 52
               };
             } else {
-              a = nodeById[edge.from];
+              a2 = nodeById[edge.from];
             }
-            if (!a) return null;
-            const route = routeBetweenCards(a, b, { curve: false });
+            if (!a2) return null;
+            const route = routeBetweenCards(a2, b, { curve: false });
             return /* @__PURE__ */ React.createElement(
               "path",
               {
@@ -1818,11 +2519,11 @@
             );
           }));
         })(), visibleEdges.map((edge, i) => {
-          const a = nodeById[edge.from];
+          const a2 = nodeById[edge.from];
           const b = nodeById[edge.to];
-          if (!a || !b) return null;
+          if (!a2 || !b) return null;
           const typeMeta = influenceTypeById[edge.type];
-          const route = routeBetweenCards(a, b, { curve: true });
+          const route = routeBetweenCards(a2, b, { curve: true });
           const isSelected = selectedEdgeKey === edgeKey(edge);
           const isHover = hoverEdge && hoverEdge.edge === edge;
           const muted = selectedEdgeKey && !isSelected;
@@ -1879,7 +2580,7 @@
             const lit = litNodeIds.has(node.id);
             const inFocusSide = focusSet.has(side.id);
             const isBranch = Boolean(node.parentId);
-            const isGroup = membershipEdges.some((m) => m.from === node.id);
+            const isGroup = membershipEdges.some((m2) => m2.from === node.id);
             const { lines, rw, rh } = laid;
             return /* @__PURE__ */ React.createElement(
               "g",
@@ -2047,7 +2748,7 @@
       `Experience level: ${answers.experience || "Not provided"}`,
       `Prototype reviewed: ${answers.reviewed ? "Yes" : "No"}`,
       "",
-      ...expertQuestions.flatMap((item, index) => [`${index + 1}. ${item.question}`, answers[item.id] || "No response", ""])
+      ...expertQuestions.flatMap((item, index2) => [`${index2 + 1}. ${item.question}`, answers[item.id] || "No response", ""])
     ].join("\n");
     const copyResponses = async () => {
       await navigator.clipboard.writeText(responseText());
@@ -2071,10 +2772,10 @@
       setMessage("Responses cleared");
     };
     let lastSection = "";
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section questionnaire-page", id: "expert-questionnaire" }, /* @__PURE__ */ React.createElement(ChapterLabel, { number: "03.5" }, "Primary research / Remote method"), /* @__PURE__ */ React.createElement("div", { className: "questionnaire-shell" }, /* @__PURE__ */ React.createElement("header", { className: "questionnaire-intro" }, /* @__PURE__ */ React.createElement("p", { className: "eyebrow" }, "Remote expert questionnaire"), /* @__PURE__ */ React.createElement("h1", null, "Reading and navigating text in spatial computing"), /* @__PURE__ */ React.createElement("p", null, "This questionnaire collects professional, actionable feedback from UX, UI, XR, and spatial-computing practitioners. Experienced VR users are also welcome to respond."), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Estimated time \xB7 15\u201320 minutes"), /* @__PURE__ */ React.createElement("span", null, "10 written questions"), /* @__PURE__ */ React.createElement("span", null, "Responses remain on this device"))), /* @__PURE__ */ React.createElement("aside", { className: "questionnaire-privacy" }, /* @__PURE__ */ React.createElement("b", null, "Response handling"), /* @__PURE__ */ React.createElement("p", null, "This page does not transmit answers to a server. Progress is stored only in this browser. When finished, copy or download the response and return it directly to the researcher.")), /* @__PURE__ */ React.createElement("div", { className: "questionnaire-progress" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("i", { style: { width: `${answered / expertQuestions.length * 100}%` } })), /* @__PURE__ */ React.createElement("span", null, answered, " of ", expertQuestions.length, " written questions answered")), /* @__PURE__ */ React.createElement("form", { className: "expert-form", onSubmit: (event) => event.preventDefault() }, /* @__PURE__ */ React.createElement("section", { className: "form-section" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, "01"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, "Expert background and context"), /* @__PURE__ */ React.createElement("p", null, "Optional identifiers help the researcher interpret your response without requiring personal information."))), /* @__PURE__ */ React.createElement("div", { className: "form-field-grid" }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Participant code or initials ", /* @__PURE__ */ React.createElement("i", null, "Optional")), /* @__PURE__ */ React.createElement("input", { value: answers.participant, onChange: (event) => update("participant", event.target.value), placeholder: "Example: XR-04" })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Role or discipline ", /* @__PURE__ */ React.createElement("i", null, "Optional")), /* @__PURE__ */ React.createElement("input", { value: answers.role, onChange: (event) => update("role", event.target.value), placeholder: "Example: XR interaction designer" })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Spatial computing hours per week"), /* @__PURE__ */ React.createElement("input", { type: "number", min: "0", step: "0.5", value: answers.hours, onChange: (event) => update("hours", event.target.value), placeholder: "0" })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Experience level"), /* @__PURE__ */ React.createElement("select", { value: answers.experience, onChange: (event) => update("experience", event.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "Select one"), /* @__PURE__ */ React.createElement("option", null, "Experienced user"), /* @__PURE__ */ React.createElement("option", null, "Student / researcher"), /* @__PURE__ */ React.createElement("option", null, "Practitioner, 1\u20133 years"), /* @__PURE__ */ React.createElement("option", null, "Practitioner, 4\u20137 years"), /* @__PURE__ */ React.createElement("option", null, "Practitioner, 8+ years"))))), expertQuestions.map((item, index) => {
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section questionnaire-page", id: "expert-questionnaire" }, /* @__PURE__ */ React.createElement(ChapterLabel, { number: "03.5" }, "Primary research / Remote method"), /* @__PURE__ */ React.createElement("div", { className: "questionnaire-shell" }, /* @__PURE__ */ React.createElement("header", { className: "questionnaire-intro" }, /* @__PURE__ */ React.createElement("p", { className: "eyebrow" }, "Remote expert questionnaire"), /* @__PURE__ */ React.createElement("h1", null, "Reading and navigating text in spatial computing"), /* @__PURE__ */ React.createElement("p", null, "This questionnaire collects professional, actionable feedback from UX, UI, XR, and spatial-computing practitioners. Experienced VR users are also welcome to respond."), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Estimated time \xB7 15\u201320 minutes"), /* @__PURE__ */ React.createElement("span", null, "10 written questions"), /* @__PURE__ */ React.createElement("span", null, "Responses remain on this device"))), /* @__PURE__ */ React.createElement("aside", { className: "questionnaire-privacy" }, /* @__PURE__ */ React.createElement("b", null, "Response handling"), /* @__PURE__ */ React.createElement("p", null, "This page does not transmit answers to a server. Progress is stored only in this browser. When finished, copy or download the response and return it directly to the researcher.")), /* @__PURE__ */ React.createElement("div", { className: "questionnaire-progress" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("i", { style: { width: `${answered / expertQuestions.length * 100}%` } })), /* @__PURE__ */ React.createElement("span", null, answered, " of ", expertQuestions.length, " written questions answered")), /* @__PURE__ */ React.createElement("form", { className: "expert-form", onSubmit: (event) => event.preventDefault() }, /* @__PURE__ */ React.createElement("section", { className: "form-section" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", null, "01"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, "Expert background and context"), /* @__PURE__ */ React.createElement("p", null, "Optional identifiers help the researcher interpret your response without requiring personal information."))), /* @__PURE__ */ React.createElement("div", { className: "form-field-grid" }, /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Participant code or initials ", /* @__PURE__ */ React.createElement("i", null, "Optional")), /* @__PURE__ */ React.createElement("input", { value: answers.participant, onChange: (event) => update("participant", event.target.value), placeholder: "Example: XR-04" })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Role or discipline ", /* @__PURE__ */ React.createElement("i", null, "Optional")), /* @__PURE__ */ React.createElement("input", { value: answers.role, onChange: (event) => update("role", event.target.value), placeholder: "Example: XR interaction designer" })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Spatial computing hours per week"), /* @__PURE__ */ React.createElement("input", { type: "number", min: "0", step: "0.5", value: answers.hours, onChange: (event) => update("hours", event.target.value), placeholder: "0" })), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("span", null, "Experience level"), /* @__PURE__ */ React.createElement("select", { value: answers.experience, onChange: (event) => update("experience", event.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "Select one"), /* @__PURE__ */ React.createElement("option", null, "Experienced user"), /* @__PURE__ */ React.createElement("option", null, "Student / researcher"), /* @__PURE__ */ React.createElement("option", null, "Practitioner, 1\u20133 years"), /* @__PURE__ */ React.createElement("option", null, "Practitioner, 4\u20137 years"), /* @__PURE__ */ React.createElement("option", null, "Practitioner, 8+ years"))))), expertQuestions.map((item, index2) => {
       const showHeading = item.section !== "01" && item.section !== lastSection;
       lastSection = item.section;
-      return /* @__PURE__ */ React.createElement(React.Fragment, { key: item.id }, showHeading && /* @__PURE__ */ React.createElement("section", { className: "form-section-heading" }, /* @__PURE__ */ React.createElement("span", null, item.section), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, item.label), item.section === "03" && /* @__PURE__ */ React.createElement("p", null, "Review the early-stage prototype before answering this section."))), item.id === "impressions" && /* @__PURE__ */ React.createElement("div", { className: "prototype-review-box" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Cosmos early prototype"), /* @__PURE__ */ React.createElement("p", null, "Open the prototype in a separate tab. Explore its layout, movement, controls, and text presentation before continuing."), /* @__PURE__ */ React.createElement("a", { href: "https://cosmosweb.web.app/web/", target: "_blank", rel: "noreferrer" }, "Open prototype \u2197")), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: answers.reviewed, onChange: (event) => update("reviewed", event.target.checked) }), /* @__PURE__ */ React.createElement("span", null, "I reviewed the prototype"))), /* @__PURE__ */ React.createElement("label", { className: "question-field" }, /* @__PURE__ */ React.createElement("span", { className: "question-number" }, String(index + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("b", null, item.question), /* @__PURE__ */ React.createElement("textarea", { rows: "6", value: answers[item.id], onChange: (event) => update(item.id, event.target.value), placeholder: "Write your response here\u2026" })));
+      return /* @__PURE__ */ React.createElement(React.Fragment, { key: item.id }, showHeading && /* @__PURE__ */ React.createElement("section", { className: "form-section-heading" }, /* @__PURE__ */ React.createElement("span", null, item.section), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", null, item.label), item.section === "03" && /* @__PURE__ */ React.createElement("p", null, "Review the early-stage prototype before answering this section."))), item.id === "impressions" && /* @__PURE__ */ React.createElement("div", { className: "prototype-review-box" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, "Cosmos early prototype"), /* @__PURE__ */ React.createElement("p", null, "Open the prototype in a separate tab. Explore its layout, movement, controls, and text presentation before continuing."), /* @__PURE__ */ React.createElement("a", { href: "https://cosmosweb.web.app/web/", target: "_blank", rel: "noreferrer" }, "Open prototype \u2197")), /* @__PURE__ */ React.createElement("label", null, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: answers.reviewed, onChange: (event) => update("reviewed", event.target.checked) }), /* @__PURE__ */ React.createElement("span", null, "I reviewed the prototype"))), /* @__PURE__ */ React.createElement("label", { className: "question-field" }, /* @__PURE__ */ React.createElement("span", { className: "question-number" }, String(index2 + 1).padStart(2, "0")), /* @__PURE__ */ React.createElement("b", null, item.question), /* @__PURE__ */ React.createElement("textarea", { rows: "6", value: answers[item.id], onChange: (event) => update(item.id, event.target.value), placeholder: "Write your response here\u2026" })));
     }), /* @__PURE__ */ React.createElement("footer", { className: "questionnaire-actions" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("b", null, answered === expertQuestions.length ? "Questionnaire complete" : "Your progress is saved locally"), /* @__PURE__ */ React.createElement("span", { "aria-live": "polite" }, message)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "form-button text", onClick: reset }, "Clear"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "form-button secondary", onClick: copyResponses }, "Copy responses"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "form-button primary", onClick: downloadResponses }, "Download .txt")))));
   }
   function Version1Review() {
