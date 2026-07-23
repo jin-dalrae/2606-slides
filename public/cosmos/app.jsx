@@ -1848,7 +1848,16 @@ function StakeholderMapPage() {
             />
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
-              {/* Category relationship: always-on, straight, gray, no arrowheads */}
+              {/* Category relationship: always-on, straight, gray. Dims when an influence is highlighted. */}
+              {(() => {
+                const influenceFocus = Boolean(selectedEdge || (showInfluence && activeNodeId));
+                const relOpacityHub = influenceFocus ? 0.1 : 0.45;
+                const relOpacityTree = influenceFocus ? 0.12 : 0.5;
+                const hubFill = influenceFocus ? "#f6f5f2" : "#eceae4";
+                const hubStroke = influenceFocus ? "#c9c6be" : "#7a7770";
+                const hubText = influenceFocus ? "#b0ada5" : "#4a4842";
+                return (
+                  <>
               {relationshipEdges.map((edge) => {
                 // Hub ↔ hub
                 if (edge.rel === "hub") {
@@ -1875,7 +1884,7 @@ function StakeholderMapPage() {
                       stroke="#8a8780"
                       strokeWidth={2.2}
                       strokeLinecap="round"
-                      opacity={0.45}
+                      opacity={relOpacityHub}
                       className="stakeholder-map__relationship stakeholder-map__relationship--hub"
                     />
                   );
@@ -1909,7 +1918,7 @@ function StakeholderMapPage() {
                     stroke="#8a8780"
                     strokeWidth={edge.rel === "cluster" ? 2 : 1.65}
                     strokeLinecap="round"
-                    opacity={0.5}
+                    opacity={relOpacityTree}
                     className="stakeholder-map__relationship"
                   />
                 );
@@ -1925,11 +1934,12 @@ function StakeholderMapPage() {
                     transform={`translate(${side.anchor.x}, ${side.anchor.y})`}
                     onClick={() => goSide(side.id)}
                     style={{ cursor: "pointer" }}
+                    opacity={influenceFocus ? 0.45 : 1}
                   >
                     <circle
                       r={hubR}
-                      fill="#eceae4"
-                      stroke={isActive ? "#f14f9b" : "#7a7770"}
+                      fill={hubFill}
+                      stroke={isActive ? "#f14f9b" : hubStroke}
                       strokeWidth={isActive ? 2.2 : 1.6}
                     />
                     <text
@@ -1937,7 +1947,7 @@ function StakeholderMapPage() {
                       textAnchor="middle"
                       dominantBaseline="middle"
                       className="stakeholder-map__rel-hub-num"
-                      fill="#4a4842"
+                      fill={hubText}
                     >
                       {side.number}
                     </text>
@@ -1946,13 +1956,16 @@ function StakeholderMapPage() {
                       textAnchor="middle"
                       dominantBaseline="middle"
                       className="stakeholder-map__rel-hub-name"
-                      fill="#4a4842"
+                      fill={hubText}
                     >
                       {side.shortName}
                     </text>
                   </g>
                 );
               })}
+                  </>
+                );
+              })()}
 
               {/* Influence: curved, colored, arrowheads; highlight only the clicked arrow */}
               {visibleEdges.map((edge, i) => {

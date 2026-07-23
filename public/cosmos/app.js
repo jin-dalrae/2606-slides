@@ -1551,115 +1551,124 @@
             fill: "transparent"
           }
         ),
-        /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, relationshipEdges.map((edge) => {
-          if (edge.rel === "hub") {
-            const sa = sideById[edge.fromCluster];
-            const sb = sideById[edge.toCluster];
-            if (!sa || !sb) return null;
-            const dx = sb.anchor.x - sa.anchor.x;
-            const dy = sb.anchor.y - sa.anchor.y;
-            const len = Math.hypot(dx, dy) || 1;
-            const ux = dx / len;
-            const uy = dy / len;
-            const trim = 28;
-            const x1 = sa.anchor.x + ux * trim;
-            const y1 = sa.anchor.y + uy * trim;
-            const x2 = sb.anchor.x - ux * trim;
-            const y2 = sb.anchor.y - uy * trim;
+        /* @__PURE__ */ React.createElement("g", { className: "stakeholder-map__camera", style: cameraStyle }, (() => {
+          const influenceFocus = Boolean(selectedEdge || showInfluence && activeNodeId);
+          const relOpacityHub = influenceFocus ? 0.1 : 0.45;
+          const relOpacityTree = influenceFocus ? 0.12 : 0.5;
+          const hubFill = influenceFocus ? "#f6f5f2" : "#eceae4";
+          const hubStroke = influenceFocus ? "#c9c6be" : "#7a7770";
+          const hubText = influenceFocus ? "#b0ada5" : "#4a4842";
+          return /* @__PURE__ */ React.createElement(React.Fragment, null, relationshipEdges.map((edge) => {
+            if (edge.rel === "hub") {
+              const sa = sideById[edge.fromCluster];
+              const sb = sideById[edge.toCluster];
+              if (!sa || !sb) return null;
+              const dx = sb.anchor.x - sa.anchor.x;
+              const dy = sb.anchor.y - sa.anchor.y;
+              const len = Math.hypot(dx, dy) || 1;
+              const ux = dx / len;
+              const uy = dy / len;
+              const trim = 28;
+              const x1 = sa.anchor.x + ux * trim;
+              const y1 = sa.anchor.y + uy * trim;
+              const x2 = sb.anchor.x - ux * trim;
+              const y2 = sb.anchor.y - uy * trim;
+              return /* @__PURE__ */ React.createElement(
+                "line",
+                {
+                  key: `rel-hub-${edge.fromCluster}-${edge.toCluster}`,
+                  x1,
+                  y1,
+                  x2,
+                  y2,
+                  stroke: "#8a8780",
+                  strokeWidth: 2.2,
+                  strokeLinecap: "round",
+                  opacity: relOpacityHub,
+                  className: "stakeholder-map__relationship stakeholder-map__relationship--hub"
+                }
+              );
+            }
+            let a;
+            let b = nodeById[edge.to];
+            if (!b) return null;
+            if (edge.rel === "cluster" && edge.clusterId) {
+              const side = sideById[edge.clusterId];
+              if (!side) return null;
+              a = {
+                x: side.anchor.x,
+                y: side.anchor.y,
+                hw: 26,
+                hh: 26,
+                lines: [side.shortName],
+                rw: 52,
+                rh: 52
+              };
+            } else {
+              a = nodeById[edge.from];
+            }
+            if (!a) return null;
+            const route = routeBetweenCards(a, b, { curve: false });
             return /* @__PURE__ */ React.createElement(
-              "line",
+              "path",
               {
-                key: `rel-hub-${edge.fromCluster}-${edge.toCluster}`,
-                x1,
-                y1,
-                x2,
-                y2,
+                key: `rel-${edge.from}-${edge.to}`,
+                d: route.d,
+                fill: "none",
                 stroke: "#8a8780",
-                strokeWidth: 2.2,
+                strokeWidth: edge.rel === "cluster" ? 2 : 1.65,
                 strokeLinecap: "round",
-                opacity: 0.45,
-                className: "stakeholder-map__relationship stakeholder-map__relationship--hub"
+                opacity: relOpacityTree,
+                className: "stakeholder-map__relationship"
               }
             );
-          }
-          let a;
-          let b = nodeById[edge.to];
-          if (!b) return null;
-          if (edge.rel === "cluster" && edge.clusterId) {
-            const side = sideById[edge.clusterId];
-            if (!side) return null;
-            a = {
-              x: side.anchor.x,
-              y: side.anchor.y,
-              hw: 26,
-              hh: 26,
-              lines: [side.shortName],
-              rw: 52,
-              rh: 52
-            };
-          } else {
-            a = nodeById[edge.from];
-          }
-          if (!a) return null;
-          const route = routeBetweenCards(a, b, { curve: false });
-          return /* @__PURE__ */ React.createElement(
-            "path",
-            {
-              key: `rel-${edge.from}-${edge.to}`,
-              d: route.d,
-              fill: "none",
-              stroke: "#8a8780",
-              strokeWidth: edge.rel === "cluster" ? 2 : 1.65,
-              strokeLinecap: "round",
-              opacity: 0.5,
-              className: "stakeholder-map__relationship"
-            }
-          );
-        }), networkGraph.map((side) => {
-          const isActive = activeSideId === side.id && focusMode === "side";
-          const hubR = 26;
-          return /* @__PURE__ */ React.createElement(
-            "g",
-            {
-              key: `rel-hub-${side.id}`,
-              className: `stakeholder-map__rel-hub ${isActive ? "is-active" : ""}`,
-              transform: `translate(${side.anchor.x}, ${side.anchor.y})`,
-              onClick: () => goSide(side.id),
-              style: { cursor: "pointer" }
-            },
-            /* @__PURE__ */ React.createElement(
-              "circle",
+          }), networkGraph.map((side) => {
+            const isActive = activeSideId === side.id && focusMode === "side";
+            const hubR = 26;
+            return /* @__PURE__ */ React.createElement(
+              "g",
               {
-                r: hubR,
-                fill: "#eceae4",
-                stroke: isActive ? "#f14f9b" : "#7a7770",
-                strokeWidth: isActive ? 2.2 : 1.6
-              }
-            ),
-            /* @__PURE__ */ React.createElement(
-              "text",
-              {
-                y: -3,
-                textAnchor: "middle",
-                dominantBaseline: "middle",
-                className: "stakeholder-map__rel-hub-num",
-                fill: "#4a4842"
+                key: `rel-hub-${side.id}`,
+                className: `stakeholder-map__rel-hub ${isActive ? "is-active" : ""}`,
+                transform: `translate(${side.anchor.x}, ${side.anchor.y})`,
+                onClick: () => goSide(side.id),
+                style: { cursor: "pointer" },
+                opacity: influenceFocus ? 0.45 : 1
               },
-              side.number
-            ),
-            /* @__PURE__ */ React.createElement(
-              "text",
-              {
-                y: 10,
-                textAnchor: "middle",
-                dominantBaseline: "middle",
-                className: "stakeholder-map__rel-hub-name",
-                fill: "#4a4842"
-              },
-              side.shortName
-            )
-          );
-        }), visibleEdges.map((edge, i) => {
+              /* @__PURE__ */ React.createElement(
+                "circle",
+                {
+                  r: hubR,
+                  fill: hubFill,
+                  stroke: isActive ? "#f14f9b" : hubStroke,
+                  strokeWidth: isActive ? 2.2 : 1.6
+                }
+              ),
+              /* @__PURE__ */ React.createElement(
+                "text",
+                {
+                  y: -3,
+                  textAnchor: "middle",
+                  dominantBaseline: "middle",
+                  className: "stakeholder-map__rel-hub-num",
+                  fill: hubText
+                },
+                side.number
+              ),
+              /* @__PURE__ */ React.createElement(
+                "text",
+                {
+                  y: 10,
+                  textAnchor: "middle",
+                  dominantBaseline: "middle",
+                  className: "stakeholder-map__rel-hub-name",
+                  fill: hubText
+                },
+                side.shortName
+              )
+            );
+          }));
+        })(), visibleEdges.map((edge, i) => {
           const a = nodeById[edge.from];
           const b = nodeById[edge.to];
           if (!a || !b) return null;
