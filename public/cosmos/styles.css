@@ -1240,11 +1240,32 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   border: 1px solid var(--line);
   background: #fbfaf6;
   overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.stakeholder-frame__map--page.is-panning {
+  cursor: grabbing;
+}
+.stakeholder-map-hint {
+  margin: 0 0 8px;
+  color: #5c647f;
+  font-size: 12px;
+  letter-spacing: 0.02em;
 }
 .stakeholder-map {
   display: block;
   width: 100%;
   height: 100%;
+}
+.stakeholder-map__pan-surface {
+  pointer-events: all;
+}
+.stakeholder-map__camera .stakeholder-map__node,
+.stakeholder-map__camera .stakeholder-map__influence-hit,
+.stakeholder-map__camera .stakeholder-map__cluster,
+.stakeholder-map__camera .stakeholder-map__membership {
+  pointer-events: auto;
 }
 .stakeholder-map__cluster-label {
   font-family: var(--sans);
@@ -1303,6 +1324,7 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   line-height: 1.4;
 }
 .stakeholder-map__camera {
+  pointer-events: none;
   transform-box: view-box;
   transform-origin: 0 0;
   will-change: transform;

@@ -1232,9 +1232,14 @@ function StakeholderMapPage() {
   const [activeSideId, setActiveSideId] = useState("app");
   const [activeNodeId, setActiveNodeId] = useState(null);
   const [hoverEdge, setHoverEdge] = useState(null); // { edge, x, y } in map client coords
+  // Free camera: null = follow focusBounds; user pan/zoom takes over until focus changes or Fit.
+  const [view, setView] = useState(null); // { cx, cy, scale } | null
+  const [isPanning, setIsPanning] = useState(false);
   const mapRef = useRef(null);
+  const svgRef = useRef(null);
+  const panRef = useRef(null); // { pointerId, lastX, lastY, cx, cy, scale }
 
-    const width = MAP_W;
+  const width = MAP_W;
   const height = MAP_H;
   const activeType = influenceTypeById[activeTypeId] || influenceTypes[0];
   const activeSide = sideById[activeSideId] || sideById.app;
@@ -1324,7 +1329,7 @@ function StakeholderMapPage() {
         side.nodes.forEach((n) => pts.push(n));
       }
     }
-    if (!pts.length) return { cx: 800, cy: 540, scale: 1 };
+    if (!pts.length) return { cx: width / 2, cy: height / 2, scale: 1 };
     const xs = pts.map((p) => p.x);
     const ys = pts.map((p) => p.y);
     const pad = focusMode === "side" ? 150 : 170;
@@ -1337,39 +1342,158 @@ function StakeholderMapPage() {
     const bw = Math.max(maxX - minX, 320);
     const bh = Math.max(maxY - minY, 280);
     const fit = Math.min(width / bw, height / bh);
-    // Keep overview near 1:1 so the graph fills the page; only zoom when focusing.
     // Overview slightly zoomed out so the roomier graph has breathing room.
     const bias = focusMode === "side" ? 1.12 : focusMode === "type" ? 0.98 : 0.88;
     return { cx, cy, scale: Math.min(fit * bias, focusMode === "overview" ? 0.95 : 1.45) };
   })();
 
+  const cam = view || focusBounds;
   const cameraStyle = {
-    transform: `translate(${width / 2}px, ${height / 2}px) scale(${focusBounds.scale}) translate(${-focusBounds.cx}px, ${-focusBounds.cy}px)`,
+    transform: `translate(${width / 2}px, ${height / 2}px) scale(${cam.scale}) translate(${-cam.cx}px, ${-cam.cy}px)`,
     transformOrigin: "0px 0px",
-    transition: "transform 0.45s ease",
+    transition: isPanning || view ? "none" : "transform 0.45s ease",
   };
+
+  function clientToSvg(clientX, clientY) {
+    const svg = svgRef.current;
+    if (!svg) return { x: width / 2, y: height / 2 };
+    const pt = svg.createSVGPoint();
+    pt.x = clientX;
+    pt.y = clientY;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return { x: width / 2, y: height / 2 };
+    const p = pt.matrixTransform(ctm.inverse());
+    return { x: p.x, y: p.y };
+  }
+
+  function svgToWorld(sx, sy, camera) {
+    return {
+      x: (sx - width / 2) / camera.scale + camera.cx,
+      y: (sy - height / 2) / camera.scale + camera.cy,
+    };
+  }
+
+  function clampScale(s) {
+    return Math.min(3.2, Math.max(0.22, s));
+  }
+
+  const viewRef = useRef(view);
+  const focusRef = useRef(focusBounds);
+  viewRef.current = view;
+  focusRef.current = focusBounds;
+
+  function currentCamera() {
+    return viewRef.current || focusRef.current;
+  }
+
+  function fitView() {
+    setView(null);
+    setIsPanning(false);
+  }
+
+  // Non-passive wheel so we can prevent page scroll while zooming the map.
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el) return undefined;
+    function onWheel(event) {
+      event.preventDefault();
+      const svgPt = clientToSvg(event.clientX, event.clientY);
+      const current = currentCamera();
+      const world = svgToWorld(svgPt.x, svgPt.y, current);
+      const intensity = Math.min(Math.abs(event.deltaY) / 80, 3);
+      const zoomIn = event.deltaY < 0;
+      const nextScale = clampScale(
+        current.scale * (zoomIn ? Math.pow(1.09, intensity) : Math.pow(0.91, intensity))
+      );
+      setView({
+        scale: nextScale,
+        cx: world.x - (svgPt.x - width / 2) / nextScale,
+        cy: world.y - (svgPt.y - height / 2) / nextScale,
+      });
+    }
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [width, height]);
+
+  function onMapPointerDown(event) {
+    if (event.button !== 0 && event.button !== 1) return;
+    const target = event.target;
+    if (
+      target.closest &&
+      target.closest(
+        ".stakeholder-map__node, .stakeholder-map__influence-hit, .stakeholder-map__cluster, button, a"
+      )
+    ) {
+      return;
+    }
+    event.preventDefault();
+    const current = currentCamera();
+    panRef.current = {
+      pointerId: event.pointerId,
+      lastX: event.clientX,
+      lastY: event.clientY,
+      cx: current.cx,
+      cy: current.cy,
+      scale: current.scale,
+    };
+    setIsPanning(true);
+    setView({ cx: current.cx, cy: current.cy, scale: current.scale });
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  }
+
+  function onMapPointerMove(event) {
+    const pan = panRef.current;
+    if (!pan || pan.pointerId !== event.pointerId) return;
+    const svg = svgRef.current;
+    const rect = svg?.getBoundingClientRect();
+    // Convert screen delta → SVG units (handles letterboxing / responsive size).
+    const sx = rect ? width / rect.width : 1;
+    const sy = rect ? height / rect.height : 1;
+    const dx = (event.clientX - pan.lastX) * sx;
+    const dy = (event.clientY - pan.lastY) * sy;
+    pan.lastX = event.clientX;
+    pan.lastY = event.clientY;
+    pan.cx -= dx / pan.scale;
+    pan.cy -= dy / pan.scale;
+    setView({ cx: pan.cx, cy: pan.cy, scale: pan.scale });
+  }
+
+  function onMapPointerUp(event) {
+    if (!panRef.current || panRef.current.pointerId !== event.pointerId) return;
+    panRef.current = null;
+    setIsPanning(false);
+    try {
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+    } catch (_) {
+      /* already released */
+    }
+  }
 
   function goOverview() {
     setFocusMode("overview");
     setActiveNodeId(null);
+    setView(null);
   }
 
   function goType(typeId) {
     setFocusMode("type");
     setActiveTypeId(typeId);
     setActiveNodeId(null);
+    setView(null);
   }
 
   function goSide(sideId) {
     setFocusMode("side");
     setActiveSideId(sideId);
     setActiveNodeId(null);
+    setView(null);
   }
 
   function goNode(nodeId, sideId) {
     setFocusMode("side");
     setActiveSideId(sideId);
     setActiveNodeId(nodeId);
+    setView(null);
   }
 
   const typeIndex = influenceTypes.findIndex((t) => t.id === activeTypeId);
@@ -1440,8 +1564,12 @@ function StakeholderMapPage() {
                 : `${typeIndex + 1} / ${influenceTypes.length} types`}
             </span>
             <button type="button" onClick={() => stepPart(1)} aria-label="Next">→</button>
+            <button type="button" onClick={fitView} title="Fit current focus in view">
+              Fit
+            </button>
           </div>
         </div>
+        <p className="stakeholder-map-hint">Scroll to zoom · Drag empty space to pan · Fit resets camera</p>
 
         <div className="stakeholder-frame__chain-tabs stakeholder-frame__type-tabs" role="tablist" aria-label="Influence types">
           {influenceTypes.map((t) => (
@@ -1478,8 +1606,30 @@ function StakeholderMapPage() {
           </div>
         )}
 
-        <div className="stakeholder-frame__map stakeholder-frame__map--page" ref={mapRef}>
-          <svg className="stakeholder-map" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
+        <div
+          className={`stakeholder-frame__map stakeholder-frame__map--page ${isPanning ? "is-panning" : ""}`}
+          ref={mapRef}
+          onPointerDown={onMapPointerDown}
+          onPointerMove={onMapPointerMove}
+          onPointerUp={onMapPointerUp}
+          onPointerCancel={onMapPointerUp}
+          onDoubleClick={(event) => {
+            // Double-click empty area to fit focus.
+            if (
+              event.target.closest &&
+              event.target.closest(".stakeholder-map__node, .stakeholder-map__influence-hit")
+            ) {
+              return;
+            }
+            fitView();
+          }}
+        >
+          <svg
+            ref={svgRef}
+            className="stakeholder-map"
+            viewBox={`0 0 ${width} ${height}`}
+            preserveAspectRatio="xMidYMid meet"
+          >
             <defs>
               {influenceTypes.map((t) => (
                 <marker
@@ -1497,6 +1647,16 @@ function StakeholderMapPage() {
                 </marker>
               ))}
             </defs>
+
+            {/* Invisible hit surface so empty space is easy to grab */}
+            <rect
+              className="stakeholder-map__pan-surface"
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              fill="transparent"
+            />
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
               {/* Soft cluster region labels (no hub-and-spoke) */}
