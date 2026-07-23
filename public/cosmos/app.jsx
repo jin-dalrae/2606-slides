@@ -572,7 +572,7 @@ function WavelineCompareChart({ waves }) {
   );
 }
 
-// Plain document layout: chart + full stage write-ups for every wave (print-friendly).
+// Chart + tables in one static visualization block (no interactive cascade).
 function UserWavelinePage() {
   const stageSpine = experienceWaves[0]?.stages || [];
 
@@ -587,105 +587,118 @@ function UserWavelinePage() {
         </div>
         <p className="waveline-lede">
           Same eight stages across Cosmos VR, feed platforms, and VR without a game loop.
-          Wave height is felt intensity (engagement / fulfillment) — not time-on-app.
-          This page is a static document: the chart and every stage description are fully visible for reading and print.
+          Height is felt intensity — not time-on-app. Words live in the tables with the chart, not in a hidden hover panel.
         </p>
       </header>
 
-      <div className="waveline-doc-legend" aria-label="Wave legend">
-        {experienceWaves.map((w) => (
-          <span key={w.id} className="waveline-legend-item waveline-legend-item--static">
-            <i style={{ background: w.stroke }} />
-            <span>{w.label}</span>
-          </span>
+      <div className="waveline-viz" aria-label="Waveline visualization and stage tables">
+        <div className="waveline-doc-legend" aria-label="Wave legend">
+          {experienceWaves.map((w) => (
+            <span key={w.id} className="waveline-legend-item waveline-legend-item--static">
+              <i style={{ background: w.stroke }} />
+              <span>{w.label}</span>
+            </span>
+          ))}
+        </div>
+
+        <figure className="waveline-doc-chart">
+          <WavelineCompareChart waves={experienceWaves} />
+          <figcaption>
+            Curves share stages 01–08. Tables below hold the same stages in rows — one visualization, readable and printable.
+          </figcaption>
+        </figure>
+
+        {/* Intensity comparison table — all three waves in one grid */}
+        <div className="waveline-table-scroll">
+          <table className="waveline-table waveline-table--intensity">
+            <caption>Felt intensity by stage (same values as plot height)</caption>
+            <thead>
+              <tr>
+                <th scope="col">Stage</th>
+                <th scope="col">Name</th>
+                {experienceWaves.map((w) => (
+                  <th key={w.id} scope="col" style={{ color: w.stroke }}>
+                    {w.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {stageSpine.map((spine, si) => (
+                <tr key={spine.id}>
+                  <th scope="row">{spine.stage}</th>
+                  <td>
+                    <b>{spine.name}</b>
+                    <span className="waveline-table__sub">{spine.short}</span>
+                  </td>
+                  {experienceWaves.map((w) => {
+                    const st = w.stages[si];
+                    return (
+                      <td key={w.id}>
+                        <span className="waveline-table__intensity" style={{ color: w.stroke }}>
+                          {Math.round(st.intensity * 100)}%
+                        </span>
+                        <span className="waveline-table__sub">{st.peakLabel}</span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Full words per wave as tables — not cascading cards */}
+        {experienceWaves.map((wave) => (
+          <div key={wave.id} className="waveline-table-block" id={`wave-${wave.id}`}>
+            <h2 className="waveline-table-block__title" style={{ color: wave.stroke }}>
+              <i style={{ background: wave.stroke }} />
+              {wave.label}
+            </h2>
+            <p className="waveline-table-block__lede">{wave.lede}</p>
+            <div className="waveline-table-scroll">
+              <table className="waveline-table waveline-table--detail">
+                <caption>{wave.label}: stage notes (behavior, feelings, achievements, mechanics)</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Stage</th>
+                    <th scope="col">Peak</th>
+                    <th scope="col">Behavior</th>
+                    <th scope="col">Feelings</th>
+                    <th scope="col">Achievements</th>
+                    <th scope="col">Mechanics</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {wave.stages.map((stage) => (
+                    <tr key={`${wave.id}-${stage.id}`}>
+                      <th scope="row" style={{ color: wave.stroke }}>
+                        {stage.stage}
+                      </th>
+                      <td>
+                        <b>{stage.name}</b>
+                        <span className="waveline-table__sub">{stage.short}</span>
+                      </td>
+                      <td>
+                        <b>{stage.peakLabel}</b>
+                        <span className="waveline-table__sub">{Math.round(stage.intensity * 100)}% intensity</span>
+                      </td>
+                      <td>{stage.behavior}</td>
+                      <td>{stage.feelings}</td>
+                      <td>{stage.achievements}</td>
+                      <td>{stage.mechanics.join(" · ")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ))}
       </div>
 
-      <figure className="waveline-doc-chart">
-        <WavelineCompareChart waves={experienceWaves} />
-        <figcaption>
-          Compared experience wavelines. Vertical axis: felt intensity (high / mid / low).
-          Horizontal axis: shared session stages 01–08.
-        </figcaption>
-      </figure>
-
-      <article className="waveline-document">
-        <section className="report-chapter waveline-doc-overview">
-          <span className="report-number">0</span>
-          <h2>How to read this document</h2>
-          <p className="report-lead">
-            Each experience uses the same spine — Entice → Enter → Orient → Explore → Discover → Immerse → Interact → Exit —
-            so the curves can be compared without changing axes.
-          </p>
-          <p>
-            Below, every wave is written out in full: stage name, short intent, peak label, behavior, feelings,
-            achievements, and mechanics. Nothing is hidden behind hover or selection.
-          </p>
-          <div className="waveline-spine-list">
-            {stageSpine.map((s) => (
-              <div key={s.id}>
-                <b>{s.stage}</b>
-                <span>{s.name}</span>
-                <i>{s.short}</i>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {experienceWaves.map((wave, wi) => (
-          <section
-            key={wave.id}
-            className="report-chapter waveline-wave-chapter"
-            id={`wave-${wave.id}`}
-            style={{ ["--wave-accent"]: wave.stroke }}
-          >
-            <span className="report-number">{String(wi + 1).padStart(2, "0")}</span>
-            <h2 style={{ color: wave.stroke }}>{wave.label}</h2>
-            <p className="report-lead">{wave.lede}</p>
-
-            {wave.stages.map((stage) => (
-              <div key={`${wave.id}-${stage.id}`} className="waveline-stage-block" id={`${wave.id}-${stage.id}`}>
-                <header className="waveline-stage-block__head">
-                  <span style={{ color: wave.stroke }}>{stage.stage}</span>
-                  <div>
-                    <h3>
-                      {stage.name}
-                      <em> · {stage.short}</em>
-                    </h3>
-                    <p>
-                      Peak label: <b>{stage.peakLabel}</b>
-                      {" · "}
-                      Felt intensity: <b>{Math.round(stage.intensity * 100)}%</b> of plot height
-                    </p>
-                  </div>
-                </header>
-                <div className="waveline-frame__cols waveline-stage-block__cols">
-                  <article>
-                    <b>Behavior</b>
-                    <p>{stage.behavior}</p>
-                  </article>
-                  <article>
-                    <b>Feelings</b>
-                    <p>{stage.feelings}</p>
-                  </article>
-                  <article>
-                    <b>Achievements</b>
-                    <p>{stage.achievements}</p>
-                  </article>
-                </div>
-                <ul className="waveline-frame__chips">
-                  {stage.mechanics.map((m) => (
-                    <li key={m}>{m}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </section>
-        ))}
-      </article>
-
       <p className="waveline-share-hint">
-        Print tip: close the left sidebar (‹), then use the browser print dialog. All three waves and all eight stages are on the page — no interaction required.
+        Print tip: close the left sidebar (‹), then Print / Save as PDF. Chart and tables print together — no interaction.
       </p>
 
       <div className="report-next-links">

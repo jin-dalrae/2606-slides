@@ -646,9 +646,16 @@ html[data-cosmos-rail="closed"] .waveline-page--document {
   height: 3px;
   border-radius: 2px;
 }
+.waveline-viz {
+  width: 100%;
+  padding: 18px 18px 22px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 12px 32px rgba(17, 28, 78, 0.06);
+}
 .waveline-doc-chart {
-  margin: 0 0 36px;
-  padding: 14px 12px 10px;
+  margin: 0 0 20px;
+  padding: 12px 10px 8px;
   border: 1px solid var(--line);
   background: #fbfaf6;
 }
@@ -658,94 +665,147 @@ html[data-cosmos-rail="closed"] .waveline-page--document {
   font-size: 12px;
   line-height: 1.45;
 }
-.waveline-document {
+
+/* Tables sit in the same viz block as the chart */
+.waveline-table-scroll {
   width: 100%;
-}
-.waveline-spine-list {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin: 22px 0 0;
-}
-.waveline-spine-list > div {
-  display: grid;
-  gap: 2px;
-  padding: 12px 12px 10px;
+  overflow-x: auto;
+  margin: 0 0 22px;
   border: 1px solid var(--line);
-  background: var(--paper-deep);
+  background: white;
 }
-.waveline-spine-list b {
+.waveline-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.waveline-table caption {
+  caption-side: top;
+  padding: 10px 12px 8px;
+  text-align: left;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--paper-deep);
+  border-bottom: 1px solid var(--line);
+}
+.waveline-table th,
+.waveline-table td {
+  padding: 10px 11px;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid rgba(17, 28, 78, 0.08);
+  vertical-align: top;
+  text-align: left;
+  color: #2f3758;
+}
+.waveline-table th:last-child,
+.waveline-table td:last-child {
+  border-right: 0;
+}
+.waveline-table thead th {
+  background: var(--paper-deep);
+  color: var(--navy);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.waveline-table tbody th {
   color: var(--pink);
   font-family: var(--serif);
   font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #fbfaf6;
 }
-.waveline-spine-list span {
+.waveline-table tbody tr:nth-child(even) td {
+  background: rgba(247, 244, 237, 0.55);
+}
+.waveline-table tbody tr:last-child th,
+.waveline-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.waveline-table b {
+  display: block;
   color: var(--navy);
+  font-size: 12.5px;
   font-weight: 700;
-  font-size: 14px;
+  line-height: 1.3;
 }
-.waveline-spine-list i {
+.waveline-table__sub {
+  display: block;
+  margin-top: 3px;
   color: var(--muted);
-  font-size: 12px;
-  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
   line-height: 1.35;
 }
-.waveline-wave-chapter {
-  border-top-color: var(--wave-accent, var(--navy));
-}
-.waveline-stage-block {
-  margin: 0 0 28px;
-  padding: 18px 18px 16px;
-  border: 1px solid var(--line);
-  background: white;
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-.waveline-stage-block__head {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px 16px;
-  align-items: start;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
-}
-.waveline-stage-block__head > span {
+.waveline-table__intensity {
+  display: block;
   font-family: var(--serif);
-  font-size: 32px;
+  font-size: 18px;
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.1;
 }
-.waveline-stage-block__head h3 {
-  margin: 0;
+.waveline-table--intensity {
+  min-width: 640px;
+}
+.waveline-table--intensity td,
+.waveline-table--intensity th {
+  vertical-align: middle;
+}
+.waveline-table--detail {
+  min-width: 1100px;
+}
+.waveline-table--detail td:nth-child(4),
+.waveline-table--detail td:nth-child(5),
+.waveline-table--detail td:nth-child(6) {
+  min-width: 160px;
+  max-width: 240px;
+}
+.waveline-table--detail td:nth-child(7) {
+  min-width: 120px;
+  max-width: 180px;
+  font-size: 11.5px;
+  color: var(--navy);
+  font-weight: 600;
+}
+.waveline-table-block {
+  margin: 0 0 8px;
+}
+.waveline-table-block__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 6px;
   font-family: var(--serif);
   font-size: 22px;
   font-weight: 600;
-  line-height: 1.2;
-  color: var(--navy);
+  letter-spacing: -0.02em;
 }
-.waveline-stage-block__head h3 em {
-  color: var(--muted);
-  font-style: normal;
-  font-weight: 500;
-  font-size: 0.88em;
+.waveline-table-block__title i {
+  display: block;
+  width: 28px;
+  height: 4px;
+  border-radius: 2px;
 }
-.waveline-stage-block__head p {
-  margin: 6px 0 0;
+.waveline-table-block__lede {
+  margin: 0 0 10px;
   color: var(--muted);
   font-size: 13px;
-  font-weight: 600;
+  line-height: 1.45;
+  max-width: 70ch;
 }
-.waveline-stage-block__head p b {
-  color: var(--navy);
+.waveline-page--document {
+  max-width: min(1480px, 100%);
 }
-.waveline-stage-block__cols {
-  margin-bottom: 12px;
-}
-.waveline-page--document .waveline-frame__cols p {
-  display: block;
-  overflow: visible;
-  -webkit-line-clamp: unset;
+html[data-cosmos-rail="closed"] .waveline-page--document {
+  max-width: min(1680px, 100%);
 }
 .waveline-chart--compare .peak-label {
   font-size: 16px;
@@ -880,11 +940,11 @@ html[data-cosmos-rail="closed"] .waveline-page--document {
 @media (max-width: 900px) {
   .waveline-doc-intro { grid-template-columns: 1fr; }
   .waveline-lede { max-width: none; }
-  .waveline-spine-list { grid-template-columns: 1fr 1fr; }
+  .waveline-viz { padding: 12px; }
   .waveline-frame__cols { grid-template-columns: 1fr; }
 }
 
-/* Print: hide chrome, keep full document text + chart */
+/* Print: hide chrome; chart + tables stay */
 @media print {
   .reading-progress,
   .site-header,
@@ -902,11 +962,24 @@ html[data-cosmos-rail="closed"] .waveline-page--document {
     max-width: none !important;
     padding: 0 !important;
   }
-  .waveline-stage-block {
-    break-inside: avoid;
-    page-break-inside: avoid;
+  .waveline-viz {
+    box-shadow: none;
+    border-color: #ccc;
   }
-  .waveline-doc-chart {
+  .waveline-table-scroll {
+    overflow: visible;
+  }
+  .waveline-table {
+    min-width: 0 !important;
+    font-size: 10px;
+  }
+  .waveline-table--detail td:nth-child(4),
+  .waveline-table--detail td:nth-child(5),
+  .waveline-table--detail td:nth-child(6) {
+    max-width: none;
+  }
+  .waveline-doc-chart,
+  .waveline-table-block {
     break-inside: avoid;
   }
   body {
@@ -2442,10 +2515,10 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
     max-width: min(1680px, 100%);
   }
   .waveline-page--document {
-    max-width: min(1240px, 100%);
+    max-width: min(1560px, 100%);
   }
   html[data-cosmos-rail="closed"] .waveline-page--document {
-    max-width: min(1360px, 100%);
+    max-width: min(1680px, 100%);
   }
   .stakeholder-frame {
     max-width: min(1520px, 100%);
@@ -2599,10 +2672,10 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
     padding-bottom: 56px;
   }
   .waveline-page--document {
-    max-width: min(1280px, 100%);
+    max-width: min(1680px, calc(100vw - 340px));
   }
   html[data-cosmos-rail="closed"] .waveline-page--document {
-    max-width: min(1400px, 100%);
+    max-width: min(1800px, calc(100vw - 48px));
   }
   .waveline-doc-intro h1 {
     font-size: clamp(40px, 3.2vw, 58px);
@@ -2611,9 +2684,8 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
     font-size: 18px;
     max-width: 48ch;
   }
-  .waveline-frame__cols p {
-    font-size: 16px;
-    line-height: 1.55;
+  .waveline-table {
+    font-size: 13.5px;
   }
   .stakeholder-page.report-section,
   .stakeholder-page {
@@ -2706,15 +2778,15 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
     max-width: min(1860px, calc(100vw - 340px));
   }
   .waveline-page--document {
-    max-width: min(1360px, 100%);
+    max-width: min(1800px, calc(100vw - 340px));
   }
   html[data-cosmos-rail="closed"] .stakeholder-shell,
   html[data-cosmos-rail="closed"] .stakeholder-frame,
   html[data-cosmos-rail="closed"] .waveline-page--document {
     max-width: min(1920px, calc(100vw - 40px));
   }
-  .waveline-frame__cols p {
-    font-size: 17px;
+  .waveline-table {
+    font-size: 14px;
   }
   .stakeholder-frame__map--focus,
   .stakeholder-frame__map--page {
