@@ -875,7 +875,8 @@ const CLUSTER_MIN_RADIUS = 105;
 function clusterRadius(side) {
   const n = Math.max(side.nodes.length, 1);
   const fromChord = CLUSTER_MIN_CHORD / (2 * Math.sin(Math.PI / n));
-  return Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 130 : 100);
+  // Room for named hub circle + entity pills without spoke collision.
+  return Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 150 : 120);
 }
 
 /**
@@ -1399,29 +1400,61 @@ function StakeholderMapPage() {
             </defs>
 
             <g className="stakeholder-map__camera" style={cameraStyle}>
-              {/* Cluster labels only (no center bubbles) */}
+              {/* Cluster membership: field ring + radial spokes into a named hub */}
               {networkGraph.map((side) => {
                 const inFocus = focusSet.has(side.id);
                 const isActive = activeSideId === side.id && focusMode === "side";
+                const hubR = side.isHub ? 46 : 40;
+                const stroke = side.isHub ? "#111c4e" : side.color;
                 return (
-                  <text
-                    key={`label-${side.id}`}
-                    x={side.anchor.x}
-                    y={side.labelY || side.anchor.y - side.radius - 24}
-                    textAnchor="middle"
+                  <g
+                    key={`cluster-${side.id}`}
                     className={[
-                      "stakeholder-map__cluster-label",
+                      "stakeholder-map__cluster",
                       inFocus ? "is-in-chain" : "",
                       isActive ? "is-active" : "",
                       !inFocus ? "is-dimmed" : "",
-                    ].filter(Boolean).join(" ")}
-                    fill={side.isHub ? "#111c4e" : side.color}
-                    opacity={inFocus ? 1 : 0.28}
-                    onClick={() => goSide(side.id)}
-                    style={{ cursor: "pointer" }}
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    opacity={inFocus ? 1 : 0.22}
                   >
-                    {side.number} · {side.shortName}
-                  </text>
+                    <circle
+                      className="stakeholder-map__field"
+                      cx={side.anchor.x}
+                      cy={side.anchor.y}
+                      r={side.radius + 8}
+                      fill="none"
+                      stroke={stroke}
+                      strokeDasharray={side.isHub ? "0" : "5 7"}
+                    />
+                    {side.nodes.map((node) => {
+                      const dx = node.x - side.anchor.x;
+                      const dy = node.y - side.anchor.y;
+                      const len = Math.hypot(dx, dy) || 1;
+                      const ux = dx / len;
+                      const uy = dy / len;
+                      // Stop at hub rim and just inside the entity pill.
+                      const box = nodeById[node.id] || nodeBox(node);
+                      const endTrim = Math.min(len * 0.42, Math.max(box.hw, box.hh) * 0.85);
+                      const x1 = side.anchor.x + ux * hubR;
+                      const y1 = side.anchor.y + uy * hubR;
+                      const x2 = node.x - ux * endTrim;
+                      const y2 = node.y - uy * endTrim;
+                      return (
+                        <line
+                          key={`spoke-${node.id}`}
+                          className="stakeholder-map__spoke"
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke={stroke}
+                          opacity={inFocus ? 0.55 : 0.25}
+                        />
+                      );
+                    })}
+                  </g>
                 );
               })}
 
@@ -1530,6 +1563,71 @@ function StakeholderMapPage() {
                   );
                 })
               )}
+
+              {/* Named hub circles (drawn last so labels stay readable) */}
+              {networkGraph.map((side) => {
+                const inFocus = focusSet.has(side.id);
+                const isActive = activeSideId === side.id && focusMode === "side";
+                const hubR = side.isHub ? 46 : 40;
+                const stroke = side.isHub ? "#111c4e" : side.color;
+                const fill = side.isHub ? "#f2f04f" : "#fffef9";
+                // Long names wrap to two lines inside the circle.
+                const name = side.shortName;
+                const nameLines =
+                  name.length > 11 && name.includes(" ")
+                    ? (() => {
+                        const words = name.split(" ");
+                        const mid = Math.ceil(words.length / 2);
+                        return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+                      })()
+                    : [name];
+                return (
+                  <g
+                    key={`hub-${side.id}`}
+                    className={[
+                      "stakeholder-map__side-badge",
+                      side.isHub ? "is-hub" : "",
+                      inFocus ? "is-in-chain" : "",
+                      isActive ? "is-active" : "",
+                      !inFocus ? "is-dimmed" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    transform={`translate(${side.anchor.x}, ${side.anchor.y})`}
+                    onClick={() => goSide(side.id)}
+                    style={{ cursor: "pointer" }}
+                    opacity={inFocus ? 1 : 0.28}
+                  >
+                    <circle
+                      r={hubR}
+                      fill={fill}
+                      stroke={isActive ? "#f14f9b" : stroke}
+                      strokeWidth={isActive ? 2.6 : side.isHub ? 2.2 : 1.8}
+                    />
+                    <text
+                      className="stakeholder-map__badge-num"
+                      y={nameLines.length > 1 ? -10 : -6}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fill={stroke}
+                    >
+                      {side.number}
+                    </text>
+                    {nameLines.map((line, li) => (
+                      <text
+                        key={li}
+                        className="stakeholder-map__badge-name"
+                        y={(nameLines.length > 1 ? 6 : 10) + li * 11}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fill={stroke}
+                      >
+                        {line}
+                      </text>
+                    ))}
+                  </g>
+                );
+              })}
             </g>
           </svg>
 

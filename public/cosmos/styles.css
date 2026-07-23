@@ -1257,6 +1257,19 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+.stakeholder-map__cluster.is-active .stakeholder-map__field {
+  stroke-width: 2.2;
+  stroke-opacity: 0.95;
+}
+.stakeholder-map__cluster.is-dimmed .stakeholder-map__spoke {
+  opacity: 0.2;
+}
+.stakeholder-map__side-badge.is-active circle {
+  filter: drop-shadow(0 0 0 1px rgba(241, 79, 155, 0.35));
+}
+.stakeholder-map__side-badge.is-in-chain:not(.is-dimmed) {
+  opacity: 1;
+}
 .stakeholder-edge-tooltip {
   position: absolute;
   z-index: 5;
@@ -1315,27 +1328,27 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   stroke: rgba(17, 28, 78, 0.28);
 }
 .stakeholder-map__spoke {
-  stroke-width: 1.25;
+  stroke-width: 1.6;
   stroke-linecap: round;
 }
 .stakeholder-map__side-badge.is-dimmed {
-  opacity: 0.2;
+  opacity: 0.22;
 }
 .stakeholder-map__badge-num {
   font-family: var(--serif);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
   pointer-events: none;
 }
 .stakeholder-map__side-badge.is-hub .stakeholder-map__badge-num {
-  font-size: 13px;
+  font-size: 14px;
 }
 .stakeholder-map__badge-name {
   font-family: var(--sans);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   pointer-events: none;
 }
