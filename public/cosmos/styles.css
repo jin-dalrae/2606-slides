@@ -1263,18 +1263,10 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
 }
 .stakeholder-map__camera .stakeholder-map__node,
 .stakeholder-map__camera .stakeholder-map__influence-hit,
+.stakeholder-map__camera .stakeholder-map__cluster,
 .stakeholder-map__camera .stakeholder-map__membership {
   pointer-events: auto;
 }
-.stakeholder-map__hop-badge {
-  font-family: var(--sans);
-  font-weight: 800;
-  pointer-events: none;
-}
-.stakeholder-map__node.is-hop-2 {
-  opacity: 0.72;
-}
-
 .stakeholder-map__cluster-label {
   font-family: var(--sans);
   font-size: 15px;
