@@ -837,23 +837,18 @@ const relationshipEdges = [...hubHubEdges, ...clusterMembershipEdges, ...members
 
 // Influence edges (typed). Financial = money given (payer → payee).
 // Price / cost pressure = emotional. Separate from relationshipEdges.
+// Stakeholder influence = across parties (external). Product internals are
+// category structure (gray), not influence arrows.
 const influenceEdges = [
-  // App internal
-  { from: "team", to: "cosmos", type: "functional", note: "The team ships and stewards Cosmos." },
-  { from: "team", to: "spatial-engine", type: "functional", note: "Product capacity decides what ships in the spatial layer." },
-  { from: "team", to: "content-org", type: "functional", note: "Organization features exist only if discourse craft is staffed." },
-  { from: "team", to: "voice-system", type: "functional", note: "Voice scope tracks prioritization and budget." },
-  { from: "team", to: "interaction-system", type: "functional", note: "Gesture craft only ships if interaction is staffed." },
-  { from: "team", to: "onboarding", type: "functional", note: "First-run design is product work." },
-  { from: "team", to: "continuity", type: "functional", note: "Return loops need investment past the demo." },
-  { from: "team", to: "moderation-tools", type: "functional", note: "Safety tooling only if the team prioritizes trust." },
-  { from: "team", to: "cross-device-bridge", type: "functional", note: "Desktop/phone handoff is a product commitment." },
-  { from: "cosmos", to: "spatial-engine", type: "functional", note: "Cosmos is the product shell these systems live in." },
+  // Team / product → external stakeholders
   { from: "team", to: "readers", type: "emotional", note: "Marketing and narrative shape first impressions." },
   { from: "team", to: "contributors", type: "identity", note: "Roadmap tone shapes contributor trust." },
   { from: "team", to: "capital", type: "identity", note: "Story and traction feed capital conversations." },
+  { from: "cosmos", to: "readers", type: "meaning", note: "The product is the place people judge for reading value." },
+  { from: "cosmos", to: "contributors", type: "identity", note: "Whether Cosmos feels like “our place” decides contribution." },
+  { from: "cosmos", to: "discord", type: "identity", note: "Communities compare Cosmos against the places they already live." },
 
-  // App ↔ people
+  // App capabilities → people / orgs (product surface, not team wiring)
   { from: "spatial-engine", to: "readers", type: "meaning", note: "Layout must answer “why is this here?”" },
   { from: "spatial-engine", to: "contributors", type: "functional", note: "Contributors need place-to-post." },
   { from: "content-org", to: "readers", type: "meaning", note: "Clusters turn posts into discourse." },
@@ -863,24 +858,22 @@ const influenceEdges = [
   { from: "voice-system", to: "intentional-users", type: "emotional", note: "Voice capture can feel invasive." },
   { from: "interaction-system", to: "intentional-users", type: "emotional", note: "Agency instead of passive scroll." },
   { from: "interaction-system", to: "contributors", type: "functional", note: "Low-friction react/place-reply in-headset." },
-  { from: "interaction-system", to: "onboarding", type: "functional", note: "If first gestures fail, people never reach content." },
   { from: "onboarding", to: "readers", type: "emotional", note: "Setup drag turns hope into drop-off." },
-  { from: "onboarding", to: "spatial-engine", type: "functional", note: "First-run must teach spatial language." },
   { from: "continuity", to: "readers", type: "functional", note: "Without return, discovery never becomes a library." },
   { from: "continuity", to: "contributors", type: "meaning", note: "Saved places make contribution feel persistent." },
   { from: "moderation-tools", to: "stewards", type: "functional", note: "Mods need tooling at scale." },
   { from: "moderation-tools", to: "intentional-users", type: "emotional", note: "Visible safety creates room to stay." },
   { from: "cross-device-bridge", to: "contributors", type: "functional", note: "Follow-up often leaves the headset." },
   { from: "cross-device-bridge", to: "enterprise-orgs", type: "functional", note: "Work needs desk handoff." },
+
+  // People value loop (external public, not org chart)
   { from: "contributors", to: "readers", type: "meaning", note: "Living walls give readers a reason to return." },
   { from: "readers", to: "contributors", type: "emotional", note: "Attentive readership rewards careful contribution." },
   { from: "stewards", to: "contributors", type: "functional", note: "Norms keep contribution safe and legible." },
   { from: "stewards", to: "readers", type: "identity", note: "Stewards define who belongs." },
   { from: "intentional-users", to: "contributors", type: "identity", note: "Anti-doomscroll norms reshape “good” posts." },
 
-  // Hardware suppliers → product / people
-  { from: "apple-hardware", to: "vision-pro", type: "functional", note: "Apple designs and supplies Vision Pro hardware." },
-  { from: "valve", to: "pcvr", type: "functional", note: "SteamVR / Valve stack anchors much of open PC VR." },
+  // Hardware / platforms → people & product surface (not brand→brand parent links)
   { from: "meta-quest", to: "onboarding", type: "functional", note: "Quest UX and comfort set the first-session floor." },
   { from: "meta-quest", to: "readers", type: "emotional", note: "Headset price is felt as access anxiety or relief." },
   { from: "meta-quest", to: "interaction-system", type: "functional", note: "Tracking and controllers bound grab/point feel." },
@@ -925,22 +918,17 @@ const influenceEdges = [
   { from: "are-na", to: "contributors", type: "identity", note: "Curatorial boards are a 2D cousin of spatial walls." },
   { from: "knowledge-apps", to: "readers", type: "functional", note: "2D tools already hold notes and wikis." },
 
-  // Partners — Meta product network + others
-  { from: "meta-os", to: "meta-quest", type: "functional", note: "Meta OS / APIs bound what ships on Quest hardware." },
-  { from: "meta-os", to: "meta-glasses", type: "functional", note: "OS and runtime assumptions carry into glasses form factors." },
-  { from: "meta-store", to: "meta-quest", type: "functional", note: "Store is the primary install path for Quest apps." },
+  // Partners → Cosmos / people (not brand→brand parent links — those are gray category edges)
   { from: "meta-store", to: "onboarding", type: "functional", note: "Store listing and policy gate first-run." },
   { from: "meta-store", to: "team", type: "emotional", note: "Fees and featuring pressure viability." },
   { from: "team", to: "meta-store", type: "financial", note: "Team pays Meta store revenue share / listing costs." },
-  { from: "meta-os", to: "horizon", type: "identity", note: "Horizon is Meta’s own social product on Meta OS." },
+  { from: "meta-os", to: "interaction-system", type: "functional", note: "OS / APIs bound what spatial interaction can ship." },
   { from: "meta", to: "horizon", type: "identity", note: "Horizon sits inside Meta’s social / platform strategy." },
   { from: "apple-platform", to: "vision-pro", type: "functional", note: "visionOS and review bound Vision apps." },
-  { from: "apple-platform", to: "apple-hardware", type: "functional", note: "Apple’s platform and hardware are one stack." },
   { from: "apple-platform", to: "enterprise-orgs", type: "identity", note: "Apple identity pulls knowledge work orgs." },
   { from: "apple-platform", to: "team", type: "emotional", note: "Revenue share feels like a tax on paid features." },
   { from: "team", to: "apple-platform", type: "financial", note: "Team pays Apple store cut when distributing on Vision." },
   { from: "steam-store", to: "pcvr", type: "functional", note: "Steam is a primary open-PCVR distribution surface." },
-  { from: "steam-store", to: "valve", type: "functional", note: "Valve operates Steam and SteamVR." },
   { from: "team", to: "steam-store", type: "financial", note: "Team pays Steam cut if shipping PCVR." },
   { from: "cloud-ai", to: "spatial-engine", type: "functional", note: "Embeddings enable spatial organization." },
   { from: "cloud-ai", to: "voice-system", type: "functional", note: "STT/TTS providers set latency and coverage." },
