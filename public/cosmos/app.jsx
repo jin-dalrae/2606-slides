@@ -967,16 +967,22 @@ const MAP_H = 2000;
 const MAP_PAD = 140;
 
 /**
- * Force layout tuned for dispersion: strong repulsion, long edge rest lengths,
- * soft cluster glue so groups stay readable without packing pills.
+ * Layout prioritizes short category-relationship edges (parent↔brand, cluster roots).
+ * Influence links may stretch; they must not pull related entities far apart.
  */
 function layoutNetworkGraph(clusters, entities, influence, membership) {
   const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
   const membershipSet = new Set(membership.map((m) => `${m.from}|${m.to}`));
   const isMembership = (a, b) =>
     membershipSet.has(`${a}|${b}`) || membershipSet.has(`${b}|${a}`);
+  const relatedByCategory = (a, b) =>
+    isMembership(a.id, b.id) ||
+    a.parentId === b.id ||
+    b.parentId === a.id ||
+    (a.parentId && a.parentId === b.parentId) ||
+    (a.cluster === b.cluster && !a.parentId && !b.parentId);
 
-  // Seed: wide rings; children branch farther from parents.
+  // Seed: tight trees around cluster centers (category relationship geometry).
   const pos = {};
   const parents = entities.filter((e) => !e.parentId);
   const children = entities.filter((e) => e.parentId);
@@ -985,10 +991,10 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
     const peers = parents.filter((p) => p.cluster === e.cluster);
     const idx = peers.findIndex((p) => p.id === e.id);
     const ang = -Math.PI / 2 + (idx / Math.max(peers.length, 1)) * Math.PI * 2;
-    const r = 140 + peers.length * 32;
+    const r = 95 + peers.length * 16;
     pos[e.id] = {
-      x: c.x + Math.cos(ang) * r + (idx % 3) * 18,
-      y: c.y + Math.sin(ang) * r + (idx % 2) * 20,
+      x: c.x + Math.cos(ang) * r,
+      y: c.y + Math.sin(ang) * r,
     };
   });
   children.forEach((e) => {
@@ -996,23 +1002,23 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
     const sibs = children.filter((ch) => ch.parentId === e.parentId);
     const idx = sibs.findIndex((ch) => ch.id === e.id);
     const p = pos[e.parentId] || { x: c.x, y: c.y };
-    const span = Math.PI * 1.05;
+    const span = Math.min(Math.PI * 0.9, 0.55 * sibs.length);
     const ang =
       -span / 2 + (sibs.length <= 1 ? 0 : (idx / (sibs.length - 1)) * span);
-    const r = 160 + idx * 28;
+    const r = 88 + idx * 8;
     pos[e.id] = {
       x: p.x + Math.cos(ang) * r,
       y: p.y + Math.sin(ang) * r,
     };
   });
 
-  // Influence springs weaker than membership so long influence chains don’t crush the layout.
+  // Strong membership springs; weak long influence springs.
   const allEdges = [
-    ...influence.map((e) => ({ a: e.from, b: e.to, w: 0.55 })),
-    ...membership.map((e) => ({ a: e.from, b: e.to, w: 1.15 })),
+    ...influence.map((e) => ({ a: e.from, b: e.to, w: 0.28, kind: "influence" })),
+    ...membership.map((e) => ({ a: e.from, b: e.to, w: 2.4, kind: "membership" })),
   ];
 
-  const iters = 400;
+  const iters = 420;
   for (let iter = 0; iter < iters; iter++) {
     const force = {};
     for (const e of entities) force[e.id] = { x: 0, y: 0 };
@@ -1026,21 +1032,37 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
         let dx = pb.x - pa.x;
         let dy = pb.y - pa.y;
         let d2 = dx * dx + dy * dy;
-        if (d2 < 100) {
-          dx = ((i * 17 + j * 13) % 13) - 6 || 1;
-          dy = ((i * 11 + j * 19) % 13) - 6 || 1;
+        if (d2 < 64) {
+          dx = ((i * 17 + j * 13) % 11) - 5 || 1;
+          dy = ((i * 11 + j * 19) % 11) - 5 || 1;
           d2 = dx * dx + dy * dy;
         }
         const d = Math.sqrt(d2);
+        const cat = relatedByCategory(a, b);
         const sameCluster = a.cluster === b.cluster;
         const appInstPair =
           (a.cluster === "app" && b.cluster === "institutions") ||
           (a.cluster === "institutions" && b.cluster === "app");
-        // Larger minimum spacing → more air between pills
-        const minD = sameCluster ? 195 : appInstPair ? 260 : 170;
-        const pushBase = sameCluster ? 16000 : appInstPair ? 22000 : 12000;
+        // Category-related pairs: only light separation (keep trees compact).
+        let minD;
+        let pushBase;
+        if (cat) {
+          minD = 92;
+          pushBase = 3200;
+        } else if (sameCluster) {
+          minD = 130;
+          pushBase = 9000;
+        } else if (appInstPair) {
+          minD = 240;
+          pushBase = 18000;
+        } else {
+          minD = 160;
+          pushBase = 11000;
+        }
         let push = pushBase / d2;
-        if (d < minD) push += ((minD - d) / d) * (sameCluster ? 3.4 : appInstPair ? 4.0 : 2.6);
+        if (d < minD) {
+          push += ((minD - d) / d) * (cat ? 1.2 : sameCluster ? 2.4 : 2.8);
+        }
         const ux = dx / d;
         const uy = dy / d;
         force[a.id].x -= ux * push;
@@ -1050,30 +1072,44 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
       }
     }
 
-    for (const { a, b, w } of allEdges) {
+    for (const { a, b, w, kind } of allEdges) {
       if (!pos[a] || !pos[b]) continue;
       const pa = pos[a];
       const pb = pos[b];
       const dx = pb.x - pa.x;
       const dy = pb.y - pa.y;
       const d = Math.hypot(dx, dy) || 1;
-      const ideal = isMembership(a, b) ? 150 : 320;
-      const pull = ((d - ideal) / d) * 0.02 * w;
+      // Short category links; influence may stretch.
+      const ideal = kind === "membership" ? 96 : 360;
+      const k = kind === "membership" ? 0.055 : 0.012;
+      const pull = ((d - ideal) / d) * k * w;
       force[a].x += dx * pull;
       force[a].y += dy * pull;
       force[b].x -= dx * pull;
       force[b].y -= dy * pull;
     }
 
-    // Soft cluster attractor (weaker → more dispersion within group)
+    // Roots hug cluster center; brands hug their parent (category relationship).
     for (const e of entities) {
       const c = clusterById[e.cluster];
       const p = pos[e.id];
-      let strength = e.parentId ? 0.0025 : 0.007;
-      if (e.cluster === "institutions") strength = e.parentId ? 0.004 : 0.012;
-      if (e.cluster === "app") strength = e.parentId ? 0.0025 : 0.008;
-      force[e.id].x += (c.x - p.x) * strength;
-      force[e.id].y += (c.y - p.y) * strength;
+      if (e.parentId && pos[e.parentId]) {
+        const par = pos[e.parentId];
+        const dx = p.x - par.x;
+        const dy = p.y - par.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const ideal = 96;
+        const k = 0.06;
+        force[e.id].x += ((ideal - d) / d) * dx * k;
+        force[e.id].y += ((ideal - d) / d) * dy * k;
+        // Mild counter-pull so parent stays near its children
+        force[e.parentId].x -= ((ideal - d) / d) * dx * k * 0.35;
+        force[e.parentId].y -= ((ideal - d) / d) * dy * k * 0.35;
+      } else {
+        const strength = e.cluster === "institutions" ? 0.016 : 0.012;
+        force[e.id].x += (c.x - p.x) * strength;
+        force[e.id].y += (c.y - p.y) * strength;
+      }
     }
 
     {
@@ -1091,9 +1127,9 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
         appCy /= appNodes.length;
         instCy /= instNodes.length;
         const gap = instCy - appCy;
-        const want = 520;
+        const want = 480;
         if (gap < want) {
-          const pushY = (want - gap) * 0.045;
+          const pushY = (want - gap) * 0.04;
           appNodes.forEach((e) => {
             force[e.id].y -= pushY;
           });
@@ -1104,25 +1140,12 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
       }
     }
 
-    for (const e of children) {
-      const p = pos[e.parentId];
-      const q = pos[e.id];
-      if (!p) continue;
-      const dx = q.x - p.x;
-      const dy = q.y - p.y;
-      const d = Math.hypot(dx, dy) || 1;
-      const ideal = 155;
-      const k = 0.022;
-      force[e.id].x += ((ideal - d) / d) * dx * k;
-      force[e.id].y += ((ideal - d) / d) * dy * k;
-    }
-
     const cool = 0.88 * (1 - iter / iters) + 0.1;
     for (const e of entities) {
       let fx = force[e.id].x * cool;
       let fy = force[e.id].y * cool;
       const mag = Math.hypot(fx, fy);
-      const maxStep = 34;
+      const maxStep = 32;
       if (mag > maxStep) {
         fx = (fx / mag) * maxStep;
         fy = (fy / mag) * maxStep;
@@ -1134,6 +1157,7 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
     }
   }
 
+  // Cluster hub = mean of root entities (keeps gray hub→root lines short).
   return clusters.map((c) => {
     const nodes = entities
       .filter((e) => e.cluster === c.id)
@@ -1143,17 +1167,17 @@ function layoutNetworkGraph(clusters, entities, influence, membership) {
         x: pos[e.id].x,
         y: pos[e.id].y,
       }));
-    const xs = nodes.map((n) => n.x);
-    const ys = nodes.map((n) => n.y);
-    const cx = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : c.x;
-    const cy = ys.length ? ys.reduce((a, b) => a + b, 0) / ys.length : c.y;
+    const roots = nodes.filter((n) => !n.parentId);
+    const hubPts = roots.length ? roots : nodes;
+    const cx = hubPts.reduce((s, n) => s + n.x, 0) / Math.max(hubPts.length, 1) || c.x;
+    const cy = hubPts.reduce((s, n) => s + n.y, 0) / Math.max(hubPts.length, 1) || c.y;
     const radius =
-      nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - cx, n.y - cy)), 0) + 90;
+      nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - cx, n.y - cy)), 0) + 50;
     return {
       ...c,
       anchor: { x: cx, y: cy },
-      radius: Math.max(radius, 180),
-      labelY: cy - Math.max(radius, 180) - 24,
+      radius: Math.max(radius, 120),
+      labelY: cy - Math.max(radius, 120) - 20,
       nodes,
     };
   });
