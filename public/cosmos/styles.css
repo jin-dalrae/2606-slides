@@ -1230,13 +1230,13 @@ html[data-cosmos-rail="closed"] .stakeholder-shell {
   border-color: var(--yellow);
 }
 
-/* Full-page map — not a slide card; uses available viewport height */
+/* Full-page map — taller viewport so the roomier graph can breathe */
 .stakeholder-frame__map--focus,
 .stakeholder-frame__map--page {
   position: relative;
   width: 100%;
-  height: min(78vh, 900px);
-  min-height: 640px;
+  height: min(84vh, 1100px);
+  min-height: 720px;
   border: 1px solid var(--line);
   background: #fbfaf6;
   overflow: hidden;

@@ -647,12 +647,12 @@
   ];
   var influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
   var networkClusters = [
-    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 260, y: 520 },
-    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 800, y: 560, isHub: true },
-    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1340, y: 520 },
-    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 420, y: 200 },
-    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1180, y: 200 },
-    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 800, y: 940 }
+    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 280, y: 720 },
+    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1100, y: 780, isHub: true },
+    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1900, y: 720 },
+    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 420, y: 260 },
+    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1760, y: 260 },
+    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1100, y: 1280 }
   ];
   var networkEntities = [
     // People
@@ -855,24 +855,25 @@
     ...c,
     nodes: networkEntities.filter((e) => e.cluster === c.id)
   }));
-  var MAP_W = 1600;
-  var MAP_H = 1120;
+  var MAP_W = 2200;
+  var MAP_H = 1500;
+  var MAP_PAD = 110;
   function layoutNetworkGraph(clusters, entities, influence, membership) {
-    const byId = Object.fromEntries(entities.map((e) => [e.id, { ...e }]));
     const clusterById = Object.fromEntries(clusters.map((c) => [c.id, c]));
+    const membershipSet = new Set(membership.map((m) => `${m.from}|${m.to}`));
+    const isMembership = (a, b) => membershipSet.has(`${a}|${b}`) || membershipSet.has(`${b}|${a}`);
     const pos = {};
     const parents = entities.filter((e) => !e.parentId);
     const children = entities.filter((e) => e.parentId);
-    parents.forEach((e, i) => {
+    parents.forEach((e) => {
       const c = clusterById[e.cluster];
-      const a = i / Math.max(parents.filter((p) => p.cluster === e.cluster).length, 1) * Math.PI * 2;
       const peers = parents.filter((p) => p.cluster === e.cluster);
       const idx = peers.findIndex((p) => p.id === e.id);
       const ang = -Math.PI / 2 + idx / Math.max(peers.length, 1) * Math.PI * 2;
-      const r = 40 + peers.length * 14;
+      const r = 90 + peers.length * 22;
       pos[e.id] = {
-        x: c.x + Math.cos(ang) * r + idx % 3 * 6,
-        y: c.y + Math.sin(ang) * r + idx % 2 * 8
+        x: c.x + Math.cos(ang) * r + idx % 3 * 12,
+        y: c.y + Math.sin(ang) * r + idx % 2 * 14
       };
     });
     children.forEach((e) => {
@@ -880,18 +881,20 @@
       const sibs = children.filter((ch) => ch.parentId === e.parentId);
       const idx = sibs.findIndex((ch) => ch.id === e.id);
       const p = pos[e.parentId] || { x: c.x, y: c.y };
-      const ang = -0.9 + idx / Math.max(sibs.length - 1, 1) * 1.8;
-      const r = 78 + idx * 8;
+      const span = Math.PI * 0.85;
+      const ang = -span / 2 + (sibs.length <= 1 ? 0 : idx / (sibs.length - 1) * span);
+      const r = 120 + idx * 18;
       pos[e.id] = {
         x: p.x + Math.cos(ang) * r,
         y: p.y + Math.sin(ang) * r
       };
     });
     const allEdges = [
-      ...influence.map((e) => ({ a: e.from, b: e.to, w: 1 })),
-      ...membership.map((e) => ({ a: e.from, b: e.to, w: 1.6 }))
+      ...influence.map((e) => ({ a: e.from, b: e.to, w: 0.85 })),
+      ...membership.map((e) => ({ a: e.from, b: e.to, w: 1.35 }))
     ];
-    for (let iter = 0; iter < 220; iter++) {
+    const iters = 320;
+    for (let iter = 0; iter < iters; iter++) {
       const force = {};
       for (const e of entities) force[e.id] = { x: 0, y: 0 };
       for (let i = 0; i < entities.length; i++) {
@@ -903,14 +906,17 @@
           let dx = pb.x - pa.x;
           let dy = pb.y - pa.y;
           let d2 = dx * dx + dy * dy;
-          if (d2 < 25) {
-            dx = (i * 17 + j * 13) % 7 - 3 || 1;
-            dy = (i * 11 + j * 19) % 7 - 3 || 1;
+          if (d2 < 64) {
+            dx = (i * 17 + j * 13) % 11 - 5 || 1;
+            dy = (i * 11 + j * 19) % 11 - 5 || 1;
             d2 = dx * dx + dy * dy;
           }
           const d = Math.sqrt(d2);
-          const sameCluster = a.cluster === b.cluster ? 1.15 : 1;
-          const push = 2200 * sameCluster / d2;
+          const sameCluster = a.cluster === b.cluster;
+          const minD = sameCluster ? 150 : 120;
+          const pushBase = sameCluster ? 9200 : 6400;
+          let push = pushBase / d2;
+          if (d < minD) push += (minD - d) / d * (sameCluster ? 2.4 : 1.6);
           const ux = dx / d;
           const uy = dy / d;
           force[a.id].x -= ux * push;
@@ -926,8 +932,8 @@
         const dx = pb.x - pa.x;
         const dy = pb.y - pa.y;
         const d = Math.hypot(dx, dy) || 1;
-        const ideal = membership.some((m) => m.from === a && m.to === b || m.from === b && m.to === a) ? 70 : 160;
-        const pull = (d - ideal) / d * 0.045 * w;
+        const ideal = isMembership(a, b) ? 100 : 240;
+        const pull = (d - ideal) / d * 0.028 * w;
         force[a].x += dx * pull;
         force[a].y += dy * pull;
         force[b].x -= dx * pull;
@@ -936,7 +942,7 @@
       for (const e of entities) {
         const c = clusterById[e.cluster];
         const p = pos[e.id];
-        const strength = e.parentId ? 8e-3 : 0.018;
+        const strength = e.parentId ? 4e-3 : 0.01;
         force[e.id].x += (c.x - p.x) * strength;
         force[e.id].y += (c.y - p.y) * strength;
       }
@@ -944,15 +950,28 @@
         const p = pos[e.parentId];
         const q = pos[e.id];
         if (!p) continue;
-        force[e.id].x += (p.x - q.x) * 0.04;
-        force[e.id].y += (p.y - q.y) * 0.04;
+        const dx = q.x - p.x;
+        const dy = q.y - p.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const ideal = 110;
+        const k = 0.03;
+        force[e.id].x += (ideal - d) / d * dx * k;
+        force[e.id].y += (ideal - d) / d * dy * k;
       }
-      const cool = 0.85 * (1 - iter / 220) + 0.12;
+      const cool = 0.9 * (1 - iter / iters) + 0.1;
       for (const e of entities) {
-        pos[e.id].x += force[e.id].x * cool;
-        pos[e.id].y += force[e.id].y * cool;
-        pos[e.id].x = Math.max(70, Math.min(MAP_W - 70, pos[e.id].x));
-        pos[e.id].y = Math.max(60, Math.min(MAP_H - 60, pos[e.id].y));
+        let fx = force[e.id].x * cool;
+        let fy = force[e.id].y * cool;
+        const mag = Math.hypot(fx, fy);
+        const maxStep = 28;
+        if (mag > maxStep) {
+          fx = fx / mag * maxStep;
+          fy = fy / mag * maxStep;
+        }
+        pos[e.id].x += fx;
+        pos[e.id].y += fy;
+        pos[e.id].x = Math.max(MAP_PAD, Math.min(MAP_W - MAP_PAD, pos[e.id].x));
+        pos[e.id].y = Math.max(MAP_PAD, Math.min(MAP_H - MAP_PAD, pos[e.id].y));
       }
     }
     return clusters.map((c) => {
@@ -966,12 +985,12 @@
       const ys = nodes.map((n) => n.y);
       const cx = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : c.x;
       const cy = ys.length ? ys.reduce((a, b) => a + b, 0) / ys.length : c.y;
-      const radius = nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - cx, n.y - cy)), 0) + 40;
+      const radius = nodes.reduce((m, n) => Math.max(m, Math.hypot(n.x - cx, n.y - cy)), 0) + 70;
       return {
         ...c,
         anchor: { x: cx, y: cy },
-        radius: Math.max(radius, 90),
-        labelY: cy - Math.max(radius, 90) - 16,
+        radius: Math.max(radius, 140),
+        labelY: cy - Math.max(radius, 140) - 20,
         nodes
       };
     });
@@ -990,8 +1009,8 @@
   }
   function nodeBox(node) {
     const lines = node.lines || nodeLabelLines(node.label);
-    const rw = node.rw ?? Math.min(148, Math.max(96, ...lines.map((l) => l.length * 7.2 + 20)));
-    const rh = node.rh ?? (lines.length > 1 ? 36 : 28);
+    const rw = node.rw ?? Math.min(132, Math.max(88, ...lines.map((l) => l.length * 6.6 + 16)));
+    const rh = node.rh ?? (lines.length > 1 ? 32 : 26);
     return { lines, rw, rh, hw: rw / 2, hh: rh / 2 };
   }
   function cardSideAnchors(node) {
@@ -1171,8 +1190,8 @@
       const bw = Math.max(maxX - minX, 320);
       const bh = Math.max(maxY - minY, 280);
       const fit = Math.min(width / bw, height / bh);
-      const bias = focusMode === "side" ? 1.18 : focusMode === "type" ? 1.02 : 0.98;
-      return { cx, cy, scale: Math.min(fit * bias, focusMode === "overview" ? 1.05 : 1.55) };
+      const bias = focusMode === "side" ? 1.12 : focusMode === "type" ? 0.98 : 0.88;
+      return { cx, cy, scale: Math.min(fit * bias, focusMode === "overview" ? 0.95 : 1.45) };
     })();
     const cameraStyle = {
       transform: `translate(${width / 2}px, ${height / 2}px) scale(${focusBounds.scale}) translate(${-focusBounds.cx}px, ${-focusBounds.cy}px)`,
