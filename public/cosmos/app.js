@@ -858,18 +858,77 @@
   };
   var CLUSTER_MIN_CHORD = 118;
   var CLUSTER_MIN_RADIUS = 105;
-  function placeCluster(side) {
-    const anchor = sideAnchors[side.id];
+  var nodeRingAngles = {
+    // users
+    "educators-learners": -2.945243,
+    "enterprise-workers": -2.159845,
+    "privacy-users": -1.374447,
+    "anti-doomscrolling": -0.589049,
+    "casual-explorers": 0.19635,
+    "knowledge-seekers": 0.981748,
+    "niche-community": 1.767146,
+    lurkers: 2.552544,
+    // writers
+    "active-posters": -0.654498,
+    moderators: 0.243099,
+    "voice-contributors": 1.140697,
+    journalists: 2.038295,
+    "community-builders": 2.935893,
+    researchers: 3.833491,
+    "knowledge-sharers": 4.731089,
+    // promoters
+    "academic-labs": -2.356194,
+    "vr-communities": -1.458597,
+    "digital-minimalist": -0.560999,
+    "press-creators": 0.336599,
+    "design-communities": 1.234197,
+    "discord-owners": 2.131795,
+    "indie-hackers": 3.029393,
+    // devices
+    "other-vr": 1.439897,
+    "vision-pro": 2.696534,
+    quest: 3.953171,
+    "vr-stores": 5.209808,
+    pcvr: 6.466445,
+    // app
+    "moderation-tools": 2.552544,
+    "content-org": 3.337942,
+    "voice-system": 4.12334,
+    "spatial-engine": 4.908739,
+    continuity: 5.694137,
+    onboarding: 6.479535,
+    "interaction-system": 7.264933,
+    "cross-device-bridge": 8.050331,
+    // industry
+    "feed-social-industry": -3.076143,
+    "advertising-industry": -2.504944,
+    "apple-ecosystem": -1.933745,
+    "regulators-policy": -1.362547,
+    "social-vr-games": -0.791348,
+    "meta-xr-labs": -0.220149,
+    "chat-platform-industry": 0.351049,
+    "investors-capital": 0.922248,
+    "cloud-ai-vendors": 1.493447,
+    "content-rights-holders": 2.064645,
+    "edu-enterprise-buyers": 2.635844
+  };
+  function clusterRadius(side) {
     const n = Math.max(side.nodes.length, 1);
     const fromChord = CLUSTER_MIN_CHORD / (2 * Math.sin(Math.PI / n));
-    const radius = Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 140 : 105);
+    return Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 140 : 105);
+  }
+  function placeCluster(side) {
+    const anchor = sideAnchors[side.id];
+    const radius = clusterRadius(side);
+    const n = Math.max(side.nodes.length, 1);
     const towardApp = Math.atan2(sideAnchors.app.y - anchor.y, sideAnchors.app.x - anchor.x);
-    const startAngle = side.isHub ? -Math.PI / 2 : towardApp + Math.PI;
+    const fallbackStart = side.isHub ? -Math.PI / 2 : towardApp + Math.PI;
     const nodes = side.nodes.map((node, i) => {
-      const angle = startAngle + i / n * Math.PI * 2;
+      const angle = nodeRingAngles[node.id] ?? fallbackStart + i / n * Math.PI * 2;
       return {
         ...node,
         sideId: side.id,
+        angle,
         x: anchor.x + Math.cos(angle) * radius,
         y: anchor.y + Math.sin(angle) * radius
       };
@@ -878,11 +937,11 @@
       ...side,
       anchor,
       radius,
-      // Label sits above the cluster centroid (no circular badge)
       labelY: anchor.y - radius - 28,
       nodes
     };
   }
+  var networkGraph = networkSides.map(placeCluster);
   function nodeLabelLines(label, maxChars = 18) {
     if (label.length <= maxChars) return [label];
     const words = label.split(" ");
@@ -955,7 +1014,6 @@
       d: `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`
     };
   }
-  var networkGraph = networkSides.map(placeCluster);
   var sideById = Object.fromEntries(networkGraph.map((s) => [s.id, s]));
   var nodeById = (() => {
     const map = {};
