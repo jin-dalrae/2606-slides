@@ -1006,34 +1006,26 @@ function layoutNetworkGraph(clusters, entities) {
   for (const c of clusters) {
     const hub = { x: c.x, y: c.y };
     const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
-    const outward = Math.atan2(hub.y - canvasCy, hub.x - canvasCx);
     const isCenter = Boolean(c.isHub);
-    // Category trees: longer spokes for busy clusters (more roots / brands).
+    // Full 360° around every hub (entity spokes may cross hub↔hub links — that's fine).
     const busy = roots.length >= 6;
-    const rootR = isCenter ? (busy ? 118 : 105) : busy ? 108 : 92;
+    const rootR = isCenter ? (busy ? 118 : 105) : busy ? 112 : 98;
+    // Rotate start angle so first root faces roughly outward (optional polish only).
+    const startAng = Math.atan2(hub.y - canvasCy, hub.x - canvasCx) - Math.PI / 2;
 
     roots.forEach((root, i) => {
-      let ang;
-      if (isCenter) {
-        ang = -Math.PI / 2 + (i / Math.max(roots.length, 1)) * Math.PI * 2;
-      } else {
-        const fan = Math.min(Math.PI * 1.05, 0.5 + roots.length * 0.2);
-        ang =
-          outward -
-          fan / 2 +
-          (roots.length <= 1 ? fan / 2 : (i / (roots.length - 1)) * fan);
-      }
+      const ang = startAng + (i / Math.max(roots.length, 1)) * Math.PI * 2;
       pos[root.id] = {
         x: hub.x + Math.cos(ang) * rootR,
         y: hub.y + Math.sin(ang) * rootR,
       };
 
       const kids = entities.filter((e) => e.parentId === root.id);
-      // Brand ring further out when a category has several children (e.g. Meta tree).
-      const childStep = kids.length >= 3 ? 96 : kids.length === 2 ? 88 : 80;
+      // Brands sit further out on the same radial, spread in a small arc if many.
+      const childStep = kids.length >= 3 ? 100 : kids.length === 2 ? 90 : 82;
       const childR = rootR + childStep;
       kids.forEach((kid, ki) => {
-        const kfan = Math.min(1.0, 0.32 * Math.max(kids.length, 1));
+        const kfan = Math.min(0.9, 0.3 * Math.max(kids.length, 1));
         const kang =
           ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : (ki / (kids.length - 1)) * kfan);
         pos[kid.id] = {
