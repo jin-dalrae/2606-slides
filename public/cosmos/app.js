@@ -901,13 +901,14 @@
       const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
       const outward = Math.atan2(hub.y - canvasCy, hub.x - canvasCx);
       const isCenter = Boolean(c.isHub);
-      const rootR = isCenter ? 95 : 78;
+      const busy = roots.length >= 6;
+      const rootR = isCenter ? busy ? 118 : 105 : busy ? 108 : 92;
       roots.forEach((root, i) => {
         let ang;
         if (isCenter) {
           ang = -Math.PI / 2 + i / Math.max(roots.length, 1) * Math.PI * 2;
         } else {
-          const fan = Math.min(Math.PI * 0.95, 0.45 + roots.length * 0.18);
+          const fan = Math.min(Math.PI * 1.05, 0.5 + roots.length * 0.2);
           ang = outward - fan / 2 + (roots.length <= 1 ? fan / 2 : i / (roots.length - 1) * fan);
         }
         pos[root.id] = {
@@ -915,9 +916,10 @@
           y: hub.y + Math.sin(ang) * rootR
         };
         const kids = entities.filter((e) => e.parentId === root.id);
-        const childR = rootR + 72;
+        const childStep = kids.length >= 3 ? 96 : kids.length === 2 ? 88 : 80;
+        const childR = rootR + childStep;
         kids.forEach((kid, ki) => {
-          const kfan = Math.min(0.85, 0.24 * Math.max(kids.length, 1));
+          const kfan = Math.min(1, 0.32 * Math.max(kids.length, 1));
           const kang = ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : ki / (kids.length - 1) * kfan);
           pos[kid.id] = {
             x: hub.x + Math.cos(kang) * childR,
