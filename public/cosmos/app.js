@@ -683,8 +683,7 @@
     { id: "reddit", label: "Reddit", cluster: "competitors", parentId: "feed-social" },
     { id: "x-twitter", label: "X", cluster: "competitors", parentId: "feed-social" },
     { id: "tiktok", label: "TikTok", cluster: "competitors", parentId: "feed-social" },
-    // Sits with feed platforms (same attention market), not as a distant root.
-    { id: "attention-ads", label: "Ad / Attention Economy", cluster: "competitors", parentId: "feed-social" },
+    { id: "attention-ads", label: "Ad / Attention Economy", cluster: "competitors" },
     { id: "chat-platforms", label: "Chat Platforms", cluster: "competitors" },
     { id: "discord", label: "Discord", cluster: "competitors", parentId: "chat-platforms" },
     { id: "social-vr", label: "Social VR", cluster: "competitors" },
@@ -881,13 +880,29 @@
   function layoutNetworkGraph(clusters, entities, influence) {
     const canvasCx = MAP_W / 2;
     const canvasCy = MAP_H / 2;
+    const entityById = Object.fromEntries(entities.map((e) => [e.id, e]));
     const kidsByParent = {};
     entities.forEach((e) => {
       if (!e.parentId) return;
       if (!kidsByParent[e.parentId]) kidsByParent[e.parentId] = [];
       kidsByParent[e.parentId].push(e);
     });
-    function placeCluster(c, rootOrder, startAng, into) {
+    const adj = {};
+    const touch = (a, b, w) => {
+      if (!adj[a]) adj[a] = {};
+      if (!adj[b]) adj[b] = {};
+      adj[a][b] = (adj[a][b] || 0) + w;
+      adj[b][a] = (adj[b][a] || 0) + w;
+    };
+    influence.forEach((e) => touch(e.from, e.to, 1));
+    Object.values(kidsByParent).forEach((kids) => {
+      for (let i = 0; i < kids.length; i++) {
+        for (let j = i + 1; j < kids.length; j++) {
+          touch(kids[i].id, kids[j].id, 0.35);
+        }
+      }
+    });
+    function placeCluster(c, rootOrder, startAng, into, childOrders2) {
       const hub = { x: c.x, y: c.y };
       const n = Math.max(rootOrder.length, 1);
       const busy = rootOrder.length >= 6;
@@ -899,7 +914,7 @@
           x: hub.x + Math.cos(ang) * rootR,
           y: hub.y + Math.sin(ang) * rootR
         };
-        const kids = kidsByParent[root.id] || [];
+        const kids = childOrders2[root.id] || kidsByParent[root.id] || [];
         const childStep = kids.length >= 4 ? 108 : kids.length >= 3 ? 100 : kids.length === 2 ? 90 : 82;
         const childR = rootR + childStep;
         kids.forEach((kid, ki) => {
@@ -915,70 +930,189 @@
     function orient2d(ax, ay, bx, by, cx, cy) {
       return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
     }
-    function segmentsCross(a, b, c, d) {
-      if (a === c || a === d || b === c || b === d) return false;
-      const pa = pos[a];
-      const pb = pos[b];
-      const pc = pos[c];
-      const pd = pos[d];
-      if (!pa || !pb || !pc || !pd) return false;
+    function segmentsCross(pa, pb, pc, pd) {
       const o1 = orient2d(pa.x, pa.y, pb.x, pb.y, pc.x, pc.y);
       const o2 = orient2d(pa.x, pa.y, pb.x, pb.y, pd.x, pd.y);
       const o3 = orient2d(pc.x, pc.y, pd.x, pd.y, pa.x, pa.y);
       const o4 = orient2d(pc.x, pc.y, pd.x, pd.y, pb.x, pb.y);
       return o1 * o2 < 0 && o3 * o4 < 0;
     }
-    let pos = {};
-    const rootOrders = {};
-    const startAngles = {};
-    clusters.forEach((c) => {
-      const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
-      rootOrders[c.id] = roots.slice();
-      startAngles[c.id] = Math.atan2(c.y - canvasCy, c.x - canvasCx) - Math.PI / 2;
-      placeCluster(c, rootOrders[c.id], startAngles[c.id], pos);
-    });
-    function scoreInfluence() {
+    function scorePlacement(p) {
       let len = 0;
       for (const e of influence) {
-        const a = pos[e.from];
-        const b = pos[e.to];
+        const a = p[e.from];
+        const b = p[e.to];
         if (!a || !b) continue;
         len += Math.hypot(a.x - b.x, a.y - b.y);
+      }
+      let nearBonus = 0;
+      for (const id of Object.keys(adj)) {
+        const ea = entityById[id];
+        if (!ea || ea.parentId) continue;
+        for (const [oid, w] of Object.entries(adj[id])) {
+          if (id >= oid) continue;
+          const eb = entityById[oid];
+          if (!eb || ea.cluster !== eb.cluster) continue;
+          const a = p[id];
+          const b = p[oid];
+          if (!a || !b) continue;
+          nearBonus += w * Math.hypot(a.x - b.x, a.y - b.y);
+        }
       }
       let crosses = 0;
       for (let i = 0; i < influence.length; i++) {
         for (let j = i + 1; j < influence.length; j++) {
           const e1 = influence[i];
           const e2 = influence[j];
-          if (segmentsCross(e1.from, e1.to, e2.from, e2.to)) crosses += 1;
+          if (e1.from === e2.from || e1.from === e2.to || e1.to === e2.from || e1.to === e2.to) {
+            continue;
+          }
+          const a = p[e1.from];
+          const b = p[e1.to];
+          const c = p[e2.from];
+          const d = p[e2.to];
+          if (!a || !b || !c || !d) continue;
+          if (segmentsCross(a, b, c, d)) crosses += 1;
         }
       }
-      return len + crosses * 180;
+      return len + nearBonus * 1.4 + crosses * 200;
     }
-    const angleSteps = 36;
-    for (let pass = 0; pass < 3; pass++) {
+    function affinityOrder(roots) {
+      if (roots.length <= 1) return roots.slice();
+      const remaining = new Set(roots.map((r) => r.id));
+      let start = roots[0];
+      let bestW = -1;
+      roots.forEach((r) => {
+        let w = 0;
+        const m = adj[r.id] || {};
+        Object.entries(m).forEach(([oid, wt]) => {
+          const o = entityById[oid];
+          if (o && o.cluster !== r.cluster) w += wt;
+          (kidsByParent[r.id] || []).forEach((kid) => {
+            Object.entries(adj[kid.id] || {}).forEach(([, kwt]) => {
+              w += kwt * 0.5;
+            });
+          });
+        });
+        if (w > bestW) {
+          bestW = w;
+          start = r;
+        }
+      });
+      const ordered = [start];
+      remaining.delete(start.id);
+      while (remaining.size) {
+        const last = ordered[ordered.length - 1];
+        let nextId = null;
+        let nextScore = -1;
+        remaining.forEach((id) => {
+          let s = adj[last.id]?.[id] || 0;
+          (kidsByParent[last.id] || []).forEach((kid) => {
+            s += (adj[kid.id]?.[id] || 0) * 0.8;
+            (kidsByParent[id] || []).forEach((ok) => {
+              s += (adj[kid.id]?.[ok.id] || 0) * 1.2;
+            });
+          });
+          (kidsByParent[id] || []).forEach((ok) => {
+            s += (adj[last.id]?.[ok.id] || 0) * 0.8;
+          });
+          if (s > nextScore) {
+            nextScore = s;
+            nextId = id;
+          }
+        });
+        if (!nextId) nextId = remaining.values().next().value;
+        remaining.delete(nextId);
+        ordered.push(entityById[nextId]);
+      }
+      return ordered;
+    }
+    function orderKids(root, hub) {
+      const kids = (kidsByParent[root.id] || []).slice();
+      if (kids.length <= 2) return kids;
+      const scored = kids.map((kid) => {
+        let sx = 0;
+        let sy = 0;
+        let w = 0;
+        Object.entries(adj[kid.id] || {}).forEach(([oid, wt]) => {
+          const o = entityById[oid];
+          if (!o) return;
+          let tx;
+          let ty;
+          if (pos[oid]) {
+            tx = pos[oid].x;
+            ty = pos[oid].y;
+          } else if (o.cluster) {
+            const oc = clusters.find((cl) => cl.id === o.cluster);
+            tx = oc ? oc.x : canvasCx;
+            ty = oc ? oc.y : canvasCy;
+          } else {
+            return;
+          }
+          sx += tx * wt;
+          sy += ty * wt;
+          w += wt;
+        });
+        const ang = w > 0 ? Math.atan2(sy / w - hub.y, sx / w - hub.x) : 0;
+        return { kid, ang };
+      });
+      scored.sort((a, b) => a.ang - b.ang);
+      return scored.map((s) => s.kid);
+    }
+    let pos = {};
+    const rootOrders = {};
+    const startAngles = {};
+    const childOrders = {};
+    clusters.forEach((c) => {
+      const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
+      rootOrders[c.id] = affinityOrder(roots);
+      startAngles[c.id] = Math.atan2(c.y - canvasCy, c.x - canvasCx) - Math.PI / 2;
+      roots.forEach((r) => {
+        childOrders[r.id] = (kidsByParent[r.id] || []).slice();
+      });
+      placeCluster(c, rootOrders[c.id], startAngles[c.id], pos, childOrders);
+    });
+    clusters.forEach((c) => {
+      rootOrders[c.id].forEach((r) => {
+        childOrders[r.id] = orderKids(r, { x: c.x, y: c.y });
+      });
+      placeCluster(c, rootOrders[c.id], startAngles[c.id], pos, childOrders);
+    });
+    const angleSteps = 48;
+    for (let pass = 0; pass < 4; pass++) {
       for (const c of clusters) {
         const baseOrder = rootOrders[c.id];
         const n = baseOrder.length;
         if (n < 1) continue;
-        let best = { score: Infinity, order: baseOrder, start: startAngles[c.id] };
-        const shifts = n;
-        for (let sh = 0; sh < shifts; sh++) {
-          const order = baseOrder.map((_, i) => baseOrder[(i + sh) % n]);
+        let best = {
+          score: Infinity,
+          order: baseOrder,
+          start: startAngles[c.id]
+        };
+        const candidates = [];
+        for (let sh = 0; sh < n; sh++) {
+          candidates.push(baseOrder.map((_, i) => baseOrder[(i + sh) % n]));
+        }
+        const rev = baseOrder.slice().reverse();
+        for (let sh = 0; sh < n; sh++) {
+          candidates.push(rev.map((_, i) => rev[(i + sh) % n]));
+        }
+        for (const order of candidates) {
           for (let s = 0; s < angleSteps; s++) {
             const start = s / angleSteps * Math.PI * 2;
             const trial = { ...pos };
-            placeCluster(c, order, start, trial);
-            const saved = pos;
-            pos = trial;
-            const sc = scoreInfluence();
-            pos = saved;
+            placeCluster(c, order, start, trial, childOrders);
+            const sc = scorePlacement(trial);
             if (sc < best.score) best = { score: sc, order, start };
           }
         }
         rootOrders[c.id] = best.order;
         startAngles[c.id] = best.start;
-        placeCluster(c, best.order, best.start, pos);
+        placeCluster(c, best.order, best.start, pos, childOrders);
+        best.order.forEach((r) => {
+          childOrders[r.id] = orderKids(r, { x: c.x, y: c.y });
+        });
+        placeCluster(c, best.order, best.start, pos, childOrders);
       }
     }
     for (let pass = 0; pass < 30; pass++) {
