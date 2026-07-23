@@ -1350,14 +1350,6 @@ function StakeholderMapPage() {
               style={{ left: hoverEdge.x + 14, top: Math.max(8, hoverEdge.y - 12) }}
               role="tooltip"
             >
-              <b style={{ color: influenceTypeById[hoverEdge.edge.type]?.color }}>
-                {influenceTypeById[hoverEdge.edge.type]?.label || hoverEdge.edge.type}
-              </b>
-              <span>
-                {nodeById[hoverEdge.edge.from]?.label || hoverEdge.edge.from}
-                {" → "}
-                {nodeById[hoverEdge.edge.to]?.label || hoverEdge.edge.to}
-              </span>
               <p>{hoverEdge.edge.note}</p>
             </div>
           )}

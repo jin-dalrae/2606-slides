@@ -1177,8 +1177,6 @@
         style: { left: hoverEdge.x + 14, top: Math.max(8, hoverEdge.y - 12) },
         role: "tooltip"
       },
-      /* @__PURE__ */ React.createElement("b", { style: { color: influenceTypeById[hoverEdge.edge.type]?.color } }, influenceTypeById[hoverEdge.edge.type]?.label || hoverEdge.edge.type),
-      /* @__PURE__ */ React.createElement("span", null, nodeById[hoverEdge.edge.from]?.label || hoverEdge.edge.from, " \u2192 ", nodeById[hoverEdge.edge.to]?.label || hoverEdge.edge.to),
       /* @__PURE__ */ React.createElement("p", null, hoverEdge.edge.note)
     )), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail stakeholder-frame__detail--open", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__detail-title" }, /* @__PURE__ */ React.createElement(
       "span",
