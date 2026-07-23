@@ -800,8 +800,8 @@ const influenceEdges = [
   { from: "quest", to: "casual-explorers", type: "financial", note: "Lower device price expands who can try non-game VR time." },
   { from: "vision-pro", to: "knowledge-seekers", type: "identity", note: "Premium device attracts quality-focused readers and writers." },
   { from: "quest", to: "onboarding", type: "functional", note: "Platform UX and comfort defaults set the first-session floor." },
-  { from: "vr-stores", to: "app", type: "functional", note: "Distribution channel and policy gate for the whole App Side." },
-  { from: "vr-stores", to: "app", type: "financial", note: "Revenue share and pricing rules constrain monetization stories." },
+  { from: "vr-stores", to: "onboarding", type: "functional", note: "Distribution channel and policy gate for install and first-run." },
+  { from: "vr-stores", to: "continuity", type: "financial", note: "Revenue share and pricing rules constrain what return features can fund." },
 
   // —— Hardware ↔ experience ——
   { from: "quest", to: "interaction-system", type: "functional", note: "Tracking, resolution, and input stack bound what grab/zoom can feel like." },
@@ -821,7 +821,7 @@ const influenceEdges = [
   { from: "voice-system", to: "privacy-users", type: "emotional", note: "Voice capture can feel invasive; trust is a precondition." },
   { from: "voice-system", to: "cloud-ai", type: "financial", note: "STT/TTS and storage cost scale with voice use." },
   { from: "spatial-engine", to: "cloud-ai", type: "financial", note: "Embeddings and layout compute are ongoing infra cost." },
-  { from: "cloud-ai", to: "app", type: "financial", note: "Unit economics constrain which features can stay free or always-on." },
+  { from: "cloud-ai", to: "content-org", type: "financial", note: "Unit economics constrain which always-on organization features stay free." },
   { from: "interaction-system", to: "anti-doomscrolling", type: "emotional", note: "Grab / point / zoom create agency instead of passive scroll." },
   { from: "interaction-system", to: "active-posters", type: "functional", note: "Low-friction react and place-reply change what posters bother to do in-headset." },
   { from: "continuity", to: "niche-community", type: "meaning", note: "Saved places and return paths make the community feel persistent." },
