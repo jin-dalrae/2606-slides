@@ -647,12 +647,12 @@
   ];
   var influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]));
   var networkClusters = [
-    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 420, y: 980 },
-    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1200, y: 900, isHub: true },
-    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1980, y: 980 },
-    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 520, y: 320 },
-    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1880, y: 320 },
-    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1200, y: 1580 }
+    { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 620, y: 980 },
+    { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1100, y: 900, isHub: true },
+    { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1580, y: 980 },
+    { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 680, y: 480 },
+    { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1520, y: 480 },
+    { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1100, y: 1360 }
   ];
   var networkEntities = [
     // People
@@ -889,9 +889,9 @@
     ...c,
     nodes: networkEntities.filter((e) => e.cluster === c.id)
   }));
-  var MAP_W = 2400;
-  var MAP_H = 1800;
-  var MAP_PAD = 80;
+  var MAP_W = 2e3;
+  var MAP_H = 1600;
+  var MAP_PAD = 60;
   function layoutNetworkGraph(clusters, entities) {
     const canvasCx = MAP_W / 2;
     const canvasCy = MAP_H / 2;
@@ -901,13 +901,13 @@
       const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
       const outward = Math.atan2(hub.y - canvasCy, hub.x - canvasCx);
       const isCenter = Boolean(c.isHub);
-      const rootR = isCenter ? 145 : 125;
+      const rootR = isCenter ? 120 : 100;
       roots.forEach((root, i) => {
         let ang;
         if (isCenter) {
           ang = -Math.PI / 2 + i / Math.max(roots.length, 1) * Math.PI * 2;
         } else {
-          const fan = Math.min(Math.PI * 1.15, 0.55 + roots.length * 0.22);
+          const fan = Math.min(Math.PI * 1.05, 0.5 + roots.length * 0.2);
           ang = outward - fan / 2 + (roots.length <= 1 ? fan / 2 : i / (roots.length - 1) * fan);
         }
         pos[root.id] = {
@@ -915,9 +915,9 @@
           y: hub.y + Math.sin(ang) * rootR
         };
         const kids = entities.filter((e) => e.parentId === root.id);
-        const childR = rootR + 108;
+        const childR = rootR + 88;
         kids.forEach((kid, ki) => {
-          const kfan = Math.min(0.95, 0.28 * Math.max(kids.length, 1));
+          const kfan = Math.min(0.9, 0.26 * Math.max(kids.length, 1));
           const kang = ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : ki / (kids.length - 1) * kfan);
           pos[kid.id] = {
             x: hub.x + Math.cos(kang) * childR,
@@ -938,7 +938,7 @@
           let dx = pb.x - pa.x;
           let dy = pb.y - pa.y;
           let d = Math.hypot(dx, dy) || 0.01;
-          const minD = a.cluster === b.cluster ? 108 : 96;
+          const minD = a.cluster === b.cluster ? 96 : 88;
           if (d >= minD) continue;
           const push = (minD - d) / d * 0.5;
           const ux = dx / d;
