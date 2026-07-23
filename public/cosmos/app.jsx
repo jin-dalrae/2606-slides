@@ -700,8 +700,8 @@ function UserWavelinePage() {
 // —— Stakeholder network: typed influence graph (replaces multi-step chains) ——
 const influenceTypes = [
   { id: "functional", label: "Functional", short: "Can / workflow", color: "#111c4e", desc: "Capability, access, workflow — whether the job can be done." },
-  { id: "financial", label: "Financial", short: "Money / cost", color: "#0a7a5c", desc: "Price, fees, infra cost, revenue share — who can afford to enter or ship." },
-  { id: "emotional", label: "Emotional", short: "Feel / comfort", color: "#f14f9b", desc: "Comfort, belonging, anxiety, fatigue, delight — what the session feels like." },
+  { id: "financial", label: "Financial", short: "Gives money", color: "#0a7a5c", desc: "Money transfer — funding, payment, ad spend, seat purchase. Arrow points from who pays to who receives." },
+  { id: "emotional", label: "Emotional", short: "Feel / price feel", color: "#f14f9b", desc: "Felt pressure: comfort, anxiety, delight, and price/cost as experience (not a wire transfer)." },
   { id: "identity", label: "Identity", short: "Who we are", color: "#c43b7a", desc: "Status and belonging signals — “people like me use this.”" },
   { id: "meaning", label: "Meaning", short: "Purpose / value", color: "#8a6d00", desc: "Purpose, learning, lasting contribution — why the time felt worth it." },
 ];
@@ -846,45 +846,52 @@ const influenceEdges = [
 
   // —— Devices ——
   { from: "quest", to: "onboarding", type: "functional", note: "Quest UX and comfort defaults set the first-session floor." },
-  { from: "quest", to: "readers", type: "financial", note: "Lower headset price expands who can try non-game VR time." },
+  { from: "quest", to: "readers", type: "emotional", note: "Headset price is felt as access anxiety or relief—not a bank transfer to the reader." },
   { from: "quest", to: "interaction-system", type: "functional", note: "Tracking, resolution, and controllers bound grab/point feel." },
   { from: "quest", to: "intentional-users", type: "emotional", note: "Weight, heat, and motion comfort decide whether calm browsing is possible." },
   { from: "vision-pro", to: "interaction-system", type: "functional", note: "Eyes/hands input model changes interaction design vs controllers." },
   { from: "vision-pro", to: "readers", type: "identity", note: "Premium device attracts quality-focused readers and knowledge workers." },
-  { from: "vision-pro", to: "readers", type: "emotional", note: "Comfort and passthrough quality affect long reading sessions." },
+  { from: "vision-pro", to: "readers", type: "emotional", note: "Comfort, passthrough, and sticker shock shape long-session willingness." },
   { from: "other-vr", to: "interaction-system", type: "functional", note: "Fragmented hardware forces lowest-common-denominator UX or forks." },
-  { from: "pcvr", to: "readers", type: "functional", note: "Desktop VR enables longer seated reading at higher setup cost." },
+  { from: "pcvr", to: "readers", type: "functional", note: "Desktop VR enables longer seated reading when setup is acceptable." },
+  { from: "pcvr", to: "readers", type: "emotional", note: "PC + headset cost and setup burden feel heavy before any session starts." },
   { from: "pcvr", to: "contributors", type: "functional", note: "PCVR sessions suit deeper contribution when setup is acceptable." },
   { from: "vr-stores", to: "onboarding", type: "functional", note: "Store listing, install path, and policy gate first-run." },
-  { from: "vr-stores", to: "continuity", type: "financial", note: "Revenue share and pricing rules constrain what return features can fund." },
-  { from: "vr-stores", to: "team", type: "financial", note: "Featuring and fees shape whether the product is “viable” to ship." },
+  { from: "vr-stores", to: "continuity", type: "emotional", note: "Cut and pricing rules feel like a ceiling on what return features are “worth shipping.”" },
+  { from: "vr-stores", to: "team", type: "emotional", note: "Fees and featuring pressure whether the product feels viable to ship." },
+  // Money actually paid: team → store (revenue share), not store → team.
+  { from: "team", to: "vr-stores", type: "financial", note: "The team pays store revenue share and listing costs to distribute." },
 
   // —— Competitors ——
   { from: "feed-social", to: "readers", type: "meaning", note: "Feeds already answer “what should I read?”; Cosmos must beat that job." },
   { from: "feed-social", to: "intentional-users", type: "emotional", note: "Ranking feeds train the habits Cosmos is trying to replace." },
   { from: "feed-social", to: "contributors", type: "identity", note: "Attention metrics teach what “success” looks like elsewhere." },
-  { from: "feed-social", to: "attention-ads", type: "financial", note: "Ad markets fund the dominant feed UX Cosmos refuses to copy." },
+  { from: "feed-social", to: "attention-ads", type: "functional", note: "Feed products supply the inventory ad markets buy." },
   { from: "discord", to: "stewards", type: "functional", note: "Community ops and mod craft already live in Discord toolchains." },
   { from: "discord", to: "readers", type: "identity", note: "“My community lives on Discord” is a migration barrier." },
   { from: "discord", to: "community-orgs", type: "functional", note: "Many community orgs already run on Discord servers." },
   { from: "social-vr", to: "readers", type: "emotional", note: "Play-first social VR makes calm browsing feel like the wrong use of a headset." },
   { from: "social-vr", to: "contributors", type: "identity", note: "Headset culture defaults to games and hangouts, not async discourse." },
   { from: "attention-ads", to: "intentional-users", type: "emotional", note: "Attention extraction is the antagonist of intentional reading." },
-  { from: "attention-ads", to: "feed-social", type: "financial", note: "Ad demand keeps ranking feeds optimized for engagement over understanding." },
+  // Advertisers give money to platforms.
+  { from: "attention-ads", to: "feed-social", type: "financial", note: "Ad spend pays for feed products—and keeps them optimized for engagement." },
   { from: "knowledge-apps", to: "readers", type: "functional", note: "2D tools already hold notes and wikis; Cosmos must offer a reason to leave them." },
   { from: "knowledge-apps", to: "enterprise-orgs", type: "identity", note: "Work knowledge already lives in familiar 2D stacks." },
 
   // —— Partners ——
   { from: "meta-platform", to: "quest", type: "functional", note: "Meta OS, APIs, and Quest roadmap bound what ships on Quest." },
-  { from: "meta-platform", to: "vr-stores", type: "financial", note: "Store policy and featuring are controlled by the platform owner." },
+  { from: "meta-platform", to: "vr-stores", type: "functional", note: "Store policy and featuring are controlled by the platform owner." },
   { from: "meta-platform", to: "social-vr", type: "identity", note: "Horizon-style products help define “what VR is for” in mass culture." },
   { from: "apple-platform", to: "vision-pro", type: "functional", note: "Apple review, APIs, and visionOS bound Vision apps—not a vague ecosystem." },
-  { from: "apple-platform", to: "vr-stores", type: "financial", note: "App Store rules and revenue share shape Vision distribution." },
+  { from: "apple-platform", to: "vr-stores", type: "functional", note: "App Store rules gate Vision distribution and review." },
+  { from: "apple-platform", to: "vr-stores", type: "emotional", note: "Revenue-share rates feel like a tax on every paid feature." },
   { from: "apple-platform", to: "enterprise-orgs", type: "identity", note: "Apple’s work/creative identity pulls knowledge orgs toward Vision." },
   { from: "cloud-ai", to: "spatial-engine", type: "functional", note: "Embedding/model APIs enable (and constrain) spatial organization quality." },
   { from: "cloud-ai", to: "voice-system", type: "functional", note: "STT/TTS providers set latency, language coverage, and failure modes." },
-  { from: "cloud-ai", to: "spatial-engine", type: "financial", note: "Compute cost can force cheaper, less meaningful layouts." },
-  { from: "cloud-ai", to: "voice-system", type: "financial", note: "Per-minute and storage pricing set voice unit economics." },
+  { from: "cloud-ai", to: "spatial-engine", type: "emotional", note: "Unit compute price pressure pushes cheaper, less meaningful layouts." },
+  { from: "cloud-ai", to: "voice-system", type: "emotional", note: "Per-minute and storage prices make voice feel expensive to leave free." },
+  // Team pays cloud vendors.
+  { from: "team", to: "cloud-ai", type: "financial", note: "The team pays cloud AI invoices for embeddings, STT/TTS, and storage." },
   { from: "content-partners", to: "content-org", type: "functional", note: "Without rights-safe import, organization has nothing real to arrange." },
   { from: "content-partners", to: "readers", type: "meaning", note: "Empty or synthetic walls fail people who wanted real discourse." },
   { from: "content-partners", to: "stewards", type: "functional", note: "Provenance and licenses shape what can be hosted and removed." },
@@ -896,15 +903,20 @@ const influenceEdges = [
   { from: "press-media", to: "team", type: "identity", note: "Press cycle rewards or punishes how the team frames the product." },
 
   // —— Institutions (external only) ——
-  { from: "capital", to: "team", type: "financial", note: "Runway funds team size and how long patient community work can last." },
-  { from: "capital", to: "continuity", type: "financial", note: "Capital pressure can push growth theater over return loops and craft." },
-  { from: "capital", to: "cloud-ai", type: "financial", note: "Funding climate favors high-margin platform plays over patient tools." },
+  // Capital gives money to the team (runway).
+  { from: "capital", to: "team", type: "financial", note: "Investors fund runway—money that pays the team and buys time." },
+  { from: "capital", to: "continuity", type: "emotional", note: "Capital pressure can make patient return loops feel unfundable vs growth theater." },
+  { from: "capital", to: "cloud-ai", type: "emotional", note: "Funding fashion makes AI platform plays feel “hotter” than patient tools." },
   { from: "government", to: "intentional-users", type: "emotional", note: "Privacy and biometric rules set baseline expectations for safe use." },
   { from: "government", to: "voice-system", type: "functional", note: "Consent, retention, and biometric law constrain voice product design." },
-  { from: "government", to: "meta-platform", type: "financial", note: "Platform compliance cost reshapes what store apps can ship." },
-  { from: "edu-orgs", to: "readers", type: "financial", note: "Schools can fund seats and structured cohort use at scale." },
+  { from: "government", to: "meta-platform", type: "emotional", note: "Compliance cost pressure reshapes what platforms allow store apps to ship." },
+  // Schools pay for seats / access.
+  { from: "edu-orgs", to: "team", type: "financial", note: "Schools purchase seats and licenses—money into the product." },
+  { from: "edu-orgs", to: "readers", type: "functional", note: "Institutional purchase enables structured cohort use at scale." },
   { from: "edu-orgs", to: "content-org", type: "meaning", note: "Curriculum-like use needs stable structure, not feed heat." },
   { from: "edu-orgs", to: "moderation-tools", type: "functional", note: "Institutions expect safety, access control, and audit." },
+  // Enterprises pay for seats / contracts.
+  { from: "enterprise-orgs", to: "team", type: "financial", note: "Workplaces buy contracts and seats when Cosmos is procurement-ready." },
   { from: "enterprise-orgs", to: "continuity", type: "functional", note: "Work use needs saved places, handoff, and revisit—not demos." },
   { from: "enterprise-orgs", to: "moderation-tools", type: "functional", note: "Procurement expects SSO-adjacent controls and safety features." },
   { from: "enterprise-orgs", to: "cross-device-bridge", type: "functional", note: "Enterprise readers/contributors move between desk and headset." },
