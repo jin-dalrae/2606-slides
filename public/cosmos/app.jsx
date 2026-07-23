@@ -712,15 +712,14 @@ const influenceTypeById = Object.fromEntries(influenceTypes.map((t) => [t.id, t]
 // 1) Relationship — structural: cluster → category → brand (gray backbone)
 // 2) Influence — typed forces between entities (colored; filters by type)
 // parentId = brand under a category (Reddit under Feed Social). Never drop entities here casually.
-// Fixed hub positions — compact ring so hub↔hub gray links stay short.
-// App at center; others ~480px out (was ~700–900px).
+// Fixed hub positions — tight pack (App center, others ~280–320px out).
 const networkClusters = [
-  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 620, y: 980 },
-  { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 1100, y: 900, isHub: true },
-  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1580, y: 980 },
-  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 680, y: 480 },
-  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1520, y: 480 },
-  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 1100, y: 1360 },
+  { id: "people", number: "01", shortName: "People", name: "People", color: "#f14f9b", x: 520, y: 720 },
+  { id: "app", number: "02", shortName: "App", name: "App (product systems & team)", color: "#d4b200", x: 800, y: 680, isHub: true },
+  { id: "hardware", number: "03", shortName: "Hardware", name: "Hardware suppliers", color: "#0a7a5c", x: 1080, y: 720 },
+  { id: "competitors", number: "04", shortName: "Competitors", name: "Competitors & substitutes", color: "#c43b7a", x: 560, y: 420 },
+  { id: "partners", number: "05", shortName: "Partners", name: "Partners & enablers", color: "#5b6cff", x: 1040, y: 420 },
+  { id: "institutions", number: "06", shortName: "Institutions", name: "External institutions", color: "#111c4e", x: 800, y: 980 },
 ];
 
 // Entities: as many relatable names as useful. parentId = branch from a category entity.
@@ -990,9 +989,9 @@ const networkSides = networkClusters.map((c) => ({
   nodes: networkEntities.filter((e) => e.cluster === c.id),
 }));
 
-const MAP_W = 2000;
-const MAP_H = 1600;
-const MAP_PAD = 60;
+const MAP_W = 1600;
+const MAP_H = 1280;
+const MAP_PAD = 40;
 
 /**
  * Deterministic category layout (neat for “Categories only”):
@@ -1009,16 +1008,15 @@ function layoutNetworkGraph(clusters, entities) {
     const roots = entities.filter((e) => e.cluster === c.id && !e.parentId);
     const outward = Math.atan2(hub.y - canvasCy, hub.x - canvasCx);
     const isCenter = Boolean(c.isHub);
-    // Compact trees so hubs can sit closer without tree-on-tree pileups.
-    const rootR = isCenter ? 120 : 100;
+    // Tight trees: short gray spokes hub→category→brand.
+    const rootR = isCenter ? 95 : 78;
 
     roots.forEach((root, i) => {
       let ang;
       if (isCenter) {
         ang = -Math.PI / 2 + (i / Math.max(roots.length, 1)) * Math.PI * 2;
       } else {
-        // Fan roots away from the map center so trees don’t collide into App.
-        const fan = Math.min(Math.PI * 1.05, 0.5 + roots.length * 0.2);
+        const fan = Math.min(Math.PI * 0.95, 0.45 + roots.length * 0.18);
         ang =
           outward -
           fan / 2 +
@@ -1030,9 +1028,9 @@ function layoutNetworkGraph(clusters, entities) {
       };
 
       const kids = entities.filter((e) => e.parentId === root.id);
-      const childR = rootR + 88;
+      const childR = rootR + 72;
       kids.forEach((kid, ki) => {
-        const kfan = Math.min(0.9, 0.26 * Math.max(kids.length, 1));
+        const kfan = Math.min(0.85, 0.24 * Math.max(kids.length, 1));
         const kang =
           ang - kfan / 2 + (kids.length <= 1 ? kfan / 2 : (ki / (kids.length - 1)) * kfan);
         pos[kid.id] = {
@@ -1044,7 +1042,7 @@ function layoutNetworkGraph(clusters, entities) {
   }
 
   // Soft pass: separate only overlapping non-family pills (keep trees intact).
-  for (let pass = 0; pass < 40; pass++) {
+  for (let pass = 0; pass < 50; pass++) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
         const a = entities[i];
@@ -1059,9 +1057,9 @@ function layoutNetworkGraph(clusters, entities) {
         let dx = pb.x - pa.x;
         let dy = pb.y - pa.y;
         let d = Math.hypot(dx, dy) || 0.01;
-        const minD = a.cluster === b.cluster ? 96 : 88;
+        const minD = a.cluster === b.cluster ? 82 : 76;
         if (d >= minD) continue;
-        const push = ((minD - d) / d) * 0.5;
+        const push = ((minD - d) / d) * 0.55;
         const ux = dx / d;
         const uy = dy / d;
         pa.x -= ux * push * 0.5;
