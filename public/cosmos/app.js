@@ -777,18 +777,20 @@
   ];
   var sideAnchors = {
     app: { x: 800, y: 540 },
-    users: { x: 230, y: 280 },
-    writers: { x: 230, y: 820 },
-    promoters: { x: 1370, y: 300 },
-    devices: { x: 1370, y: 820 }
+    users: { x: 250, y: 270 },
+    writers: { x: 250, y: 810 },
+    promoters: { x: 1350, y: 270 },
+    devices: { x: 1350, y: 810 }
   };
+  var CLUSTER_MIN_CHORD = 96;
+  var CLUSTER_MIN_RADIUS = 92;
+  var CLUSTER_BADGE_R = 28;
+  var CLUSTER_BADGE_R_HUB = 34;
   function placeCluster(side) {
     const anchor = sideAnchors[side.id];
     const n = Math.max(side.nodes.length, 1);
-    const compact = !side.isHub;
-    const minChord = compact ? 92 : 118;
-    const fromChord = minChord / (2 * Math.sin(Math.PI / n));
-    const radius = Math.max(side.isHub ? 175 : 88, fromChord);
+    const fromChord = CLUSTER_MIN_CHORD / (2 * Math.sin(Math.PI / n));
+    const radius = Math.max(CLUSTER_MIN_RADIUS, fromChord, side.isHub ? 110 : 92);
     const towardApp = Math.atan2(sideAnchors.app.y - anchor.y, sideAnchors.app.x - anchor.x);
     const startAngle = side.isHub ? -Math.PI / 2 : towardApp + Math.PI;
     const nodes = side.nodes.map((node, i) => {
@@ -804,10 +806,10 @@
       ...side,
       anchor,
       radius,
-      fieldR: radius + (compact ? 52 : 78),
-      compact,
-      // Center badge size (promoters / outer sides stay smaller)
-      badgeR: side.isHub ? 46 : 30,
+      fieldR: radius + 50,
+      compact: true,
+      // all clusters use the same smaller entity pills
+      badgeR: side.isHub ? CLUSTER_BADGE_R_HUB : CLUSTER_BADGE_R,
       nodes
     };
   }
@@ -1055,7 +1057,7 @@
     }), networkGraph.map((side) => {
       const inFocus = focusSet.has(side.id);
       const isActive = activeSideId === side.id && focusMode === "side";
-      const r = side.badgeR || 30;
+      const r = side.badgeR || CLUSTER_BADGE_R;
       return /* @__PURE__ */ React.createElement(
         "g",
         {
@@ -1077,13 +1079,13 @@
             r,
             fill: side.isHub ? "#f2f04f" : "#fffef9",
             stroke: isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color,
-            strokeWidth: isActive || side.isHub ? 2.25 : 1.5
+            strokeWidth: isActive || side.isHub ? 2.1 : 1.45
           }
         ),
         /* @__PURE__ */ React.createElement(
           "text",
           {
-            y: side.isHub ? -6 : -5,
+            y: -5,
             textAnchor: "middle",
             dominantBaseline: "middle",
             className: "stakeholder-map__badge-num",
@@ -1094,7 +1096,7 @@
         /* @__PURE__ */ React.createElement(
           "text",
           {
-            y: side.isHub ? 10 : 8,
+            y: 8,
             textAnchor: "middle",
             dominantBaseline: "middle",
             className: "stakeholder-map__badge-name",
@@ -1107,27 +1109,22 @@
       (side) => side.nodes.map((node) => {
         const isActive = node.id === activeNodeId;
         const inFocus = focusSet.has(side.id);
-        const compact = side.compact;
-        const maxChars = compact ? 16 : 22;
+        const maxChars = 15;
         const lines = node.label.length > maxChars ? (() => {
           const words = node.label.split(" ");
           const mid = Math.ceil(words.length / 2);
           return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
         })() : [node.label];
-        const charW = compact ? 5.8 : 7.1;
-        const rw = Math.min(
-          compact ? 118 : 188,
-          Math.max(compact ? 72 : 112, ...lines.map((l) => l.length * charW + (compact ? 14 : 22)))
-        );
-        const rh = compact ? lines.length > 1 ? 30 : 24 : lines.length > 1 ? 40 : 34;
-        const fontLine = compact ? 9.5 : 12;
+        const rw = Math.min(112, Math.max(70, ...lines.map((l) => l.length * 5.7 + 14)));
+        const rh = lines.length > 1 ? 28 : 22;
+        const fontLine = 9;
         return /* @__PURE__ */ React.createElement(
           "g",
           {
             key: node.id,
             className: [
               "stakeholder-map__node",
-              compact ? "is-compact" : "",
+              "is-compact",
               isActive ? "is-active" : "",
               inFocus ? "is-in-chain" : "",
               !inFocus ? "is-dimmed" : ""
@@ -1149,7 +1146,7 @@
               rx: 999,
               fill: side.isHub ? "#f2f04f" : "#fffef9",
               stroke: isActive ? "#f14f9b" : side.isHub ? "#111c4e" : side.color,
-              strokeWidth: isActive ? 2.25 : 1.35
+              strokeWidth: isActive ? 2.1 : 1.3
             }
           ),
           lines.map((line, li) => /* @__PURE__ */ React.createElement(
@@ -1161,7 +1158,7 @@
               textAnchor: "middle",
               dominantBaseline: "middle",
               className: "stakeholder-map__node-label",
-              fontSize: compact ? 10 : 12
+              fontSize: 10
             },
             line
           ))
