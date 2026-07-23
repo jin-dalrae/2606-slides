@@ -1154,7 +1154,7 @@
     return map;
   })();
   function StakeholderMapPage() {
-    const [focusMode, setFocusMode] = useState("overview");
+    const [focusMode, setFocusMode] = useState("structure");
     const [activeTypeId, setActiveTypeId] = useState("emotional");
     const [activeSideId, setActiveSideId] = useState("app");
     const [activeNodeId, setActiveNodeId] = useState(null);
@@ -1182,6 +1182,10 @@
     );
     const litNodeIds = (() => {
       const set = /* @__PURE__ */ new Set();
+      if (focusMode === "structure") {
+        networkEntities.forEach((e) => set.add(e.id));
+        return set;
+      }
       if (selectedEdge) {
         set.add(selectedEdge.from);
         set.add(selectedEdge.to);
@@ -1215,6 +1219,9 @@
       return set;
     })();
     const focusSideIds = (() => {
+      if (focusMode === "structure" || focusMode === "overview") {
+        return networkGraph.map((s) => s.id);
+      }
       if (focusMode === "side") return [activeSideId];
       if (focusMode === "type") {
         const sides = /* @__PURE__ */ new Set();
@@ -1229,7 +1236,9 @@
       return networkGraph.map((s) => s.id);
     })();
     const focusSet = new Set(focusSideIds);
+    const showInfluence = focusMode !== "structure";
     const visibleEdges = (() => {
+      if (!showInfluence) return [];
       if (selectedEdge) {
         if (focusMode === "side" && activeNodeId) return nodeFocusEdges;
         if (focusMode === "side") return sideFocusEdges;
@@ -1407,6 +1416,12 @@
       } catch (_) {
       }
     }
+    function goStructure() {
+      setFocusMode("structure");
+      setActiveNodeId(null);
+      setSelectedEdgeKey(null);
+      setView(null);
+    }
     function goOverview() {
       setFocusMode("overview");
       setActiveNodeId(null);
@@ -1450,6 +1465,9 @@
     const typeIndex = influenceTypes.findIndex((t) => t.id === activeTypeId);
     const sideIndex = networkGraph.findIndex((s) => s.id === activeSideId);
     function stepPart(delta) {
+      if (focusMode === "structure") {
+        return;
+      }
       if (focusMode === "side") {
         const next2 = networkGraph[(sideIndex + delta + networkGraph.length) % networkGraph.length];
         goSide(next2.id);
@@ -1462,10 +1480,10 @@
         goType(next.id);
       }
     }
-    const detailEdges = selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
-    const title = selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
-    const subtitle = selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 click one influence arrow to inspect it \xB7 type tabs filter the set";
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "Overview"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} sides` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Relationship (always on): cluster \u2192 category \u2192 brand"), /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence (typed arrows): click one \xB7 type tabs filter")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
+    const detailEdges = !showInfluence ? [] : selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
+    const title = focusMode === "structure" ? "Category relationship" : selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
+    const subtitle = focusMode === "structure" ? "Straight gray lines only \xB7 cluster \u2192 category \u2192 brand \xB7 no influence arrows" : selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 color arrows = influence \xB7 type tabs filter influence";
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "structure" ? "is-active" : "", onClick: goStructure }, "Categories only"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "+ Influence"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous", disabled: focusMode === "structure" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "structure" ? "structure" : focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} groups` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next", disabled: focusMode === "structure" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Category relationship: straight gray \xB7 always in Categories only"), showInfluence && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence: curved color \xB7 click one arrow")), showInfluence && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: t.id,

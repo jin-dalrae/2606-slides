@@ -1299,7 +1299,7 @@ const nodeById = (() => {
 })();
 
 function StakeholderMapPage() {
-  const [focusMode, setFocusMode] = useState("overview"); // "overview" | "type" | "side"
+  const [focusMode, setFocusMode] = useState("structure"); // "structure" | "overview" | "type" | "side"
   const [activeTypeId, setActiveTypeId] = useState("emotional");
   const [activeSideId, setActiveSideId] = useState("app");
   const [activeNodeId, setActiveNodeId] = useState(null);
@@ -1339,6 +1339,11 @@ function StakeholderMapPage() {
   const litNodeIds = (() => {
     const set = new Set();
     // A single selected arrow only lights its two endpoints (not the whole type).
+    if (focusMode === "structure") {
+      // Category network only — every entity is part of the structure.
+      networkEntities.forEach((e) => set.add(e.id));
+      return set;
+    }
     if (selectedEdge) {
       set.add(selectedEdge.from);
       set.add(selectedEdge.to);
@@ -1374,6 +1379,9 @@ function StakeholderMapPage() {
   })();
 
   const focusSideIds = (() => {
+    if (focusMode === "structure" || focusMode === "overview") {
+      return networkGraph.map((s) => s.id);
+    }
     if (focusMode === "side") return [activeSideId];
     if (focusMode === "type") {
       const sides = new Set();
@@ -1389,11 +1397,11 @@ function StakeholderMapPage() {
   })();
   const focusSet = new Set(focusSideIds);
 
-  // Influence layer only (relationship layer is always drawn separately in gray).
-  // Type tabs filter by type; clicking one arrow selects only that edge.
+  // Influence layer — hidden entirely in structure (category-only) mode.
+  const showInfluence = focusMode !== "structure";
   const visibleEdges = (() => {
+    if (!showInfluence) return [];
     if (selectedEdge) {
-      // Keep same-type siblings faintly visible for context, but only the selected edge is hot.
       if (focusMode === "side" && activeNodeId) return nodeFocusEdges;
       if (focusMode === "side") return sideFocusEdges;
       return typedEdges.length ? typedEdges : influenceEdges.filter((e) => e.type === selectedEdge.type);
@@ -1591,6 +1599,13 @@ function StakeholderMapPage() {
     }
   }
 
+  function goStructure() {
+    setFocusMode("structure");
+    setActiveNodeId(null);
+    setSelectedEdgeKey(null);
+    setView(null);
+  }
+
   function goOverview() {
     setFocusMode("overview");
     setActiveNodeId(null);
@@ -1641,6 +1656,9 @@ function StakeholderMapPage() {
   const sideIndex = networkGraph.findIndex((s) => s.id === activeSideId);
 
   function stepPart(delta) {
+    if (focusMode === "structure") {
+      return;
+    }
     if (focusMode === "side") {
       const next = networkGraph[(sideIndex + delta + networkGraph.length) % networkGraph.length];
       goSide(next.id);
@@ -1655,33 +1673,39 @@ function StakeholderMapPage() {
     }
   }
 
-  const detailEdges = selectedEdge
-    ? [selectedEdge]
-    : focusMode === "side"
-      ? activeNodeId
-        ? nodeFocusEdges
-        : sideFocusEdges
-      : typedEdges;
+  const detailEdges = !showInfluence
+    ? []
+    : selectedEdge
+      ? [selectedEdge]
+      : focusMode === "side"
+        ? activeNodeId
+          ? nodeFocusEdges
+          : sideFocusEdges
+        : typedEdges;
 
-  const title = selectedEdge
-    ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} → ${nodeById[selectedEdge.to]?.label || selectedEdge.to}`
-    : focusMode === "side"
-      ? activeNode
-        ? activeNode.label
-        : activeSide.shortName
-      : focusMode === "type"
-        ? `${activeType.label} influence`
-        : "Stakeholder networks";
+  const title = focusMode === "structure"
+    ? "Category relationship"
+    : selectedEdge
+      ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} → ${nodeById[selectedEdge.to]?.label || selectedEdge.to}`
+      : focusMode === "side"
+        ? activeNode
+          ? activeNode.label
+          : activeSide.shortName
+        : focusMode === "type"
+          ? `${activeType.label} influence`
+          : "Stakeholder networks";
 
-  const subtitle = selectedEdge
-    ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence · this arrow only`
-    : focusMode === "side"
-      ? activeNode
-        ? `Influence arrows involving this entity · gray relationship structure stays behind`
-        : `${activeSide.name} · influence arrows touching this group · gray = relationship`
-      : focusMode === "type"
-        ? `Colored arrows = ${activeType.label.toLowerCase()} influence only · gray lines = relationship structure (always on)`
-        : "Gray = relationship · click one influence arrow to inspect it · type tabs filter the set";
+  const subtitle = focusMode === "structure"
+    ? "Straight gray lines only · cluster → category → brand · no influence arrows"
+    : selectedEdge
+      ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence · this arrow only`
+      : focusMode === "side"
+        ? activeNode
+          ? `Influence arrows involving this entity · gray relationship structure stays behind`
+          : `${activeSide.name} · influence arrows touching this group · gray = relationship`
+        : focusMode === "type"
+          ? `Colored arrows = ${activeType.label.toLowerCase()} influence only · gray lines = relationship structure (always on)`
+          : "Gray = relationship · color arrows = influence · type tabs filter influence";
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
@@ -1696,18 +1720,33 @@ function StakeholderMapPage() {
 
         <div className="stakeholder-frame__toolbar">
           <div className="stakeholder-frame__mode-tabs" role="tablist" aria-label="Focus mode">
-            <button type="button" className={focusMode === "overview" ? "is-active" : ""} onClick={goOverview}>Overview</button>
-            <button type="button" className={focusMode === "type" ? "is-active" : ""} onClick={() => goType(activeTypeId)}>Influence type</button>
-            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>Group / entity</button>
+            <button type="button" className={focusMode === "structure" ? "is-active" : ""} onClick={goStructure}>
+              Categories only
+            </button>
+            <button type="button" className={focusMode === "overview" ? "is-active" : ""} onClick={goOverview}>
+              + Influence
+            </button>
+            <button type="button" className={focusMode === "type" ? "is-active" : ""} onClick={() => goType(activeTypeId)}>
+              Influence type
+            </button>
+            <button type="button" className={focusMode === "side" ? "is-active" : ""} onClick={() => goSide(activeSideId)}>
+              Group / entity
+            </button>
           </div>
           <div className="stakeholder-frame__stepper">
-            <button type="button" onClick={() => stepPart(-1)} aria-label="Previous">←</button>
+            <button type="button" onClick={() => stepPart(-1)} aria-label="Previous" disabled={focusMode === "structure"}>
+              ←
+            </button>
             <span>
-              {focusMode === "side"
-                ? `${sideIndex + 1} / ${networkGraph.length} sides`
-                : `${typeIndex + 1} / ${influenceTypes.length} types`}
+              {focusMode === "structure"
+                ? "structure"
+                : focusMode === "side"
+                  ? `${sideIndex + 1} / ${networkGraph.length} groups`
+                  : `${typeIndex + 1} / ${influenceTypes.length} types`}
             </span>
-            <button type="button" onClick={() => stepPart(1)} aria-label="Next">→</button>
+            <button type="button" onClick={() => stepPart(1)} aria-label="Next" disabled={focusMode === "structure"}>
+              →
+            </button>
             <button type="button" onClick={fitView} title="Fit current focus in view">
               Fit
             </button>
@@ -1716,14 +1755,17 @@ function StakeholderMapPage() {
         <div className="stakeholder-map-legend" aria-hidden="true">
           <span className="stakeholder-map-legend__item">
             <i className="stakeholder-map-legend__rel" />
-            Relationship (always on): cluster → category → brand
+            Category relationship: straight gray · always in Categories only
           </span>
-          <span className="stakeholder-map-legend__item">
-            <i className="stakeholder-map-legend__inf" />
-            Influence (typed arrows): click one · type tabs filter
-          </span>
+          {showInfluence && (
+            <span className="stakeholder-map-legend__item">
+              <i className="stakeholder-map-legend__inf" />
+              Influence: curved color · click one arrow
+            </span>
+          )}
         </div>
 
+        {showInfluence && (
         <div className="stakeholder-frame__chain-tabs stakeholder-frame__type-tabs" role="tablist" aria-label="Influence types">
           {influenceTypes.map((t) => (
             <button
@@ -1743,6 +1785,7 @@ function StakeholderMapPage() {
             </button>
           ))}
         </div>
+        )}
 
         {focusMode === "side" && (
           <div className="stakeholder-frame__side-tabs stakeholder-frame__side-tabs--bar" role="tablist" aria-label="Sides">
