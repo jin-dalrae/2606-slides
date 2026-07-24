@@ -572,9 +572,16 @@ function WavelineCompareChart({ waves }) {
   );
 }
 
-// Chart + tables in one static visualization block (no interactive cascade).
+// Chart + tables: stages run left → right like the plot X-axis (no intensity % numbers).
 function UserWavelinePage() {
   const stageSpine = experienceWaves[0]?.stages || [];
+  const noteRows = [
+    { key: "peakLabel", label: "Peak" },
+    { key: "behavior", label: "Behavior" },
+    { key: "feelings", label: "Feelings" },
+    { key: "achievements", label: "Achievements" },
+    { key: "mechanics", label: "Mechanics" },
+  ];
 
   return (
     <section className="report-section waveline-page waveline-page--document" id="user-waveline">
@@ -587,7 +594,7 @@ function UserWavelinePage() {
         </div>
         <p className="waveline-lede">
           Same eight stages across Cosmos VR, feed platforms, and VR without a game loop.
-          Height is felt intensity — not time-on-app. Words live in the tables with the chart, not in a hidden hover panel.
+          Columns follow the chart left → right. Wave height already shows felt intensity — tables hold the words.
         </p>
       </header>
 
@@ -604,51 +611,41 @@ function UserWavelinePage() {
         <figure className="waveline-doc-chart">
           <WavelineCompareChart waves={experienceWaves} />
           <figcaption>
-            Curves share stages 01–08. Tables below hold the same stages in rows — one visualization, readable and printable.
+            Session stages run left → right. Tables use the same order as column headers.
           </figcaption>
         </figure>
 
-        {/* Intensity comparison table — all three waves in one grid */}
+        {/* Peak labels: stages as columns (horizontal order of the chart) */}
         <div className="waveline-table-scroll">
-          <table className="waveline-table waveline-table--intensity">
-            <caption>Felt intensity by stage (same values as plot height)</caption>
+          <table className="waveline-table waveline-table--peaks">
+            <caption>Peak feel at each stage — columns match the chart</caption>
             <thead>
               <tr>
-                <th scope="col">Stage</th>
-                <th scope="col">Name</th>
-                {experienceWaves.map((w) => (
-                  <th key={w.id} scope="col" style={{ color: w.stroke }}>
-                    {w.label}
+                <th scope="col">Experience</th>
+                {stageSpine.map((s) => (
+                  <th key={s.id} scope="col">
+                    <span className="waveline-table__stage-name">{s.name}</span>
+                    <span className="waveline-table__sub">{s.short}</span>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {stageSpine.map((spine, si) => (
-                <tr key={spine.id}>
-                  <th scope="row">{spine.stage}</th>
-                  <td>
-                    <b>{spine.name}</b>
-                    <span className="waveline-table__sub">{spine.short}</span>
-                  </td>
-                  {experienceWaves.map((w) => {
-                    const st = w.stages[si];
-                    return (
-                      <td key={w.id}>
-                        <span className="waveline-table__intensity" style={{ color: w.stroke }}>
-                          {Math.round(st.intensity * 100)}%
-                        </span>
-                        <span className="waveline-table__sub">{st.peakLabel}</span>
-                      </td>
-                    );
-                  })}
+              {experienceWaves.map((w) => (
+                <tr key={w.id}>
+                  <th scope="row" style={{ color: w.stroke }}>
+                    {w.label}
+                  </th>
+                  {w.stages.map((st) => (
+                    <td key={`${w.id}-${st.id}`}>{st.peakLabel}</td>
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Full words per wave as tables — not cascading cards */}
+        {/* Full notes per wave: stages as columns left → right */}
         {experienceWaves.map((wave) => (
           <div key={wave.id} className="waveline-table-block" id={`wave-${wave.id}`}>
             <h2 className="waveline-table-block__title" style={{ color: wave.stroke }}>
@@ -658,36 +655,31 @@ function UserWavelinePage() {
             <p className="waveline-table-block__lede">{wave.lede}</p>
             <div className="waveline-table-scroll">
               <table className="waveline-table waveline-table--detail">
-                <caption>{wave.label}: stage notes (behavior, feelings, achievements, mechanics)</caption>
+                <caption>
+                  {wave.label} — stages left → right (Entice → Exit)
+                </caption>
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Stage</th>
-                    <th scope="col">Peak</th>
-                    <th scope="col">Behavior</th>
-                    <th scope="col">Feelings</th>
-                    <th scope="col">Achievements</th>
-                    <th scope="col">Mechanics</th>
+                    <th scope="col">Note</th>
+                    {wave.stages.map((s) => (
+                      <th key={s.id} scope="col">
+                        <span className="waveline-table__stage-name">{s.name}</span>
+                        <span className="waveline-table__sub">{s.short}</span>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {wave.stages.map((stage) => (
-                    <tr key={`${wave.id}-${stage.id}`}>
-                      <th scope="row" style={{ color: wave.stroke }}>
-                        {stage.stage}
-                      </th>
-                      <td>
-                        <b>{stage.name}</b>
-                        <span className="waveline-table__sub">{stage.short}</span>
-                      </td>
-                      <td>
-                        <b>{stage.peakLabel}</b>
-                        <span className="waveline-table__sub">{Math.round(stage.intensity * 100)}% intensity</span>
-                      </td>
-                      <td>{stage.behavior}</td>
-                      <td>{stage.feelings}</td>
-                      <td>{stage.achievements}</td>
-                      <td>{stage.mechanics.join(" · ")}</td>
+                  {noteRows.map((row) => (
+                    <tr key={row.key}>
+                      <th scope="row">{row.label}</th>
+                      {wave.stages.map((st) => (
+                        <td key={`${wave.id}-${st.id}-${row.key}`}>
+                          {row.key === "mechanics"
+                            ? st.mechanics.join(" · ")
+                            : st[row.key]}
+                        </td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>
