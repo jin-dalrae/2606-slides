@@ -595,7 +595,7 @@ const phases = [
     phase: "03",
     name: "Continuity & paths",
     status: "Then",
-    body: "Give people a reason to return without becoming a feed: save regions, revisit, lightweight personal paths. Aligns with one-way product→people gaps on the stakeholder map.",
+    body: "Give people a reason to return without becoming a feed: save regions, revisit, lightweight personal paths. Aligns with one-way product→people gaps on the stakeholder analysis.",
     outputs: ["Save + revisit", "Remembered viewpoints", "Cross-device handoff notes"],
   },
   {
@@ -947,6 +947,22 @@ function StoryboardPage() {
         </p>
       </div>
 
+      <figure className="storyboard-title-figure">
+        <img
+          src="/assets/images/cosmos/storyboard-panels.jpg"
+          alt="Hand-drawn twelve-panel Cosmos VR storyboard: Jeenie from postpartum constraints through VR headset, Cosmos wall, speech post, and return to reality"
+        />
+        <figcaption>Cosmos VR Storyboard · Rae Jin · July 29, 2026 — original panel sequence.</figcaption>
+      </figure>
+
+      <figure className="storyboard-user-figure">
+        <img
+          src="/assets/images/cosmos/storyboard-user.jpg"
+          alt="Person reclining with a newborn on their chest, wearing a VR headset and holding a controller"
+        />
+        <figcaption>Reference moment for the storyboard body: reclined care, headset on, hands partly occupied — the body Cosmos must design for.</figcaption>
+      </figure>
+
       <section className="report-chapter" id="storyboard-spine">
         <span className="report-number">0</span>
         <h2>Spine</h2>
@@ -1184,7 +1200,7 @@ function StoryboardPage() {
 
       <div className="report-next-links">
         <a href="/cosmos/user-waveline/">← User waveline</a>
-        <a href="/cosmos/stakeholder-map/">Next: Stakeholder map →</a>
+        <a href="/cosmos/stakeholder-map/">Next: Stakeholder analysis →</a>
       </div>
     </section>
   );
@@ -2965,7 +2981,7 @@ function StakeholderMapPage() {
             : activeSide.shortName
           : focusMode === "type"
             ? `${activeType.label} influence`
-            : "Stakeholder map";
+            : "Stakeholder analysis";
 
   const subtitle = focusMode === "structure"
     ? "Gray lines: cluster → category → brand. No influence arrows."
@@ -2985,7 +3001,7 @@ function StakeholderMapPage() {
 
   return (
     <section className="report-section stakeholder-page" id="stakeholder-map">
-      <div className="stakeholder-shell" aria-label="Cosmos VR stakeholder influence network">
+      <div className="stakeholder-shell" aria-label="Cosmos stakeholder analysis">
         <header className="stakeholder-frame__head">
           <div>
             <p className="stakeholder-kicker">
@@ -3682,365 +3698,246 @@ function StakeholderMapPage() {
   );
 }
 
-// —— Stakeholder influence story ——
-// Closed loops + mergeable one-way families. Not every edge; the forces that matter.
+// —— Stakeholder relationship and gap analysis ——
+// Two layers: already there (market/world) vs hypothesized (Cosmos involved).
+// Merge similar edges inside analysis; then name gaps Cosmos can close vs weaknesses that remain.
 
-const influenceStoryReciprocals = [
-  {
-    id: "readers-contributors",
-    title: "Readers ↔ Contributors",
-    thesis: "The only healthy community loop.",
-    body: "Contributors keep walls alive so readers return. Attentive reading rewards careful contribution. Most platforms train posting for rank instead. Cosmos works only if this loop stays stronger than feed urgency.",
-    mergeNote: "Treat as one mutual pair. The story is the loop, not two separate edges.",
-  },
-  {
-    id: "cosmos-discord",
-    title: "Cosmos ↔ Discord",
-    thesis: "A comparison set, not a partnership.",
-    body: "People judge Cosmos against where community already lives. In 2026 that place is still Discord — clubs, fandoms, study groups, indie teams. Cosmos is read in Discord’s language: servers, roles, always-on chat.",
-    mergeNote: "Both identity edges say the same thing. One mutual “comparison set” is enough.",
-  },
-  {
-    id: "community-discord",
-    title: "Community orgs ↔ Discord",
-    thesis: "Home is identity and infrastructure.",
-    body: "Orgs call Discord home and actually run on it. Membership, events, and moderation already live there. Cosmos sits beside that stack or imports from it — it does not replace it overnight.",
-    mergeNote: "Same pattern as fandom and hobby gravity toward Discord.",
-  },
-  {
-    id: "store-meta",
-    title: "Team ↔ Meta Store",
-    thesis: "Pay the cut; feel the pressure.",
-    body: "The team pays Meta revenue share. Fees and featuring come back as viability pressure. Quest-class volume still buys reach, so the tax is the price of being findable.",
-    mergeNote: null,
-  },
-  {
-    id: "store-pico",
-    title: "Team ↔ Pico Store",
-    thesis: "Same tax, second register.",
-    body: "Pico adds another cut and another review surface. Useful for price-sensitive and enterprise kits; each extra store multiplies compliance work.",
-    mergeNote: "Same family as Meta and Apple store loops.",
-  },
-  {
-    id: "store-apple",
-    title: "Team ↔ App Store",
-    thesis: "Premium path, same shape.",
-    body: "Vision distribution pays Apple’s cut; the share feels like a tax on paid features. Strong for craft demos, weak as the only distribution plan.",
-    mergeNote: "One strategy: multi-store leverage, not single-gate dependence.",
-  },
+const stakeholderAlreadyThere = [
   {
     id: "ads-feeds",
-    title: "Ads ↔ Feed social",
-    thesis: "The antagonist loop is already closed.",
-    body: "Ad spend funds feeds; feeds supply ad inventory. Reddit, X, and TikTok sit inside this engine. Cosmos is not joining it.",
-    mergeNote: "Brand-level ad edges to Reddit, X, and TikTok are the same loop with different labels.",
+    title: "Ads ↔ feeds (closed loop)",
+    merge: "Ads ↔ feed social, plus ads → Reddit / X / TikTok — one funding engine, three brand nozzles.",
+    body: "Ad money funds ranked surfaces; feeds supply inventory. This loop already exists and does not need Cosmos.",
+    gapAfterMerge: "Still no product that answers “where is this debate?” without selling attention back into the same loop.",
   },
-];
-
-const influenceStoryOneWayArcs = [
   {
     id: "feed-gravity",
-    number: "01",
-    title: "Feeds still answer “what should I read?”",
-    clusterFlow: "Competitors → People",
-    mergeLabel: "Feed & short-form",
-    pairs: [
-      "Feed social → Readers / Intentional users",
-      "Reddit → Readers, Stewards",
-      "X → Contributors, Intentional users",
-      "TikTok → Readers, Intentional users",
-      "Ads → Intentional users (and each feed brand)",
-    ],
-    body: "Spare minutes still open a ranked surface. Reddit holds deep async talk and mod craft; X rewards heat; short-form owns leisure attention. Readers do not rewrite those algorithms — they leave or stay. None of these edges reverse on the map.",
-    opportunity: "Don’t out-feed the feed. Offer place memory and finite sessions. Reach Reddit-native readers with import-seeded walls.",
+    title: "Feeds → people (one-way habit)",
+    merge: "Feed social, Reddit, X, TikTok → readers / intentional users / stewards — one habit stack of rank and novelty.",
+    body: "Spare minutes open a ranked surface. Deep async still defaults to Reddit; urgency and short-form own the rest. Readers leave or stay; they do not rewrite the algorithm.",
+    gapAfterMerge: "Still no reverse path from readers into structure — no place memory, no finite “I’m done,” no map of the whole conversation.",
   },
   {
     id: "chat-home",
-    number: "02",
-    title: "Chat still owns “where community lives”",
-    clusterFlow: "Competitors → People / Orgs",
-    mergeLabel: "Chat as home",
-    pairs: [
-      "Discord → Readers, Stewards, Community orgs, Cosmos",
-      "Slack → Enterprise, Contributors",
-      "Teams → Enterprise, Tech companies",
-      "Fandom / community orgs → Discord",
-    ],
-    body: "Ask where a club lives and the answer is still Discord more often than any spatial app. At work, Slack and Teams hold the same job. Chat sets belonging; Cosmos does not yet set it.",
-    opportunity: "Bridge and import, don’t force migration. Sell the wall for moments when a thread is the wrong shape.",
+    title: "Chat as community home",
+    merge: "Discord → people/orgs, Slack/Teams → work, fandom/clubs → Discord — one “where we live” gravity, chat-shaped.",
+    body: "Belonging and operations already sit in Discord, Slack, and Teams. Spatial apps are not the default home.",
+    gapAfterMerge: "Still no durable place for multi-voice discourse outside a thread — only chat and feeds.",
   },
   {
-    id: "social-vr-default",
-    number: "03",
-    title: "Headsets still mean hangouts",
-    clusterFlow: "Competitors → People",
-    mergeLabel: "Play-social default",
-    pairs: [
-      "VRChat → Readers, Contributors",
-      "Horizon → Readers",
-      "Rec Room → Readers",
-      "Social VR → Meta Quest",
-    ],
-    body: "Leisure on Quest-class devices still defaults to worlds and games. Calm browse feels socially wrong next to that culture. Cosmos is competing for quiet sense-making time, not Friday night hangouts.",
-    opportunity: "Name a different job-to-be-done. Carve async discourse out of game defaults in store and press.",
+    id: "social-vr",
+    title: "Social VR = hangouts",
+    merge: "VRChat, Horizon, Rec Room, social VR → Quest leisure — one play-social default for headsets.",
+    body: "Headset leisure still means worlds, hangouts, and games. Calm sense-making is not what stores taught the device is for.",
+    gapAfterMerge: "Still no mass expectation that a headset is for walking a discourse wall.",
   },
   {
     id: "knowledge-2d",
-    number: "04",
-    title: "Serious reading still lives flat",
-    clusterFlow: "Competitors → People / Work",
-    mergeLabel: "2D knowledge",
-    pairs: [
-      "Notion → Readers, Enterprise",
-      "Obsidian → Intentional users, Readers",
-      "Are.na → Contributors",
-    ],
-    body: "Long-form structure already has a home without a headset: Notion, Obsidian, Are.na. People with a “serious reading” identity often never open VR. Cosmos is multi-voice place, not a notes app with depth.",
-    opportunity: "Invite vault-keepers to a shared wall a private graph cannot be. Bridge; don’t replace the wiki.",
+    title: "Serious reading stays flat",
+    merge: "Notion, Obsidian, Are.na, knowledge apps → readers / intentional users — one 2D knowledge home.",
+    body: "Long-form and curatorial identity already have tools without a headset. “Serious reading” does not require VR.",
+    gapAfterMerge: "Still no shared multi-voice wall that a private vault or wiki cannot be.",
   },
   {
-    id: "body-tax",
-    number: "05",
-    title: "Hardware taxes the body first",
-    clusterFlow: "Hardware → People / App",
-    mergeLabel: "HMD access & input",
-    pairs: [
-      "Quest / Pico / Vision / PCVR / Index → Readers",
-      "OS / SDK → Interaction, Onboarding",
-      "Glasses / other HMDs → Interaction fragmentation",
-    ],
-    body: "Weight, heat, prescription, and setup still kill “quick read” for many people. Devices and OS APIs bound input before any post appears. People rarely reshape the silicon roadmap.",
-    opportunity: "Design for short, interrupted sessions. Ship cross-device as first-class. Never demo only the premium path.",
+    id: "hardware-tax",
+    title: "Hardware and OS tax the body",
+    merge: "Quest / Pico / Vision / PCVR / Index / glasses + OS/SDK → readers and interaction — one access and input tax with device flavors.",
+    body: "Weight, heat, price, setup, and API limits shape every session before content appears. People rarely reshape the silicon roadmap.",
+    gapAfterMerge: "Still no way around the body tax unless the product designs for short, interrupted, non-desk use — or leaves the headset.",
   },
   {
-    id: "store-gates",
-    number: "06",
-    title: "Stores gate first-run",
-    clusterFlow: "Partners → App",
-    mergeLabel: "Distribution",
-    pairs: [
-      "Meta / Pico / App Store / Steam → Onboarding",
-      "itch / SideQuest → Readers, Team",
-    ],
-    body: "Paying the cut does not buy discovery. Listing and review still decide whether anyone reaches a wall. Indie stores lower fee pressure and raise support load.",
-    opportunity: "Multi-store leverage and honest featuring. Keep sideload as a parallel path, not a purity fantasy.",
+    id: "store-ai",
+    title: "Stores and cloud AI as gates",
+    merge: "Store tax loops (Meta / Pico / Apple ↔ team) plus store → onboarding; cloud AI → product systems, team pays models.",
+    body: "Distribution and intelligence already run as one-way or fee-for-pressure relationships. Listing, review, and invoices decide what can ship.",
+    gapAfterMerge: "Still no free ride: discovery and model quality stay paid and policy-bound even if Cosmos never launches.",
   },
   {
-    id: "ai-bill",
-    number: "07",
-    title: "Models enable the wall and invoice it",
-    clusterFlow: "Partners → App",
-    mergeLabel: "Cloud AI",
-    pairs: [
-      "Cloud AI family → Spatial engine, Voice, Content org",
-      "Team → Cloud AI (pay)",
-      "Capital → Cloud AI (fashion)",
-    ],
-    body: "Embeddings and speech make the wall feel alive — and arrive as a bill. Models don’t care about patient reading loops. Capital still prefers “AI plays” over continuity.",
-    opportunity: "Optional voice, graceful offline, cost-aware features. Don’t fundraise on pure token burn.",
-  },
-  {
-    id: "empty-wall",
-    number: "08",
-    title: "Without import, the wall is empty",
-    clusterFlow: "Partners → App / People",
-    mergeLabel: "Discourse supply",
-    pairs: ["Publishers / UGC / content partners → Content org, Readers, Stewards"],
-    body: "A wall without discourse is decoration. Rights-safe import and UGC pipelines seed real talk. Scraping is not a strategy. Influence stays one-way until Cosmos proves demand back to rights holders.",
-    opportunity: "Import before launch marketing. Show publishers that readers came.",
-  },
-  {
-    id: "product-to-people",
-    number: "09",
-    title: "Product talks; people rarely talk back yet",
-    clusterFlow: "App → People",
-    mergeLabel: "Product surface",
-    pairs: [
-      "Team / Cosmos → Readers, Contributors, Capital",
-      "Engine, content, voice, interaction, onboarding, continuity, moderation, bridge → people roles",
-    ],
-    body: "Most product edges point at people and stop. Onboarding drops them; continuity decides whether anything becomes a library. Users live interrupted lives — not clean “VR sessions.” Until save, contribution, and feedback exist, reverse influence is missing.",
-    opportunity: "Make reading success visible. Ship return paths. Then stop overclaiming in marketing.",
-  },
-  {
-    id: "people-norms",
-    number: "10",
-    title: "Norms still flow from stewards",
-    clusterFlow: "People → People",
-    mergeLabel: "Community roles",
-    pairs: [
-      "Stewards → Contributors, Readers",
-      "Intentional users → Contributors",
-      "Exception: Readers ↔ Contributors",
-    ],
-    body: "Stewards set safety and belonging. Intentional users reshape what “good” looks like. Readers↔contributors is the rare reciprocal battery; communities that burn stewards for growth metrics collapse.",
-    opportunity: "Steward tools that transfer from Discord and Reddit skill — not a greenfield fantasy.",
-  },
-  {
-    id: "institutions",
-    number: "11",
-    title: "Institutions fund and regulate more than they listen",
-    clusterFlow: "Institutions → App / People",
-    mergeLabel: "Money, rules, pilots",
-    pairs: [
-      "VC / angels → Team; VC → Continuity",
-      "Privacy / platform / biometric policy → Voice, OS, stores",
-      "Schools / universities / libraries → Team, content, readers",
-      "Enterprise & agencies → later channel",
-      "Clubs & fandoms → stewards and contributors",
-    ],
-    body: "Growth capital can make patient loops feel unfundable. Policy already constrains voice and tracking. Schools and universities can buy seats and demand controls. Enterprise is later. Clubs and fandoms can move whole graphs — and still call Discord home.",
-    opportunity: "Compliance before school sales. Patient capital narrative. University and fandom pilots before broad enterprise.",
-  },
-  {
-    id: "press-labs",
-    number: "12",
-    title: "Press and labs mint legitimacy early",
-    clusterFlow: "Partners → People / Capital",
-    mergeLabel: "Narrative legitimacy",
-    pairs: [
-      "Tech press → Readers, Capital",
-      "Design press → Team, Intentional users",
-      "HCI / design labs → Contributors, universities, capital",
-    ],
-    body: "Launches still live or die in essays and screenshots. Press shapes capital mood; labs open classrooms and fundraising legitimacy. Those arrows don’t wait for user love.",
-    opportunity: "Show a walkable wall, not only a concept reel. Time coverage so hype doesn’t force growth theater.",
+    id: "institutions-press",
+    title: "Institutions, press, and labs",
+    merge: "VC/angels, regulators, schools, press, HCI labs — money, rules, and legitimacy already flow one way into products.",
+    body: "Capital sets tempo; policy constrains voice and tracking; press and labs mint early legitimacy. None of this waits for Cosmos.",
+    gapAfterMerge: "Still no reciprocal “users prove value → institutions follow” loop for a wall product that does not exist at scale yet.",
   },
 ];
 
-const influenceStoryMerges = [
+const stakeholderHypothesized = [
   {
-    title: "Store tax (×3)",
-    items: "Team ↔ Meta Store, Pico Store, App Store",
-    action: "One pattern: pay cut, feel pressure. Strategy is multi-store leverage.",
+    id: "cosmos-people",
+    title: "Cosmos / product systems → people",
+    status: "Hypothesized · partially built on /web",
+    body: "We draw team and product edges into readers, contributors, stewards, and intentional users: marketing, layout meaning, onboarding, continuity, moderation, voice, cross-device. These are design claims — not proven reverse loyalty from users yet.",
+    gapAfterMerge: "Even merging all product→people edges, the missing reverse is people → product: save/return, contribution that feels like “our place,” and proof that reading succeeded.",
   },
   {
-    title: "Attention funding",
-    items: "Ads ↔ feeds, plus ads → Reddit / X / TikTok",
-    action: "One engine. Compete on job-to-be-done, not ad inventory.",
+    id: "cosmos-discord",
+    title: "Cosmos ↔ Discord (comparison)",
+    status: "Hypothesized identity loop",
+    body: "We expect communities to compare Cosmos to Discord as “place.” That mutual identity edge is a forecast of judgment, not a partnership contract.",
+    gapAfterMerge: "Still no functional bridge strong enough that Discord is not the only home; comparison without import/export leaves Cosmos as a tourist stop.",
   },
   {
-    title: "Discord as place",
-    items: "Cosmos ↔ Discord, orgs ↔ Discord, fandom → Discord",
-    action: "One home-platform gravity. Bridge; don’t demand migration.",
+    id: "readers-contributors",
+    title: "Readers ↔ contributors",
+    status: "Desired loop · not yet earned",
+    body: "The healthy community battery: living walls for readers; attentive reading rewards contributors. Drawn as if it can exist; not yet measured on Cosmos.",
+    gapAfterMerge: "Still empty walls and ranking culture can kill this loop before it starts — content supply and anti-feed norms must exist first.",
   },
   {
-    title: "Feed gravity",
-    items: "Feed brands → readers and intentional users",
-    action: "One habit stack. Counter with place memory and stoppable sessions.",
+    id: "content-supply",
+    title: "Publishers / UGC → wall → readers",
+    status: "Hypothesized supply chain",
+    body: "We assume rights-safe import and partners seed real discourse so readers find substance. Without that, the sphere is decoration.",
+    gapAfterMerge: "Still no reverse proof to publishers (demand, featured walls) unless usage exists — chicken-and-egg remains.",
   },
   {
-    title: "Body and input tax",
-    items: "HMDs and OS → readers, interaction, onboarding",
-    action: "One access constraint with device flavors. Design for interrupted bodies.",
+    id: "distribution-team",
+    title: "Team ↔ stores; team → capital",
+    status: "Partly real if shipping; partly narrative",
+    body: "Store fee loops become real the day we ship on a storefront. Capital and press edges are story we tell until metrics exist.",
+    gapAfterMerge: "Still dependent: multi-store leverage and patient capital are choices, not guaranteed reverse influence from users or markets.",
+  },
+];
+
+const gapsCosmosCloses = [
+  {
+    title: "Map instead of rank",
+    already: "Feeds answer “what should I read?” with endless novelty.",
+    closes: "Spatial layout and clusters answer “where is this debate?” and give place memory a feed cannot.",
   },
   {
-    title: "First-run gate",
-    items: "Each store → onboarding",
-    action: "Same choke point, repeated per storefront.",
+    title: "Calm scan instead of doomscroll",
+    already: "Short-form and ranking train high-intensity, low-depth explore.",
+    closes: "Wall browse (gaze, clusters, finite sessions) can make “I’m done” a success state for intentional users.",
   },
   {
-    title: "Model bill",
-    items: "Cloud AI → spatial / voice / content; team pays",
-    action: "Magic and margin share one pipe.",
+    title: "Discourse outside chat threads",
+    already: "Discord/Slack own “where community lives” as chat.",
+    closes: "A wall for multi-voice, async comparison when a thread is the wrong shape — additive to chat, not a server migration fantasy.",
   },
   {
-    title: "Discourse supply",
-    items: "Publishers and UGC → content org and readers",
-    action: "Empty-wall problem. Seed before spectacle.",
+    title: "Headset job beyond hangouts",
+    already: "Social VR taught that headsets are for play-social.",
+    closes: "Walkable / world-anchored discourse (and seated planetarium) names a different job: sense-making in space.",
   },
+  {
+    title: "Shared wall a vault cannot be",
+    already: "Notion/Obsidian/Are.na hold personal and team knowledge flat.",
+    closes: "Multi-voice spatial place for public or group discourse, not private notes with a 3D skin.",
+  },
+  {
+    title: "Body-aware browse (if designed for it)",
+    already: "Desk-browser VR and phone grip fail interrupted, reclined, hands-busy users (see storyboard).",
+    closes: "Gaze-first, optional pull, passthrough, short pockets — only if product actually ships that contract.",
+  },
+];
+
+const weaknessesRemain = [
+  {
+    title: "Hardware and access tax",
+    body: "HMDs still cost money, comfort, and setup. Cosmos cannot reverse silicon. Without a strong cross-device path, impact stays gated to people who already own spatial gear.",
+  },
+  {
+    title: "Store and policy gates",
+    body: "Listing, review, fees, and biometric/voice rules stay one-way. Multi-store and optional voice reduce risk; they do not remove the gate.",
+  },
+  {
+    title: "Empty-wall / import chicken-and-egg",
+    body: "Until rights-safe content and early stewards exist, the hypothesized product→reader edges fail in practice. Marketing cannot close a supply gap.",
+  },
+  {
+    title: "Chat and feed gravity remain",
+    body: "Discord and ranked feeds will still own daily habit. Cosmos can sit beside them; it is unlikely to replace them soon. Comparison and FOMO stay structural.",
+  },
+  {
+    title: "Capital tempo vs patient loops",
+    body: "If funded like consumer social, growth metrics can break continuity and intentional exit — the exact loops the map says we need to earn.",
+  },
+  {
+    title: "Unproven reverse loyalty",
+    body: "Almost all Cosmos→people edges are still one-way on the map. Until save/return, contribution, and reading success are real, the app’s opportunity is a hypothesis, not an asset.",
+  },
+];
+
+const analysisOpportunities = [
+  "Own place memory and debate topology as the product job — not social hangout, not feed clone.",
+  "Target intentional users, Reddit-depth readers, curators, fandom/club stewards who already hate doomscroll.",
+  "Ship import + seeded walls before spectacle; prove demand back to publishers and partners.",
+  "Design for interrupted bodies (gaze, short session, cross-device) as a differentiator against desk-shaped VR.",
+  "Frame /VR and /web as one wall metaphor with two contracts — walk when able, look-from-center when not.",
+  "Use Gaps mode to prioritize marketing, feature, targeting, partnership, and policy moves on major one-ways.",
+];
+
+const analysisWeaknesses = [
+  "Dependent on HMD comfort and price; exclusion risk is structural without desktop parity.",
+  "Store fees, featuring, and compliance remain external one-ways we pay into.",
+  "AI layout/voice costs can force shallow product if not capped and optional.",
+  "Empty walls destroy trust faster than any narrative can rebuild it.",
+  "Readers↔contributors and people→product reverse edges are not earned yet.",
+  "If success is measured as dwell/DAU, the map’s antagonist (ads↔feeds) wins inside our own metrics.",
 ];
 
 function StakeholderInfluenceStory({ onGoGaps }) {
-  const reciprocalCount = 7;
   const oneWayCount = influenceAsymmetryGaps.length;
   const edgeCount = influenceEdges.length;
 
   return (
-    <article className="stakeholder-story" id="influence-story" aria-label="Stakeholder influence story">
+    <article className="stakeholder-story" id="influence-story" aria-label="Stakeholder relationship and gap analysis">
       <header className="stakeholder-story__header">
-        <p className="stakeholder-story__kicker">06b · Influence story</p>
-        <h2>How influence actually moves</h2>
+        <p className="stakeholder-story__kicker">06 · Stakeholder relationship and gap analysis</p>
+        <h2>Stakeholder relationship and gap analysis</h2>
         <p className="stakeholder-story__lede">
-          The graph has {edgeCount} typed edges. Strategy does not need all of them named out loud.
-          It needs the <strong>{reciprocalCount} closed loops</strong>, the ~{oneWayCount} one-way forces
-          folded into clear families, and an honest list of what is still missing.
+          The map has {edgeCount} typed edges (~{oneWayCount} one-way). Analysis does not treat every arrow as equal.
+          First separate <strong>what is already there</strong> in the market from <strong>what we think will be there</strong>
+          once Cosmos is in the graph — then ask which gaps the app can close, and which weaknesses remain.
         </p>
       </header>
 
       <section className="stakeholder-story__section">
-        <h3>How to read the map</h3>
+        <h3>Two layers on one map</h3>
+        <div className="stakeholder-story__layer-grid">
+          <article className="stakeholder-story__layer is-already">
+            <h4>Already there</h4>
+            <p>
+              Relationships that exist whether or not Cosmos ships: feeds and ads, chat as home, social-VR leisure,
+              2D knowledge tools, hardware taxes, store and AI bills, institutions and press. These are facts of the field.
+            </p>
+          </article>
+          <article className="stakeholder-story__layer is-hypothesized">
+            <h4>What we think will be there</h4>
+            <p>
+              Edges that involve Cosmos, the team, or a desired community loop. Some are partly built (/web pipeline,
+              product systems); many are design hypotheses until usage proves a reverse path.
+            </p>
+          </article>
+        </div>
         <p>
-          <strong>Reciprocal</strong> means influence runs both ways — money for pressure, attention for contribution,
-          comparison for comparison. <strong>One-way</strong> means A shapes B with no reverse edge on the map.
-          That can be normal (a headset does not listen to one app) or strategic (nothing answers Discord’s claim on “place”).
-          Similar edges are the same force under different brand names; we merge them.
-        </p>
-        <p>
-          The people in view are not “VR early adopters” as a type. They are hybrid workers in Slack and Notion,
-          parents with five-minute pockets, students who still open Reddit for depth, and headset owners who mostly
-          launch play-social apps because the store taught them that is what the device is for.
-          Store cuts, AI invoices, and biometric policy are ordinary constraints.
+          Similar brand-level edges are <strong>merged inside</strong> the analysis below — not as a separate “hygiene”
+          task, but so we can still name the gap that remains after the merge.
         </p>
       </section>
 
       <section className="stakeholder-story__section">
         <div className="stakeholder-story__section-head">
-          <h3>I · Seven closed loops</h3>
-          <p>These are the only fully reciprocal pairs. Everything else runs one direction.</p>
-        </div>
-        <div className="stakeholder-story__reciprocal-list">
-          {influenceStoryReciprocals.map((loop) => (
-            <article key={loop.id} className="stakeholder-story__reciprocal">
-              <header>
-                <h4>{loop.title}</h4>
-                <p className="stakeholder-story__thesis">{loop.thesis}</p>
-              </header>
-              <p>{loop.body}</p>
-              {loop.mergeNote && (
-                <p className="stakeholder-story__merge">
-                  <strong>Merge.</strong> {loop.mergeNote}
-                </p>
-              )}
-            </article>
-          ))}
-        </div>
-        <p className="stakeholder-story__pull">
-          Missing from the closed set: Cosmos ↔ readers, a paid-user feedback loop into product, and community → store featuring.
-          The product still mostly talks at people. The funded antagonist (ads ↔ feeds) already talks to itself.
-        </p>
-      </section>
-
-      <section className="stakeholder-story__section">
-        <div className="stakeholder-story__section-head">
-          <h3>II · One-way forces (twelve families)</h3>
-          <p>
-            All ~{oneWayCount} one-way pairs matter less than the forces behind them. Each arc below collapses similar edges into one force
-            and one move for Cosmos.
-          </p>
+          <h3>I · Already there</h3>
+          <p>World and market forces. Merge lookalikes; state the gap that still sits after the merge.</p>
         </div>
         <div className="stakeholder-story__arc-list">
-          {influenceStoryOneWayArcs.map((arc) => (
-            <article key={arc.id} className="stakeholder-story__arc">
+          {stakeholderAlreadyThere.map((row, i) => (
+            <article key={row.id} className="stakeholder-story__arc">
               <header>
-                <span className="stakeholder-story__arc-num">{arc.number}</span>
+                <span className="stakeholder-story__arc-num">{String(i + 1).padStart(2, "0")}</span>
                 <div>
-                  <p className="stakeholder-story__arc-meta">
-                    {arc.clusterFlow}
-                    <span aria-hidden="true"> · </span>
-                    {arc.mergeLabel}
-                  </p>
-                  <h4>{arc.title}</h4>
+                  <p className="stakeholder-story__arc-meta">Already there</p>
+                  <h4>{row.title}</h4>
                 </div>
               </header>
-              <ul className="stakeholder-story__pairs">
-                {arc.pairs.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-              <p>{arc.body}</p>
+              <p>{row.body}</p>
+              <p className="stakeholder-story__merge">
+                <strong>Merged as.</strong> {row.merge}
+              </p>
               <p className="stakeholder-story__opportunity">
-                <strong>Move.</strong> {arc.opportunity}
+                <strong>Gap that remains.</strong> {row.gapAfterMerge}
               </p>
             </article>
           ))}
@@ -4049,41 +3946,92 @@ function StakeholderInfluenceStory({ onGoGaps }) {
 
       <section className="stakeholder-story__section">
         <div className="stakeholder-story__section-head">
-          <h3>III · What to merge</h3>
+          <h3>II · What we think will be there</h3>
+          <p>Cosmos-involved and desired loops. Treat as claims until reverse influence is real.</p>
+        </div>
+        <div className="stakeholder-story__arc-list">
+          {stakeholderHypothesized.map((row, i) => (
+            <article key={row.id} className="stakeholder-story__arc is-hypothesized-card">
+              <header>
+                <span className="stakeholder-story__arc-num">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <p className="stakeholder-story__arc-meta">{row.status}</p>
+                  <h4>{row.title}</h4>
+                </div>
+              </header>
+              <p>{row.body}</p>
+              <p className="stakeholder-story__opportunity">
+                <strong>Gap that remains.</strong> {row.gapAfterMerge}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="stakeholder-story__section">
+        <div className="stakeholder-story__section-head">
+          <h3>III · Gaps this app can close</h3>
           <p>
-            If two arrows teach the same lesson, keep one strategic object. The map can stay detailed;
-            strategy should not treat Meta’s cut and Pico’s cut as different philosophies of power.
+            Against the “already there” field, Cosmos is only useful if it closes a named gap — not if it redraws every arrow.
           </p>
         </div>
-        <div className="stakeholder-story__merge-grid">
-          {influenceStoryMerges.map((row) => (
+        <div className="stakeholder-story__close-grid">
+          {gapsCosmosCloses.map((row) => (
             <article key={row.title}>
               <h4>{row.title}</h4>
-              <p className="stakeholder-story__merge-items">{row.items}</p>
-              <p>{row.action}</p>
+              <p><strong>Field today.</strong> {row.already}</p>
+              <p><strong>Cosmos close.</strong> {row.closes}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="stakeholder-story__section">
+        <div className="stakeholder-story__section-head">
+          <h3>IV · Weaknesses that will still be there</h3>
+          <p>Even if the wall works, the map still leaves structural one-ways Cosmos does not own.</p>
+        </div>
+        <div className="stakeholder-story__close-grid">
+          {weaknessesRemain.map((row) => (
+            <article key={row.title} className="is-weakness">
+              <h4>{row.title}</h4>
+              <p>{row.body}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="stakeholder-story__section stakeholder-story__section--close">
-        <h3>What to remember</h3>
-        <p>
-          Closed loops are rare: readers with contributors, team with stores, ads with feeds, Discord as the mirror of place.
-          Almost everything else is one-way — hardware on bodies, feeds on habits, policy on voice, capital on tempo,
-          press on first impressions, empty walls on hope.
-        </p>
-        <p>
-          Strategy is not “draw reverse arrows on everything.” It is choosing which reverse paths Cosmos can earn:
-          continuity for reader loyalty, contribution that feels like building a place, proof for publishers,
-          and sessions people can end without guilt. Gaps mode is the checklist; this section is the frame.
+        <h3>Conclusion · Opportunity and weakness of Cosmos</h3>
+        <div className="stakeholder-story__conclusion-grid">
+          <article className="is-opportunity">
+            <h4>Opportunities (from this map)</h4>
+            <ul>
+              {analysisOpportunities.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </article>
+          <article className="is-weakness">
+            <h4>Weaknesses (from this map)</h4>
+            <ul>
+              {analysisWeaknesses.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
+        <p className="stakeholder-story__pull">
+          Cosmos is an intervention in an already-closed attention economy and chat-home world — not a blank network.
+          Its chance is to close map, calm, place, and body-aware gaps. Its risk is to leave hardware, stores, empty walls,
+          and unearned reverse loyalty unaddressed while still claiming a “community platform.”
         </p>
         <p className="stakeholder-story__cta">
           <button type="button" onClick={onGoGaps}>
             Open Gaps
           </button>
           <span>
-            {majorAsymmetryGaps.length} major one-way pairs, tagged for marketing, product, targeting, partnership, policy, or defense.
+            {majorAsymmetryGaps.length} major one-way pairs on the interactive map — use them to pick which reverse paths to earn first.
           </span>
         </p>
       </section>
@@ -4092,7 +4040,7 @@ function StakeholderInfluenceStory({ onGoGaps }) {
 }
 
 // —— Impact analysis: who changes if the wall works, at what cost, how we know ——
-// Speculative but grounded in primary/secondary findings, waveline, and stakeholder map.
+// Speculative but grounded in primary/secondary findings, waveline, and stakeholder analysis.
 // Not a pitch deck of benefits — a research frame for intended effects, burdens, and falsifiers.
 
 const impactHorizons = [
@@ -4214,7 +4162,7 @@ const impactClaims = [
     claim: "Capital and attention-economy incentives will pull Cosmos toward growth metrics that erode intentional use.",
     type: "Risk · institutions",
     confidence: "High if funded like consumer social",
-    evidence: "Ad/attention competitor cluster; VC pace notes on stakeholder map",
+    evidence: "Ad/attention competitor cluster; VC pace notes on stakeholder analysis",
     falsifier: "Grant/patient capital + published metrics that privilege comprehension over DAU",
   },
   {
@@ -4525,7 +4473,7 @@ function ImpactAnalysisPage() {
         </h2>
         <p>
           Impact here is not a growth story. It is a research frame: intended effects, burdens, potential harms,
-          social impact assessment, and how you mitigate each harm. Built from the waveline, stakeholder map,
+          social impact assessment, and how you mitigate each harm. Built from the waveline, stakeholder analysis,
           and primary critique that “easier doomscroll” is the wrong win.
         </p>
       </div>
@@ -4570,7 +4518,7 @@ function ImpactAnalysisPage() {
             <article>
               <span>Method</span>
               <h3>Claim → evidence → falsifier</h3>
-              <p>Every hoped-for effect needs a way to fail. The stakeholder map shows forces; this page names consequences.</p>
+              <p>Every hoped-for effect needs a way to fail. The stakeholder analysis shows forces; this page names consequences.</p>
             </article>
           </div>
           <aside className="report-note">
@@ -4614,7 +4562,7 @@ function ImpactAnalysisPage() {
           <span className="report-number">3</span>
           <h2>Who is affected</h2>
           <p>
-            Drawn from the stakeholder map’s people, product team, platforms, and institutions —
+            Drawn from people, product team, platforms, and institutions in the stakeholder analysis —
             rewritten as impact roles rather than org-chart nodes.
           </p>
           <div className="impact-actor-table-wrap">
@@ -4942,7 +4890,7 @@ function ImpactAnalysisPage() {
       </article>
 
       <div className="report-next-links impact-next-links">
-        <a href="/cosmos/stakeholder-map/">← Stakeholder map</a>
+        <a href="/cosmos/stakeholder-map/">← Stakeholder analysis</a>
         <a href="/cosmos/making/">Next: Making Cosmos →</a>
       </div>
     </section>
@@ -5114,6 +5062,13 @@ function Version1Review() {
         <header className="report-page-intro interview-intro" style={{ borderBottom: "1px solid var(--navy)", paddingBottom: "32px", marginBottom: "32px" }}>
           <p className="eyebrow">SIGGRAPH 2026 Poster Submission & Peer Review</p>
           <h1>COSMOS V1<br /><span>Spatial Discourse Browser for AR, VR, and Desktop</span></h1>
+          <figure className="v1-title-figure">
+            <img
+              src="/assets/images/cosmos/v1-hero.jpg"
+              alt="Cosmos V1 spatial discourse browser with face-tracked gaze, floating post cards, and an expanded plant-swap discussion card"
+            />
+            <figcaption>Cosmos V1 prototype — planetarium of posts with gaze controls (Gaze / Drag / Auto-open) and expanded card detail.</figcaption>
+          </figure>
           <p className="report-lead">
             In April 2026, Cosmos Version 1 was submitted as a poster to SIGGRAPH 2026. While the submission was ultimately rejected, the academic peer review process provided an invaluable diagnostic crucible. The detailed critiques on text legibility, cognitive clutter, and the demand for empirical utility became the direct architectural blueprints for the Version 2 study tested with Kris, Yves, and Johnny.
           </p>
@@ -5457,14 +5412,13 @@ function App() {
               <p className="hero-summary">Cosmos investigates whether VR can make online discussions easier to understand by rebuilding a familiar offline behavior: reading a public wall.</p>
               <a className="text-link" href="/cosmos/secondary/">Read the findings <span>→</span></a>
             </div>
-            <div className="hero-orbit" aria-hidden="true">
-              <div className="orbit orbit-one" />
-              <div className="orbit orbit-two" />
-              <div className="planet"><span>READ</span><b>MOVE</b><i>RETURN</i></div>
-              <div className="satellite sat-one">context</div>
-              <div className="satellite sat-two">place</div>
-              <div className="satellite sat-three">memory</div>
-            </div>
+            <figure className="hero-figure">
+              <img
+                src="/assets/images/cosmos/intro-hero.jpg"
+                alt="Cosmos spatial discourse wall over a living room: post cards arranged in space with an expanded taco-truck parking discussion card"
+              />
+              <figcaption>Cosmos prototype — discourse as a spatial wall in the room (passthrough / living-space browse).</figcaption>
+            </figure>
           </div>
           <div className="thesis-strip">
             <span className="thesis-number">01</span>

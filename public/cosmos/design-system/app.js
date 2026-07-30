@@ -6,7 +6,7 @@
     ["primary", "03", "Primary research", "/cosmos/primary/"],
     ["user-waveline", "04", "User waveline", "/cosmos/user-waveline/"],
     ["storyboard", "05", "Storyboard", "/cosmos/storyboard/"],
-    ["stakeholder-map", "06", "Stakeholder map", "/cosmos/stakeholder-map/"],
+    ["stakeholder-map", "06", "Stakeholder analysis", "/cosmos/stakeholder-map/"],
     ["impact-analysis", "07", "Impact analysis", "/cosmos/impact-analysis/"],
     ["making", "08", "Making Cosmos", "/cosmos/making/"],
     ["design", "09", "Design system", "/cosmos/design-system/"]
