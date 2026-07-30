@@ -4039,138 +4039,184 @@ function StakeholderInfluenceStory({ onGoGaps }) {
   );
 }
 
-// —— Impact analysis: who changes if the wall works, at what cost, how we know ——
-// Speculative but grounded in primary/secondary findings, waveline, and stakeholder analysis.
-// Not a pitch deck of benefits — a research frame for intended effects, burdens, and falsifiers.
+// —— Impact analysis: potential harms & mitigation ——
+// Consumes stakeholder analysis (already there / hypothesized / gaps close / weaknesses remain).
+// Job: evaluate +/− impact, adverse effects, misuse, measurement, mitigation.
 
-const impactHorizons = [
+const impactFrameworkSteps = [
   {
-    id: "session",
-    number: "01",
-    title: "Session",
-    window: "Minutes to one sitting",
-    question: "Does one visit leave a clearer mind than a feed session of the same length?",
-    signals: ["Comprehension of a thread cluster", "Self-reported calm vs urgency", "Ability to retell “what the wall was about”", "Willingness to stop without FOMO"],
+    step: "01",
+    title: "Start from the field map",
+    body: "Use stakeholder analysis: already-there forces vs hypothesized Cosmos edges — not a blank stakeholder list.",
   },
   {
-    id: "community",
-    number: "02",
-    title: "Community",
-    window: "Weeks to a season",
-    question: "Do groups build a shared place memory, not only a chat log?",
-    signals: ["Return without notification bait", "Steward load vs chaos", "Contribution quality over volume", "Norms that favor place-building over heat"],
+    step: "02",
+    title: "Score + and − per role",
+    body: "For each stakeholder, name benefit if gaps close and harm if remaining weaknesses dominate or misuse wins.",
   },
   {
-    id: "ecosystem",
-    number: "03",
-    title: "Ecosystem",
-    window: "Seasons to years",
-    question: "Does a wall-like product change what platforms and capital treat as “success”?",
-    signals: ["Store featuring of non-game social", "Procurement language in schools/work", "Press framing of spatial discourse", "Capital appetite for patient loops"],
+    step: "03",
+    title: "Brainstorm adverse impacts",
+    body: "Map structural weaknesses (hardware, stores, empty wall, feed/chat gravity, capital tempo, unproven reverse loyalty) into harm codes H1–H8.",
   },
+  {
+    step: "04",
+    title: "Ask how it can harm others",
+    body: "Weaponization of place, voice, layout, and institutional channels — beyond accidental product failure.",
+  },
+  {
+    step: "05",
+    title: "Measure both benefit and harm",
+    body: "Signals that can embarrass the project: exclusion, steward load, consent, FOMO, claim tier — not dwell alone.",
+  },
+  {
+    step: "06",
+    title: "Mitigate & own",
+    body: "Each major harm gets an owner, steps, and a kill criterion when mitigation fails.",
+  },
+];
+
+/** Stakeholder analysis → impact: which remaining weakness feeds which harm code */
+const stakeholderWeaknessToHarms = [
+  { weakness: "Hardware and access tax", harms: ["H1 Premium access", "H6 Comfort / vestibular"], note: "Already-there HMD tax; Cosmos cannot reverse silicon." },
+  { weakness: "Store and policy gates", harms: ["H4 Voice & biometric", "H7 Platform capture"], note: "One-way store/OS/policy edges from the map." },
+  { weakness: "Empty-wall / import chicken-and-egg", harms: ["H5 Empty-wall failure"], note: "Hypothesized supply chain not earned; product→reader edges fail without seed." },
+  { weakness: "Chat and feed gravity remain", harms: ["H2 Doomscroll in a sphere"], note: "Ads↔feeds + Discord home stay; Cosmos can recreate capture beside them." },
+  { weakness: "Capital tempo vs patient loops", harms: ["H2 Attention capture", "H8 Research theater"], note: "VC pace from institutions layer pulls growth metrics." },
+  { weakness: "Unproven reverse loyalty", harms: ["H5 Empty wall", "H8 False impact"], note: "Cosmos→people still one-way until save/return and reading success exist." },
 ];
 
 const impactActors = [
   {
     id: "readers",
     role: "Readers",
-    stake: "Primary beneficiary of low-pressure sense-making",
-    intended: "Understand a discourse by walking a place; leave with memory of where ideas sat.",
-    risk: "Headset cost, comfort, and novelty still gate who can “just read.”",
-    measure: "Place memory + comprehension vs flat-feed baseline",
+    field: "Already there: feed gravity · Hypothesized: product→readers",
+    positive: "If Cosmos closes map/calm gaps: place memory, “where is this debate?”, stoppable sessions.",
+    negative: "Hardware tax excludes them; or feed-in-a-sphere recreates rank urgency with higher body cost.",
+    measure: "Comprehension + place memory vs feed; calm at exit; setup drop-off by device",
   },
   {
     id: "contributors",
     role: "Contributors",
-    stake: "People who place posts, not only scroll",
-    intended: "Contribution feels like building a wall, not feeding a ranking machine.",
-    risk: "Empty walls or sparse return traffic make contribution feel pointless.",
-    measure: "Perceived persistence of posts; repeat place-building",
+    field: "Hypothesized: readers↔contributors loop (not earned)",
+    positive: "Posts feel like building a place, not feeding rank — if walls stay lived-in.",
+    negative: "Empty-wall chicken-and-egg wastes labor; voice exposure; spatial harassment.",
+    measure: "Perceived persistence; return to own posts; consent; abuse reports",
   },
   {
     id: "stewards",
     role: "Stewards / mods",
-    stake: "Norm keepers and safety labor",
-    intended: "Spatial layout makes problem zones visible without constant patrol of a timeline.",
-    risk: "New attack surfaces (spatial harassment, voice abuse) without matching tools.",
-    measure: "Time-to-moderate; steward burnout proxies; safety incidents",
+    field: "Already there: Reddit/Discord mod craft · Hypothesized: moderation tools→stewards",
+    positive: "Spatial density can surface problem zones without endless timeline patrol.",
+    negative: "New attack surfaces without tools; unpaid burnout; liability for unmoderated walls.",
+    measure: "Time-to-moderate; steward hours; unresolved incidents",
+  },
+  {
+    id: "excluded",
+    role: "Non-owners / comfort-limited people",
+    field: "Already there: hardware tax on bodies",
+    positive: "Only if cross-device / desktop is first-class — else no positive path.",
+    negative: "“Community wall” becomes a gated club; discourse moves to a medium they cannot enter.",
+    measure: "Share of paths without premium HMD; exclusion rate in pilots",
   },
   {
     id: "intentional",
-    role: "Intentional users",
-    stake: "Anti-doomscroll cohort from primary research",
-    intended: "A product that rewards purposeful comparison over infinite short form.",
-    risk: "If Cosmos optimizes for dwell like a feed, it becomes the thing it claims to replace.",
-    measure: "Session end quality; “I got what I came for” vs time-on-device",
+    role: "Intentional / anti-doomscroll users",
+    field: "Gap to close: calm scan vs short-form · Weakness: ads↔feeds still closed",
+    positive: "Purposeful comparison; “I’m done” as success.",
+    negative: "Betrayed if capital tempo forces dwell/DAU and Cosmos joins the antagonist loop.",
+    measure: "Got-what-I-came-for; FOMO at exit; scroll-depth anti-metrics",
+  },
+  {
+    id: "chat-homes",
+    role: "Discord / chat-native communities",
+    field: "Already there: chat as home · Hypothesized: Cosmos↔Discord comparison",
+    positive: "Additive wall when a thread is wrong shape; import/export without forced migration.",
+    negative: "Tourist stop that splits attention; or hostile “replace Discord” narrative that fails and burns trust.",
+    measure: "Bridge use; co-existence vs churn; steward preference",
+  },
+  {
+    id: "publishers",
+    role: "Publishers / UGC / content partners",
+    field: "Hypothesized supply chain",
+    positive: "Rights-safe walls with proof of demand and featured regions.",
+    negative: "Import without reciprocity; empty promises of audience; scrape risk to rights.",
+    measure: "Seed coverage; partner renewals; rights incidents",
   },
   {
     id: "team",
-    role: "Product & marketing team",
-    stake: "Builders carrying multi-platform cost",
-    intended: "A clear research story that can survive critique (JD Suh) and store review.",
-    risk: "Fragmented HMDs + AI invoices + store cuts burn runway before proof.",
-    measure: "Cost per validated learning; time to comparative study results",
+    role: "Product & research team",
+    field: "Hypothesized: team→people, team↔stores, team→capital",
+    positive: "Honest research; learning that survives critique.",
+    negative: "Multi-HMD + AI invoice burn; store tax pressure; overclaim for funding (theater).",
+    measure: "Cost per validated learning; claim tier vs evidence",
   },
   {
     id: "platforms",
     role: "Stores / OS / hardware",
-    stake: "Gatekeepers of distribution and input",
-    intended: "Cosmos demonstrates non-game, non-live social value on Quest/Vision/Pico.",
-    risk: "Policy, biometric rules, and fees force design compromises that hollow the wall.",
-    measure: "Shipping friction; compliance load; revenue share sensitivity",
+    field: "Already there: store tax + OS bounds",
+    positive: "Proof that non-game, non-live social can matter on headset platforms.",
+    negative: "Fees/policy hollow the wall; users locked to one storefront’s rules.",
+    measure: "Shipping friction; compliance load; multi-store dependence",
   },
   {
     id: "institutions",
-    role: "Schools, labs, workplaces",
-    stake: "Later channels — not day-one community",
-    intended: "Pilots where seminars and studios need stable discourse structure.",
-    risk: "Procurement and age-safety requirements arrive before the product is ready.",
-    measure: "Pilot fit; required controls vs research scope",
+    role: "Schools, labs, capital, workplaces",
+    field: "Already there: money, rules, legitimacy one-way",
+    positive: "Later: seminars, labs, patient capital for structured discourse.",
+    negative: "Surveillance classrooms; compulsory use; growth capital that breaks patient loops.",
+    measure: "Opt-out; age-safety before pilot; metric contracts with funders",
   },
 ];
 
-const impactClaims = [
+const misusePaths = [
   {
-    claim: "A spatial wall improves discourse comprehension over a ranked feed for the same seed material.",
-    type: "Intended · people",
-    confidence: "Hypothesis",
-    evidence: "Secondary spatial sensemaking + primary push away from doomscroll convenience",
-    falsifier: "No gain (or worse) on comprehension / place-memory tasks vs 2D feed control",
+    id: "m1",
+    title: "Surveillance wall",
+    who: "Employers, schools, authoritarian actors (institutions layer)",
+    how: "Require headset presence; log gaze, voice, and place as compliance — exploiting hypothesized body-data edges.",
+    harm: "Chills speech; place memory becomes a dossier.",
+    mapLink: "Institutions → product/people already one-way on the map",
   },
   {
-    claim: "Reading without posting is valid participation and can still strengthen community sense-making.",
-    type: "Intended · culture",
-    confidence: "Working thesis",
-    evidence: "Offline wall precedent; interview resistance to always-on contribution",
-    falsifier: "Readers feel like lurkers; stewards report empty rooms with no social glue",
+    id: "m2",
+    title: "Propaganda architecture",
+    who: "Coordinated campaigns, bad-faith seeders",
+    how: "Engineer cluster density and poles to fake consensus; abuse Architect layout as influence, not sense-making.",
+    harm: "Users trust topology as truth when layout is bought or gamed.",
+    mapLink: "Content supply gap — who seeds the wall holds power",
   },
   {
-    claim: "Async spatial place reduces pressure vs live social VR without becoming another feed.",
-    type: "Intended · product boundary",
-    confidence: "Directional",
-    evidence: "Waveline contrast (Cosmos vs feed vs VR hangout); socially-late literature",
-    falsifier: "Users demand live voice / game loops to stay; calm reading never becomes a habit",
+    id: "m3",
+    title: "Spatial harassment",
+    who: "Abusive users",
+    how: "Surround targets with posts/voice/proximity when steward tools lag Discord/Reddit craft.",
+    harm: "Higher intensity than 2D block if exit and mod paths are weak.",
+    mapLink: "Stewards need tools before multi-user scale",
   },
   {
-    claim: "Store, OS, and multi-HMD costs will shape what “the wall” is allowed to be.",
-    type: "Constraint · platforms",
-    confidence: "High (structural)",
-    evidence: "Stakeholder influence: Meta/Pico/Apple store + OS edges",
-    falsifier: "Single-platform exclusive that still proves the wall metaphor (acceptable research path)",
+    id: "m4",
+    title: "Biometric / voice leak",
+    who: "Attackers, processors, cloud AI vendors",
+    how: "Retain voice/gaze beyond consent; subpoena “session presence”; bill-driven always-on capture.",
+    harm: "Irreversible body identity exposure.",
+    mapLink: "Cloud AI + policy one-ways; team pays models",
   },
   {
-    claim: "Capital and attention-economy incentives will pull Cosmos toward growth metrics that erode intentional use.",
-    type: "Risk · institutions",
-    confidence: "High if funded like consumer social",
-    evidence: "Ad/attention competitor cluster; VC pace notes on stakeholder analysis",
-    falsifier: "Grant/patient capital + published metrics that privilege comprehension over DAU",
+    id: "m5",
+    title: "Join ads↔feeds (self-harm)",
+    who: "Product under growth / store featuring pressure",
+    how: "Optimize heat, notifications, dwell until the wall is décor on an attention machine — the closed antagonist loop.",
+    harm: "Same cognitive harms as feeds, plus HMD cost and isolation.",
+    mapLink: "Ads↔feeds already closed; capital tempo weakness",
   },
   {
-    claim: "Voice and biometrics can deepen presence and also expand surveillance anxiety.",
-    type: "Ambivalent · body data",
-    confidence: "Medium",
-    evidence: "Primary privacy concerns; biometric/XR policy stakeholders",
-    falsifier: "Local-first / optional voice with clear trust and still high reading value",
+    id: "m6",
+    title: "Research / marketing theater",
+    who: "Team, funders, press (legitimacy edges)",
+    how: "Sell impact with maps and demos while reverse loyalty and comparative proof are still hypothesized.",
+    harm: "Misleads public; crowds out honest tools.",
+    mapLink: "Unproven reverse loyalty + press→capital one-way",
   },
 ];
 
@@ -4451,11 +4497,41 @@ function HarmMatrixVisual({ harms, activeId, onSelect }) {
 }
 
 const impactMetrics = [
-  { group: "Sense-making", items: ["Thread-cluster comprehension score", "Source-inspection rate", "Retell accuracy after delay", "“What was this place about?” free response"] },
-  { group: "Felt quality", items: ["Calm vs urgency (session end)", "Agency / intentionality scale", "Comfort / cybersickness", "Willingness to return without push"] },
-  { group: "Participation shape", items: ["Read:contribute ratio", "Place-building vs hot-take posts", "Steward actions per active hour", "Norm violations & resolution time"] },
-  { group: "Access & cost", items: ["Device & setup drop-off", "Time-to-first-readable-wall", "Compute/voice cost per session", "Who is excluded by hardware"] },
-  { group: "Boundary health", items: ["Live-room feature demand", "Feed-like scroll depth", "Notification dependence", "Session ends on purpose vs fatigue"] },
+  {
+    group: "Positive impact (did the wall help?)",
+    items: [
+      "Thread-cluster comprehension vs flat feed",
+      "Place memory / retell after delay",
+      "Calm vs urgency at session end",
+      "Willingness to stop without FOMO",
+    ],
+  },
+  {
+    group: "Adverse impact (who was hurt?)",
+    items: [
+      "Hardware / setup exclusion rate",
+      "Steward hours and unresolved safety incidents",
+      "Consent withdrawals; voice/gaze retention violations",
+      "Cybersickness / early forced exits",
+    ],
+  },
+  {
+    group: "Misuse & boundary health",
+    items: [
+      "Report volume and time-to-action",
+      "Feed-like scroll depth and notification dependence",
+      "Compulsory-use or workplace-surveillance red flags",
+      "Claim tier vs published evidence (anti–research theater)",
+    ],
+  },
+  {
+    group: "Access & cost externalities",
+    items: [
+      "Share of paths usable without a premium HMD",
+      "Compute/voice cost per session (pressure toward capture)",
+      "Who never appears in pilots (sampling bias)",
+    ],
+  },
 ];
 
 function ImpactAnalysisPage() {
@@ -4468,122 +4544,155 @@ function ImpactAnalysisPage() {
 
       <div className="section-heading impact-heading">
         <h2>
-          If the wall works,<br />
-          <em>who is changed?</em>
+          Potential harms<br />
+          <em>and how we mitigate them.</em>
         </h2>
         <p>
-          Impact here is not a growth story. It is a research frame: intended effects, burdens, potential harms,
-          social impact assessment, and how you mitigate each harm. Built from the waveline, stakeholder analysis,
-          and primary critique that “easier doomscroll” is the wrong win.
+          Goal: build a framework to evaluate how Cosmos affects other stakeholders — positively and negatively —
+          brainstorm adverse impacts, ask how the product could be used to harm others, define measurement, and
+          commit to mitigations. Growth stories are out of scope unless they create or reduce harm.
         </p>
       </div>
 
       <nav className="impact-toc" aria-label="Impact analysis contents">
         <p>On this page</p>
-        <a href="#impact-frame"><span>1</span>Impact frame</a>
-        <a href="#impact-horizons"><span>2</span>Three horizons</a>
-        <a href="#impact-actors"><span>3</span>Who is affected</a>
-        <a href="#impact-claims"><span>4</span>Claims &amp; falsifiers</a>
-        <a href="#impact-harms"><span>5</span>Harms &amp; SIA</a>
-        <a href="#impact-mitigate"><span>6</span>How to mitigate</a>
-        <a href="#impact-measure"><span>7</span>How we would know</a>
-        <a href="#impact-scenarios"><span>8</span>Scenarios</a>
-        <a href="#impact-next"><span>9</span>What this demands next</a>
+        <a href="#impact-framework"><span>1</span>Framework</a>
+        <a href="#impact-from-map"><span>2</span>From stakeholder analysis</a>
+        <a href="#impact-stakeholders"><span>3</span>Stakeholder + / −</a>
+        <a href="#impact-harms"><span>4</span>Adverse impacts</a>
+        <a href="#impact-misuse"><span>5</span>How it could harm others</a>
+        <a href="#impact-measure"><span>6</span>How we measure</a>
+        <a href="#impact-mitigate"><span>7</span>How we mitigate</a>
+        <a href="#impact-next"><span>8</span>Commitments</a>
       </nav>
 
       <article className="impact-document">
-        <section className="report-chapter" id="impact-frame">
+        <section className="report-chapter" id="impact-framework">
           <span className="report-number">1</span>
-          <h2>Impact frame</h2>
+          <h2>Framework</h2>
           <p className="report-lead">
-            Cosmos only has impact if it changes how people understand asynchronous community —
-            not if it merely relocates a feed into a headset.
+            Evaluate impact as change in benefit and burden — then stress-test adverse use, measurement, and
+            mitigation. Input is the <a href="/cosmos/stakeholder-map/">stakeholder analysis</a>, not a blank slate.
           </p>
           <p>
-            The project’s own research already rejected a shallow impact story. Making doomscroll easier in VR
-            is not a success condition; structured sense-making is. So impact analysis starts from the wall
-            metaphor: accumulation, low pressure, place memory, and the right to read without performing.
+            Cosmos is not impactful because it is spatial. It is impactful only if someone understands community
+            discourse better <em>and</em> if harms we introduce stay smaller than harms we claim to reduce.
+            Stakeholder analysis separates <strong>already there</strong> from <strong>hypothesized</strong> edges,
+            names gaps the app can close, and lists weaknesses that remain. This page turns that into +/− evaluation,
+            misuse, metrics, and owners.
           </p>
-          <div className="impact-frame-grid">
-            <article>
-              <span>Impact is</span>
-              <h3>Change in understanding, agency, and burden</h3>
-              <p>Who leaves a session smarter, calmer, or more able to contribute — and who pays in comfort, money, labor, or privacy.</p>
-            </article>
-            <article>
-              <span>Impact is not</span>
-              <h3>Downloads, dwell, or “spatial engagement”</h3>
-              <p>Those can be symptoms. Without comprehension and intentional exit, they are how Cosmos becomes another attention product.</p>
-            </article>
-            <article>
-              <span>Method</span>
-              <h3>Claim → evidence → falsifier</h3>
-              <p>Every hoped-for effect needs a way to fail. The stakeholder analysis shows forces; this page names consequences.</p>
-            </article>
+          <div className="impact-horizon-grid">
+            {impactFrameworkSteps.map((s) => (
+              <article key={s.step}>
+                <header>
+                  <span>{s.step}</span>
+                  <div>
+                    <h3>{s.title}</h3>
+                  </div>
+                </header>
+                <p className="impact-horizon-q" style={{ fontSize: "14px", fontWeight: 500 }}>{s.body}</p>
+              </article>
+            ))}
           </div>
           <aside className="report-note">
-            <b>Working stance</b>
+            <b>Non-negotiable</b>
             <p>
-              Treat impact as provisional. Primary interviews and secondary literature justify the research direction;
-              they do not yet prove product impact. Comparative studies and stewarded pilots are the proof path.
+              Joining the already-closed ads↔feeds loop (dwell/DAU as north star) is a harm, not a win — it is the
+              antagonist on the stakeholder map.
             </p>
           </aside>
         </section>
 
-        <section className="report-chapter" id="impact-horizons">
+        <section className="report-chapter" id="impact-from-map">
           <span className="report-number">2</span>
-          <h2>Three horizons</h2>
-          <p>
-            Effects do not arrive at once. Session-level wins can exist while community impact fails;
-            ecosystem impact is mostly out of the project’s control but shapes what “success” is allowed to mean.
+          <h2>From stakeholder analysis</h2>
+          <p className="report-lead">
+            Impact work inherits three outputs from chapter 06: gaps Cosmos can close (opportunity), weaknesses that
+            remain (structural risk), and the conclusion lists for opportunity and weakness of the app.
           </p>
-          <div className="impact-horizon-grid">
-            {impactHorizons.map((h) => (
-              <article key={h.id}>
-                <header>
-                  <span>{h.number}</span>
-                  <div>
-                    <h3>{h.title}</h3>
-                    <p>{h.window}</p>
-                  </div>
-                </header>
-                <p className="impact-horizon-q">{h.question}</p>
-                <ul>
-                  {h.signals.map((s) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
+
+          <h3 className="storyboard-subhead" style={{ marginTop: "8px" }}>Gaps the app can close → positive impact bets</h3>
+          <div className="stakeholder-story__close-grid" style={{ marginBottom: "20px" }}>
+            {gapsCosmosCloses.map((row) => (
+              <article key={row.title}>
+                <h4>{row.title}</h4>
+                <p><strong>Field today.</strong> {row.already}</p>
+                <p><strong>If we close it.</strong> {row.closes}</p>
               </article>
             ))}
           </div>
+
+          <h3 className="storyboard-subhead">Weaknesses that remain → adverse impact sources</h3>
+          <div className="impact-actor-table-wrap" style={{ marginBottom: "16px" }}>
+            <table className="report-table impact-actor-table">
+              <thead>
+                <tr>
+                  <th>Weakness (from map)</th>
+                  <th>Feeds harm codes</th>
+                  <th>Why it still bites</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stakeholderWeaknessToHarms.map((row) => (
+                  <tr key={row.weakness}>
+                    <td><b>{row.weakness}</b></td>
+                    <td>{row.harms.join(" · ")}</td>
+                    <td>{row.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="stakeholder-story__conclusion-grid">
+            <article className="is-opportunity">
+              <h4>Opportunities (stakeholder conclusion)</h4>
+              <ul>
+                {analysisOpportunities.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </article>
+            <article className="is-weakness">
+              <h4>Weaknesses (stakeholder conclusion)</h4>
+              <ul>
+                {analysisWeaknesses.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </article>
+          </div>
+          <p className="storyboard-pull" style={{ marginTop: "16px" }}>
+            Impact analysis does not invent a new field. It asks: if we pursue those opportunities, who is helped,
+            who is hurt, how can the product be abused, and what do we measure and mitigate when remaining weaknesses dominate.
+          </p>
         </section>
 
-        <section className="report-chapter" id="impact-actors">
+        <section className="report-chapter" id="impact-stakeholders">
           <span className="report-number">3</span>
-          <h2>Who is affected</h2>
-          <p>
-            Drawn from people, product team, platforms, and institutions in the stakeholder analysis —
-            rewritten as impact roles rather than org-chart nodes.
+          <h2>How the project might impact stakeholders (+ / −)</h2>
+          <p className="report-lead">
+            Each role is tied to the field map (already there vs hypothesized). Positive = if we close the right gaps.
+            Negative = if remaining weaknesses or misuse win.
           </p>
           <div className="impact-actor-table-wrap">
             <table className="report-table impact-actor-table">
               <thead>
                 <tr>
-                  <th>Role</th>
-                  <th>Intended change</th>
-                  <th>Burden / risk</th>
-                  <th>What would show it</th>
+                  <th>Stakeholder</th>
+                  <th>Map context</th>
+                  <th>Positive impact</th>
+                  <th>Negative impact</th>
+                  <th>How we measure</th>
                 </tr>
               </thead>
               <tbody>
                 {impactActors.map((a) => (
                   <tr key={a.id}>
-                    <td>
-                      <b>{a.role}</b>
-                      <span>{a.stake}</span>
-                    </td>
-                    <td>{a.intended}</td>
-                    <td>{a.risk}</td>
+                    <td><b>{a.role}</b></td>
+                    <td style={{ fontSize: "12px", color: "var(--muted)" }}>{a.field}</td>
+                    <td>{a.positive}</td>
+                    <td>{a.negative}</td>
                     <td>{a.measure}</td>
                   </tr>
                 ))}
@@ -4592,60 +4701,24 @@ function ImpactAnalysisPage() {
           </div>
         </section>
 
-        <section className="report-chapter" id="impact-claims">
-          <span className="report-number">4</span>
-          <h2>Claims &amp; falsifiers</h2>
-          <p>
-            Impact claims Cosmos is allowed to make only as far as evidence and design hold.
-            Each row is a bet that Making Cosmos must either validate or abandon.
-          </p>
-          <div className="impact-claim-list">
-            {impactClaims.map((c) => (
-              <article key={c.claim}>
-                <header>
-                  <span>{c.type}</span>
-                  <i>{c.confidence}</i>
-                </header>
-                <h3>{c.claim}</h3>
-                <div className="impact-claim-grid">
-                  <div>
-                    <b>Grounding now</b>
-                    <p>{c.evidence}</p>
-                  </div>
-                  <div>
-                    <b>Falsifier</b>
-                    <p>{c.falsifier}</p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <section className="report-chapter" id="impact-harms">
-          <span className="report-number">5</span>
-          <h2>Potential harms &amp; social impact assessment</h2>
+          <span className="report-number">4</span>
+          <h2>Brainstorm: potential adverse impacts</h2>
           <p className="report-lead">
-            A light social impact assessment (SIA): name the harm, who is affected, the pathway,
-            the rights at stake, severity × likelihood, who owns mitigation, and what would reduce it.
+            H1–H8 translate remaining map weaknesses into severity × likelihood. Scores are research judgments for
+            prioritization — not actuarial certainty.
           </p>
           <p>
-            Scores are research judgments for prioritization — not actuarial truth. High–high cells are
-            the harms you should be able to explain and mitigate in a presentation.
+            Even if the wall metaphor is right, the field still allows:{" "}
+            <strong>exclusion by hardware</strong> (HMD tax), <strong>attention capture</strong> (ads↔feeds),{" "}
+            <strong>safety labor without tools</strong>, <strong>body-data exposure</strong> (AI/policy one-ways),{" "}
+            <strong>empty communities</strong> (import chicken-and-egg), <strong>comfort barriers</strong>,{" "}
+            <strong>platform capture</strong> (store gates), and <strong>false impact claims</strong> (unproven reverse loyalty).
           </p>
 
-          {/* Dual: same content as passage list + interactive matrix visualization */}
           <div className="harm-dual">
             <div className="harm-dual__passage">
-              <p className="harm-dual__label">Passage · full harm set</p>
-              <p className="harm-passage-lead">
-                Cosmos can fail socially even if the wall metaphor is right. The main failure modes are
-                <strong> exclusion by hardware</strong>, <strong>attention capture</strong> that recreates the feed,
-                <strong> safety labor without tools</strong>, <strong>body-data exposure</strong>,
-                <strong> empty communities</strong>, <strong>comfort barriers</strong>,
-                <strong> platform capture</strong>, and <strong>claiming impact without evidence</strong>.
-                Each harm below is the same set plotted on the matrix.
-              </p>
+              <p className="harm-dual__label">Harm set</p>
               <ul className="harm-passage-list">
                 {socialHarms.map((h) => (
                   <li key={h.id}>
@@ -4664,9 +4737,9 @@ function ImpactAnalysisPage() {
               </ul>
             </div>
             <div className="harm-dual__visual">
-              <p className="harm-dual__label">Visualization · same set</p>
+              <p className="harm-dual__label">Severity × likelihood</p>
               <HarmMatrixVisual harms={socialHarms} activeId={activeHarmId} onSelect={setActiveHarmId} />
-              <p className="harm-matrix-hint">Pink / yellow cells = higher combined risk. Click a code to open mitigations below.</p>
+              <p className="harm-matrix-hint">Click a code for pathway, rights, and mitigations (section 6).</p>
             </div>
           </div>
 
@@ -4687,7 +4760,7 @@ function ImpactAnalysisPage() {
                 <p>{activeHarm.affected}</p>
               </div>
               <div>
-                <b>Pathway</b>
+                <b>How the harm arises</b>
                 <p>{activeHarm.pathway}</p>
               </div>
               <div>
@@ -4700,50 +4773,70 @@ function ImpactAnalysisPage() {
               </div>
             </div>
           </div>
+        </section>
 
-          <div className="impact-actor-table-wrap harm-sia-table-wrap">
-            <table className="report-table impact-actor-table harm-sia-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Harm</th>
-                  <th>Domain</th>
-                  <th>Sev</th>
-                  <th>Lik</th>
-                  <th>Owner</th>
-                </tr>
-              </thead>
-              <tbody>
-                {socialHarms.map((h) => (
-                  <tr
-                    key={h.id}
-                    className={h.id === activeHarmId ? "is-active" : ""}
-                    onClick={() => setActiveHarmId(h.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td><b>{h.code}</b></td>
-                    <td>{h.title}</td>
-                    <td>{h.domain}</td>
-                    <td>{severityLabel[h.severity]}</td>
-                    <td>{likelihoodLabel[h.likelihood]}</td>
-                    <td>{h.owner}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <section className="report-chapter" id="impact-misuse">
+          <span className="report-number">5</span>
+          <h2>How could it be used to harm others?</h2>
+          <p className="report-lead">
+            Beyond accidental failure: deliberate or institutional misuse — each tied back to the stakeholder map.
+          </p>
+          <div className="impact-scenario-grid">
+            {misusePaths.map((m) => (
+              <article key={m.id} className="impact-scenario impact-scenario--bad">
+                <span>{m.id.toUpperCase()}</span>
+                <h3>{m.title}</h3>
+                <p><strong>Who.</strong> {m.who}</p>
+                <p><strong>How.</strong> {m.how}</p>
+                <p><strong>Harm.</strong> {m.harm}</p>
+                <p className="impact-scenario-foot">Map: {m.mapLink}</p>
+              </article>
+            ))}
           </div>
+          <aside className="report-note report-note-yellow">
+            <b>Design implication</b>
+            <p>
+              Hypothesized edges that make the wall rich (voice, gaze, place, AI layout) also make misuse powerful.
+              Defaults: body data opt-in, strong block/report, non-compulsory use, layout transparency (who seeded
+              the wall), and never measure success as joining ads↔feeds.
+            </p>
+          </aside>
+        </section>
+
+        <section className="report-chapter" id="impact-measure">
+          <span className="report-number">6</span>
+          <h2>How will we measure these impacts?</h2>
+          <p className="report-lead">
+            Measure benefit and harm with the same seriousness. If we only track time-in-headset, we will not see exclusion, steward load, or capture.
+          </p>
+          <div className="impact-metric-grid">
+            {impactMetrics.map((m) => (
+              <article key={m.group}>
+                <h3>{m.group}</h3>
+                <ul>
+                  {m.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+          <aside className="report-note">
+            <b>Core study design</b>
+            <p>
+              Comparative: same seed discourse as (A) flat feed, (B) Cosmos wall. Primary: comprehension, place memory,
+              calm/agency at exit. Secondary: exclusion, steward load, consent events. Kill criterion: no advantage on
+              primary outcomes after novelty — or harm metrics worse than feed baseline without clear mitigation path.
+            </p>
+          </aside>
         </section>
 
         <section className="report-chapter" id="impact-mitigate">
-          <span className="report-number">6</span>
-          <h2>How to mitigate them</h2>
+          <span className="report-number">7</span>
+          <h2>How will we mitigate negative impacts?</h2>
           <p className="report-lead">
-            Use this as a speaking script: name the harm, then walk the steps. Steps are design and research
-            commitments — not marketing claims.
-          </p>
-          <p>
-            Selected now: <strong style={{ color: "var(--pink)" }}>{activeHarm.code} · {activeHarm.title}</strong>
-            {" — "}or scroll the full playbook.
+            Selected harm: <strong style={{ color: "var(--pink)" }}>{activeHarm.code} · {activeHarm.title}</strong>.
+            Steps are design and research commitments, not slogans.
           </p>
 
           <article className="harm-mitigate-focus">
@@ -4752,6 +4845,9 @@ function ImpactAnalysisPage() {
               <h3>Mitigate: {activeHarm.title}</h3>
             </header>
             <p className="harm-mitigate-why">{activeHarm.pathway}</p>
+            <p style={{ margin: "0 0 8px", fontSize: "13px", color: "var(--muted)" }}>
+              <strong>Owner:</strong> {activeHarm.owner}
+            </p>
             <ol>
               {activeHarm.mitigate.map((step) => (
                 <li key={step}>{step}</li>
@@ -4774,7 +4870,7 @@ function ImpactAnalysisPage() {
                   </i>
                 </header>
                 <h3>{h.title}</h3>
-                <p className="harm-mitigate-domain">{h.domain}</p>
+                <p className="harm-mitigate-domain">{h.domain} · {h.owner}</p>
                 <ol>
                   {h.mitigate.map((step) => (
                     <li key={step}>{step}</li>
@@ -4785,106 +4881,42 @@ function ImpactAnalysisPage() {
           </div>
         </section>
 
-        <section className="report-chapter" id="impact-measure">
-          <span className="report-number">7</span>
-          <h2>How we would know</h2>
-          <p className="report-lead">
-            Prefer measures that can embarrass the project. If Cosmos only tracks time-in-headset, it will optimize for the wrong impact.
-          </p>
-          <div className="impact-metric-grid">
-            {impactMetrics.map((m) => (
-              <article key={m.group}>
-                <h3>{m.group}</h3>
-                <ul>
-                  {m.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-          <aside className="report-note report-note-yellow">
-            <b>Study design sketch</b>
-            <p>
-              Comparative: same seed discourse as (A) flat feed, (B) Cosmos wall prototype.
-              Primary outcomes: comprehension + place memory + calm/agency at exit.
-              Secondary: contribution quality, steward load, access drop-off.
-              Kill criterion: no advantage on primary outcomes after controlling for novelty.
-            </p>
-          </aside>
-        </section>
-
-        <section className="report-chapter" id="impact-scenarios">
-          <span className="report-number">8</span>
-          <h2>Scenarios (imagined futures)</h2>
-          <p>Three story-shaped outcomes so the team can argue about impact without pretending one path is destiny.</p>
-          <div className="impact-scenario-grid">
-            <article className="impact-scenario impact-scenario--good">
-              <span>Scenario A</span>
-              <h3>The wall holds</h3>
-              <p>
-                Pilot communities return because place memory works. Readers can retell a debate after a day.
-                Stewards use spatial density as a signal. Stores treat Cosmos as a niche non-game social app.
-                Capital is patient or grant-like. Impact is local and real: better sense-making for people who enter.
-              </p>
-              <p className="impact-scenario-foot">Impact type: session + community · limited ecosystem</p>
-            </article>
-            <article className="impact-scenario impact-scenario--mixed">
-              <span>Scenario B</span>
-              <h3>Beautiful, empty, expensive</h3>
-              <p>
-                The prototype impresses in demos. Multi-HMD support and AI organization burn cost.
-                Without seed content and return loops, contribution dies. Press calls it visionary;
-                users call it quiet. Impact is mostly on the team’s learning, not the public’s reading life.
-              </p>
-              <p className="impact-scenario-foot">Impact type: research artifact · weak community</p>
-            </article>
-            <article className="impact-scenario impact-scenario--bad">
-              <span>Scenario C</span>
-              <h3>Feed in a sphere</h3>
-              <p>
-                To survive store metrics and funding, Cosmos optimizes for dwell and hot clusters.
-                Voice and ranking recreate urgency. The wall becomes décor around an attention machine.
-                Impact is negative relative to the thesis: another immersive path to the same harm.
-              </p>
-              <p className="impact-scenario-foot">Impact type: inverted · thesis failure</p>
-            </article>
-          </div>
-        </section>
-
         <section className="report-chapter" id="impact-next">
-          <span className="report-number">9</span>
-          <h2>What this demands next</h2>
+          <span className="report-number">8</span>
+          <h2>Commitments (what mitigation demands next)</h2>
           <p>
-            Making Cosmos should sequence work so impact bets and harm mitigations are tested early —
-            not after platform sprawl.
+            Sequenced against map weaknesses: close opportunity gaps without pretending remaining one-ways disappear.
           </p>
           <ol className="impact-next-list">
             <li>
-              <b>Lock success metrics</b> to sense-making and intentional exit before any growth dashboard.
+              <b>Lock anti-harm metrics</b> beside sense-making metrics — exclusion, steward load, consent, intentional exit —
+              before any growth dashboard (do not join ads↔feeds).
             </li>
             <li>
-              <b>Run wall vs feed comparative study</b> with shared seed material and pre-registered outcomes.
+              <b>Cross-device as first-class</b> against hardware tax (H1, H6) — positive impact must not require premium HMDs only.
             </li>
             <li>
-              <b>Pilot steward and safety paths</b> as soon as multi-user walls exist — not as a late compliance patch.
+              <b>Import + stewarded pilots before spectacle</b> against empty-wall chicken-and-egg (H5) — earn readers↔contributors.
             </li>
             <li>
-              <b>Prove on one accessible platform first</b>; treat multi-HMD as cost after the metaphor works.
+              <b>Steward tools before multi-user scale</b> — report, mute zone, audit log (H3, M3); transfer Discord/Reddit craft.
             </li>
             <li>
-              <b>Keep desktop/bridge honest</b> so impact is not gated only by premium headsets.
+              <b>Body data opt-in</b> — voice/gaze off by default; text-first always (H4, M4); cost-aware AI so capture is not forced by invoice.
             </li>
             <li>
-              <b>Walk the harm matrix in reviews</b> — each H1–H8 should have an owner and a current mitigation status.
+              <b>Bridge chat homes, don’t replace them</b> — import/export with Discord-native communities; additive wall job.
             </li>
             <li>
-              <b>Publish falsifiers</b> — if the wall does not beat the feed, narrow or stop rather than rebrand.
+              <b>Patient capital contracts</b> — metrics that privilege comprehension over DAU (capital tempo weakness, H2/H8).
+            </li>
+            <li>
+              <b>Walk H1–H8 every review</b> with owner + status; publish falsifiers when reverse loyalty stays unproven (H8, M6).
             </li>
           </ol>
           <blockquote className="report-quote">
-            Impact is earned when someone understands a community better because they walked a wall —
-            and can leave without the product punishing them for going.
+            Stakeholder analysis says what is already there and what we only hope will be there. Impact analysis says
+            who is helped or hurt if we act — and what we measure and mitigate when the remaining weaknesses win.
           </blockquote>
         </section>
       </article>

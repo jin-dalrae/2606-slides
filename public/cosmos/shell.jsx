@@ -7,8 +7,14 @@ export const cosmosPages = [
   ["stakeholder-map", "06", "Stakeholder analysis", "/cosmos/stakeholder-map/"],
   ["impact-analysis", "07", "Impact analysis", "/cosmos/impact-analysis/"],
   ["making", "08", "Making Cosmos", "/cosmos/making/"],
-  ["design", "09", "Design system", "/cosmos/design-system/"],
 ];
+
+/** Not a chapter index item — linked from the left-rail footer only. */
+export const designSystemLink = {
+  id: "design",
+  label: "Design system",
+  path: "/cosmos/design-system/",
+};
 
 export const secondaryReports = [
   ["overview", "2.0", "Overview", "/cosmos/secondary/"],
@@ -112,7 +118,15 @@ export function CosmosSidebar({ active, subActive }) {
             </React.Fragment>
           ))}
         </nav>
-        <div className="rail-status"><i /> Cosmos archive <span>2026</span></div>
+        <div className="rail-footer">
+          <a
+            className={`rail-footer__design ${active === "design" ? "active" : ""}`}
+            href={designSystemLink.path}
+          >
+            {designSystemLink.label}
+          </a>
+          <div className="rail-status"><i /> Cosmos archive <span>2026</span></div>
+        </div>
       </aside>
       {!open && (
         <button

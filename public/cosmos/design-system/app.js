@@ -8,9 +8,13 @@
     ["storyboard", "05", "Storyboard", "/cosmos/storyboard/"],
     ["stakeholder-map", "06", "Stakeholder analysis", "/cosmos/stakeholder-map/"],
     ["impact-analysis", "07", "Impact analysis", "/cosmos/impact-analysis/"],
-    ["making", "08", "Making Cosmos", "/cosmos/making/"],
-    ["design", "09", "Design system", "/cosmos/design-system/"]
+    ["making", "08", "Making Cosmos", "/cosmos/making/"]
   ];
+  var designSystemLink = {
+    id: "design",
+    label: "Design system",
+    path: "/cosmos/design-system/"
+  };
   var secondaryReports = [
     ["overview", "2.0", "Overview", "/cosmos/secondary/"],
     ["spatial-audio", "2.1", "Spatial communications", "/cosmos/secondary/spatial-communications/"],
@@ -63,7 +67,14 @@
         title: "Close sidebar"
       },
       "\u2039"
-    )), /* @__PURE__ */ React.createElement("h2", null, "Cosmos"), /* @__PURE__ */ React.createElement("span", null, "Spatializing asynchronous community")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), reportChildren[id] && active === id && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: subActive === subId ? "active" : "", key: subId, href: subPath }, /* @__PURE__ */ React.createElement("span", null, subNumber), /* @__PURE__ */ React.createElement("b", null, subLabel), /* @__PURE__ */ React.createElement("i", null, "\u2197"))))))), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " Cosmos archive ", /* @__PURE__ */ React.createElement("span", null, "2026"))), !open && /* @__PURE__ */ React.createElement(
+    )), /* @__PURE__ */ React.createElement("h2", null, "Cosmos"), /* @__PURE__ */ React.createElement("span", null, "Spatializing asynchronous community")), /* @__PURE__ */ React.createElement("nav", null, /* @__PURE__ */ React.createElement("p", null, "Index"), cosmosPages.map(([id, number, label, path]) => /* @__PURE__ */ React.createElement(React.Fragment, { key: id }, /* @__PURE__ */ React.createElement("a", { className: active === id ? "active" : "", href: path }, /* @__PURE__ */ React.createElement("span", null, number), /* @__PURE__ */ React.createElement("b", null, label), /* @__PURE__ */ React.createElement("i", null, "\u2192")), reportChildren[id] && active === id && /* @__PURE__ */ React.createElement("div", { className: "rail-subnav" }, reportChildren[id].map(([subId, subNumber, subLabel, subPath]) => /* @__PURE__ */ React.createElement("a", { className: subActive === subId ? "active" : "", key: subId, href: subPath }, /* @__PURE__ */ React.createElement("span", null, subNumber), /* @__PURE__ */ React.createElement("b", null, subLabel), /* @__PURE__ */ React.createElement("i", null, "\u2197"))))))), /* @__PURE__ */ React.createElement("div", { className: "rail-footer" }, /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        className: `rail-footer__design ${active === "design" ? "active" : ""}`,
+        href: designSystemLink.path
+      },
+      designSystemLink.label
+    ), /* @__PURE__ */ React.createElement("div", { className: "rail-status" }, /* @__PURE__ */ React.createElement("i", null), " Cosmos archive ", /* @__PURE__ */ React.createElement("span", null, "2026")))), !open && /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",

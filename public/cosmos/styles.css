@@ -74,7 +74,36 @@ html[data-cosmos-rail="closed"] .report-section { max-width: 1280px; }
 .rail-subnav a { min-height: 40px; margin: 0; padding: 0 8px; border: 0; grid-template-columns: 32px 1fr auto; font-size: 12.5px; line-height: 1.3; }
 .rail-subnav a span { font-size: 12.5px; }
 .rail-subnav a.active { color: var(--navy); background: rgba(242,240,79,.58); }
-.rail-status { display: flex; align-items: center; gap: 8px; margin-top: auto; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.rail-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rail-footer__design {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.rail-footer__design:hover,
+.rail-footer__design.active {
+  color: var(--navy);
+}
+.rail-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
 .rail-status i { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); }
 .rail-status span { margin-left: auto; }
 
