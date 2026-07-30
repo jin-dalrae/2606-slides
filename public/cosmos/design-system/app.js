@@ -5,10 +5,11 @@
     ["secondary", "02", "Secondary research", "/cosmos/secondary/"],
     ["primary", "03", "Primary research", "/cosmos/primary/"],
     ["user-waveline", "04", "User waveline", "/cosmos/user-waveline/"],
-    ["stakeholder-map", "05", "Stakeholder map", "/cosmos/stakeholder-map/"],
-    ["impact-analysis", "06", "Impact analysis", "/cosmos/impact-analysis/"],
-    ["making", "07", "Making Cosmos", "/cosmos/making/"],
-    ["design", "08", "Design system", "/cosmos/design-system/"]
+    ["storyboard", "05", "Storyboard", "/cosmos/storyboard/"],
+    ["stakeholder-map", "06", "Stakeholder map", "/cosmos/stakeholder-map/"],
+    ["impact-analysis", "07", "Impact analysis", "/cosmos/impact-analysis/"],
+    ["making", "08", "Making Cosmos", "/cosmos/making/"],
+    ["design", "09", "Design system", "/cosmos/design-system/"]
   ];
   var secondaryReports = [
     ["overview", "2.0", "Overview", "/cosmos/secondary/"],

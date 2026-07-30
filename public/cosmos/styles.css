@@ -467,6 +467,79 @@ h1 em, h2 em { color: var(--pink); font-weight: 500; }
 .roadmap li { padding: 7px 0; border-top: 1px solid var(--line); font-size: 10px; }
 .roadmap li::before { content: "↳"; margin-right: 8px; color: var(--pink); }
 
+/* —— Storyboard (Jeenie) —— */
+.storyboard-page .section-heading {
+  margin-bottom: 48px;
+}
+.storyboard-cards-3,
+.storyboard-cards-2 {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 12px;
+}
+.storyboard-cards-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.storyboard-cards-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.storyboard-cards-3 article,
+.storyboard-cards-2 article {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.storyboard-cards-3 h3,
+.storyboard-cards-2 h3 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.storyboard-cards-3 p,
+.storyboard-cards-2 p {
+  margin: 0;
+  color: #2f3758;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.storyboard-pull {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--yellow);
+  background: rgba(242, 240, 79, 0.22);
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  max-width: 78ch;
+}
+.storyboard-subhead {
+  margin: 28px 0 8px;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+}
+.storyboard-tests {
+  margin: 10px 0 0;
+  padding-left: 1.25rem;
+  color: #2f3758;
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 70ch;
+}
+.storyboard-tests li {
+  margin-bottom: 6px;
+}
+@media (max-width: 800px) {
+  .storyboard-cards-3,
+  .storyboard-cards-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* —— Making Cosmos (PRD-backed build chapter) —— */
 .making-page .section-heading > p code {
   font-size: 12px;

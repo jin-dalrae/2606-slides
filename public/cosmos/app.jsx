@@ -908,6 +908,282 @@ function UserWavelinePage() {
 
       <div className="report-next-links">
         <a href="/cosmos/primary/version1-review/">← Version 1 &amp; review</a>
+        <a href="/cosmos/storyboard/">Next: Storyboard →</a>
+      </div>
+    </section>
+  );
+}
+
+// —— Storyboard: Jeenie (postpartum constraints stress-test the wall) ——
+const storyboardBeats = [
+  { beat: "01", title: "Character", situation: "New mom, 2-week-old, short leave", outcome: "Time is split; identity feels awkward" },
+  { beat: "02", title: "Constraints", situation: "Wrist pain, indoor days, chores + rest", outcome: "Phone hurts after ~5 min; exercise is gone" },
+  { beat: "03", title: "VR hope", situation: "Baby asleep on chest / lying down", outcome: "Headset could free hands and posture" },
+  { beat: "04", title: "Browser fail", situation: "Desk-optimized VR web", outcome: "Close reading hurts; hands hit the baby" },
+  { beat: "05", title: "Discovery", situation: "App Store search for VR browsing", outcome: "Cosmos: posts on a wall, by similarity" },
+  { beat: "06", title: "Gaze + pull", situation: "Eyes look; hand pulls the wall closer", outcome: "No controller required for basic browse" },
+  { beat: "07", title: "Walk", situation: "She stands and moves through the room", outcome: "Wall stays world-anchored; passthrough keeps her safe" },
+  { beat: "08", title: "Care", situation: "Baby wakes hungry", outcome: "Breastfeeding continues with headset on" },
+];
+
+const storyboardImplications = [
+  { constraint: "Wrist pain / short phone tolerance", requirement: "Minimize sustained grip; favor gaze and occasional hand gestures" },
+  { constraint: "Baby on chest / sling", requirement: "Avoid frequent mid-air hand waving near the torso; controller optional for browse" },
+  { constraint: "Lying down + standing", requirement: "Comfortable at recline; wall readable without leaning into a virtual monitor" },
+  { constraint: "Indoors, moving around home", requirement: "World-anchored content + passthrough so the body stays safe in real space" },
+  { constraint: "Fragmented attention", requirement: "Browsing must be scannable in pockets — similarity clusters beat endless scroll" },
+  { constraint: "Identity: still wants the world", requirement: "High-signal wall of posts/news, not a social hangout that demands performance" },
+];
+
+function StoryboardPage() {
+  return (
+    <section className="report-section storyboard-page" id="storyboard">
+      <ChapterLabel number="05">Storyboard</ChapterLabel>
+      <div className="section-heading">
+        <h2>Jeenie.<br /><em>Browsing when the body is not desk-ready.</em></h2>
+        <p>
+          Design storyboard — a composite persona, not a research sample. Use it to pressure-test Cosmos:
+          gaze-first browse, optional hand pull, world-anchored wall, and passthrough safety under real care load.
+        </p>
+      </div>
+
+      <section className="report-chapter" id="storyboard-spine">
+        <span className="report-number">0</span>
+        <h2>Spine</h2>
+        <p className="report-lead">
+          <strong>Cosmos is for people who cannot sit at a desk and hold a phone.</strong>
+        </p>
+        <p>
+          Jeenie is two weeks postpartum. Her days are feed → change → nap → chores → rest, with almost no clean
+          blocks of attention. She still wants to stay current — the techie habit of scanning news and gossip fast —
+          but her body and her baby will not cooperate with desk-browser VR or long phone sessions.
+        </p>
+        <p className="storyboard-pull">
+          If Cosmos only works for seated, two-handed, full-attention browsing, it fails the people who need spatial async most.
+        </p>
+      </section>
+
+      <section className="report-chapter" id="storyboard-beats">
+        <span className="report-number">1</span>
+        <h2>Eight beats</h2>
+        <div className="report-table-scroll">
+          <table className="report-table report-table-wide">
+            <thead>
+              <tr>
+                <th>Beat</th>
+                <th>Situation</th>
+                <th>What fails / what works</th>
+              </tr>
+            </thead>
+            <tbody>
+              {storyboardBeats.map((row) => (
+                <tr key={row.beat}>
+                  <td><strong>{row.beat} · {row.title}</strong></td>
+                  <td>{row.situation}</td>
+                  <td>{row.outcome}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="report-chapter" id="storyboard-character">
+        <span className="report-number">2</span>
+        <h2>Meet Jeenie</h2>
+        <div className="storyboard-cards-3">
+          <article>
+            <h3>New mom, week two</h3>
+            <p>Just settling into newborn life: frequent breastfeeding, sleep in fragments, constant diaper changes.</p>
+          </article>
+          <article>
+            <h3>On short leave</h3>
+            <p>This window is temporary. She still thinks of herself as someone who returns to work and the world.</p>
+          </article>
+          <article>
+            <h3>Was a techie</h3>
+            <p>Used to work in tech and stay ahead of news and gossip — fast, always-on, feed-fluent.</p>
+          </article>
+        </div>
+        <p className="storyboard-pull">
+          The product question is not “make her a gamer.” It is: can she stay herself while caregiving?
+        </p>
+      </section>
+
+      <section className="report-chapter" id="storyboard-time">
+        <span className="report-number">3</span>
+        <h2>No clean “me time”</h2>
+        <p>
+          When the baby sleeps, she does not get a free hour. She gets a fragile pocket. In that pocket she tries to
+          stack chores, rest, and a little of her old self — catch up on the world before the next wake.
+        </p>
+        <p>
+          She feels awkward about how to split the time: productive parent, recovering body, or the person who used
+          to know what was happening online.
+        </p>
+        <p className="storyboard-pull">
+          Browsing has to fit inside interrupted pockets, not replace them with a session.
+        </p>
+      </section>
+
+      <section className="report-chapter" id="storyboard-body">
+        <span className="report-number">4</span>
+        <h2>Her body rejects the usual inputs</h2>
+        <div className="storyboard-cards-3">
+          <article>
+            <h3>Wrist pain</h3>
+            <p>Postpartum strain makes gripping a phone painful after about five minutes.</p>
+          </article>
+          <article>
+            <h3>Mostly indoors</h3>
+            <p>Recovery and newborn care keep her home. Movement and exercise are harder than before.</p>
+          </article>
+          <article>
+            <h3>Hands are busy</h3>
+            <p>Baby in a chest sling, chores, or lying down to rest — two free hands are rare.</p>
+          </article>
+        </div>
+        <p className="storyboard-pull">
+          Phone-in-hand and desk-controller VR both assume a body she does not have right now.
+        </p>
+      </section>
+
+      <section className="report-chapter" id="storyboard-vr-fail">
+        <span className="report-number">5</span>
+        <h2>VR looks like a way out — then the browser fails her</h2>
+        <div className="storyboard-cards-2">
+          <article>
+            <h3>Why she tries a headset</h3>
+            <p>She can lie down with the baby. Looking around should be easier than holding a glowing rectangle at arm’s length.</p>
+          </article>
+          <article>
+            <h3>Why the usual browser fails</h3>
+            <p>Web VR is still desk-shaped: lean in, read close, use hands. Looking at sites up close feels bad. Moving a hand sometimes hits the baby on her chest.</p>
+          </article>
+        </div>
+        <p className="storyboard-pull">
+          The headset is not the problem. The interaction model is still a monitor with extra steps.
+        </p>
+      </section>
+
+      <section className="report-chapter" id="storyboard-cosmos">
+        <span className="report-number">6</span>
+        <h2>She finds Cosmos</h2>
+        <p>
+          She searches for the best VR browsing app and finds <strong>Cosmos</strong> in the App Store. Instead of a
+          floating desktop browser, content lives on a <strong>wall</strong> — posts arranged by similarity, built for
+          headset distance rather than desk-monitor reading.
+        </p>
+        <p className="storyboard-pull">
+          The first product promise she understands is not “social VR.” It is “I can scan the world without a feed and without a desk.”
+        </p>
+
+        <h3 className="storyboard-subhead">Gaze + optional pull</h3>
+        <div className="storyboard-cards-2">
+          <article>
+            <h3>Eyes look around</h3>
+            <p>Looking is enough to browse. She does not need to aim a controller for every shift of attention.</p>
+          </article>
+          <article>
+            <h3>Hand pulls when needed</h3>
+            <p>When she wants detail, a simple hand pull brings the wall closer — then she looks across posts without a tool in her grip.</p>
+          </article>
+        </div>
+        <p className="storyboard-pull">
+          Controller-free browse is not a nicety — it is what keeps the baby from getting bumped.
+        </p>
+
+        <h3 className="storyboard-subhead">Walk; the wall stays put</h3>
+        <p>
+          She gets up and walks. The wall does not follow her face like a HUD. It stays put. She walks along it the
+          way people walk a bulletin board — scan, step closer, step back, change angle. Because the background is
+          transparent (passthrough), she can still see the house and avoid furniture, pets, and clutter.
+        </p>
+        <p className="storyboard-pull">
+          Place memory only works if the wall is a place — not a sticker glued to the camera.
+        </p>
+
+        <h3 className="storyboard-subhead">Care does not end the session</h3>
+        <p>
+          The baby wakes hungry. Jeenie breastfeeds and keeps the headset on. She does not need a clean “VR session”
+          that ends when parenting starts. The wall can wait in the room while her hands and chest are occupied;
+          gaze and light head movement are still available.
+        </p>
+        <p className="storyboard-pull">
+          Success is not longer sessions. Success is sessions that survive real interruptions.
+        </p>
+      </section>
+
+      <section className="report-chapter" id="storyboard-implications">
+        <span className="report-number">7</span>
+        <h2>What Jeenie demands from the product</h2>
+        <div className="report-table-scroll">
+          <table className="report-table report-table-wide">
+            <thead>
+              <tr>
+                <th>Constraint</th>
+                <th>Product requirement</th>
+              </tr>
+            </thead>
+            <tbody>
+              {storyboardImplications.map((row) => (
+                <tr key={row.constraint}>
+                  <td>{row.constraint}</td>
+                  <td>{row.requirement}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="report-chapter" id="storyboard-contrast">
+        <span className="report-number">8</span>
+        <h2>Desk browser vs Cosmos wall</h2>
+        <div className="storyboard-cards-2">
+          <article>
+            <h3>Desk-shaped VR browser</h3>
+            <p>Assumes seated posture, close reading, and free hands. Collides with baby, wrist pain, and recline. Content has no place memory in the room.</p>
+          </article>
+          <article>
+            <h3>Cosmos wall</h3>
+            <p>Assumes walk-or-recline browse, gaze-first attention, optional pull, and a fixed wall with passthrough. Content stays where she left it when life interrupts.</p>
+          </article>
+        </div>
+        <p className="storyboard-pull">
+          Jeenie is not asking for more immersion. She is asking for less friction between information and care.
+        </p>
+      </section>
+
+      <section className="report-chapter" id="storyboard-honesty">
+        <span className="report-number">9</span>
+        <h2>What this does not prove</h2>
+        <p>
+          This is a <strong>scenario</strong>, not evidence. It does not prove postpartum users will adopt headsets,
+          or that gaze+pull is comfortable for twenty minutes, or that passthrough is safe enough around a newborn.
+        </p>
+        <p>It names failure modes product tests must hit:</p>
+        <ol className="storyboard-tests">
+          <li>Can someone browse usefully while reclining with occupied hands?</li>
+          <li>Does a world-anchored wall beat a follow-head browser for place memory and safety?</li>
+          <li>Can a session survive a care interruption without a full restart?</li>
+        </ol>
+        <p className="storyboard-pull">
+          Treat Jeenie as a stress test for interaction assumptions — then validate with real users who share her constraints.
+        </p>
+      </section>
+
+      <blockquote>
+        <span>Closing claim</span>
+        <p>If Cosmos works for Jeenie, it works for anyone whose body is not desk-ready.</p>
+        <footer>
+          Build for gaze-first scan, optional hand pull, world-anchored placement, and passthrough safety —
+          or admit the product is still a monitor for people with free afternoons. Rebuild the wall for the body people actually have.
+        </footer>
+      </blockquote>
+
+      <div className="report-next-links">
+        <a href="/cosmos/user-waveline/">← User waveline</a>
         <a href="/cosmos/stakeholder-map/">Next: Stakeholder map →</a>
       </div>
     </section>
@@ -2714,8 +2990,8 @@ function StakeholderMapPage() {
           <div>
             <p className="stakeholder-kicker">
               {focusMode === "gaps"
-                ? "05 · One-way gaps · where Cosmos can act"
-                : "05 · Structure + influence"}
+                ? "06 · One-way gaps · where Cosmos can act"
+                : "06 · Structure + influence"}
             </p>
             <h1>{title}</h1>
           </div>
@@ -3399,7 +3675,7 @@ function StakeholderMapPage() {
       <StakeholderInfluenceStory onGoGaps={goGaps} />
 
       <div className="report-next-links">
-        <a href="/cosmos/user-waveline/">← User waveline</a>
+        <a href="/cosmos/storyboard/">← Storyboard</a>
         <a href="/cosmos/impact-analysis/">Next: Impact analysis →</a>
       </div>
     </section>
@@ -3683,7 +3959,7 @@ function StakeholderInfluenceStory({ onGoGaps }) {
   return (
     <article className="stakeholder-story" id="influence-story" aria-label="Stakeholder influence story">
       <header className="stakeholder-story__header">
-        <p className="stakeholder-story__kicker">05b · Influence story</p>
+        <p className="stakeholder-story__kicker">06b · Influence story</p>
         <h2>How influence actually moves</h2>
         <p className="stakeholder-story__lede">
           The graph has {edgeCount} typed edges. Strategy does not need all of them named out loud.
@@ -4240,7 +4516,7 @@ function ImpactAnalysisPage() {
 
   return (
     <section className="report-section impact-page" id="impact-analysis">
-      <ChapterLabel number="06">Impact analysis</ChapterLabel>
+      <ChapterLabel number="07">Impact analysis</ChapterLabel>
 
       <div className="section-heading impact-heading">
         <h2>
@@ -5150,13 +5426,15 @@ function App() {
       ? "primary"
       : window.location.pathname.includes("/user-waveline")
         ? "user-waveline"
-        : window.location.pathname.includes("/stakeholder-map")
-          ? "stakeholder-map"
-          : window.location.pathname.includes("/impact-analysis")
-            ? "impact-analysis"
-            : window.location.pathname.includes("/making")
-              ? "making"
-              : "intro";
+        : window.location.pathname.includes("/storyboard")
+          ? "storyboard"
+          : window.location.pathname.includes("/stakeholder-map")
+            ? "stakeholder-map"
+            : window.location.pathname.includes("/impact-analysis")
+              ? "impact-analysis"
+              : window.location.pathname.includes("/making")
+                ? "making"
+                : "intro";
   return (
     <div id="top">
       <Progress />
@@ -5167,6 +5445,7 @@ function App() {
         {activeChapter === "primary" && primaryPage === "expert-questionnaire" && <ExpertQuestionnaire />}
         {activeChapter === "primary" && primaryPage === "version1-review" && <Version1Review />}
         {activeChapter === "user-waveline" && <UserWavelinePage />}
+        {activeChapter === "storyboard" && <StoryboardPage />}
         {activeChapter === "stakeholder-map" && <StakeholderMapPage />}
         {activeChapter === "impact-analysis" && <ImpactAnalysisPage />}
         {activeChapter === "intro" && <section className="hero" id="intro">
@@ -6545,7 +6824,7 @@ function App() {
         </section>}
 
         {activeChapter === "making" && <section className="report-section making making-page" id="making">
-          <ChapterLabel number="07">Making Cosmos</ChapterLabel>
+          <ChapterLabel number="08">Making Cosmos</ChapterLabel>
           <div className="section-heading">
             <h2>Ship the wall.<br /><em>Prove reading. Earn community.</em></h2>
             <p>
