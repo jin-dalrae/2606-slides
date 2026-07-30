@@ -453,16 +453,330 @@ h1 em, h2 em { color: var(--pink); font-weight: 500; }
 .field-notes li p { margin: 0; font-size: 14px; line-height: 1.5; }
 
 .roadmap { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--navy); border-bottom: 1px solid var(--navy); }
+.roadmap.making-roadmap { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .roadmap article { min-height: 430px; padding: 28px 22px; border-right: 1px solid var(--line); }
+.roadmap.making-roadmap article { min-height: 380px; padding: 22px 16px; }
 .roadmap article:last-child { border-right: 0; }
-.phase-top { display: flex; justify-content: space-between; align-items: center; }
+.phase-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .phase-top span { color: var(--pink); font-family: var(--serif); }
-.phase-top i { padding: 5px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); font-size: 9px; font-style: normal; text-transform: uppercase; letter-spacing: .08em; }
+.phase-top i { padding: 5px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); font-size: 9px; font-style: normal; text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; }
 .roadmap h3 { margin: 90px 0 18px; font-family: var(--serif); font-size: 27px; font-weight: 600; line-height: 1.1; }
+.roadmap.making-roadmap h3 { margin: 48px 0 14px; font-size: 22px; }
 .roadmap p { color: var(--muted); font-size: 12px; line-height: 1.55; }
 .roadmap ul { margin: 25px 0 0; padding: 0; list-style: none; }
 .roadmap li { padding: 7px 0; border-top: 1px solid var(--line); font-size: 10px; }
 .roadmap li::before { content: "↳"; margin-right: 8px; color: var(--pink); }
+
+/* —— Making Cosmos (PRD-backed build chapter) —— */
+.making-page .section-heading > p code {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.making-status-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 48px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+.making-status-bar article {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  background: white;
+}
+.making-status-bar b {
+  color: var(--pink);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.making-status-bar span {
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.making-status-bar a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.making-principles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.making-principles article {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: white;
+  align-content: start;
+}
+.making-principles span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 700;
+}
+.making-principles h3 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.making-principles p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.making-surfaces {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.making-surface {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.making-surface.is-web {
+  border-top: 3px solid var(--yellow);
+}
+.making-surface.is-vr {
+  border-top: 3px solid var(--pink);
+}
+.making-surface__route {
+  margin: 0 0 4px;
+  color: var(--pink);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.making-surface h3 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.making-surface header i {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--muted);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.making-surface dl {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.making-surface dl div {
+  display: grid;
+  gap: 3px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.making-surface dt {
+  color: var(--pink);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.making-surface dd {
+  margin: 0;
+  color: #2f3758;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.making-modules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.making-module {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: white;
+  align-content: start;
+}
+.making-module.is-shipped {
+  border-left: 3px solid #0a7a5c;
+}
+.making-module.is-deferred {
+  border-left: 3px solid #8a6d00;
+}
+.making-module.is-planned {
+  border-left: 3px solid var(--pink);
+}
+.making-module header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.making-module header span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 700;
+}
+.making-module header i {
+  color: var(--muted);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: right;
+}
+.making-module h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.making-module > p {
+  margin: 0;
+  color: #2f3758;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.making-module ul {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.making-module li {
+  padding: 5px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.making-module li::before {
+  content: "↳ ";
+  color: var(--pink);
+}
+.making-pipeline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.making-pipeline article {
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.making-pipeline span {
+  color: var(--pink);
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 700;
+}
+.making-pipeline h3 {
+  margin: 8px 0;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+}
+.making-pipeline p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.making-callout {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  background: #fbfaf6;
+}
+.making-callout b {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.making-callout p {
+  margin: 0;
+  color: #2f3758;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 80ch;
+}
+.making-note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 75ch;
+}
+.making-vr-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.making-vr-cards article {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.making-vr-cards article h3 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 18px;
+}
+.making-vr-cards article p {
+  margin: 0;
+  color: #2f3758;
+  font-size: 13px;
+  line-height: 1.5;
+}
+@media (max-width: 800px) {
+  .making-vr-cards { grid-template-columns: 1fr; }
+}
+.making-page blockquote a {
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+@media (max-width: 1100px) {
+  .making-principles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .making-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .making-status-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .roadmap.making-roadmap { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 800px) {
+  .making-principles,
+  .making-surfaces,
+  .making-modules,
+  .making-pipeline,
+  .making-status-bar { grid-template-columns: 1fr; }
+  .roadmap.making-roadmap { grid-template-columns: 1fr; }
+}
 blockquote { margin: 100px 0 0; padding: 65px; color: white; background: var(--pink); }
 blockquote span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; }
 blockquote p { max-width: 800px; margin: 35px 0 20px; font-family: var(--serif); font-size: clamp(42px, 6vw, 72px); line-height: 1; letter-spacing: -.04em; }
