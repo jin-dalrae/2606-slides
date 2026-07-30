@@ -916,6 +916,368 @@ function UserWavelinePage() {
   );
 }
 
+// —— 00 Full story (presentation inside /cosmos) ——
+function CosmosFullStoryPage() {
+  return (
+    <section className="report-section full-story-page" id="full-story">
+      <ChapterLabel number="00">Full story</ChapterLabel>
+      <div className="section-heading">
+        <h2>From research<br /><em>to the wall.</em></h2>
+        <p>
+          One arc: problem → research → analysis → prototype. Short claims only.
+          Deep reports live in the numbered chapters.
+        </p>
+      </div>
+
+      <nav className="report-contents" aria-label="Full story acts">
+        <p>Acts</p>
+        <a href="#fs-spine"><span>0</span>Spine</a>
+        <a href="#fs-act1"><span>1</span>Problem &amp; thesis</a>
+        <a href="#fs-act2"><span>2</span>Research</a>
+        <a href="#fs-act3"><span>3</span>Analysis</a>
+        <a href="#fs-act4"><span>4</span>Prototype &amp; next</a>
+      </nav>
+
+      <article className="full-story-deck">
+        <section className="full-story-slide" id="fs-spine">
+          <p className="full-story-ref">Spine</p>
+          <h3>This talk decides one thing</h3>
+          <p>
+            <strong>Given</strong> feeds flatten discourse and headsets will not win casual scroll,{" "}
+            <strong>we build</strong> a spatial async wall first,{" "}
+            <strong>because</strong> offline walls already work as place — and reading must prove value before community.
+          </p>
+          <div className="report-table-scroll">
+            <table className="report-table">
+              <thead><tr><th>Act</th><th>What it decides</th></tr></thead>
+              <tbody>
+                <tr><td>1 · Problem &amp; thesis</td><td>What Cosmos is (and is not)</td></tr>
+                <tr><td>2 · Research</td><td>What we learned from prior art and people</td></tr>
+                <tr><td>3 · Analysis</td><td>What the wall can close — and what still hurts</td></tr>
+                <tr><td>4 · Prototype &amp; next</td><td>What is built, what waits, what proof is missing</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">Deep library: chapters 01–08 · this page only walks the arc.</p>
+        </section>
+
+        <p className="full-story-act" id="fs-act1">Act 1 · Problem &amp; thesis</p>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Problem</p>
+          <h3>Feeds turn debate into one stream</h3>
+          <p>Reddit, X, Discord, and forums decide order for you.</p>
+          <p>Structure exists in the thread — worldviews, bridges, gaps — but a ranked list hides it.</p>
+          <p>Loud voices rise. Readers get fatigue, not a map.</p>
+          <p className="full-story-closing">The problem is orientation, not only “too much content.”</p>
+          <p className="full-story-src"><a href="/cosmos/">→ Introduction</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Reference</p>
+          <h3>Offline walls already work as place</h3>
+          <ul>
+            <li>Messages accumulate over time</li>
+            <li>People walk, scan, step closer</li>
+            <li>Density and position carry meaning</li>
+            <li>You can read without speaking or posting</li>
+          </ul>
+          <p className="full-story-closing">That is the behavior Cosmos rebuilds — not a live party in a headset.</p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Thesis</p>
+          <h3>Cosmos is a wall — not a feed, not a hangout</h3>
+          <div className="storyboard-cards-3">
+            <article><h3>Not a feed</h3><p>No endless rank that owns your path.</p></article>
+            <article><h3>Not social VR</h3><p>No requirement to be live or perform.</p></article>
+            <article><h3>A wall</h3><p>Async, spatial, low pressure — leave when done.</p></article>
+          </div>
+          <p className="full-story-closing">Success is sense-making you can exit without FOMO.</p>
+        </section>
+
+        <p className="full-story-act" id="fs-act2">Act 2 · Research</p>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Secondary</p>
+          <h3>Secondary research checked the assumptions first</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Finding</th><th>So what for Cosmos</th></tr></thead>
+              <tbody>
+                <tr><td>Quiet reading is real participation</td><td>Reading without posting is a success path</td></tr>
+                <tr><td>Spatial audio: location helps attention</td><td>Place matters — live voice is hard to scale</td></tr>
+                <tr><td>Async spatial social is possible</td><td>Memory and transformed presence beat raw replay</td></tr>
+                <tr><td>VR reading comfort is fragile</td><td>Design for short, stationary sessions</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">Prior art supports a wall; it does not say “build a full platform now.”</p>
+          <p className="full-story-src"><a href="/cosmos/secondary/">→ Secondary research</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Primary</p>
+          <h3>Primary research: four people + experts</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Who</th><th>Plain finding</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Kris</strong></td><td>Phone wins casual scroll; multi-source value must beat that bar</td></tr>
+                <tr><td><strong>Yves</strong></td><td>Comfort often caps at ~20–30 min; flat cards can feel like “Excel in a circle”</td></tr>
+                <tr><td><strong>Johnny</strong></td><td>Focus beats immersion; AI groups need a path back to sources</td></tr>
+                <tr><td><strong>JD Suh</strong></td><td>Do not make doomscroll easier in VR; guard ergonomics</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">Headset reading fails if it only copies the phone — or ignores the body.</p>
+          <p className="full-story-src"><a href="/cosmos/primary/">→ Primary research</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">V1</p>
+          <h3>V1 was a working prototype — reviews demanded proof</h3>
+          <p>SIGGRAPH 2026 poster: rejected.</p>
+          <ol>
+            <li>Text hard to read; too many cards at once</li>
+            <li>AI labels hard to inspect</li>
+            <li>No study: is a spatial list better than a 2D feed?</li>
+          </ol>
+          <p className="full-story-closing">Next work: less clutter, clearer reading, evidence from people — not only a demo.</p>
+          <p className="full-story-src"><a href="/cosmos/primary/version1-review/">→ Version 1 &amp; review</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Synthesis</p>
+          <h3>Research decision: wall first, reading before community</h3>
+          <ol>
+            <li>Control seed content</li>
+            <li>Prove wall browsing (comprehension, comfort, place memory)</li>
+            <li>Add save / return</li>
+            <li>Light contribution later</li>
+            <li>Native community or spatial voice only if earlier phases work</li>
+          </ol>
+          <p className="full-story-closing">Hosting posts is not the novel claim. The wall is.</p>
+        </section>
+
+        <p className="full-story-act" id="fs-act3">Act 3 · Analysis</p>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Waveline</p>
+          <h3>Three wavelines, one session spine</h3>
+          <p>Entice → Enter → Orient → Explore → Discover → Immerse → Interact → Exit</p>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Experience</th><th>Shape</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Feed</strong></td><td>High early scroll; deep read weak; exit with residue</td></tr>
+                <tr><td><strong>Plain VR browse</strong></td><td>Setup friction; body fights the UI</td></tr>
+                <tr><td><strong>Cosmos wall</strong></td><td>Orient useful; Explore calm; deep read can peak; contribute optional later</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">Wave height = felt intensity — not “how good.” Explore calm is intentional.</p>
+          <p className="full-story-src"><a href="/cosmos/user-waveline/">→ User waveline</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Storyboard</p>
+          <h3>Jeenie’s body is not desk-ready</h3>
+          <div className="media-split full-story-media">
+            <div>
+              <p>New mom, short leave, tech background.</p>
+              <p>Wrist pain, indoor days, baby on chest, no clean free hour.</p>
+              <p>Desk-browser VR fails. Wall + gaze + optional hand + care continues.</p>
+            </div>
+            <img src="/assets/images/cosmos/storyboard-panels.jpg" alt="Twelve-panel hand-drawn Cosmos VR storyboard for Jeenie" />
+          </div>
+          <p className="full-story-closing">Design for interrupted pockets — not free afternoons at a desk.</p>
+          <p className="full-story-src"><a href="/cosmos/storyboard/">→ Storyboard</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Storyboard</p>
+          <h3>What Jeenie needs from the product</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Need</th><th>Product rule</th></tr></thead>
+              <tbody>
+                <tr><td>Sore wrist</td><td>Gaze first; little sustained grip</td></tr>
+                <tr><td>Baby on chest</td><td>Controllers optional for basic browse</td></tr>
+                <tr><td>Lie down or walk</td><td>Readable at recline; wall stays in the room</td></tr>
+                <tr><td>Home clutter</td><td>Passthrough / see real space</td></tr>
+                <tr><td>Short pockets</td><td>Scan by similarity, not endless scroll</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">Less friction between information and care — not more immersion for its own sake.</p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Stakeholders</p>
+          <h3>Stakeholder field: two layers</h3>
+          <div className="storyboard-cards-2">
+            <article>
+              <h3>Already there</h3>
+              <p>Ads ↔ feeds, chat as home, social-VR hangouts, 2D knowledge tools, hardware tax, stores, institutions.</p>
+            </article>
+            <article>
+              <h3>What we think will be there</h3>
+              <p>Cosmos → people, Discord comparison, readers ↔ contributors, import supply — claims until reverse paths are real.</p>
+            </article>
+          </div>
+          <p className="full-story-closing">We do not invent a blank market. We intervene in a finished one.</p>
+          <p className="full-story-src"><a href="/cosmos/stakeholder-map/">→ Stakeholder analysis</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Stakeholders</p>
+          <h3>Gaps the wall can close</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Field today</th><th>Cosmos close</th></tr></thead>
+              <tbody>
+                <tr><td>Rank answers “what next?”</td><td>Map answers “where is this debate?”</td></tr>
+                <tr><td>Short-form owns leisure</td><td>Calm, stoppable scan</td></tr>
+                <tr><td>Chat owns “where we live”</td><td>Wall when a thread is wrong shape</td></tr>
+                <tr><td>Headset = hangout</td><td>Headset = sense-making place</td></tr>
+                <tr><td>Vaults hold private notes</td><td>Shared multi-voice wall</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">Only useful if it closes a named gap — not if it redraws every arrow.</p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Stakeholders</p>
+          <h3>Weaknesses that stay</h3>
+          <ul>
+            <li>Hardware cost and comfort</li>
+            <li>Store fees and policy</li>
+            <li>Empty wall without import</li>
+            <li>Chat and feed still own daily habit</li>
+            <li>Growth capital can break patient loops</li>
+            <li>Reverse loyalty (people → product) not earned yet</li>
+          </ul>
+          <p className="full-story-closing">Opportunity is real. Structural one-ways do not vanish.</p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Impact</p>
+          <h3>Impact: harms have owners</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Code</th><th>Harm</th><th>Mitigate by</th></tr></thead>
+              <tbody>
+                <tr><td>H1</td><td>Premium access only</td><td>Cross-device as first-class</td></tr>
+                <tr><td>H2</td><td>Doomscroll in a sphere</td><td>Never use dwell as north star</td></tr>
+                <tr><td>H3</td><td>Spatial harassment / steward load</td><td>Tools before multi-user scale</td></tr>
+                <tr><td>H4</td><td>Voice / biometric exposure</td><td>Opt-in body data; text always works</td></tr>
+                <tr><td>H5</td><td>Empty wall</td><td>Seed + stewards before “living community” marketing</td></tr>
+                <tr><td>H8</td><td>False impact claims</td><td>Publish falsifiers; wall-vs-feed study</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">Impact work is incomplete until we name who can be hurt and what we change.</p>
+          <p className="full-story-src"><a href="/cosmos/impact-analysis/">→ Impact analysis</a></p>
+        </section>
+
+        <p className="full-story-act" id="fs-act4">Act 4 · Prototype &amp; next</p>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Making</p>
+          <h3>What we shipped: /web planetarium</h3>
+          <div className="media-split full-story-media">
+            <div>
+              <p>Live: <a href="https://cosmosweb.web.app/web" target="_blank" rel="noreferrer">cosmosweb.web.app/web</a></p>
+              <p>Camera at center. Look, do not fly.</p>
+              <p>Smooth browse, time fog, AI layout pipeline, admin, on-device gaze privacy.</p>
+              <p>Community posting deferred until reading proves value.</p>
+            </div>
+            <img src="/assets/images/cosmos/intro-hero.jpg" alt="Cosmos wall of discourse cards over a living room" />
+          </div>
+          <p className="full-story-closing">The research object exists. It is studyable. It is not fully validated.</p>
+          <p className="full-story-src"><a href="/cosmos/making/">→ Making Cosmos</a></p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Making</p>
+          <h3>Content becomes a wall in three steps</h3>
+          <div className="making-pipeline">
+            <article><span>01</span><h3>Generator</h3><p>~150+ posts across subtopics.</p></article>
+            <article><span>02</span><h3>Cartographer</h3><p>Stance, emotion, themes, links — stream partial batches.</p></article>
+            <article><span>03</span><h3>Architect</h3><p>Clusters, sphere positions, bridges, gaps.</p></article>
+          </div>
+          <p className="full-story-closing">Cache first, then stream — the wall should appear before the pipeline finishes.</p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Making</p>
+          <h3>Two surfaces, one wall idea</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Surface</th><th>Contract</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>/web</strong></td><td>Look from center; drag / gaze / seated VR</td><td>Shipped</td></tr>
+                <tr><td><strong>/VR</strong></td><td>Walk the wall; stock locomotion; proximity voice</td><td>PRD locked, not built</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">/web proves reading. /VR is a second contract — not the same seated browser rebranded.</p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Next</p>
+          <h3>Proof still missing</h3>
+          <p>Primary interviews shaped design. They are <strong>not</strong> the wall-vs-feed study.</p>
+          <ul>
+            <li>Same seed discourse: flat feed vs Cosmos wall</li>
+            <li>Outcomes: comprehension, place memory, calm exit</li>
+            <li>Kill criterion: no advantage after novelty — or harm worse than feed</li>
+          </ul>
+          <p className="full-story-closing">Making phase 02: <strong>next proof</strong> — not “done because people liked the idea.”</p>
+        </section>
+
+        <section className="full-story-slide">
+          <p className="full-story-ref">Pressure test</p>
+          <h3>Go / stop</h3>
+          <div className="report-table-scroll">
+            <table className="report-table report-table-wide">
+              <thead><tr><th>Go if</th><th>Stop or narrow if</th></tr></thead>
+              <tbody>
+                <tr><td>Wall beats feed on sense-making</td><td>No gain after controlling for novelty</td></tr>
+                <tr><td>People leave without FOMO</td><td>Product only works as a dwell engine</td></tr>
+                <tr><td>Cross-device path exists</td><td>Impact only for premium headset owners</td></tr>
+                <tr><td>Seeded walls feel real</td><td>Empty spheres and wasted contributor labor</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="full-story-closing">If layout does not help understanding, do not add more social complexity.</p>
+        </section>
+
+        <section className="full-story-slide full-story-slide--close">
+          <p className="full-story-ref">Close</p>
+          <h3>Walk the wall. Leave without punishment.</h3>
+          <p>Research: wall first, body and trust first.</p>
+          <p>Analysis: close map and calm gaps; hardware and stores still hurt.</p>
+          <p>Prototype: /web is live; contribution and /VR wait on proof.</p>
+          <p className="full-story-closing">Cosmos is researchable. It is not finished — and that is the honest place to stop.</p>
+          <p className="full-story-src">
+            <a href="https://cosmosweb.web.app/web" target="_blank" rel="noreferrer">Try /web →</a>
+            {" · "}
+            <a href="/cosmos/">Introduction →</a>
+          </p>
+        </section>
+      </article>
+
+      <div className="report-next-links">
+        <a href="/cosmos/">Next: Introduction →</a>
+        <a href="/cosmos/making/">Making Cosmos →</a>
+      </div>
+    </section>
+  );
+}
+
 // —— Storyboard: Jeenie (postpartum constraints stress-test the wall) ——
 /** Aligns with the 12-panel drawn storyboard (row-major). */
 const storyboardBeats = [
@@ -5433,7 +5795,9 @@ function App() {
               ? "impact-analysis"
               : window.location.pathname.includes("/making")
                 ? "making"
-                : "intro";
+                : window.location.pathname.includes("/cosmos/00") || window.location.pathname.endsWith("/00/") || window.location.pathname.endsWith("/00")
+                  ? "full-story"
+                  : "intro";
   return (
     <div id="top">
       <Progress />
@@ -5441,6 +5805,7 @@ function App() {
       <CosmosSidebar active={activeChapter} subActive={activeChapter === "secondary" ? secondaryPage : activeChapter === "primary" ? primaryPage : undefined} />
 
       <main>
+        {activeChapter === "full-story" && <CosmosFullStoryPage />}
         {activeChapter === "primary" && primaryPage === "expert-questionnaire" && <ExpertQuestionnaire />}
         {activeChapter === "primary" && primaryPage === "version1-review" && <Version1Review />}
         {activeChapter === "user-waveline" && <UserWavelinePage />}
@@ -5454,7 +5819,9 @@ function App() {
               <p className="eyebrow">Spatializing asynchronous community</p>
               <h1>A community wall<br />you can <em>walk into.</em></h1>
               <p className="hero-summary">Cosmos investigates whether VR can make online discussions easier to understand by rebuilding a familiar offline behavior: reading a public wall.</p>
-              <a className="text-link" href="/cosmos/secondary/">Read the findings <span>→</span></a>
+              <a className="text-link" href="/cosmos/00/">Full story (00) <span>→</span></a>
+              {" "}
+              <a className="text-link" href="/cosmos/secondary/">Research library <span>→</span></a>
             </div>
             <figure className="hero-figure">
               <img
@@ -5635,7 +6002,9 @@ function App() {
               </div>
               <p style={{ marginTop: "16px" }}>
                 Presentation version of this arc:{" "}
-                <a href="/#cosmos-00" target="_blank" rel="noreferrer"><strong>COSMOS 00 — From research to the wall</strong></a>
+                <a href="/cosmos/00/"><strong>00 · Full story</strong></a>
+                {" · "}
+                <a href="/#cosmos-00" target="_blank" rel="noreferrer">also as Web Slides</a>
               </p>
               <div className="report-next-links">
                 <a href="/cosmos/secondary/">Continue to secondary research <span>→</span></a>

@@ -1,6 +1,7 @@
 (() => {
   // public/cosmos/shell.jsx
   var cosmosPages = [
+    ["full-story", "00", "Full story", "/cosmos/00/"],
     ["intro", "01", "Introduction", "/cosmos/"],
     ["secondary", "02", "Secondary research", "/cosmos/secondary/"],
     ["primary", "03", "Primary research", "/cosmos/primary/"],

@@ -567,6 +567,96 @@ h1 em, h2 em { color: var(--pink); font-weight: 500; }
 .roadmap li { padding: 7px 0; border-top: 1px solid var(--line); font-size: 10px; }
 .roadmap li::before { content: "↳"; margin-right: 8px; color: var(--pink); }
 
+/* —— 00 Full story (presentation inside /cosmos) —— */
+.full-story-page .section-heading {
+  margin-bottom: 36px;
+}
+.full-story-deck {
+  display: grid;
+  gap: 20px;
+  max-width: 920px;
+}
+.full-story-act {
+  margin: 28px 0 0;
+  padding: 8px 0;
+  border-top: 2px solid var(--navy);
+  color: var(--pink);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.full-story-slide {
+  padding: 22px 24px 20px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.full-story-slide--close {
+  border-color: var(--navy);
+  background: var(--paper-deep);
+}
+.full-story-ref {
+  margin: 0 0 8px;
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.full-story-slide h3 {
+  margin: 0 0 14px;
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.8vw, 30px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.full-story-slide > p,
+.full-story-slide > ul,
+.full-story-slide > ol {
+  margin: 0 0 10px;
+  color: #2f3758;
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 62ch;
+}
+.full-story-slide ul,
+.full-story-slide ol {
+  padding-left: 1.2rem;
+}
+.full-story-closing {
+  margin: 16px 0 0 !important;
+  padding: 10px 12px;
+  border-left: 3px solid var(--yellow);
+  background: rgba(242, 240, 79, 0.22);
+  color: var(--navy) !important;
+  font-size: 14px !important;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.full-story-src {
+  margin: 12px 0 0 !important;
+  font-size: 13px !important;
+  font-weight: 600;
+}
+.full-story-src a {
+  color: var(--pink);
+  text-decoration: none;
+}
+.full-story-src a:hover {
+  text-decoration: underline;
+}
+.full-story-media {
+  margin: 12px 0;
+  gap: 16px;
+  align-items: start;
+}
+.full-story-media img {
+  width: 100%;
+  border: 1px solid var(--line);
+}
+
 /* —— Storyboard (Jeenie) —— */
 .storyboard-page .section-heading {
   margin-bottom: 48px;
