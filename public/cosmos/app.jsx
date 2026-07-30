@@ -5817,7 +5817,7 @@ function App() {
           <div className="hero-grid">
             <div className="hero-copy">
               <p className="eyebrow">Spatializing asynchronous community</p>
-              <h1>A community wall<br />you can <em>walk into.</em></h1>
+              <h1>Doomscroll in 3D,<br /><em>not 2D.</em></h1>
               <p className="hero-summary">Cosmos investigates whether VR can make online discussions easier to understand by rebuilding a familiar offline behavior: reading a public wall.</p>
               <a className="text-link" href="/cosmos/00/">Full story (00) <span>→</span></a>
               {" "}

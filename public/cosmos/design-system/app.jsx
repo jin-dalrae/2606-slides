@@ -67,7 +67,7 @@ function App() {
           <div className="type-scale">
             <div><span>Display</span><p className="t-display">The wall remembers.</p><code>68px / 1.02</code></div>
             <div><span>Heading</span><p className="t-heading">Design for quiet readers first.</p><code>34px / 1.12</code></div>
-            <div><span>Body lead</span><p className="t-lead">A community wall you can walk into.</p><code>20px / 1.55</code></div>
+            <div><span>Body lead</span><p className="t-lead">Doomscroll in 3D, not 2D.</p><code>20px / 1.55</code></div>
             <div><span>Body</span><p className="t-body">Distance, density, and adjacency become part of how people understand a discussion.</p><code>14px / 1.65</code></div>
             <div><span>Label</span><p className="t-label">Secondary research · Finding 03</p><code>11px / +15%</code></div>
           </div>
