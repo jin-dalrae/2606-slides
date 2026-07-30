@@ -56,6 +56,18 @@
       public: true
     },
     {
+      slug: "cosmos-vr-storyboard",
+      title: "COSMOS VR STORYBOARD",
+      docTitle: "Jeenie user storyboard",
+      sidebarTitle: "VR storyboard",
+      project: "Cosmos",
+      date: "July 30, 2026",
+      file: "presentations/cosmos-vr-storyboard.md",
+      transition: "slide",
+      font: "poppins",
+      public: true
+    },
+    {
       slug: "cardinal-agentic-spending",
       title: "Cardinal",
       docTitle: "Agentic workplace spending",
