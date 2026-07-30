@@ -33,6 +33,18 @@
   // without requiring login. Editing is still only possible for authenticated users.
   const slides = [
     {
+      slug: "cosmos-00",
+      title: "COSMOS 00",
+      docTitle: "Research to wall — full story",
+      sidebarTitle: "00 · Full story",
+      project: "Cosmos",
+      date: "July 30, 2026",
+      file: "presentations/cosmos-00-research-to-wall.md",
+      transition: "slide",
+      font: "poppins",
+      public: true
+    },
+    {
       slug: "cosmos-spatializing-community",
       title: "COSMOS",
       docTitle: "Research direction",

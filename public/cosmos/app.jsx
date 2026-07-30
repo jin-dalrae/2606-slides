@@ -49,7 +49,7 @@ const experienceWaves = [
     label: "Cosmos VR",
     kicker: "04 · User waveline · Cosmos VR",
     title: "One session in the sphere",
-    lede: "Eight stages of using Cosmos VR — from first intrigue through contribution and return. Wave height is felt intensity.",
+    lede: "Eight stages of a Cosmos wall session — from first intrigue through deep read and optional light participate. Wave height is felt intensity (not quality). Native contribution is later; reading can succeed alone.",
     stroke: "#f14f9b",
     fill: "#f14f9b",
     defaultStage: "immerse",
@@ -86,33 +86,33 @@ const experienceWaves = [
         intensity: 0.84,
         peakLabel: "delight",
         behavior: "Points to zoom a post, grabs and shifts it, walks closer for faint voice playback, notices color themes, speaks a short test post into the right place.",
-        feelings: "Empowerment and small wow moments — “I can just grab it… and it speaks when I get close.”",
-        achievements: "Color = theme/mood; proximity = voice + detail; hands = manipulate; voice = create.",
-        mechanics: ["Point-to-zoom", "Hand grab", "Voice test post"],
+        feelings: "Useful control — “I can grab it,” and nearby posts get clearer.",
+        achievements: "Learns: color ≈ theme, proximity ≈ detail, hands ≈ move/inspect. Voice create is optional / later.",
+        mechanics: ["Point-to-zoom", "Hand grab", "Optional voice preview"],
       },
       {
         id: "explore",
         stage: "04",
         name: "Explore",
-        short: "High-level scanning & wandering",
+        short: "Calm scan of the wall",
         intensity: 0.52,
         peakLabel: "calm scan",
-        behavior: "Walks or pans across color clusters. Older posts sit slightly behind. Points from a distance to preview; walks closer for soft voice snippets without full zoom.",
-        feelings: "Calm exploration with sensory richness. Voice fragments add emotional texture while browsing.",
-        achievements: "Quick visual + auditory overview of the community’s mood and themes.",
-        mechanics: ["Color clusters", "Depth = age", "Soft proximity audio"],
+        behavior: "Walks or pans across color clusters. Older posts sit farther or dimmer. Previews from a distance; steps closer for more detail without full deep-read yet.",
+        feelings: "Calm overview — lower intensity than Orient or Discover on purpose (scan, not climax).",
+        achievements: "A quick map of mood and themes — not a feed of novelty spikes.",
+        mechanics: ["Color clusters", "Depth / fog = age", "Distance preview"],
       },
       {
         id: "discover",
         stage: "05",
         name: "Discover",
-        short: "Serendipitous + intentional finding",
+        short: "Finding a thread worth attention",
         intensity: 0.8,
         peakLabel: "aha",
-        behavior: "Follows color gradients and clusters. Closer approach reveals tone in original voice. Points to zoom full text + reactions; grabs a post for personal inspection, then releases it.",
-        feelings: "Strong aha moments — hearing actual voice makes posts feel real and human.",
-        achievements: "Finds content with emotional and contextual nuance text-only browsing misses.",
-        mechanics: ["Voice approach", "Point-to-zoom", "Grab inspect"],
+        behavior: "Follows clusters and gradients. Opens a post to full text and related posts; may hold one card for inspection, then release it.",
+        feelings: "Clear find — this is the debate region I needed.",
+        achievements: "Locates content with structure a ranked feed hides.",
+        mechanics: ["Cluster follow", "Focus card", "Related posts"],
       },
       {
         id: "immerse",
@@ -120,35 +120,35 @@ const experienceWaves = [
         name: "Immerse",
         short: "Deep reading & sense-making",
         intensity: 0.96,
-        peakLabel: "presence",
-        behavior: "Stays in a cluster. Points posts forward one by one, or grabs a small personal reading circle. Full voice + text; emoji reactions; color and proximity show theme evolution.",
-        feelings: "Deep focus + intimacy — “It feels like the person is here with me.”",
-        achievements: "Empathetic understanding combining text, voice tone, space, and social reactions.",
-        mechanics: ["Reading circle", "Full voice", "Emoji reactions"],
+        peakLabel: "focus",
+        behavior: "Stays in one cluster. Reads posts one by one or keeps a small reading set. Uses layout and links to compare positions in the debate.",
+        feelings: "Deep focus — understanding the place, not performing presence.",
+        achievements: "Can retell what the region was about and where disagreement sat.",
+        mechanics: ["Reading focus", "Compare in place", "Source inspect"],
       },
       {
         id: "interact",
         stage: "07",
         name: "Interact",
-        short: "Active participation",
-        intensity: 0.92,
-        peakLabel: "agency",
-        behavior: "Speaks to post (color-coded note appears by meaning). Replies by pointing/grabbing then speaking. Gestures emoji reactions. Grabs to re-position, group, or show others.",
-        feelings: "Agency and belonging. Voice creation is expressive and low-friction; posts feel like mine.",
-        achievements: "Contributes multimodal, spatially organized content; space feels like a living knowledge sculpture.",
-        mechanics: ["Speak to post", "Voice reply", "React", "Hand rearrange"],
+        short: "Light participation (later phase)",
+        intensity: 0.55,
+        peakLabel: "optional",
+        behavior: "May react, leave a short note, or save a path. Full native posting and voice plant are deferred until reading value is proven (see Making · community).",
+        feelings: "Low pressure — contribution is allowed, not required for a good session.",
+        achievements: "Session can succeed as read-only; light acts do not demand a social performance.",
+        mechanics: ["React", "Save path", "Optional note (later)"],
       },
       {
         id: "exit",
         stage: "08",
-        name: "Exit & extend",
-        short: "Closure + long-term relationship",
+        name: "Exit & return",
+        short: "Leave on purpose",
         intensity: 0.58,
-        peakLabel: "linger",
-        behavior: "Zooms out; releases grabbed posts. May bookmark a cluster with a voice note. After headset off, notifications on nearby replies. Returns to evolved space.",
-        feelings: "Satisfied closure with lingering resonance. Ongoing connection as the space keeps growing.",
-        achievements: "Intellectual insight + emotional memory; habit of return because contributions stay alive.",
-        mechanics: ["Zoom out", "Bookmark + voice note", "Return path"],
+        peakLabel: "done",
+        behavior: "Zooms out or removes headset. May save a region. Returns later because the place is remembered — not only because a notification pulled them back.",
+        feelings: "Finished, not empty itch. Willing to come back for the place.",
+        achievements: "Intentional exit + place memory; return without feed-style re-pull.",
+        mechanics: ["Zoom out", "Save region", "Return path"],
       },
     ],
   },
@@ -587,8 +587,8 @@ const phases = [
   {
     phase: "02",
     name: "Validate reading value",
-    status: "Now",
-    body: "Comparative studies: wall vs flat feed on comprehension, comfort, place memory, and intentional exit — before adding contribution pressure.",
+    status: "Next proof",
+    body: "Comparative study still required: wall vs flat feed on comprehension, comfort, place memory, and intentional exit — before adding contribution pressure. Primary interviews inform design; they are not that study yet.",
     outputs: ["Quest + desktop protocols", "Flat-feed control", "Sense-making metrics from impact analysis"],
   },
   {
@@ -806,8 +806,9 @@ function UserWavelinePage() {
           <h1>User experience wavelines</h1>
         </div>
         <p className="waveline-lede">
-          Same eight stages across Cosmos VR, feed platforms, and VR without a game loop.
-          Columns follow the chart left → right. Wave height already shows felt intensity — tables hold the words.
+          Same eight stages across Cosmos VR, feed platforms, and plain VR browse.
+          Columns run left → right. <strong>Wave height is felt intensity, not “how good” the product is</strong> —
+          a calm Explore dip on Cosmos is intentional; a high feed Explore peak can still be shallow.
         </p>
       </header>
 
@@ -824,7 +825,8 @@ function UserWavelinePage() {
         <figure className="waveline-doc-chart">
           <WavelineCompareChart waves={experienceWaves} />
           <figcaption>
-            Session stages run left → right. Tables use the same order as column headers.
+            Left → right = session stages. Height = felt intensity (not quality). Cosmos Interact is lower than an ideal
+            “full social” peak because native contribution is deferred until reading works.
           </figcaption>
         </figure>
 
@@ -915,15 +917,20 @@ function UserWavelinePage() {
 }
 
 // —— Storyboard: Jeenie (postpartum constraints stress-test the wall) ——
+/** Aligns with the 12-panel drawn storyboard (row-major). */
 const storyboardBeats = [
-  { beat: "01", title: "Character", situation: "New mom, 2-week-old, short leave", outcome: "Time is split; identity feels awkward" },
-  { beat: "02", title: "Constraints", situation: "Wrist pain, indoor days, chores + rest", outcome: "Phone hurts after ~5 min; exercise is gone" },
-  { beat: "03", title: "VR hope", situation: "Baby asleep on chest / lying down", outcome: "Headset could free hands and posture" },
-  { beat: "04", title: "Browser fail", situation: "Desk-optimized VR web", outcome: "Close reading hurts; hands hit the baby" },
-  { beat: "05", title: "Discovery", situation: "App Store search for VR browsing", outcome: "Cosmos: posts on a wall, by similarity" },
-  { beat: "06", title: "Gaze + pull", situation: "Eyes look; hand pulls the wall closer", outcome: "No controller required for basic browse" },
-  { beat: "07", title: "Walk", situation: "She stands and moves through the room", outcome: "Wall stays world-anchored; passthrough keeps her safe" },
-  { beat: "08", title: "Care", situation: "Baby wakes hungry", outcome: "Breastfeeding continues with headset on" },
+  { beat: "01", panel: "P1", title: "Character", situation: "Jeenie, ~35, tech, short leave; 2-week-old", outcome: "Life is newborn-first; identity feels split" },
+  { beat: "02", panel: "P2", title: "Time split", situation: "Clock of care; partner help limited", outcome: "No clean free hour — only fragile pockets" },
+  { beat: "03", panel: "P3", title: "Phone strain", situation: "Still tries phone like before", outcome: "Wrist pain after childbirth makes long grip fail" },
+  { beat: "04", panel: "P4", title: "VR try", situation: "Headset with baby on chest", outcome: "Hope: free hands and posture while staying with baby" },
+  { beat: "05", panel: "P5", title: "Desk browser fails", situation: "Desktop-style browser in VR", outcome: "Too big / too close; desk model does not fit her body" },
+  { beat: "06", panel: "P6", title: "Finds Cosmos", situation: "App Store search for VR browsing", outcome: "Cosmos as best-fit wall browser" },
+  { beat: "07", panel: "P7", title: "Wall of posts", situation: "Multi-source posts on a wall", outcome: "Easy to scan; similarity layout, not a feed stack" },
+  { beat: "08", panel: "P8", title: "Gaze + hand", situation: "Look and light hand actions", outcome: "Browse without a heavy controller loop" },
+  { beat: "09", panel: "P9", title: "Care continues", situation: "Headset on while breastfeeding", outcome: "Session survives real interruption" },
+  { beat: "10", panel: "P10", title: "Optional voice note", situation: "Speech to leave a post (later product)", outcome: "Low-friction contribute if reading already works" },
+  { beat: "11", panel: "P11", title: "Walk the wall", situation: "Stands and moves; wall stays put", outcome: "World-anchored place + physical browse" },
+  { beat: "12", panel: "P12", title: "Back to room", situation: "Headset off; coffee with partner", outcome: "Easy return to reality — passthrough / leave on purpose" },
 ];
 
 const storyboardImplications = [
@@ -981,11 +988,16 @@ function StoryboardPage() {
 
       <section className="report-chapter" id="storyboard-beats">
         <span className="report-number">1</span>
-        <h2>Eight beats</h2>
+        <h2>Twelve panels (matches the drawing)</h2>
+        <p className="report-lead">
+          Same order as the sheet above: character → strain → headset try → desk browser fail → Cosmos wall →
+          gaze/hand → care → optional speech → walk → return to the room.
+        </p>
         <div className="report-table-scroll">
           <table className="report-table report-table-wide">
             <thead>
               <tr>
+                <th>Panel</th>
                 <th>Beat</th>
                 <th>Situation</th>
                 <th>What fails / what works</th>
@@ -994,7 +1006,8 @@ function StoryboardPage() {
             <tbody>
               {storyboardBeats.map((row) => (
                 <tr key={row.beat}>
-                  <td><strong>{row.beat} · {row.title}</strong></td>
+                  <td><strong>{row.panel}</strong></td>
+                  <td>{row.beat} · {row.title}</td>
                   <td>{row.situation}</td>
                   <td>{row.outcome}</td>
                 </tr>
@@ -1726,7 +1739,7 @@ const gapOpportunityOverrides = {
   },
   "meta-store|team": {
     kinds: ["partnership", "policy"],
-    note: "Fees and featuring pressure viability. Use multi-store leverage so Meta is not the only gate.",
+    note: "Fees and featuring pressure viability. Use more than one store so Meta is not the only gate.",
   },
   "meta-store|onboarding": {
     kinds: ["feature", "partnership"],
@@ -3795,7 +3808,7 @@ const stakeholderHypothesized = [
     title: "Team ↔ stores; team → capital",
     status: "Partly real if shipping; partly narrative",
     body: "Store fee loops become real the day we ship on a storefront. Capital and press edges are story we tell until metrics exist.",
-    gapAfterMerge: "Still dependent: multi-store leverage and patient capital are choices, not guaranteed reverse influence from users or markets.",
+    gapAfterMerge: "Still dependent: multi-store options and patient capital are choices, not guaranteed reverse influence from users or markets.",
   },
 ];
 
@@ -3860,12 +3873,12 @@ const weaknessesRemain = [
 ];
 
 const analysisOpportunities = [
-  "Own place memory and debate topology as the product job — not social hangout, not feed clone.",
-  "Target intentional users, Reddit-depth readers, curators, fandom/club stewards who already hate doomscroll.",
-  "Ship import + seeded walls before spectacle; prove demand back to publishers and partners.",
-  "Design for interrupted bodies (gaze, short session, cross-device) as a differentiator against desk-shaped VR.",
-  "Frame /VR and /web as one wall metaphor with two contracts — walk when able, look-from-center when not.",
-  "Use Gaps mode to prioritize marketing, feature, targeting, partnership, and policy moves on major one-ways.",
+  "Own place memory and debate layout as the product job — not hangout, not feed clone.",
+  "Target intentional users, Reddit-depth readers, curators, and club stewards who already hate doomscroll.",
+  "Ship import and seeded walls before marketing spectacle; prove demand to publishers.",
+  "Design for interrupted bodies (gaze, short session, cross-device) against desk-shaped VR.",
+  "One wall idea, two surfaces: look-from-center on /web; walk when /VR ships.",
+  "Use Gaps mode to pick which reverse paths to earn first.",
 ];
 
 const analysisWeaknesses = [
@@ -4548,9 +4561,8 @@ function ImpactAnalysisPage() {
           <em>and how we mitigate them.</em>
         </h2>
         <p>
-          Goal: build a framework to evaluate how Cosmos affects other stakeholders — positively and negatively —
-          brainstorm adverse impacts, ask how the product could be used to harm others, define measurement, and
-          commit to mitigations. Growth stories are out of scope unless they create or reduce harm.
+          What can go wrong, how we measure it, and how we reduce it — using the stakeholder analysis as the field map.
+          Growth stories only matter when they create or reduce harm.
         </p>
       </div>
 
@@ -5102,7 +5114,7 @@ function Version1Review() {
             <figcaption>Cosmos V1 prototype — planetarium of posts with gaze controls (Gaze / Drag / Auto-open) and expanded card detail.</figcaption>
           </figure>
           <p className="report-lead">
-            In April 2026, Cosmos Version 1 was submitted as a poster to SIGGRAPH 2026. While the submission was ultimately rejected, the academic peer review process provided an invaluable diagnostic crucible. The detailed critiques on text legibility, cognitive clutter, and the demand for empirical utility became the direct architectural blueprints for the Version 2 study tested with Kris, Yves, and Johnny.
+            In April 2026, Cosmos Version 1 was submitted as a SIGGRAPH 2026 poster and rejected. Reviews focused on text legibility, visual clutter, and missing user evidence. Those notes shaped the next studies with Kris, Yves, Johnny, and JD Suh — and the product direction recorded in Making Cosmos.
           </p>
           <div style={{ display: "flex", gap: "16px", marginTop: "24px", flexWrap: "wrap" }}>
             <a className="source-link" href="https://cosmosweb.web.app" target="_blank" rel="noreferrer" style={{ margin: 0 }}>
@@ -5118,8 +5130,8 @@ function Version1Review() {
           <tbody>
             <tr><th>Title</th><td>COSMOS: Spatial Discourse Browser for AR, VR, and Desktop</td><th>Author</th><td>Rae Jin (dalrae.jin.work@gmail.com)</td></tr>
             <tr><th>Submission</th><td>SIGGRAPH 2026 Poster (Rejected)</td><th>Date</th><td>April 21, 2026</td></tr>
-            <tr><th>Core Paradigm</th><td>3D Planetarium spherical discussion mapping</td><th>Key Technology</th><td>Five-Agent AI Pipeline & GazeLearner Engine</td></tr>
-            <tr><th>Evidence Status</th><td colSpan="3">Comprehensive functional prototype + 3 peer-review expert panels. Direct lineage to V2.</td></tr>
+            <tr><th>Core model</th><td>3D planetarium: discussion mapped on a sphere</td><th>Key technology</th><td>Five-agent AI pipeline & GazeLearner</td></tr>
+            <tr><th>Evidence status</th><td colSpan="3">Working prototype + three SIGGRAPH reviews. Lineage into later primary research and /web product work.</td></tr>
           </tbody>
         </table>
 
@@ -5128,7 +5140,7 @@ function Version1Review() {
           <a href="#v1-problem"><span>0</span>The original problem & pitch</a>
           <a href="#v1-pipeline"><span>1</span>The 5-Agent AI pipeline</a>
           <a href="#v1-coordinates"><span>2</span>Spherical coordinate encoding</a>
-          <a href="#v1-input"><span>3</span>Input paradigm & GazeLearner</a>
+          <a href="#v1-input"><span>3</span>Input model & GazeLearner</a>
           <a href="#v1-reviews"><span>4</span>SIGGRAPH peer reviews verbatim</a>
           <a href="#v1-pivot"><span>5</span>Strategic pivot responses</a>
         </nav>
@@ -5141,7 +5153,7 @@ function Version1Review() {
             Whether it is Reddit, X, HackerNews, or Discord, feeds decide the sequence of what you read. Readers have zero agency, decision fatigue is high, and polarization accelerates because sorted lists surface the loudest, most extreme voices. 500-comment threads have complex structure: worldviews, bridges, gaps, and logical trajectories, but flat feeds reduce them to a stream of noise.
           </p>
           <p>
-            Cosmos Version 1 proposed an elegant solution: <b>stand inside the conversation and navigate it with your body.</b>
+            Cosmos Version 1 proposed: <b>stand inside the conversation and navigate it with your body.</b>
           </p>
           <div className="report-table-scroll"><table className="report-table">
             <thead>
@@ -5258,7 +5270,7 @@ function Version1Review() {
 
         <section className="report-chapter" id="v1-input">
           <span className="report-number">3</span>
-          <h2>Input paradigm & GazeLearner</h2>
+          <h2>Input model & GazeLearner</h2>
           <p className="report-lead">To reduce physical strain, Cosmos V1 introduced GazeLearner: a zero-calibration, passive eye-head coordination tracking engine.</p>
           <p>
             Rather than requiring a tedious 9-dot setup cycle before usage, GazeLearner silently trains itself during ordinary browsing actions:
@@ -5278,7 +5290,7 @@ function Version1Review() {
         <section className="report-chapter" id="v1-reviews">
           <span className="report-number">4</span>
           <h2>SIGGRAPH 2026 poster peer reviews</h2>
-          <p className="report-lead">The submission to SIGGRAPH 2026 received rigorous, direct feedback from three expert peer reviewers. Their assessments identified crucial limitations in visual legibility, visual clutter, and the demand for empirical validation.</p>
+          <p className="report-lead">Three peer reviewers commented on the poster. Main issues: hard-to-read text, too many cards at once, and no study showing the wall beats a 2D feed.</p>
           
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", margin: "24px 0" }} className="expert-cons-grid">
             <div style={{ padding: "20px", background: "rgba(255, 255, 255, 0.03)", border: "1px solid var(--navy)", borderRadius: "8px" }}>
@@ -5325,8 +5337,8 @@ function Version1Review() {
 
         <section className="report-chapter" id="v1-pivot">
           <span className="report-number">5</span>
-          <h2>Strategic pivot responses: Designing V2</h2>
-          <p className="report-lead">Rather than seeing the rejection as a setback, the criticisms became the direct catalyst for Cosmos Version 2, turning unproven hypotheses into a rigorous, human-centered study.</p>
+          <h2>What changed after the reviews</h2>
+          <p className="report-lead">The rejection notes set the agenda for the next work: less clutter, clearer reading, and evidence from people — not only a graphics demo.</p>
           <div className="report-table-scroll"><table className="report-table report-table-wide">
             <thead>
               <tr><th>SIGGRAPH Peer Critique</th><th>Pivot Strategy for Version 2</th><th>Implemented V2 Design Proof</th></tr>
@@ -5436,7 +5448,7 @@ function App() {
         {activeChapter === "stakeholder-map" && <StakeholderMapPage />}
         {activeChapter === "impact-analysis" && <ImpactAnalysisPage />}
         {activeChapter === "intro" && <section className="hero" id="intro">
-          <div className="hero-kicker"><span>Independent research</span><span>June 2026</span></div>
+          <div className="hero-kicker"><span>Independent research</span><span>Updated July 2026</span></div>
           <div className="hero-grid">
             <div className="hero-copy">
               <p className="eyebrow">Spatializing asynchronous community</p>
@@ -5467,6 +5479,7 @@ function App() {
               <a href="#strategy"><span>4</span>Wall-first strategy</a>
               <a href="#evidence"><span>5</span>Evidence matrix</a>
               <a href="#next"><span>6</span>Research still needed</a>
+              <a href="#library"><span>7</span>What else is in this library</a>
             </nav>
 
             <section className="report-chapter" id="summary">
@@ -5598,7 +5611,36 @@ function App() {
                 <li>An optional later test of ambient co-presence or spatial audio after asynchronous wall browsing works.</li>
               </ul>
               <aside className="report-note"><b>Decision rule</b><p>If spatial layout does not improve comprehension, comfort, trust, or place memory relative to a flat feed, Cosmos should not add more immersive or social complexity.</p></aside>
-              <div className="report-next-links"><a href="/cosmos/secondary/">Continue to secondary research <span>→</span></a><a href="/cosmos/primary/">Review the primary study plan <span>→</span></a></div>
+            </section>
+
+            <section className="report-chapter" id="library">
+              <span className="report-number">7</span>
+              <h2>What else is in this library</h2>
+              <p className="report-lead">Later chapters carry research, analysis, and the live build. This intro is only the thesis and plan.</p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Chapter</th><th>What you get</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><a href="/cosmos/secondary/">02 Secondary research</a></td><td>Literature and prior art that support (or bound) the wall idea.</td></tr>
+                    <tr><td><a href="/cosmos/primary/">03 Primary research</a></td><td>Interviews, experts, and V1 peer review — comfort, focus, trust.</td></tr>
+                    <tr><td><a href="/cosmos/user-waveline/">04 User waveline</a></td><td>Cosmos vs feed vs plain VR browse across one session spine.</td></tr>
+                    <tr><td><a href="/cosmos/storyboard/">05 Storyboard</a></td><td>Jeenie scenario: body constraints and wall browse under care load.</td></tr>
+                    <tr><td><a href="/cosmos/stakeholder-map/">06 Stakeholder analysis</a></td><td>Already-there vs hypothesized edges; gaps the app can close.</td></tr>
+                    <tr><td><a href="/cosmos/impact-analysis/">07 Impact analysis</a></td><td>Harms, misuse, measurement, mitigation.</td></tr>
+                    <tr><td><a href="/cosmos/making/">08 Making Cosmos</a></td><td>What shipped on /web, what waits (/VR, community), phase order.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style={{ marginTop: "16px" }}>
+                Presentation version of this arc:{" "}
+                <a href="/#cosmos-00" target="_blank" rel="noreferrer"><strong>COSMOS 00 — From research to the wall</strong></a>
+              </p>
+              <div className="report-next-links">
+                <a href="/cosmos/secondary/">Continue to secondary research <span>→</span></a>
+                <a href="/cosmos/making/">See what is built <span>→</span></a>
+              </div>
             </section>
           </article>
         </section>}
@@ -5922,7 +5964,7 @@ function App() {
               <article><div><span>01</span><i>Spatio-temporal</i></div><h3>Contextual Annotations</h3><p>Strategic 3D visual markers highlighting key actions, tool acquisitions, or process starts directly within the augmented space.</p></article>
               <article><div><span>02</span><i>Fidelity</i></div><h3>Spatial Anchor Point</h3><p>QR code or calibration marker calibrating headset sensors to establish precise 1:1 physical-to-virtual positional coordinates.</p></article>
               <article><div><span>03</span><i>Presence</i></div><h3>Body Movement Tracking</h3><p>Continuous capture of hand, head, and limb trajectories synchronized to let late-joining users review past body actions in 3D.</p></article>
-              <article><div><span>04</span><i>Geometry</i></div><h3>Environment Recording</h3><p>Depth sensor point clouds translated into 3D mesh models, allowing virtual objects to integrate seamlessly or scale down cleanly.</p></article>
+              <article><div><span>04</span><i>Geometry</i></div><h3>Environment Recording</h3><p>Depth sensor point clouds become 3D meshes so virtual objects sit in the room or scale cleanly.</p></article>
               <article><div><span>05</span><i>Summarization</i></div><h3>Narrative Abstraction</h3><p>Cloud-based LLM engine processing event transcripts to generate concise, real-time summaries and highlight key interactions.</p></article>
             </div>
           </div>
@@ -5944,7 +5986,7 @@ function App() {
             <span>Implication for Cosmos</span>
             <h2>Asynchronous presence is a spatial design space.</h2>
             <div className="implication-grid">
-              <article><b>Leverage Spatial Traces</b><p>Capture movement and view tracking to let users browse discussion histories as physical pathways they can walk into.</p></article>
+              <article><b>Use spatial traces</b><p>Capture movement and view history so people can walk old paths through a discussion.</p></article>
               <article><b>Source-Linked Summaries</b><p>Deploy AI-generated summaries as an inspectable layer where every claim traces back to the source text on the wall.</p></article>
               <article><b>Multi-Scale Navigation</b><p>Allow readers to zoom from a bird's-eye "tabletop" cluster overview down into full-scale immersion of specific threads.</p></article>
             </div>
@@ -6066,27 +6108,29 @@ function App() {
           <ChapterLabel number="03">Primary research</ChapterLabel>
           <article className="report-document primary-document">
             <header className="report-page-intro">
-              <p className="eyebrow">Exploratory Phase & Synthesis</p>
-              <h1>The physical limits of immersion and the premium on provenance.</h1>
-              <p>This chapter compiles synthesized findings from three semi-structured interviews with think-aloud walkthroughs (Kris, Yves, Johnny) and a remote expert questionnaire. The qualitative feedback highlights a deep tension between headset convenience thresholds and the clear user demand for visual focus, ergonomic pacing, and verifiable source provenance.</p>
+              <p className="eyebrow">Exploratory phase &amp; synthesis</p>
+              <h1>Headset limits, focus, and source trust.</h1>
+              <p>
+                Four interviews (Kris, Yves, Johnny, JD Suh) plus a remote expert questionnaire. Main result: people will not put on a headset to scroll like a phone. They want short, comfortable sessions, one clear focus, and a path back to original sources.
+              </p>
             </header>
 
             <nav className="report-contents" aria-label="Primary research contents">
               <p>In this report</p>
-              <a href="#primary-scope"><span>0</span>Exploratory scope</a>
-              <a href="#primary-synthesis"><span>1</span>Executive findings map</a>
-              <a href="#primary-convenience"><span>2</span>Convenience thresholds</a>
-              <a href="#primary-ergonomics"><span>3</span>Physical constraints</a>
-              <a href="#primary-focus"><span>4</span>Cognitive focus & provenance</a>
-              <a href="#primary-experts"><span>5</span>Expert design consensus</a>
-              <a href="#primary-directives"><span>6</span>Strategic design directives</a>
+              <a href="#primary-scope"><span>0</span>Who we talked to</a>
+              <a href="#primary-synthesis"><span>1</span>Findings map</a>
+              <a href="#primary-convenience"><span>2</span>Why casual scroll loses</a>
+              <a href="#primary-ergonomics"><span>3</span>Physical limits</a>
+              <a href="#primary-focus"><span>4</span>Focus and source trust</a>
+              <a href="#primary-experts"><span>5</span>Expert notes</a>
+              <a href="#primary-directives"><span>6</span>What we change in the product</a>
             </nav>
 
             <section className="report-chapter" id="primary-scope">
               <span className="report-number">0</span>
-              <h2>Exploratory scope and participant profiles</h2>
-              <p className="report-lead">To ground our theoretical spatial concept in user reality, we conducted four distinct research tracks with designers, engineers, and XR practitioners.</p>
-              <p>These early engagements let us stress-test our web-based prototype, understand behavioral limits, and refine our evaluation criteria before committing to native platform-specific development. Because user habits around online forums are deeply entrenched on desktop and mobile, our findings focus on the exact barriers that prevent people from switching to virtual environments for reading tasks.</p>
+              <h2>Who we talked to</h2>
+              <p className="report-lead">Four interview tracks and one expert survey with designers, engineers, and XR practitioners.</p>
+              <p>We walked people through the web prototype and asked where headset reading would fail. Most daily forum use still happens on phone and desktop; this chapter names the barriers that stop a switch to VR for reading.</p>
 
               <div className="report-table-scroll"><table className="report-table report-table-wide">
                 <thead><tr><th>Track</th><th>Participant profile</th><th>Methodology</th><th>Key focus area</th></tr></thead>
@@ -6102,8 +6146,8 @@ function App() {
 
             <section className="report-chapter" id="primary-synthesis">
               <span className="report-number">1</span>
-              <h2>Executive findings map</h2>
-              <p>Our exploratory research revealed that while the conceptual model of a spatial discussion wall is highly engaging, its success depends entirely on resolving three core physical and cognitive friction points.</p>
+              <h2>Findings map</h2>
+              <p>The spatial wall idea interested people. Adoption still fails if convenience, comfort, density, or source trust are wrong.</p>
 
               <div className="report-table-scroll"><table className="report-table report-table-wide">
                 <thead><tr><th>Dimension</th><th>Identified user barrier</th><th>Empirical evidence</th><th>Strategic design directive</th></tr></thead>
@@ -6119,38 +6163,36 @@ function App() {
 
             <section className="report-chapter" id="primary-convenience">
               <span className="report-number">2</span>
-              <h2>Convenience thresholds: Why VR "doomscrolling" is a non-starter</h2>
-              <p>Both Kris and Johnny emphasized that the immediate, low-friction convenience of mobile phones dictates their daily browsing habits. A phone is always within arm's reach, highly portable, and requires zero physical setup. In contrast, putting on a headset requires a startup sequence, sensory isolation from the physical room, and a deliberate decision to enter a virtual environment.</p>
-              <p>Therefore, <b>Cosmos cannot win on casual or passive browsing.</b> If Cosmos merely recreates a chronological feed in three dimensions, users will choose their phone every time.</p>
+              <h2>Why casual scroll loses on a headset</h2>
+              <p>Kris and Johnny treated the phone as the default for light browsing: always nearby, no setup. A headset needs startup, blocks the room, and feels deliberate. <b>Cosmos cannot win by copying a feed in 3D</b> — people will stay on the phone.</p>
               <blockquote className="report-quote">“If I want to browse Reddit, I'm already in a relaxed state on the couch. Putting on a Quest feels like going to work.”</blockquote>
-              <p><b>The Solution:</b> Cosmos must target purposeful, intensive information-seeking tasks where spatial comparison is a superpower—for instance, analyzing competing arguments, reading complex research trees, or monitoring multiple active channels simultaneously.</p>
-              <aside className="report-note report-note-yellow"><b>Implication</b><p>Move away from infinite-scroll structures. Build a bounded "workspace" that supports cross-source intelligence mapping instead of trying to make spatial reading a passive pastime.</p></aside>
+              <p><b>So we aim for purposeful work:</b> comparing arguments, following a debate tree, or watching several sources at once — jobs where space can help more than a ranked list.</p>
+              <aside className="report-note report-note-yellow"><b>Implication</b><p>Skip infinite scroll as the main mode. Prefer a bounded workspace people can finish and leave.</p></aside>
             </section>
 
             <section className="report-chapter" id="primary-ergonomics">
               <span className="report-number">3</span>
-              <h2>Physical limits: The 20-minute ergonomic cutoff</h2>
-              <p>Yves's experience as a 3D artist and VR developer highlighted the physical realities of current headset hardware. For many users—particularly those prone to motion sickness or concerned with skin hygiene (makeup, sweat)—the headset is a high-cost environment. Yves noted that nose bridge pressure, red marks on the cheeks, and headset weight restrict continuous focus to 20 or 30 minutes at most.</p>
-              <p>Furthermore, Yves challenged the prototype's "flat cards in depth" spatial model, comparing it to an "Excel file wrapped in a circle." As a 3D practitioner, she demanded a more asymmetric, volumetric, and organic use of the 360-degree environment.</p>
+              <h2>Physical limits: about 20 minutes</h2>
+              <p>Yves (3D artist, former XR developer) described hard comfort limits: nose pressure, red marks, makeup and sweat, motion sensitivity. Productive focus often tops out around 20–30 minutes.</p>
+              <p>She also pushed on layout: flat cards in depth felt like “an Excel file wrapped in a circle.” She wanted real use of volume and uneven clusters, not only a bent 2D board.</p>
               <blockquote className="report-quote">“We are in 3D space, but we're still looking at flat sheets of text. Why can't we call notes with a physical wand, or have groups form organic clusters in depth?”</blockquote>
-              <p><b>The Solution:</b> We must design the software around a 20-minute comfort budget. This means optimizing layouts to prevent rapid head-swiveling, supporting laid-back/reclined postures with easy recentering, and utilizing actual depth (depth-layering, volumetric clusters) rather than merely bending a traditional 2D dashboard around the reader.</p>
-              <aside className="report-note"><b>Physical Design Standard</b><p>Support lying down with zero continuous locomotion. Ensure all interactive targets reside within a comfortable 60-degree focal cone directly in front of the user's resting posture.</p></aside>
+              <p><b>So we design for a short comfort budget:</b> less rapid head turning, reclined postures with easy recenter, and real depth (layers, clusters) instead of only wrapping a dashboard.</p>
+              <aside className="report-note"><b>Physical standard</b><p>Support lying down without continuous walking. Keep primary targets in a comfortable cone in front of a resting head pose.</p></aside>
             </section>
 
             <section className="report-chapter" id="primary-focus">
               <span className="report-number">4</span>
-              <h2>Cognitive focus over immersion: Being here now, not everywhere</h2>
-              <p>Johnny's walkthrough brought a critical graphic-design lens: <b>immersion is not a feature; focus is.</b> He reacted strongly against the visual noise of the full spherical field. When many cards compete for attention at once, the reading experience feels scattered and stressful.</p>
-              <p>However, when the prototype visually isolated a single focal card and dimmed the periphery, Johnny responded with enthusiasm, describing it as "being here now instead of everywhere."</p>
+              <h2>Focus and source trust</h2>
+              <p>Johnny’s design eye: <b>immersion is not the product; focus is.</b> A full sphere of competing cards felt noisy. Isolating one card and dimming the rest worked — “being here now instead of everywhere.”</p>
               <blockquote className="report-quote">“I love that everything else goes away. In a physical book, your eyes block out the room. VR should do that for my screen.”</blockquote>
-              <p>Johnny also raised a fundamental trust barrier: the moment he noticed that the discussion cards used AI-synthesized structures, his trust dropped. He demanded absolute transparency—knowing where each post originated, which user wrote it, and how the AI derived its summary tags.</p>
-              <aside className="report-note report-note-yellow"><b>Cognitive Design Standard</b><p>Implement absolute provenance. Every AI-generated summary, label, or spatial cluster must contain a visible, inspectable trail directly back to the original human text block. Trust is built on reversibility and trace verification.</p></aside>
+              <p>He also distrusted AI-built structure until he could see origins: who wrote the post, and how a label or summary was made.</p>
+              <aside className="report-note report-note-yellow"><b>Trust standard</b><p>Every AI summary, label, or cluster needs a clear path back to the original text. Trust comes from inspectable sources, not opaque grouping.</p></aside>
             </section>
 
             <section className="report-chapter" id="primary-experts">
               <span className="report-number">5</span>
-              <h2>Expert design consensus: Reading ergonomics and physical posture</h2>
-              <p>The feedback from our remote expert questionnaire aligns with the physical boundaries reported by our interviewees, while defining precise typographical and mechanical rules for spatial reading platforms:</p>
+              <h2>Expert notes: reading distance and posture</h2>
+              <p>Remote experts lined up with the interview comfort limits and added concrete reading rules:</p>
               <ul>
                 <li><b>Ideal Typography:</b> Experts suggest a default reading distance of 1.5 to 2.0 meters in virtual space, using highly legible sans-serif fonts (e.g. DM Sans, Inter) at a minimum angular size of 1.2 to 1.5 degrees to avoid subpixel rendering artifacts.</li>
                 <li><b>Postural Support:</b> Productive reading sessions are almost exclusively sedentary or reclined. Gaze and head rotation must be minimized; users should be able to scroll, expand, and move panels with minimal physical exertion.</li>
@@ -6161,25 +6203,25 @@ function App() {
 
             <section className="report-chapter" id="primary-directives">
               <span className="report-number">6</span>
-              <h2>Strategic design directives: The Cosmos spatial architecture</h2>
-              <p className="report-lead">These synthesis insights translate directly into the following architectural decisions for the next development cycle of Cosmos:</p>
+              <h2>What we change in the product</h2>
+              <p className="report-lead">Rules that follow from the interviews and expert survey — and that Making Cosmos should keep honest against the live build.</p>
               
               <div className="implication-grid">
                 <article>
-                  <b>1. Bounded 20-Min Sessions</b>
-                  <p>Structure the interface as a bounded review workspace rather than an infinite scroll. Let users digest a debate, extract key findings, and exit comfortably.</p>
+                  <b>1. Bounded sessions</b>
+                  <p>Design for a finishable review (about 20 minutes), not infinite scroll. Read, extract, leave.</p>
                 </article>
                 <article>
-                  <b>2. Progressive Disclosure</b>
-                  <p>Keep the periphery clean. Show only abstract shapes, icons, or single-word tags in the 3D space, revealing full text cards only when selected into the focal zone.</p>
+                  <b>2. Progressive disclosure</b>
+                  <p>Keep the periphery light: shapes, tags, or short labels. Full text only in the focus zone.</p>
                 </article>
                 <article>
-                  <b>3. Multi-Modal Cues</b>
-                  <p>Never rely on color alone to categorize or link discussions. Use geometric clusters, connector lines, tactile icons, and spatial depth layering to show relationships.</p>
+                  <b>3. More than color</b>
+                  <p>Show relations with clusters, depth, and links — not color alone.</p>
                 </article>
                 <article>
-                  <b>4. Source Trace (Provenance)</b>
-                  <p>Expose the raw human source for every summarized layer. Let users double-click any AI cluster label to see the exact paragraph on the original board.</p>
+                  <b>4. Source trace</b>
+                  <p>Every AI label or summary must open the original human text. No black-box groups.</p>
                 </article>
               </div>
 
@@ -6738,7 +6780,7 @@ function App() {
                 <thead><tr><th>Dimension</th><th>Reported status</th><th>Product implication</th></tr></thead>
                 <tbody>
                   <tr><td>VR Experience</td><td>Low routine use. Tried once 10 years ago; experienced severe motion sickness and dizziness.</td><td>Any immersive reading design must aggressively protect against visual and motion triggers.</td></tr>
-                  <tr><td>Optical Needs</td><td>Wears prescription lenses daily. No smart glasses owned yet.</td><td>Smart glasses must accommodate prescription lens integration seamlessly without adding ordering friction.</td></tr>
+                  <tr><td>Optical Needs</td><td>Wears prescription lenses daily. No smart glasses owned yet.</td><td>Smart glasses must fit prescription lenses without hard ordering friction.</td></tr>
                   <tr><td>Ambient Motivation</td><td>Strong desire to purchase future smart glasses to host an ambient "personal AI intelligence" (Jarvis model).</td><td>The smart glasses mode of Cosmos must focus on ambient, real-time advice and glanceable summaries, not deep reading.</td></tr>
                 </tbody>
               </table>
