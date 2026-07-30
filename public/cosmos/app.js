@@ -1801,6 +1801,406 @@
     { from: "fandom-groups", to: "discord", type: "identity", note: "Many fandoms still call Discord home." },
     { from: "community-orgs", to: "discord", type: "identity", note: "Many community orgs still call Discord home." }
   ];
+  var entityById = Object.fromEntries(networkEntities.map((e) => [e.id, e]));
+  var opportunityKinds = [
+    {
+      id: "marketing",
+      label: "Marketing",
+      short: "Narrative",
+      color: "#f14f9b",
+      desc: "Own story, identity, and first impressions where others currently frame what Cosmos is for."
+    },
+    {
+      id: "feature",
+      label: "Feature",
+      short: "Product",
+      color: "#111c4e",
+      desc: "Ship capability that creates a missing reverse influence or reduces one-way dependency."
+    },
+    {
+      id: "targeting",
+      label: "Targeting",
+      short: "Who / where",
+      color: "#c43b7a",
+      desc: "Pick segments, channels, and pilots where one-way pull is strongest and Cosmos can intervene first."
+    },
+    {
+      id: "partnership",
+      label: "Partnership",
+      short: "Distribution",
+      color: "#5b6cff",
+      desc: "Negotiate reciprocal value with platforms, content, labs, and press \u2014 not only pay fees or absorb policy."
+    },
+    {
+      id: "policy",
+      label: "Policy / capital",
+      short: "Institution",
+      color: "#0a7a5c",
+      desc: "Answer one-way institutional pressure with evidence, compliance design, or patient capital narrative."
+    },
+    {
+      id: "defensive",
+      label: "Defensive",
+      short: "Counter",
+      color: "#8a6d00",
+      desc: "Counter competitor or attention-economy pull on users that has no Cosmos answer on the map yet."
+    }
+  ];
+  var opportunityKindById = Object.fromEntries(opportunityKinds.map((k) => [k.id, k]));
+  var gapOpportunityOverrides = {
+    "reddit|readers": {
+      kinds: ["defensive", "targeting"],
+      note: "Reddit already answers deep async discourse. Opportunity: target Reddit-native readers with import-seeded walls and market Cosmos as place memory, not another feed."
+    },
+    "reddit|stewards": {
+      kinds: ["feature", "targeting"],
+      note: "Mod craft is learned on Reddit. Opportunity: steward tooling that feels familiar, then better for spatial places \u2014 recruit mod-minded early stewards."
+    },
+    "discord|readers": {
+      kinds: ["defensive", "marketing"],
+      note: "\u201CMy community lives on Discord\u201D is identity gravity. Opportunity: marketing that positions Cosmos as the wall outside chat, plus bridges that do not demand leaving Discord entirely."
+    },
+    "discord|cosmos": {
+      kinds: ["defensive", "partnership"],
+      note: "Discord is the comparison set for \u201Cplace.\u201D Opportunity: explicit competitive framing and optional import/export so Cosmos is additive, not a forced migration."
+    },
+    "discord|stewards": {
+      kinds: ["feature", "targeting"],
+      note: "Stewards already work in Discord toolchains. Opportunity: moderation features that transfer skill, and target server-heavy communities as pilots."
+    },
+    "discord|community-orgs": {
+      kinds: ["targeting", "partnership"],
+      note: "Orgs run on Discord. Opportunity: org-level targeting and partnership templates (hobby clubs, fandoms) rather than only individual consumers."
+    },
+    "tiktok|readers": {
+      kinds: ["defensive", "marketing"],
+      note: "Short-video ranking owns leisure attention. Opportunity: market calm, finite browse sessions \u2014 and refuse product metrics that recreate infinite pull."
+    },
+    "tiktok|intentional-users": {
+      kinds: ["defensive", "feature"],
+      note: "Doomscroll archetype trains the exact users Cosmos wants. Opportunity: features that make \u201CI\u2019m done\u201D a success state, marketed as intentional use."
+    },
+    "x-twitter|contributors": {
+      kinds: ["defensive", "marketing"],
+      note: "Hot-take culture shapes who posts and how. Opportunity: contribution UX and narrative that reward place-building over performance."
+    },
+    "x-twitter|intentional-users": {
+      kinds: ["defensive", "marketing"],
+      note: "Timeline urgency is the antagonist of calm reading. Opportunity: contrast marketing and session design against urgency."
+    },
+    "feed-social|readers": {
+      kinds: ["defensive", "feature"],
+      note: "Feeds already answer \u201Cwhat should I read?\u201D Opportunity: wall layout that answers \u201Cwhere is this debate?\u201D better than rank."
+    },
+    "feed-social|intentional-users": {
+      kinds: ["defensive", "feature"],
+      note: "Ranking trains habits Cosmos tries to replace. Opportunity: interaction features that break rank-trained muscle memory."
+    },
+    "attention-ads|intentional-users": {
+      kinds: ["defensive", "policy"],
+      note: "Attention extraction is structural. Opportunity: metrics and capital narrative that do not sell intentional users back to ads."
+    },
+    "vrchat|readers": {
+      kinds: ["marketing", "targeting"],
+      note: "Play-social VR makes calm browsing feel \u201Cwrong.\u201D Opportunity: market a different VR job-to-be-done; target readers who already reject hangout-default."
+    },
+    "vrchat|contributors": {
+      kinds: ["marketing", "targeting"],
+      note: "Headset culture defaults to hangouts. Opportunity: identity marketing for builders/curators, not party hosts."
+    },
+    "horizon|readers": {
+      kinds: ["marketing", "defensive"],
+      note: "Horizon defines mass-market \u201Cwhat VR is for.\u201D Opportunity: store and press narrative that carves async discourse out of social/game defaults."
+    },
+    "rec-room|readers": {
+      kinds: ["marketing", "targeting"],
+      note: "Game-social owns casual headset time. Opportunity: target non-game sessions (evening read, research) rather than competing for play hours."
+    },
+    "social-vr|meta-quest": {
+      kinds: ["partnership", "marketing"],
+      note: "Social VR content drives Quest leisure expectations. Opportunity: store featuring and marketing that reframe Quest as a reading surface too."
+    },
+    "notion|readers": {
+      kinds: ["targeting", "feature"],
+      note: "2D wikis already hold knowledge. Opportunity: target users who outgrow flat pages for multi-voice discourse; feature export/bridge, not wiki replacement."
+    },
+    "notion|enterprise-orgs": {
+      kinds: ["targeting", "partnership"],
+      note: "Work knowledge lives in Notion-class tools. Opportunity: later enterprise targeting via handoff, not day-one workplace chat replacement."
+    },
+    "obsidian|intentional-users": {
+      kinds: ["targeting", "marketing"],
+      note: "Local-first note keepers already have a serious-reading identity. Opportunity: target and market Cosmos as the shared wall their private vault cannot be."
+    },
+    "are-na|contributors": {
+      kinds: ["targeting", "marketing"],
+      note: "Curatorial boards are a 2D cousin. Opportunity: recruit Are.na-style curators as early spatial wall builders."
+    },
+    "meta-quest|readers": {
+      kinds: ["feature", "partnership"],
+      note: "Price and comfort gate access one-way. Opportunity: cross-device bridge features + partnership positioning that does not assume Quest ownership."
+    },
+    "meta-quest|intentional-users": {
+      kinds: ["feature", "targeting"],
+      note: "Weight/heat decide calm browsing. Opportunity: design for short, reclined, interrupted sessions (see storyboard constraints)."
+    },
+    "vision-pro|readers": {
+      kinds: ["targeting", "marketing"],
+      note: "Premium device pulls quality-focused readers but narrows access. Opportunity: market craft on Vision without making it the only path."
+    },
+    "pcvr|readers": {
+      kinds: ["feature", "targeting"],
+      note: "PCVR enables long seated reading but setup is heavy. Opportunity: onboarding features and target users who already live on SteamVR."
+    },
+    "meta-store|team": {
+      kinds: ["partnership", "policy"],
+      note: "Fees and featuring pressure viability one-way. Opportunity: negotiate featuring narrative and multi-store leverage so Meta is not the only gate."
+    },
+    "meta-store|onboarding": {
+      kinds: ["feature", "partnership"],
+      note: "Listing/policy gate first-run. Opportunity: store-page design + onboarding that survives policy; SideQuest/itch as parallel path."
+    },
+    "app-store|team": {
+      kinds: ["partnership", "policy"],
+      note: "Apple cut feels like a tax. Opportunity: pricing architecture and multi-platform leverage; do not plan revenue that only works at full cut."
+    },
+    "cloud-ai|spatial-engine": {
+      kinds: ["feature", "policy"],
+      note: "Embeddings enable the wall but price one-way. Opportunity: features that degrade gracefully offline/local; capital narrative that is not pure AI burn."
+    },
+    "cloud-ai|voice-system": {
+      kinds: ["feature", "policy"],
+      note: "STT/TTS costs make free voice expensive. Opportunity: optional voice, caching, and clear cost-aware feature flags."
+    },
+    "publishers|content-org": {
+      kinds: ["partnership", "feature"],
+      note: "Rights-safe import seeds walls one-way. Opportunity: prove reader demand back to publishers (analytics, featured walls) so the relationship can reciprocalize."
+    },
+    "ugc-platforms|readers": {
+      kinds: ["partnership", "feature"],
+      note: "Without import, walls lack real discourse. Opportunity: import partnerships as a first product milestone, not a later nice-to-have."
+    },
+    "ugc-platforms|content-org": {
+      kinds: ["feature", "partnership"],
+      note: "Import APIs seed organization. Opportunity: feature work on permission-cleared pipelines before open scrape fantasies."
+    },
+    "content-partners|readers": {
+      kinds: ["partnership", "marketing"],
+      note: "Empty walls fail the people who came for discourse. Opportunity: launch marketing only when partner-seeded walls exist."
+    },
+    "venture-capital|team": {
+      kinds: ["policy", "marketing"],
+      note: "VC funds runway one-way with growth expectations. Opportunity: capital narrative and metrics that defend patient wall loops."
+    },
+    "venture-capital|continuity": {
+      kinds: ["feature", "policy"],
+      note: "VC pace can make save/return feel unfundable. Opportunity: continuity features with proof of return quality, not only growth."
+    },
+    "k12-schools|team": {
+      kinds: ["targeting", "policy"],
+      note: "District money can fund seats but brings safety rules. Opportunity: later targeting only after moderation and age-appropriate controls exist."
+    },
+    "universities|team": {
+      kinds: ["targeting", "partnership"],
+      note: "Course/lab licenses are a real channel. Opportunity: pilot targeting via HCI labs and seminars before broad enterprise."
+    },
+    "universities|content-org": {
+      kinds: ["feature", "targeting"],
+      note: "Seminars need stable structure. Opportunity: features for course walls and faculty seeding."
+    },
+    "libraries-archives|readers": {
+      kinds: ["targeting", "marketing"],
+      note: "Libraries bring long-form readers. Opportunity: institutional targeting and marketing around collection/catalog metaphors."
+    },
+    "fandom-groups|contributors": {
+      kinds: ["targeting", "marketing"],
+      note: "Fandom already place-builds lore. Opportunity: early targeting of fandom walls; marketing that respects existing Discord homes."
+    },
+    "hobby-clubs|readers": {
+      kinds: ["targeting", "partnership"],
+      note: "Clubs can migrate whole interest groups. Opportunity: group-level onboarding and steward kits."
+    },
+    "team|readers": {
+      kinds: ["marketing", "feature"],
+      note: "Marketing shapes first impressions one-way until product proof lands. Opportunity: pair narrative with demos readers can return to."
+    },
+    "team|capital": {
+      kinds: ["marketing", "policy"],
+      note: "Story feeds capital without capital always feeding product discipline. Opportunity: keep fundraising narrative tied to falsifiable wall metrics."
+    },
+    "cosmos|readers": {
+      kinds: ["feature", "marketing"],
+      note: "Product is judged for reading value. Opportunity: features that make reading success visible; marketing that does not overclaim before proof."
+    },
+    "cosmos|contributors": {
+      kinds: ["feature", "marketing"],
+      note: "Whether Cosmos feels like \u201Cour place\u201D decides contribution. Opportunity: place-identity features and contributor-facing narrative."
+    },
+    "spatial-engine|readers": {
+      kinds: ["feature"],
+      note: "Layout must answer \u201Cwhy is this here?\u201D Opportunity: sensemaking features that create reader \u2192 place loyalty (save path, compare)."
+    },
+    "onboarding|readers": {
+      kinds: ["feature", "marketing"],
+      note: "Setup drag turns hope into drop-off one-way. Opportunity: first-session features and marketing that promise a 5-minute read, not a platform tour."
+    },
+    "continuity|readers": {
+      kinds: ["feature"],
+      note: "Without return, discovery never becomes a library. Opportunity: save/return as a core feature, not a later add-on."
+    },
+    "tech-press|readers": {
+      kinds: ["marketing", "partnership"],
+      note: "Press shapes first impressions one-way. Opportunity: press kit and demo that show wall browse, not only concept video."
+    },
+    "tech-press|capital": {
+      kinds: ["marketing", "policy"],
+      note: "Tech narrative moves capital. Opportunity: controlled story timing so hype does not force growth metrics prematurely."
+    },
+    "platform-regulators|team": {
+      kinds: ["policy", "feature"],
+      note: "Intermediary rules shape moderation duties one-way. Opportunity: build moderation features ahead of school/enterprise sales."
+    },
+    "privacy-regulators|voice-system": {
+      kinds: ["policy", "feature"],
+      note: "Consent/retention law constrains voice. Opportunity: local-first / optional voice as a product and policy story."
+    },
+    "enterprise-orgs|cosmos": {
+      kinds: ["targeting", "feature"],
+      note: "Enterprise is a later channel with one-way functional demand. Opportunity: do not target workplaces until continuity + access control exist."
+    },
+    "slack|enterprise-orgs": {
+      kinds: ["defensive", "targeting"],
+      note: "Slack owns workplace chat identity. Opportunity: if/when work, position Cosmos as discourse structure beside Slack, not a chat replacement."
+    },
+    "teams|enterprise-orgs": {
+      kinds: ["defensive", "targeting"],
+      note: "Teams is the Microsoft-stack default. Opportunity: same \u2014 complementary wall for knowledge orgs, not meeting software."
+    }
+  };
+  function classifyGapOpportunity(fromId, toId, types) {
+    const override = gapOpportunityOverrides[`${fromId}|${toId}`];
+    if (override?.kinds?.length) {
+      return { primary: override.kinds[0], secondary: override.kinds[1] || null };
+    }
+    const fromC = entityById[fromId]?.cluster;
+    const toC = entityById[toId]?.cluster;
+    const typeSet = new Set(types);
+    if (fromC === "competitors" && toC === "people") {
+      if (typeSet.has("emotional") || typeSet.has("identity") || typeSet.has("meaning")) {
+        return { primary: "defensive", secondary: "marketing" };
+      }
+      return { primary: "targeting", secondary: "defensive" };
+    }
+    if (fromC === "competitors" && (toId === "cosmos" || toC === "app")) {
+      return { primary: "defensive", secondary: "marketing" };
+    }
+    if (fromC === "competitors" && toC === "partners") {
+      return { primary: "partnership", secondary: "marketing" };
+    }
+    if (fromC === "partners" && (toC === "app" || toC === "people")) {
+      if (typeSet.has("financial") || toId === "team") {
+        return { primary: "partnership", secondary: "policy" };
+      }
+      return { primary: "partnership", secondary: "feature" };
+    }
+    if (fromC === "hardware" && (toC === "app" || toC === "people")) {
+      return { primary: "feature", secondary: "targeting" };
+    }
+    if (fromC === "institutions") {
+      if (typeSet.has("financial")) return { primary: "policy", secondary: "targeting" };
+      return { primary: "policy", secondary: "feature" };
+    }
+    if (fromC === "app" && toC === "people") {
+      return { primary: "feature", secondary: "marketing" };
+    }
+    if (fromC === "app" && toC === "institutions") {
+      return { primary: "marketing", secondary: "targeting" };
+    }
+    if (fromC === "people" && toC === "competitors") {
+      return { primary: "defensive", secondary: "targeting" };
+    }
+    if (fromC === "people" && toC === "app") {
+      return { primary: "feature", secondary: "targeting" };
+    }
+    if (fromId === "team" || fromId === "cosmos") {
+      return { primary: "marketing", secondary: "feature" };
+    }
+    return { primary: "feature", secondary: "targeting" };
+  }
+  function scoreInfluenceGap(fromId, toId, types, forwardCount) {
+    const fromC = entityById[fromId]?.cluster;
+    const toC = entityById[toId]?.cluster;
+    const typeSet = new Set(types);
+    let score = 1;
+    if (fromC && toC && fromC !== toC) score += 2;
+    if (toC === "people" || fromC === "people") score += 3;
+    if (fromId === "cosmos" || toId === "cosmos" || fromId === "team" || toId === "team") score += 3;
+    if (fromC === "competitors" && toC === "people") score += 4;
+    if (fromC === "competitors" && (toId === "cosmos" || toC === "app")) score += 3;
+    if ((fromC === "partners" || fromC === "hardware") && (toC === "app" || toC === "people")) score += 2;
+    if (fromC === "institutions" && (toC === "app" || toC === "people" || toC === "partners")) score += 2;
+    if (typeSet.has("financial")) score += 2;
+    if (toC === "people" && (typeSet.has("identity") || typeSet.has("meaning") || typeSet.has("emotional"))) score += 2;
+    if (forwardCount > 1) score += Math.min(2, forwardCount - 1);
+    if (types.length > 1) score += Math.min(2, types.length - 1);
+    if (gapOpportunityOverrides[`${fromId}|${toId}`]) score += 2;
+    return score;
+  }
+  function defaultGapOpportunityNote(fromId, toId, primaryKind, types) {
+    const fromLabel = entityById[fromId]?.label || fromId;
+    const toLabel = entityById[toId]?.label || toId;
+    const typeList = types.map((t) => influenceTypeById[t]?.label || t).join(", ");
+    const kindLabel = opportunityKindById[primaryKind]?.label || primaryKind;
+    return `${fromLabel} influences ${toLabel} (${typeList}) with no reverse edge. Strategic lever: ${kindLabel.toLowerCase()} \u2014 create a reciprocal path or deliberately accept the asymmetry and design around it.`;
+  }
+  function buildInfluenceAsymmetryGaps(edges) {
+    const directed = /* @__PURE__ */ new Map();
+    for (const edge of edges) {
+      const key = `${edge.from}|${edge.to}`;
+      if (!directed.has(key)) directed.set(key, []);
+      directed.get(key).push(edge);
+    }
+    const gaps = [];
+    for (const [key, forwardEdges] of directed) {
+      const [from, to] = key.split("|");
+      if (directed.has(`${to}|${from}`)) continue;
+      const types = [...new Set(forwardEdges.map((e) => e.type))];
+      const { primary, secondary } = classifyGapOpportunity(from, to, types);
+      const override = gapOpportunityOverrides[key];
+      const score = scoreInfluenceGap(from, to, types, forwardEdges.length);
+      const opportunityNote = override?.note || defaultGapOpportunityNote(from, to, primary, types);
+      gaps.push({
+        id: key,
+        from,
+        to,
+        types,
+        forwardEdges,
+        score,
+        major: false,
+        // filled after threshold
+        primaryOpportunity: primary,
+        secondaryOpportunity: secondary,
+        opportunityNote,
+        curated: Boolean(override)
+      });
+    }
+    gaps.sort((a2, b) => b.score - a2.score || a2.from.localeCompare(b.from) || a2.to.localeCompare(b.to));
+    return gaps;
+  }
+  function markMajorAsymmetryGaps(gaps) {
+    const scores = gaps.map((g) => g.score).sort((a2, b) => b - a2);
+    const topN = Math.max(15, Math.ceil(gaps.length * 0.2));
+    const percentileFloor = scores.length ? scores[Math.min(scores.length - 1, topN - 1)] : 11;
+    const majorMinScore = Math.max(11, percentileFloor);
+    for (const gap of gaps) {
+      gap.major = gap.curated || gap.score >= majorMinScore;
+    }
+    return majorMinScore;
+  }
+  var influenceAsymmetryGaps = buildInfluenceAsymmetryGaps(influenceEdges);
+  var MAJOR_ASYMMETRY_MIN_SCORE = markMajorAsymmetryGaps(influenceAsymmetryGaps);
+  var asymmetryGapById = Object.fromEntries(influenceAsymmetryGaps.map((g) => [g.id, g]));
+  var majorAsymmetryGaps = influenceAsymmetryGaps.filter((g) => g.major);
   var networkSides = networkClusters.map((c2) => ({
     ...c2,
     nodes: networkEntities.filter((e) => e.cluster === c2.id)
@@ -2187,6 +2587,9 @@
     const [activeNodeId, setActiveNodeId] = useState(null);
     const [selectedEdgeKey, setSelectedEdgeKey] = useState(null);
     const [hoverEdge, setHoverEdge] = useState(null);
+    const [gapOpportunityFilter, setGapOpportunityFilter] = useState("all");
+    const [gapMajorOnly, setGapMajorOnly] = useState(true);
+    const [activeGapId, setActiveGapId] = useState(null);
     const [view, setView] = useState(null);
     const [isPanning, setIsPanning] = useState(false);
     const mapRef = useRef(null);
@@ -2207,10 +2610,26 @@
     const sideFocusEdges = influenceEdges.filter(
       (e) => sideNodeIds.has(e.from) || sideNodeIds.has(e.to)
     );
+    const filteredAsymmetryGaps = influenceAsymmetryGaps.filter((gap) => {
+      if (gapMajorOnly && !gap.major) return false;
+      if (gapOpportunityFilter === "all") return true;
+      return gap.primaryOpportunity === gapOpportunityFilter || gap.secondaryOpportunity === gapOpportunityFilter;
+    });
+    const activeGap = activeGapId ? asymmetryGapById[activeGapId] || null : null;
+    const gapFocusList = activeGap && filteredAsymmetryGaps.some((g) => g.id === activeGap.id) ? [activeGap] : filteredAsymmetryGaps;
+    const gapFocusEdges = gapFocusList.flatMap((g) => g.forwardEdges);
+    const gapIndex = activeGapId ? filteredAsymmetryGaps.findIndex((g) => g.id === activeGapId) : -1;
     const litNodeIds = (() => {
       const set2 = /* @__PURE__ */ new Set();
       if (focusMode === "structure") {
         networkEntities.forEach((e) => set2.add(e.id));
+        return set2;
+      }
+      if (focusMode === "gaps") {
+        gapFocusEdges.forEach((e) => {
+          set2.add(e.from);
+          set2.add(e.to);
+        });
         return set2;
       }
       if (selectedEdge) {
@@ -2260,12 +2679,28 @@
         });
         return [...sides];
       }
+      if (focusMode === "gaps") {
+        const sides = /* @__PURE__ */ new Set();
+        gapFocusEdges.forEach((e) => {
+          const a2 = nodeById[e.from];
+          const b = nodeById[e.to];
+          if (a2) sides.add(a2.sideId);
+          if (b) sides.add(b.sideId);
+        });
+        return sides.size ? [...sides] : networkGraph.map((s) => s.id);
+      }
       return networkGraph.map((s) => s.id);
     })();
     const focusSet = new Set(focusSideIds);
     const showInfluence = focusMode !== "structure";
     const visibleEdges = (() => {
       if (!showInfluence) return [];
+      if (focusMode === "gaps") {
+        if (selectedEdge && gapFocusEdges.some((e) => edgeKey(e) === edgeKey(selectedEdge))) {
+          return [selectedEdge];
+        }
+        return gapFocusEdges;
+      }
       if (selectedEdge) {
         if (focusMode === "side" && activeNodeId) return nodeFocusEdges;
         if (focusMode === "side") return sideFocusEdges;
@@ -2282,6 +2717,14 @@
       if (selectedEdge) {
         if (nodeById[selectedEdge.from]) pts.push(nodeById[selectedEdge.from]);
         if (nodeById[selectedEdge.to]) pts.push(nodeById[selectedEdge.to]);
+      } else if (focusMode === "gaps" && activeGap) {
+        if (nodeById[activeGap.from]) pts.push(nodeById[activeGap.from]);
+        if (nodeById[activeGap.to]) pts.push(nodeById[activeGap.to]);
+      } else if (focusMode === "gaps") {
+        gapFocusEdges.forEach((e) => {
+          if (nodeById[e.from]) pts.push(nodeById[e.from]);
+          if (nodeById[e.to]) pts.push(nodeById[e.to]);
+        });
       } else if (focusMode === "side" && activeNodeId && nodeById[activeNodeId]) {
         pts.push(nodeById[activeNodeId]);
         nodeFocusEdges.forEach((e) => {
@@ -2308,14 +2751,14 @@
       if (!pts.length) return { cx: width / 2, cy: height / 2, scale: 1 };
       const xs = pts.map((p) => p.x);
       const ys = pts.map((p) => p.y);
-      const pad = selectedEdge ? 100 : activeNodeId ? 130 : focusMode === "side" ? 140 : focusMode === "structure" ? 90 : 110;
+      const pad = selectedEdge ? 100 : focusMode === "gaps" && activeGap ? 110 : activeNodeId ? 130 : focusMode === "side" ? 140 : focusMode === "structure" ? 90 : focusMode === "gaps" ? 120 : 110;
       const minX = Math.min(...xs) - pad;
       const maxX = Math.max(...xs) + pad;
       const minY = Math.min(...ys) - pad;
       const maxY = Math.max(...ys) + pad;
       const cx = (minX + maxX) / 2;
       const cy = (minY + maxY) / 2;
-      const minSpan = selectedEdge ? 200 : activeNodeId ? 260 : 340;
+      const minSpan = selectedEdge ? 200 : focusMode === "gaps" && activeGap ? 220 : activeNodeId ? 260 : 340;
       const bw = Math.max(maxX - minX, minSpan);
       const bh = Math.max(maxY - minY, minSpan * 0.85);
       const fit = Math.min(width / bw, height / bh);
@@ -2324,6 +2767,9 @@
       if (selectedEdge) {
         bias = 1.25;
         maxScale = 2.6;
+      } else if (focusMode === "gaps" && activeGap) {
+        bias = 1.2;
+        maxScale = 2.4;
       } else if (activeNodeId) {
         bias = 1.22;
         maxScale = 2.2;
@@ -2451,12 +2897,14 @@
       setFocusMode("structure");
       setActiveNodeId(null);
       setSelectedEdgeKey(null);
+      setActiveGapId(null);
       setView(null);
     }
     function goOverview() {
       setFocusMode("overview");
       setActiveNodeId(null);
       setSelectedEdgeKey(null);
+      setActiveGapId(null);
       setView(null);
     }
     function goType(typeId) {
@@ -2464,6 +2912,7 @@
       setActiveTypeId(typeId);
       setActiveNodeId(null);
       setSelectedEdgeKey(null);
+      setActiveGapId(null);
       setView(null);
     }
     function goSide(sideId) {
@@ -2471,6 +2920,7 @@
       setActiveSideId(sideId);
       setActiveNodeId(null);
       setSelectedEdgeKey(null);
+      setActiveGapId(null);
       setView(null);
     }
     function goNode(nodeId, sideId) {
@@ -2478,18 +2928,53 @@
       setActiveSideId(sideId);
       setActiveNodeId(nodeId);
       setSelectedEdgeKey(null);
+      setActiveGapId(null);
       setView(null);
+    }
+    function goGaps() {
+      setFocusMode("gaps");
+      setActiveNodeId(null);
+      setSelectedEdgeKey(null);
+      setActiveGapId(null);
+      setView(null);
+    }
+    function focusGap(gapId) {
+      const gap = asymmetryGapById[gapId];
+      if (!gap) return;
+      setFocusMode("gaps");
+      setActiveNodeId(null);
+      setSelectedEdgeKey(null);
+      setActiveGapId(gapId);
+      if (gap.forwardEdges?.[0]) {
+        setActiveTypeId(gap.forwardEdges[0].type);
+      }
+      setView(null);
+    }
+    function selectGap(gapId) {
+      if (activeGapId === gapId) {
+        setActiveGapId(null);
+        setSelectedEdgeKey(null);
+        setView(null);
+        return;
+      }
+      focusGap(gapId);
     }
     function selectEdge(edge) {
       const key = edgeKey(edge);
       if (selectedEdgeKey === key) {
         setSelectedEdgeKey(null);
-        setView(null);
+        if (focusMode !== "gaps") setView(null);
         return;
       }
       setSelectedEdgeKey(key);
       setActiveTypeId(edge.type);
       setActiveNodeId(null);
+      if (focusMode === "gaps") {
+        setActiveGapId(`${edge.from}|${edge.to}`);
+        setView(null);
+        return;
+      }
+      setActiveGapId(null);
       setFocusMode("overview");
       setView(null);
     }
@@ -2497,6 +2982,13 @@
     const sideIndex = networkGraph.findIndex((s) => s.id === activeSideId);
     function stepPart(delta) {
       if (focusMode === "structure") {
+        return;
+      }
+      if (focusMode === "gaps") {
+        if (!filteredAsymmetryGaps.length) return;
+        const base = gapIndex >= 0 ? gapIndex : 0;
+        const next2 = filteredAsymmetryGaps[(base + delta + filteredAsymmetryGaps.length) % filteredAsymmetryGaps.length];
+        selectGap(next2.id);
         return;
       }
       if (focusMode === "side") {
@@ -2511,10 +3003,51 @@
         goType(next.id);
       }
     }
-    const detailEdges = !showInfluence ? [] : selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
-    const title = focusMode === "structure" ? "Category relationship" : selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
-    const subtitle = focusMode === "structure" ? "Straight gray lines only \xB7 cluster \u2192 category \u2192 brand \xB7 no influence arrows" : selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 color arrows = influence \xB7 type tabs filter influence";
-    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "structure" ? "is-active" : "", onClick: goStructure }, "Categories only"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "+ Influence"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous", disabled: focusMode === "structure" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "structure" ? "structure" : focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} groups` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next", disabled: focusMode === "structure" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Category: App\u2194clusters \xB7 hub \u2192 category \u2192 brand (straight gray)"), showInfluence && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence: curved color \xB7 click one arrow")), showInfluence && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
+    const detailEdges = !showInfluence ? [] : focusMode === "gaps" ? gapFocusEdges : selectedEdge ? [selectedEdge] : focusMode === "side" ? activeNodeId ? nodeFocusEdges : sideFocusEdges : typedEdges;
+    const title = focusMode === "structure" ? "Category relationship" : focusMode === "gaps" ? activeGap ? `${nodeById[activeGap.from]?.label || activeGap.from} \u2192 ${nodeById[activeGap.to]?.label || activeGap.to}` : "Non-reciprocal influence gaps" : selectedEdge ? `${nodeById[selectedEdge.from]?.label || selectedEdge.from} \u2192 ${nodeById[selectedEdge.to]?.label || selectedEdge.to}` : focusMode === "side" ? activeNode ? activeNode.label : activeSide.shortName : focusMode === "type" ? `${activeType.label} influence` : "Stakeholder networks";
+    const subtitle = focusMode === "structure" ? "Straight gray lines only \xB7 cluster \u2192 category \u2192 brand \xB7 no influence arrows" : focusMode === "gaps" ? activeGap ? `One-way influence \xB7 no reverse edge \xB7 ${opportunityKindById[activeGap.primaryOpportunity]?.label || "opportunity"}` : `${influenceAsymmetryGaps.length} one-way pairs \xB7 ${majorAsymmetryGaps.length} major \xB7 score \u2265 ${MAJOR_ASYMMETRY_MIN_SCORE} or curated` : selectedEdge ? `${influenceTypeById[selectedEdge.type]?.label || selectedEdge.type} influence \xB7 this arrow only` : focusMode === "side" ? activeNode ? `Influence arrows involving this entity \xB7 gray relationship structure stays behind` : `${activeSide.name} \xB7 influence arrows touching this group \xB7 gray = relationship` : focusMode === "type" ? `Colored arrows = ${activeType.label.toLowerCase()} influence only \xB7 gray lines = relationship structure (always on)` : "Gray = relationship \xB7 color arrows = influence \xB7 type tabs filter influence";
+    return /* @__PURE__ */ React.createElement("section", { className: "report-section stakeholder-page", id: "stakeholder-map" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-shell", "aria-label": "Cosmos VR stakeholder influence network" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-frame__head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-kicker" }, focusMode === "gaps" ? "05 \xB7 Asymmetry gaps \xB7 strategic opportunity" : "05 \xB7 Two networks \xB7 relationship + influence"), /* @__PURE__ */ React.createElement("h1", null, title)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-lede" }, subtitle)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__toolbar" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__mode-tabs", role: "tablist", "aria-label": "Focus mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "structure" ? "is-active" : "", onClick: goStructure }, "Categories only"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "overview" ? "is-active" : "", onClick: goOverview }, "+ Influence"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "type" ? "is-active" : "", onClick: () => goType(activeTypeId) }, "Influence type"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "side" ? "is-active" : "", onClick: () => goSide(activeSideId) }, "Group / entity"), /* @__PURE__ */ React.createElement("button", { type: "button", className: focusMode === "gaps" ? "is-active" : "", onClick: goGaps }, "Gaps")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__stepper" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(-1), "aria-label": "Previous", disabled: focusMode === "structure" }, "\u2190"), /* @__PURE__ */ React.createElement("span", null, focusMode === "structure" ? "structure" : focusMode === "gaps" ? filteredAsymmetryGaps.length ? `${gapIndex >= 0 ? gapIndex + 1 : "\u2014"} / ${filteredAsymmetryGaps.length} gaps` : "0 gaps" : focusMode === "side" ? `${sideIndex + 1} / ${networkGraph.length} groups` : `${typeIndex + 1} / ${influenceTypes.length} types`), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => stepPart(1), "aria-label": "Next", disabled: focusMode === "structure" }, "\u2192"), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: fitView, title: "Fit current focus in view" }, "Fit"))), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-map-legend", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__rel" }), "Category: App\u2194clusters \xB7 hub \u2192 category \u2192 brand (straight gray)"), showInfluence && focusMode !== "gaps" && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "Influence: curved color \xB7 click one arrow"), focusMode === "gaps" && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-map-legend__item" }, /* @__PURE__ */ React.createElement("i", { className: "stakeholder-map-legend__inf" }), "One-way influence only \xB7 no reverse edge \xB7 click a gap card or arrow")), focusMode === "gaps" && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__gap-filters", "aria-label": "Asymmetry gap filters" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__gap-filter-row", role: "tablist", "aria-label": "Opportunity kind" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: gapOpportunityFilter === "all" ? "is-active" : "",
+        onClick: () => {
+          setGapOpportunityFilter("all");
+          setActiveGapId(null);
+          setSelectedEdgeKey(null);
+          setView(null);
+        }
+      },
+      "All opportunities"
+    ), opportunityKinds.map((kind) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        key: kind.id,
+        className: gapOpportunityFilter === kind.id ? "is-active" : "",
+        onClick: () => {
+          setGapOpportunityFilter(kind.id);
+          setActiveGapId(null);
+          setSelectedEdgeKey(null);
+          setView(null);
+        },
+        title: kind.desc
+      },
+      /* @__PURE__ */ React.createElement("i", { className: "stakeholder-type-swatch", style: { background: kind.color } }),
+      kind.label
+    ))), /* @__PURE__ */ React.createElement("label", { className: "stakeholder-frame__gap-major" }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: gapMajorOnly,
+        onChange: (event) => {
+          setGapMajorOnly(event.target.checked);
+          setActiveGapId(null);
+          setSelectedEdgeKey(null);
+          setView(null);
+        }
+      }
+    ), "Major only", /* @__PURE__ */ React.createElement("span", null, majorAsymmetryGaps.length, " of ", influenceAsymmetryGaps.length, " one-way pairs"))), showInfluence && focusMode !== "gaps" && /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__chain-tabs stakeholder-frame__type-tabs", role: "tablist", "aria-label": "Influence types" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: t.id,
@@ -2835,15 +3368,335 @@
       {
         className: "stakeholder-frame__swatch",
         style: {
-          background: focusMode === "type" ? activeType.color : activeNode?.color || activeSide.color
+          background: focusMode === "gaps" ? opportunityKindById[activeGap?.primaryOpportunity || gapOpportunityFilter]?.color || "#c43b7a" : focusMode === "type" ? activeType.color : activeNode?.color || activeSide.color
         }
       }
-    ), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__group" }, focusMode === "type" ? `Influence \xB7 ${activeType.short}` : focusMode === "side" ? activeNode ? activeNode.sideName : `${activeSide.number} \xB7 ${activeSide.name}` : "All influence types (highlight via tabs)"), /* @__PURE__ */ React.createElement("h2", null, title), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__sub" }, subtitle)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__count" }, detailEdges.length, " link", detailEdges.length === 1 ? "" : "s")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__influence-list" }, detailEdges.length === 0 ? /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__empty" }, "No influence links in this focus. Pick another type or entity.") : detailEdges.map((edge, i) => {
+    ), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__group" }, focusMode === "gaps" ? activeGap ? `Gap \xB7 score ${activeGap.score}${activeGap.major ? " \xB7 major" : ""}` : "Asymmetry \xB7 non-reciprocal influence" : focusMode === "type" ? `Influence \xB7 ${activeType.short}` : focusMode === "side" ? activeNode ? activeNode.sideName : `${activeSide.number} \xB7 ${activeSide.name}` : "All influence types (highlight via tabs)"), /* @__PURE__ */ React.createElement("h2", null, title), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__sub" }, subtitle)), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__count" }, focusMode === "gaps" ? `${filteredAsymmetryGaps.length} gap${filteredAsymmetryGaps.length === 1 ? "" : "s"}` : `${detailEdges.length} link${detailEdges.length === 1 ? "" : "s"}`)), focusMode === "gaps" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__gap-intro" }, "Non-reciprocal means ", /* @__PURE__ */ React.createElement("strong", null, "A influences B"), " and there is ", /* @__PURE__ */ React.createElement("strong", null, "no B \u2192 A"), " edge of any type. Not every one-way link is a bug \u2014 platforms will always constrain apps \u2014 but major gaps are where Cosmos can act: marketing narrative, product features, targeting, partnership terms, policy/capital, or defensive counters."), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__gap-summary", "aria-label": "Opportunity counts among filtered gaps" }, opportunityKinds.map((kind) => {
+      const count = filteredAsymmetryGaps.filter(
+        (g) => g.primaryOpportunity === kind.id || g.secondaryOpportunity === kind.id
+      ).length;
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: kind.id,
+          className: gapOpportunityFilter === kind.id ? "is-active" : "",
+          onClick: () => {
+            setGapOpportunityFilter(kind.id);
+            setActiveGapId(null);
+            setSelectedEdgeKey(null);
+            setView(null);
+          }
+        },
+        /* @__PURE__ */ React.createElement("b", { style: { color: kind.color } }, count),
+        /* @__PURE__ */ React.createElement("span", null, kind.label)
+      );
+    })), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__influence-list stakeholder-frame__gap-list" }, filteredAsymmetryGaps.length === 0 ? /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__empty" }, "No gaps match this filter. Turn off \u201CMajor only\u201D or pick another opportunity kind.") : filteredAsymmetryGaps.map((gap) => {
+      const from = nodeById[gap.from];
+      const to = nodeById[gap.to];
+      const primary = opportunityKindById[gap.primaryOpportunity];
+      const secondary = gap.secondaryOpportunity ? opportunityKindById[gap.secondaryOpportunity] : null;
+      const isActive = activeGapId === gap.id;
+      return /* @__PURE__ */ React.createElement(
+        "article",
+        {
+          key: gap.id,
+          className: `stakeholder-frame__gap-card ${isActive ? "is-active" : ""} ${gap.major ? "is-major" : ""}`
+        },
+        /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__gap-card-title" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => selectGap(gap.id) }, from?.label || gap.from, " \u2192 ", to?.label || gap.to), /* @__PURE__ */ React.createElement("span", { className: "stakeholder-frame__gap-score", title: "Strategic score" }, gap.major ? "Major \xB7 " : "", gap.score)), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__gap-tags" }, primary && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-frame__gap-tag", style: { borderColor: primary.color, color: primary.color } }, primary.label), secondary && /* @__PURE__ */ React.createElement("span", { className: "stakeholder-frame__gap-tag is-secondary", style: { borderColor: secondary.color, color: secondary.color } }, secondary.label), gap.types.map((t) => /* @__PURE__ */ React.createElement("span", { key: t, className: "stakeholder-frame__gap-type", style: { color: influenceTypeById[t]?.color } }, influenceTypeById[t]?.label || t)))),
+        /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__gap-opportunity" }, gap.opportunityNote),
+        /* @__PURE__ */ React.createElement("ul", { className: "stakeholder-frame__gap-forward" }, gap.forwardEdges.map((edge, i) => /* @__PURE__ */ React.createElement("li", { key: `${edge.from}-${edge.to}-${edge.type}-${i}` }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => selectEdge(edge) }, influenceTypeById[edge.type]?.label || edge.type), /* @__PURE__ */ React.createElement("span", null, edge.note)))),
+        /* @__PURE__ */ React.createElement("footer", { className: "stakeholder-frame__gap-actions" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => selectGap(gap.id) }, isActive ? "Clear focus" : "Focus on map"), from && /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => goNode(from.id, from.sideId) }, "Open ", from.label), to && /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => goNode(to.id, to.sideId) }, "Open ", to.label))
+      );
+    })), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__legend stakeholder-frame__legend--influence" }, opportunityKinds.map((k) => /* @__PURE__ */ React.createElement("span", { key: k.id }, /* @__PURE__ */ React.createElement("i", { style: { borderTopColor: k.color, borderTopStyle: "solid" } }), k.label, ": ", k.short)))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__influence-list" }, detailEdges.length === 0 ? /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__empty" }, "No influence links in this focus. Pick another type or entity.") : detailEdges.map((edge, i) => {
       const from = nodeById[edge.from];
       const to = nodeById[edge.to];
       const typeMeta = influenceTypeById[edge.type];
-      return /* @__PURE__ */ React.createElement("article", { key: `${edge.from}-${edge.to}-${i}`, className: "stakeholder-frame__influence-card" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("b", { style: { color: typeMeta?.color } }, typeMeta?.label || edge.type), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => from && goNode(from.id, from.sideId) }, from?.label || edge.from), " \u2192 ", /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => to && goNode(to.id, to.sideId) }, to?.label || edge.to))), /* @__PURE__ */ React.createElement("p", null, edge.note));
-    })), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__legend stakeholder-frame__legend--influence" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement("span", { key: t.id }, /* @__PURE__ */ React.createElement("i", { style: { borderTopColor: t.color, borderTopStyle: "solid" } }), t.label, ": ", t.short))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039). Influence types replace multi-step chains \u2014 filter Functional / Financial / Emotional / Identity / Meaning, or open a side and entity to see only its links."), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/user-waveline/" }, "\u2190 User waveline"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/impact-analysis/" }, "Next: Impact analysis \u2192")));
+      const gap = asymmetryGapById[`${edge.from}|${edge.to}`];
+      return /* @__PURE__ */ React.createElement("article", { key: `${edge.from}-${edge.to}-${i}`, className: "stakeholder-frame__influence-card" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("b", { style: { color: typeMeta?.color } }, typeMeta?.label || edge.type), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => from && goNode(from.id, from.sideId) }, from?.label || edge.from), " \u2192 ", /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => to && goNode(to.id, to.sideId) }, to?.label || edge.to))), /* @__PURE__ */ React.createElement("p", null, edge.note), gap && /* @__PURE__ */ React.createElement("p", { className: "stakeholder-frame__gap-inline" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: goGaps }, "One-way gap"), " \xB7 ", opportunityKindById[gap.primaryOpportunity]?.label || "Opportunity", gap.major ? " \xB7 major" : "", " \xB7 ", /* @__PURE__ */ React.createElement("button", { type: "button", className: "stakeholder-frame__link", onClick: () => focusGap(gap.id) }, "Open gap")));
+    })), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-frame__legend stakeholder-frame__legend--influence" }, influenceTypes.map((t) => /* @__PURE__ */ React.createElement("span", { key: t.id }, /* @__PURE__ */ React.createElement("i", { style: { borderTopColor: t.color, borderTopStyle: "solid" } }), t.label, ": ", t.short)))))), /* @__PURE__ */ React.createElement("p", { className: "waveline-share-hint" }, "Tip: close the left sidebar (\u2039). Use ", /* @__PURE__ */ React.createElement("strong", null, "Gaps"), " to find non-reciprocal influence (A\u2192B with no B\u2192A) and map major asymmetries to marketing, feature, targeting, partnership, policy, or defensive opportunities. Scroll for the full influence story \u2014 reciprocal loops, mergeable one-ways, and 2026 context."), /* @__PURE__ */ React.createElement(StakeholderInfluenceStory, { onGoGaps: goGaps }), /* @__PURE__ */ React.createElement("div", { className: "report-next-links" }, /* @__PURE__ */ React.createElement("a", { href: "/cosmos/user-waveline/" }, "\u2190 User waveline"), /* @__PURE__ */ React.createElement("a", { href: "/cosmos/impact-analysis/" }, "Next: Impact analysis \u2192")));
+  }
+  var influenceStoryReciprocals = [
+    {
+      id: "readers-contributors",
+      title: "Readers \u2194 Contributors",
+      kinds: ["meaning", "emotional"],
+      thesis: "The only healthy community loop on the map.",
+      body: "Contributors put living walls in place so readers have a reason to return (meaning). Attentive readership rewards careful contribution (emotional). In 2026 this is still the rare loop: most platforms train posting for rank, not for being read carefully. Cosmos succeeds only if this two-way current stays stronger than feed urgency.",
+      mergeNote: "Keep as one mutual pair. Do not split into more micro-edges; the story is the loop itself."
+    },
+    {
+      id: "cosmos-discord",
+      title: "Cosmos \u2194 Discord",
+      kinds: ["identity", "identity"],
+      thesis: "A mirror, not a friendship.",
+      body: "Communities compare Cosmos against the places they already live; Discord is still the default \u201Cplace\u201D those communities name first. Both arrows are identity. In 2026 Discord is not \u201Clegacy chat\u201D \u2014 it is where clubs, fandoms, study groups, and indie teams still keep the keys. The reciprocal edge is a comparison trap: Cosmos is always judged in Discord\u2019s language of servers, roles, and always-on chatter.",
+      mergeNote: "Mergeable: the two identity notes say the same comparison. Treat as one mutual identity relationship (\u201Ccomparison set\u201D), not two separate claims."
+    },
+    {
+      id: "community-discord",
+      title: "Community orgs \u2194 Discord",
+      kinds: ["identity", "functional"],
+      thesis: "Home is both feeling and infrastructure.",
+      body: "Many community organizations still call Discord home (identity) and actually run on it (functional). That is the 2026 reality for hobby clubs and fandom groups: membership, events, and moderation already live there. Cosmos does not replace this overnight; it has to sit beside it or import from it.",
+      mergeNote: "Mergeable with fandom\u2192Discord and hobby-club gravity: one \u201Ccommunity home platform\u201D pattern, not three unrelated arrows."
+    },
+    {
+      id: "store-meta",
+      title: "Team \u2194 Meta Store",
+      kinds: ["financial", "emotional"],
+      thesis: "Money goes out; pressure comes back.",
+      body: "The team pays Meta store revenue share (financial). Fees and featuring come back as felt viability pressure (emotional). In 2026 Quest-class devices are still the volume path for consumer XR, so this loop is not optional if you want reach \u2014 it is the tax of being findable.",
+      mergeNote: null
+    },
+    {
+      id: "store-pico",
+      title: "Team \u2194 Pico Store",
+      kinds: ["financial", "emotional"],
+      thesis: "Same loop, second cash register.",
+      body: "Shipping on Pico means another store cut (financial) and another featuring/policy surface (emotional). 2026 multi-HMD teams treat Pico as access relief for price-sensitive regions and enterprise kits \u2014 but every extra store doubles review theater.",
+      mergeNote: "Mergeable with Team\u2194Meta Store and Team\u2194App Store into one \u201Cstore tax loop\u201D family: pay cut \u2192 feel pressure."
+    },
+    {
+      id: "store-apple",
+      title: "Team \u2194 App Store",
+      kinds: ["financial", "emotional"],
+      thesis: "Premium path, same tax shape.",
+      body: "Vision distribution pays Apple\u2019s cut (financial); revenue share feels like a tax on paid features (emotional). Vision Pro in 2026 still signals craft and knowledge-work taste more than mass leisure \u2014 useful for demos, dangerous as the only plan.",
+      mergeNote: "Same family as Meta/Pico store loops. One strategic story: multi-store leverage vs single-gate dependence."
+    },
+    {
+      id: "ads-feeds",
+      title: "Ad / attention economy \u2194 Feed social",
+      kinds: ["financial", "functional"],
+      thesis: "The antagonist engine is already closed and funded.",
+      body: "Ad spend pays for feed products (financial); feeds supply inventory ad markets buy (functional). This is the mature 2026 loop Cosmos is not joining. Reddit, X, and TikTok sit inside it even when brands rebrand. Intentional users feel the extraction even when they cannot name the wire transfers.",
+      mergeNote: "Brand-level ad edges (attention-ads \u2192 Reddit / X / TikTok) are special cases of this same loop \u2014 merge narratively under \u201Cattention economy funds the feed.\u201D"
+    }
+  ];
+  var influenceStoryOneWayArcs = [
+    {
+      id: "feed-gravity",
+      number: "01",
+      title: "Feed gravity still owns \u201Cwhat should I read?\u201D",
+      clusterFlow: "Competitors \u2192 People",
+      mergeLabel: "Merge family \xB7 feed & short-form",
+      pairs: [
+        "Feed social \u2192 Readers / Intentional users",
+        "Reddit \u2192 Readers, Stewards",
+        "X \u2192 Contributors, Intentional users",
+        "TikTok \u2192 Readers, Intentional users",
+        "Attention ads \u2192 Intentional users (+ brand ad pay \u2192 each feed)"
+      ],
+      body: "In 2026 people still open a ranked surface when they have five spare minutes \u2014 on the phone in a queue, on a tablet while a child sleeps, on a second monitor between meetings. Feeds already answer \u201Cwhat should I read?\u201D Ranking trains habits Cosmos is trying to replace. Reddit remains the default for deep async discourse and mod craft; X still rewards hot takes over place-building; TikTok (and short-form cousins) still own leisure attention and define doomscroll for intentional users. Ad money funds those products whether or not the user \u201Clikes ads.\u201D None of these arrows reverse on our map: readers do not systematically reshape Reddit\u2019s rank or TikTok\u2019s For You \u2014 they only leave or stay.",
+      opportunity: "Defensive marketing + targeting: do not out-feed the feed. Offer place memory and finite sessions. Recruit Reddit-native readers and stewards with import-seeded walls, not blank spheres."
+    },
+    {
+      id: "chat-home",
+      number: "02",
+      title: "Chat is still where community \u201Clives\u201D",
+      clusterFlow: "Competitors \u2192 People / Orgs",
+      mergeLabel: "Merge family \xB7 chat as home",
+      pairs: [
+        "Discord \u2192 Readers, Stewards, Community orgs, Cosmos",
+        "Slack \u2192 Enterprise orgs, Contributors",
+        "Teams \u2192 Enterprise orgs, Tech companies",
+        "Chat platforms \u2192 Readers",
+        "Fandom / community orgs \u2192 Discord (identity home)"
+      ],
+      body: "Ask a 2026 club admin where the community lives and they will still say Discord more often than any spatial app. Discord trains stewards, hosts community orgs, and is the comparison set for Cosmos-as-place. At work, Slack and Teams hold the same job: \u201Cthis is where we talk.\u201D Knowledge companies route talk through Teams; creative and startup teams still live in Slack threads. These are mostly one-way influences on people and orgs \u2014 chat platforms set the identity of belonging; Cosmos does not yet set the identity of Slack.",
+      opportunity: "Partnership + targeting: bridges and import, not forced migration. Market the wall as the discourse surface outside chat, for moments when a thread is the wrong shape."
+    },
+    {
+      id: "social-vr-default",
+      number: "03",
+      title: "Social VR still teaches that headsets are for hangouts",
+      clusterFlow: "Competitors \u2192 People / Hardware culture",
+      mergeLabel: "Merge family \xB7 play-social default",
+      pairs: [
+        "VRChat \u2192 Readers, Contributors",
+        "Horizon Worlds \u2192 Readers",
+        "Rec Room \u2192 Readers",
+        "Social VR \u2192 Meta Quest (leisure expectation)"
+      ],
+      body: "Even as passthrough and productivity demos multiply in 2026, the leisure default on a Quest-class device is still play-social: hangouts, worlds, games. VRChat makes calm browsing feel socially \u201Cwrong\u201D; Horizon still defines mass-market \u201Cwhat VR is for\u201D; Rec Room owns casual headset time. That culture flows into how Meta Quest is imagined. Cosmos is not competing for the Friday-night world hop \u2014 it is competing for the Tuesday evening when someone wanted to understand a debate without performing presence.",
+      opportunity: "Marketing + targeting: name a different job-to-be-done. Store and press narrative that carves async discourse out of game defaults."
+    },
+    {
+      id: "knowledge-2d",
+      number: "04",
+      title: "2D knowledge tools already hold \u201Cserious\u201D reading",
+      clusterFlow: "Competitors \u2192 People / Work",
+      mergeLabel: "Merge family \xB7 2D knowledge",
+      pairs: [
+        "Notion \u2192 Readers, Enterprise orgs",
+        "Obsidian \u2192 Intentional users, Readers",
+        "Are.na \u2192 Contributors",
+        "Knowledge apps \u2192 Readers"
+      ],
+      body: "When 2026 knowledge workers want long-form structure, they often stay flat: Notion for work wikis, Obsidian for local-first vaults, Are.na for curatorial boards. These tools already answer personal and team knowledge without a headset. They pull intentional users and contributors who care about craft. Cosmos is not a notes app with depth; it is multi-voice discourse with place. The one-way pull matters: people already have a \u201Cserious reading\u201D identity that does not include VR.",
+      opportunity: "Targeting: invite vault-keepers and curators to a shared wall their private graph cannot be. Feature bridges, not wiki replacement."
+    },
+    {
+      id: "body-tax",
+      number: "05",
+      title: "Hardware taxes the body before any post appears",
+      clusterFlow: "Hardware \u2192 People / App systems",
+      mergeLabel: "Merge family \xB7 HMD access & input",
+      pairs: [
+        "Meta Quest / Pico / Vision Pro / PCVR / Valve Index \u2192 Readers (price, comfort, identity)",
+        "Same devices + OS/SDK \u2192 Interaction system, Onboarding",
+        "Glasses / XREAL \u2192 Readers, Interaction (lighter form factors)",
+        "Other HMDs \u2192 Interaction (fragmentation)"
+      ],
+      body: "In 2026 a \u201Cquick read\u201D in VR still fails the body test for many people: weight, heat, prescription hassle, sticky facial interfaces, and setup. Quest sets the mass-market floor; Pico often feels like access relief on price; Vision Pro signals premium craft and eyes/hands input; PCVR enables long seated sessions when the tower cooperates \u2014 and feels exclusive before any sentence is read. SDKs and OS defaults (Meta OS, Pico OS, visionOS, SteamVR) bound what grab, gaze, and onboarding can be. Fragmented HMDs push small teams toward lowest-common-denominator UX or expensive forks. Glasses-class devices reframe who might read outside a full dive \u2014 still one-way: hardware shapes people and product; people rarely reshape the silicon roadmap.",
+      opportunity: "Feature + targeting: design for interrupted, reclined, short sessions; ship cross-device bridge as first-class; never demo only the premium path."
+    },
+    {
+      id: "store-gates",
+      number: "06",
+      title: "Stores gate first-run even when the fee loop is reciprocal",
+      clusterFlow: "Partners \u2192 App",
+      mergeLabel: "Merge family \xB7 distribution gates",
+      pairs: [
+        "Meta Store / Pico Store / App Store / SteamVR store \u2192 Onboarding",
+        "itch / SideQuest \u2192 Readers, Team",
+        "(Reciprocal fee loops with Team sit beside these one-way gates)"
+      ],
+      body: "Paying the cut is only half the story. Listing, review, and discovery still gate whether a 2026 user ever reaches a wall. Store \u2192 onboarding is one-way functional power. Indie surfaces (itch, SideQuest) lower store pressure but raise support load and attract experimental readers. The reciprocal financial/emotional loops with the team do not cancel the gate \u2014 they only make the gate expensive to stand in front of.",
+      opportunity: "Partnership: multi-store leverage, honest featuring narrative, sideload as parallel path \u2014 not a purity fantasy that ignores Quest volume."
+    },
+    {
+      id: "ai-bill",
+      number: "07",
+      title: "Cloud AI enables the wall and invoices the dream",
+      clusterFlow: "Partners \u2192 App systems",
+      mergeLabel: "Merge family \xB7 model dependency",
+      pairs: [
+        "Cloud AI / OpenAI / Anthropic / Google \u2192 Spatial engine, Content org, Voice",
+        "Team \u2192 Cloud AI / OpenAI (financial pay)",
+        "Capital \u2192 Cloud AI (emotional \u201Chotness\u201D)"
+      ],
+      body: "Embeddings, long-context organization, STT/TTS \u2014 the 2026 stack that makes a spatial wall feel magical also arrives as a bill. Cloud AI influences product systems one way (functional + price-as-emotion). The team pays invoices the other way (financial), but models do not start caring about patient reading loops. Capital fashion still makes \u201CAI plays\u201D feel hotter than continuity features. Voice that is always on is both a delight and a privacy scare under biometric/XR policy.",
+      opportunity: "Feature + policy: degrade gracefully, optional voice, local-first where possible; capital narrative that is not pure token burn."
+    },
+    {
+      id: "empty-wall",
+      number: "08",
+      title: "Content rights and imports seed reality \u2014 or leave a pretty void",
+      clusterFlow: "Partners \u2192 App / People",
+      mergeLabel: "Merge family \xB7 discourse supply",
+      pairs: [
+        "Publishers / UGC platforms / Content partners \u2192 Content org, Readers, Stewards"
+      ],
+      body: "A wall without discourse is interior design. Rights-safe licensed import and UGC platform pipelines seed content organization; without them, readers who wanted real debate meet emptiness. Publishers also shape what stewards can host. In 2026 scraping-as-strategy is legally and reputationally foolish \u2014 permission-cleared walls and partnerships are the adult path. Influence is one-way until Cosmos can prove demand back to rights holders.",
+      opportunity: "Partnership + feature: import as a milestone before launch marketing; give publishers evidence that readers came."
+    },
+    {
+      id: "product-to-people",
+      number: "09",
+      title: "Cosmos reaches people one way until they can reach back",
+      clusterFlow: "App \u2192 People",
+      mergeLabel: "Merge family \xB7 product surface \u2192 humans",
+      pairs: [
+        "Team / Cosmos \u2192 Readers, Contributors, Capital",
+        "Spatial engine, Content org, Voice, Interaction, Onboarding, Continuity, Moderation, Cross-device \u2192 Readers / Contributors / Stewards / Intentional users"
+      ],
+      body: "Most product arrows point at people and stop. Marketing shapes first impressions; the product is judged for reading value; layout must answer \u201Cwhy is this here?\u201D; onboarding drag turns hope into drop-off; continuity decides whether discovery becomes a library; moderation tools enable stewards and calm intentional users; cross-device bridge admits that follow-up often leaves the headset. In 2026 users expect apps to respect interrupted life \u2014 caregiving, hybrid work, wrist pain, five-minute pockets \u2014 not a clean \u201CVR session.\u201D Until save/return, contribution, and feedback loops exist, people do not influence the product systems back on this map.",
+      opportunity: "Feature first: make reading success visible, return paths real, contribution like building a place. Then marketing can stop overclaiming."
+    },
+    {
+      id: "people-norms",
+      number: "10",
+      title: "Inside People, norms still flow mostly one way from stewards",
+      clusterFlow: "People \u2192 People",
+      mergeLabel: "Merge family \xB7 community roles",
+      pairs: [
+        "Stewards \u2192 Contributors, Readers",
+        "Intentional users \u2192 Contributors",
+        "(Readers \u2194 Contributors is the reciprocal exception)"
+      ],
+      body: "Stewards keep contribution safe and define who belongs. Intentional (anti-doomscroll) users reshape what \u201Cgood\u201D posts look like. Those are one-way role influences. The reciprocal exception is readers\u2194contributors \u2014 the cultural battery. 2026 communities that survive burnout invest in stewards; those that chase growth metrics burn them out.",
+      opportunity: "Feature + targeting: steward tooling that transfers from Discord/Reddit skill, not a greenfield fantasy."
+    },
+    {
+      id: "institutions",
+      number: "11",
+      title: "Institutions fund, regulate, and occasionally buy \u2014 rarely listen yet",
+      clusterFlow: "Institutions \u21C4 App / People / Partners",
+      mergeLabel: "Merge family \xB7 money, rules, pilots",
+      pairs: [
+        "VC / Angels \u2192 Team (money); VC \u2192 Continuity (pace anxiety)",
+        "Privacy / platform / biometric policy \u2192 Voice, OS, Team, Stores",
+        "K-12 / Universities / Libraries \u2192 Team, Readers, Content, Moderation",
+        "Enterprises / agencies \u2192 Cosmos, Continuity, Contributors (later channel)",
+        "Hobby clubs / fandoms \u2192 Stewards, Readers, Contributors"
+      ],
+      body: "Venture money still arrives with growth tempo that can make patient save/return loops feel unfundable. Angels and grants fit research pilots better. Privacy and biometric/XR policy in 2026 is not theoretical \u2014 it constrains voice capture, tracking APIs on Meta and Pico OS, and what stores will ship. Schools can fund seats and demand audit controls; universities want stable seminar structure; libraries bring long-form readers and catalog metaphors. Enterprises and agencies are later: they need handoff, access control, and craft quality before Cosmos is a workplace tool. Hobby clubs and fandoms can migrate whole interest graphs \u2014 and still call Discord home. Most of this is one-way pressure or one-way demand into the product.",
+      opportunity: "Policy + targeting: compliance features before school sales; patient capital narrative; university and fandom pilots before broad enterprise."
+    },
+    {
+      id: "press-labs",
+      number: "12",
+      title: "Press and labs mint legitimacy before users do",
+      clusterFlow: "Partners \u2192 People / Capital / Schools",
+      mergeLabel: "Merge family \xB7 narrative legitimacy",
+      pairs: [
+        "Tech press \u2192 Readers, Capital",
+        "Design press \u2192 Team, Intentional users",
+        "HCI / design research labs \u2192 Contributors, Universities, Capital"
+      ],
+      body: "A 2026 launch still dies or lives in screenshots and essays as much as in sessions. Tech press shapes first impressions and capital mood; design/culture press rewards or punishes craft framing and tells intentional users who \u201Cserious\u201D tools are for. HCI labs open university doors and lend research legitimacy that helps fundraising. These arrows do not wait for reciprocal user love.",
+      opportunity: "Marketing + partnership: demos that show walking a wall, not only concept video; time the story so hype does not force DAU theater."
+    }
+  ];
+  var influenceStoryMerges = [
+    {
+      title: "Store tax loop (\xD73)",
+      items: "Team \u2194 Meta Store, Team \u2194 Pico Store, Team \u2194 App Store",
+      action: "One pattern: pay cut (financial) + feel pressure (emotional). Strategy is multi-store leverage, not three separate \u201Cpartnership theories.\u201D"
+    },
+    {
+      title: "Attention economy funding",
+      items: "Ads \u2194 Feed social, plus ads \u2192 Reddit / X / TikTok",
+      action: "One engine with brand nozzles. Compete on job-to-be-done, not on ad inventory."
+    },
+    {
+      title: "Comparison set: Discord as place",
+      items: "Cosmos \u2194 Discord, Community orgs \u2194 Discord, Fandom/community \u2192 Discord",
+      action: "One home-platform gravity field. Bridges and coexistence beat \u201Cmigrate the server.\u201D"
+    },
+    {
+      title: "Feed gravity on people",
+      items: "Feed social / Reddit / X / TikTok \u2192 readers & intentional users",
+      action: "One habit stack. Counter with place memory and stoppable sessions."
+    },
+    {
+      title: "HMD body & input tax",
+      items: "Quest, Pico, Vision, Index, PCVR, glasses \u2192 readers + interaction/onboarding",
+      action: "One access constraint with device flavors. Design for the body people have in 2026 (interrupted, often reclined, not desk-perfect)."
+    },
+    {
+      title: "Distribution gate",
+      items: "Each store \u2192 onboarding",
+      action: "Same first-run choke point repeated per storefront."
+    },
+    {
+      title: "Model & voice bill",
+      items: "Cloud AI family \u2192 spatial/voice/content; team pays models",
+      action: "One dependency: magic and margin share a pipe."
+    },
+    {
+      title: "Discourse supply",
+      items: "Publishers, UGC, content partners \u2192 content org & readers",
+      action: "One empty-wall problem. Seed before spectacle."
+    }
+  ];
+  function StakeholderInfluenceStory({ onGoGaps }) {
+    const reciprocalCount = 7;
+    const oneWayCount = influenceAsymmetryGaps.length;
+    const edgeCount = influenceEdges.length;
+    return /* @__PURE__ */ React.createElement("article", { className: "stakeholder-story", id: "influence-story", "aria-label": "Stakeholder influence story" }, /* @__PURE__ */ React.createElement("header", { className: "stakeholder-story__header" }, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__kicker" }, "05b \xB7 Influence story \xB7 2026"), /* @__PURE__ */ React.createElement("h2", null, "The weather systems around Cosmos"), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__lede" }, "The map has ", edgeCount, " typed influence edges, but people do not live in ", edgeCount, " separate dramas. They live in a few closed loops and a larger set of one-way winds. This story names every", " ", /* @__PURE__ */ React.createElement("strong", null, "reciprocal"), " pair (", reciprocalCount, "), folds the ~", oneWayCount, " one-way pairs into", " ", /* @__PURE__ */ React.createElement("strong", null, "mergeable families"), ", and keeps the stakes legible for how people actually use phones, headsets, and chat in 2026.")), /* @__PURE__ */ React.createElement("section", { className: "stakeholder-story__section" }, /* @__PURE__ */ React.createElement("h3", null, "How to read this in 2026"), /* @__PURE__ */ React.createElement("p", null, "A reciprocal pair means influence goes both ways \u2014 money for pressure, attention for contribution, comparison for comparison. A one-way pair means A shapes B and B has no modeled reverse edge: that can be normal (silicon does not listen to one app) or strategic (nobody is answering Discord\u2019s claim on \u201Cplace\u201D). Similar arrows are not extra insight; they are the same weather with different street names. Where the graph is noisy, we merge."), /* @__PURE__ */ React.createElement("p", null, "The people in this story are not \u201CVR early adopters\u201D as a personality type. They are hybrid workers who already live in Slack and Notion, parents who get five-minute pockets, students who still open Reddit for depth, and headset owners who mostly launch play-social apps because that is what the store taught them the device is for. Cloud AI bills, store cuts, and biometric policy are ordinary constraints \u2014 not sci-fi.")), /* @__PURE__ */ React.createElement("section", { className: "stakeholder-story__section" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-story__section-head" }, /* @__PURE__ */ React.createElement("h3", null, "Part I \xB7 The seven closed loops"), /* @__PURE__ */ React.createElement("p", null, "These are the only fully reciprocal influence pairs in the current graph. Everything else is weather from one direction.")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-story__reciprocal-list" }, influenceStoryReciprocals.map((loop) => /* @__PURE__ */ React.createElement("article", { key: loop.id, className: "stakeholder-story__reciprocal" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("h4", null, loop.title), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__thesis" }, loop.thesis)), /* @__PURE__ */ React.createElement("p", null, loop.body), loop.mergeNote && /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__merge" }, /* @__PURE__ */ React.createElement("strong", null, "Merge note."), " ", loop.mergeNote)))), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__pull" }, "Notice what is missing from the closed set: there is no reciprocal loop between Cosmos and readers yet, no paid user \u2192 product feedback loop on the map, and no community \u2192 store featuring loop. The product still mostly talks at people; the funded antagonist (ads \u2194 feeds) already talks to itself.")), /* @__PURE__ */ React.createElement("section", { className: "stakeholder-story__section" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-story__section-head" }, /* @__PURE__ */ React.createElement("h3", null, "Part II \xB7 One-way winds, merged into twelve arcs"), /* @__PURE__ */ React.createElement("p", null, "Listing all ~", oneWayCount, " one-way pairs would fake precision. 2026 strategy needs the arc: who pushes whom, and what Cosmos can do about it. Each arc below collapses similar edges into one family.")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-story__arc-list" }, influenceStoryOneWayArcs.map((arc) => /* @__PURE__ */ React.createElement("article", { key: arc.id, className: "stakeholder-story__arc" }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("span", { className: "stakeholder-story__arc-num" }, arc.number), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__arc-meta" }, arc.clusterFlow, /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, " \xB7 "), arc.mergeLabel), /* @__PURE__ */ React.createElement("h4", null, arc.title))), /* @__PURE__ */ React.createElement("ul", { className: "stakeholder-story__pairs" }, arc.pairs.map((line) => /* @__PURE__ */ React.createElement("li", { key: line }, line))), /* @__PURE__ */ React.createElement("p", null, arc.body), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__opportunity" }, /* @__PURE__ */ React.createElement("strong", null, "Opportunity."), " ", arc.opportunity))))), /* @__PURE__ */ React.createElement("section", { className: "stakeholder-story__section" }, /* @__PURE__ */ React.createElement("div", { className: "stakeholder-story__section-head" }, /* @__PURE__ */ React.createElement("h3", null, "Part III \xB7 Mergeable relationships (graph hygiene)"), /* @__PURE__ */ React.createElement("p", null, "If two arrows teach the same lesson, keep one strategic object. The map can stay detailed for analysis; the story should not pretend Meta\u2019s cut and Pico\u2019s cut are different philosophies of power.")), /* @__PURE__ */ React.createElement("div", { className: "stakeholder-story__merge-grid" }, influenceStoryMerges.map((row) => /* @__PURE__ */ React.createElement("article", { key: row.title }, /* @__PURE__ */ React.createElement("h4", null, row.title), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__merge-items" }, row.items), /* @__PURE__ */ React.createElement("p", null, row.action))))), /* @__PURE__ */ React.createElement("section", { className: "stakeholder-story__section stakeholder-story__section--close" }, /* @__PURE__ */ React.createElement("h3", null, "Closing \xB7 What a 2026 team should remember"), /* @__PURE__ */ React.createElement("p", null, "Reciprocal loops are rare and precious: readers with contributors, team with stores (tax for reach), ads with feeds (the machine Cosmos refuses to become), and Discord as the mirror of \u201Cplace.\u201D Almost every other force is one-way \u2014 hardware on bodies, feeds on habits, policy on voice, capital on tempo, press on first impressions, empty walls on hope."), /* @__PURE__ */ React.createElement("p", null, "Strategy is not \u201Cadd reverse arrows to everything.\u201D Silicon will not reciprocalize because a pitch deck asks nicely. Strategy is choosing which missing reverses Cosmos can earn: reader \u2192 place loyalty through continuity; contributor \u2192 living wall through meaning; publisher \u2192 renewed license through proven demand; intentional user \u2192 trust through stoppable sessions. The Gaps mode on the map is the instrument panel; this story is the weather report."), /* @__PURE__ */ React.createElement("p", { className: "stakeholder-story__cta" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: onGoGaps }, "Open Gaps mode"), /* @__PURE__ */ React.createElement("span", null, majorAsymmetryGaps.length, " major one-way pairs scored for marketing, feature, targeting, partnership, policy, and defensive moves."))));
   }
   var impactHorizons = [
     {
