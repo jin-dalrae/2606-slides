@@ -3,8 +3,11 @@
 // The Worker uses this to (a) allow the public read API only for public slugs
 // and (b) allow direct .md fetches only for public source files.
 export const PUBLIC_SLUGS = [
+  "mirror-2046",
+  "cosmos-00",
   "cosmos-spatializing-community",
   "experience",
+  "cosmos-vr-storyboard",
   "cardinal-agentic-spending",
   "social-lab-climate-goal-platform",
   "gtr-partners",
@@ -22,8 +25,11 @@ export const PUBLIC_SLUGS = [
 
 // Repo-root-relative paths of public .md sources.
 export const PUBLIC_FILES = [
+  "presentations/mirror-2046.md",
+  "presentations/cosmos-00-research-to-wall.md",
   "presentations/cosmos-spatializing-asynchronous-community-jun11.md",
   "presentations/experience-cosmos-research-plan.md",
+  "presentations/cosmos-vr-storyboard.md",
   "presentations/cardinal-agentic-workplace-spending.md",
   "presentations/social-lab-climate-goal-platform.md",
   "presentations/gtr-startups-climate-awareness.md",

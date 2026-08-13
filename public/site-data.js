@@ -8,7 +8,7 @@
   const projects = [
     {
       name: "Cosmos",
-      tagline: "Spatializing asynchronous community"
+      tagline: "Explore ideas spatially, not doomscrolling vertically"
     },
     {
       name: "Cadinalpay",
@@ -25,6 +25,10 @@
     {
       name: "Reference",
       tagline: "Project documentation"
+    },
+    {
+      name: "Story",
+      tagline: "2046 design fiction"
     }
   ];
 
@@ -33,10 +37,23 @@
   // without requiring login. Editing is still only possible for authenticated users.
   const slides = [
     {
+      slug: "mirror-2046",
+      title: "HUMANOID",
+      docTitle: "Bay Area 2046 — a working copy of a living person",
+      sidebarTitle: "Story · 2046",
+      project: "Story",
+      date: "August 12, 2026",
+      file: "presentations/mirror-2046.md",
+      transition: "slide",
+      background: "ivory",
+      font: "source-serif",
+      public: true
+    },
+    {
       slug: "cosmos-00",
-      title: "COSMOS 00",
-      docTitle: "Research to wall — full story",
-      sidebarTitle: "00 · Full story",
+      title: "COSMOS",
+      docTitle: "Explore ideas spatially, not doomscrolling vertically",
+      sidebarTitle: "Full story",
       project: "Cosmos",
       date: "July 30, 2026",
       file: "presentations/cosmos-00-research-to-wall.md",
@@ -47,8 +64,8 @@
     {
       slug: "cosmos-spatializing-community",
       title: "COSMOS",
-      docTitle: "Research direction",
-      sidebarTitle: "Research direction",
+      docTitle: "Earlier research direction (June)",
+      sidebarTitle: "Research direction (Jun)",
       project: "Cosmos",
       date: "June 11, 2026",
       file: "presentations/cosmos-spatializing-asynchronous-community-jun11.md",
