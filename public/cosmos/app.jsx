@@ -8,7 +8,7 @@ import {
   forceY,
 } from "d3-force";
 
-const { useEffect, useState, useRef } = React;
+const { useEffect, useState, useRef, useCallback } = React;
 
 const evidence = [
   {
@@ -133,7 +133,7 @@ const experienceWaves = [
         short: "Light participation (later phase)",
         intensity: 0.55,
         peakLabel: "optional",
-        behavior: "May react, leave a short note, or save a path. Full native posting and voice plant are deferred until reading value is proven (see Making · community).",
+        behavior: "May react, leave a short note, or save a path. Full native posting and voice posting are deferred until reading value is proven (see Making · community).",
         feelings: "Low pressure — contribution is allowed, not required for a good session.",
         achievements: "Session can succeed as read-only; light acts do not demand a social performance.",
         mechanics: ["React", "Save path", "Optional note (later)"],
@@ -385,7 +385,7 @@ const makingPrinciples = [
   {
     number: "03",
     title: "Shading, not transparency",
-    body: "Hierarchy uses brightness and darkness. Cards dim via CSS brightness() — they never go transparent ghosts.",
+    body: "Hierarchy uses brightness and darkness. Cards dim via CSS brightness() — they never become transparent ghosts.",
   },
   {
     number: "04",
@@ -418,7 +418,7 @@ const makingSurfaces = [
     stack: "Strict Meta IWSDK (@iwsdk/core) — dual stack, not R3F XR",
     metaphor: "You may leave center. Walk, turn, approach regions with stock IWSDK locomotion.",
     timeModel: "Radius encodes time: newer on inner shells, older farther out and slightly dimmer.",
-    input: "Headset + controllers via IWSDK defaults; proximity cluster voice; voice plant to wall (DB real, external publish mocked).",
+    input: "Headset + controllers via IWSDK defaults; proximity cluster voice; voice posting to wall (DB real, external publish mocked).",
   },
 ];
 
@@ -504,7 +504,7 @@ const makingModules = [
       "PRD kept: compose, classify placement, vote, merge",
       "Not the active plan until reading validation lands",
       "Aligns with research: lurkers are success, not failure",
-      "VR voice plant is separate MVP path (see 12)",
+      "VR voice posting is separate MVP path (see 12)",
     ],
   },
   {
@@ -603,7 +603,7 @@ const phases = [
     name: "Walkable /VR (IWSDK)",
     status: "PRD locked",
     body: "Strict IWSDK dual surface: layered time shells, stock locomotion, proximity voice briefings, multi-source story. Implementation not started.",
-    outputs: ["/VR World.create", "Radius = age shells", "Proximity audio · voice plant to DB"],
+    outputs: ["/VR World.create", "Radius = age shells", "Proximity audio · voice posting to DB"],
   },
   {
     phase: "05",
@@ -916,364 +916,97 @@ function UserWavelinePage() {
   );
 }
 
-// —— 00 Full story (presentation inside /cosmos) ——
+// —— Full story: the PDF deck itself, page by page. No prose around it. ——
+const FULL_STORY_TOTAL = 25;
+const FULL_STORY_SLIDES = Array.from({ length: FULL_STORY_TOTAL }, (_, i) => ({
+  src: `/assets/images/cosmos/full-story/slide-${String(i + 1).padStart(2, "0")}.jpg`,
+  alt: `Cosmos full story — slide ${i + 1} of ${FULL_STORY_TOTAL}`,
+}));
+
 function CosmosFullStoryPage() {
+  const [index, setIndex] = useState(0);
+  const [isFs, setIsFs] = useState(false);
+  // Mount a moving window (plus everything already visited) so navigation never waits
+  // on a fetch, while a first visit does not pull all 25 images at once.
+  const [mounted, setMounted] = useState(() => new Set([0, 1, 2]));
+  const stageRef = useRef(null);
+
+  useEffect(() => {
+    setMounted((prev) => {
+      const next = new Set(prev);
+      for (let i = index - 1; i <= index + 2; i += 1) {
+        if (i >= 0 && i < FULL_STORY_TOTAL) next.add(i);
+      }
+      return next.size === prev.size ? prev : next;
+    });
+  }, [index]);
+
+  useEffect(() => {
+    const onFs = () => setIsFs(document.fullscreenElement === stageRef.current);
+    document.addEventListener("fullscreenchange", onFs);
+    return () => document.removeEventListener("fullscreenchange", onFs);
+  }, []);
+
+  const goPrev = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
+  const goNext = useCallback(() => setIndex((i) => Math.min(FULL_STORY_TOTAL - 1, i + 1)), []);
+  const toggleFs = useCallback(() => {
+    if (!document.fullscreenElement) stageRef.current?.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
+      if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") {
+        e.preventDefault();
+        goNext();
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        setIndex(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        setIndex(FULL_STORY_TOTAL - 1);
+      } else if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        toggleFs();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [goNext, goPrev, toggleFs]);
+
+  const controls = (
+    <>
+      <button type="button" disabled={index <= 0} onClick={goPrev} aria-label="Previous slide">←</button>
+      <span className="full-story-controls__count">{index + 1} / {FULL_STORY_TOTAL}</span>
+      <button type="button" disabled={index >= FULL_STORY_TOTAL - 1} onClick={goNext} aria-label="Next slide">→</button>
+      <button type="button" onClick={toggleFs}>{isFs ? "Exit" : "Full"}</button>
+    </>
+  );
+
   return (
     <section className="report-section full-story-page" id="full-story">
-      <ChapterLabel number="00">Full story</ChapterLabel>
-      <div className="section-heading">
-        <h2>From research<br /><em>to the wall.</em></h2>
-        <p>
-          One arc: problem → research → analysis → prototype. Short claims only.
-          Deep reports live in the numbered chapters.
-        </p>
+      <div className="full-story-stage" ref={stageRef}>
+        <div className="full-story-deck">
+          {FULL_STORY_SLIDES.map((slide, i) =>
+            mounted.has(i) ? (
+              <img
+                key={slide.src}
+                className={`full-story-slide${i === index ? " is-active" : ""}`}
+                src={slide.src}
+                alt={slide.alt}
+                draggable="false"
+                aria-hidden={i === index ? "false" : "true"}
+              />
+            ) : null,
+          )}
+        </div>
+        <div className="full-story-controls full-story-controls--overlay">{controls}</div>
       </div>
-
-      <nav className="report-contents" aria-label="Full story acts">
-        <p>Acts</p>
-        <a href="#fs-spine"><span>0</span>Spine</a>
-        <a href="#fs-act1"><span>1</span>Problem &amp; thesis</a>
-        <a href="#fs-act2"><span>2</span>Research</a>
-        <a href="#fs-act3"><span>3</span>Analysis</a>
-        <a href="#fs-act4"><span>4</span>Prototype &amp; next</a>
-      </nav>
-
-      <article className="full-story-deck">
-        <section className="full-story-slide" id="fs-spine">
-          <p className="full-story-ref">Spine</p>
-          <h3>This talk decides one thing</h3>
-          <p>
-            <strong>Given</strong> feeds flatten discourse and headsets will not win casual scroll,{" "}
-            <strong>we build</strong> a spatial async wall first,{" "}
-            <strong>because</strong> offline walls already work as place — and reading must prove value before community.
-          </p>
-          <div className="report-table-scroll">
-            <table className="report-table">
-              <thead><tr><th>Act</th><th>What it decides</th></tr></thead>
-              <tbody>
-                <tr><td>1 · Problem &amp; thesis</td><td>What Cosmos is (and is not)</td></tr>
-                <tr><td>2 · Research</td><td>What we learned from prior art and people</td></tr>
-                <tr><td>3 · Analysis</td><td>What the wall can close — and what still hurts</td></tr>
-                <tr><td>4 · Prototype &amp; next</td><td>What is built, what waits, what proof is missing</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">Deep library: chapters 01–08 · this page only walks the arc.</p>
-        </section>
-
-        <p className="full-story-act" id="fs-act1">Act 1 · Problem &amp; thesis</p>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Problem</p>
-          <h3>Feeds turn debate into one stream</h3>
-          <p>Reddit, X, Discord, and forums decide order for you.</p>
-          <p>Structure exists in the thread — worldviews, bridges, gaps — but a ranked list hides it.</p>
-          <p>Loud voices rise. Readers get fatigue, not a map.</p>
-          <p className="full-story-closing">The problem is orientation, not only “too much content.”</p>
-          <p className="full-story-src"><a href="/cosmos/">→ Introduction</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Reference</p>
-          <h3>Offline walls already work as place</h3>
-          <ul>
-            <li>Messages accumulate over time</li>
-            <li>People walk, scan, step closer</li>
-            <li>Density and position carry meaning</li>
-            <li>You can read without speaking or posting</li>
-          </ul>
-          <p className="full-story-closing">That is the behavior Cosmos rebuilds — not a live party in a headset.</p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Thesis</p>
-          <h3>Cosmos is a wall — not a feed, not a hangout</h3>
-          <div className="storyboard-cards-3">
-            <article><h3>Not a feed</h3><p>No endless rank that owns your path.</p></article>
-            <article><h3>Not social VR</h3><p>No requirement to be live or perform.</p></article>
-            <article><h3>A wall</h3><p>Async, spatial, low pressure — leave when done.</p></article>
-          </div>
-          <p className="full-story-closing">Success is sense-making you can exit without FOMO.</p>
-        </section>
-
-        <p className="full-story-act" id="fs-act2">Act 2 · Research</p>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Secondary</p>
-          <h3>Secondary research checked the assumptions first</h3>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Finding</th><th>So what for Cosmos</th></tr></thead>
-              <tbody>
-                <tr><td>Quiet reading is real participation</td><td>Reading without posting is a success path</td></tr>
-                <tr><td>Spatial audio: location helps attention</td><td>Place matters — live voice is hard to scale</td></tr>
-                <tr><td>Async spatial social is possible</td><td>Memory and transformed presence beat raw replay</td></tr>
-                <tr><td>VR reading comfort is fragile</td><td>Design for short, stationary sessions</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">Prior art supports a wall; it does not say “build a full platform now.”</p>
-          <p className="full-story-src"><a href="/cosmos/secondary/">→ Secondary research</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Primary</p>
-          <h3>Primary research: four people + experts</h3>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Who</th><th>Plain finding</th></tr></thead>
-              <tbody>
-                <tr><td><strong>Kris</strong></td><td>Phone wins casual scroll; multi-source value must beat that bar</td></tr>
-                <tr><td><strong>Yves</strong></td><td>Comfort often caps at ~20–30 min; flat cards can feel like “Excel in a circle”</td></tr>
-                <tr><td><strong>Johnny</strong></td><td>Focus beats immersion; AI groups need a path back to sources</td></tr>
-                <tr><td><strong>JD Suh</strong></td><td>Do not make doomscroll easier in VR; guard ergonomics</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">Headset reading fails if it only copies the phone — or ignores the body.</p>
-          <p className="full-story-src"><a href="/cosmos/primary/">→ Primary research</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">V1</p>
-          <h3>V1 was a working prototype — reviews demanded proof</h3>
-          <p>SIGGRAPH 2026 poster: rejected.</p>
-          <ol>
-            <li>Text hard to read; too many cards at once</li>
-            <li>AI labels hard to inspect</li>
-            <li>No study: is a spatial list better than a 2D feed?</li>
-          </ol>
-          <p className="full-story-closing">Next work: less clutter, clearer reading, evidence from people — not only a demo.</p>
-          <p className="full-story-src"><a href="/cosmos/primary/version1-review/">→ Version 1 &amp; review</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Synthesis</p>
-          <h3>Research decision: wall first, reading before community</h3>
-          <ol>
-            <li>Control seed content</li>
-            <li>Prove wall browsing (comprehension, comfort, place memory)</li>
-            <li>Add save / return</li>
-            <li>Light contribution later</li>
-            <li>Native community or spatial voice only if earlier phases work</li>
-          </ol>
-          <p className="full-story-closing">Hosting posts is not the novel claim. The wall is.</p>
-        </section>
-
-        <p className="full-story-act" id="fs-act3">Act 3 · Analysis</p>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Waveline</p>
-          <h3>Three wavelines, one session spine</h3>
-          <p>Entice → Enter → Orient → Explore → Discover → Immerse → Interact → Exit</p>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Experience</th><th>Shape</th></tr></thead>
-              <tbody>
-                <tr><td><strong>Feed</strong></td><td>High early scroll; deep read weak; exit with residue</td></tr>
-                <tr><td><strong>Plain VR browse</strong></td><td>Setup friction; body fights the UI</td></tr>
-                <tr><td><strong>Cosmos wall</strong></td><td>Orient useful; Explore calm; deep read can peak; contribute optional later</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">Wave height = felt intensity — not “how good.” Explore calm is intentional.</p>
-          <p className="full-story-src"><a href="/cosmos/user-waveline/">→ User waveline</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Storyboard</p>
-          <h3>Jeenie’s body is not desk-ready</h3>
-          <div className="media-split full-story-media">
-            <div>
-              <p>New mom, short leave, tech background.</p>
-              <p>Wrist pain, indoor days, baby on chest, no clean free hour.</p>
-              <p>Desk-browser VR fails. Wall + gaze + optional hand + care continues.</p>
-            </div>
-            <img src="/assets/images/cosmos/storyboard-panels.jpg" alt="Twelve-panel hand-drawn Cosmos VR storyboard for Jeenie" />
-          </div>
-          <p className="full-story-closing">Design for interrupted pockets — not free afternoons at a desk.</p>
-          <p className="full-story-src"><a href="/cosmos/storyboard/">→ Storyboard</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Storyboard</p>
-          <h3>What Jeenie needs from the product</h3>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Need</th><th>Product rule</th></tr></thead>
-              <tbody>
-                <tr><td>Sore wrist</td><td>Gaze first; little sustained grip</td></tr>
-                <tr><td>Baby on chest</td><td>Controllers optional for basic browse</td></tr>
-                <tr><td>Lie down or walk</td><td>Readable at recline; wall stays in the room</td></tr>
-                <tr><td>Home clutter</td><td>Passthrough / see real space</td></tr>
-                <tr><td>Short pockets</td><td>Scan by similarity, not endless scroll</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">Less friction between information and care — not more immersion for its own sake.</p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Stakeholders</p>
-          <h3>Stakeholder field: two layers</h3>
-          <div className="storyboard-cards-2">
-            <article>
-              <h3>Already there</h3>
-              <p>Ads ↔ feeds, chat as home, social-VR hangouts, 2D knowledge tools, hardware tax, stores, institutions.</p>
-            </article>
-            <article>
-              <h3>What we think will be there</h3>
-              <p>Cosmos → people, Discord comparison, readers ↔ contributors, import supply — claims until reverse paths are real.</p>
-            </article>
-          </div>
-          <p className="full-story-closing">We do not invent a blank market. We intervene in a finished one.</p>
-          <p className="full-story-src"><a href="/cosmos/stakeholder-map/">→ Stakeholder analysis</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Stakeholders</p>
-          <h3>Gaps the wall can close</h3>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Field today</th><th>Cosmos close</th></tr></thead>
-              <tbody>
-                <tr><td>Rank answers “what next?”</td><td>Map answers “where is this debate?”</td></tr>
-                <tr><td>Short-form owns leisure</td><td>Calm, stoppable scan</td></tr>
-                <tr><td>Chat owns “where we live”</td><td>Wall when a thread is wrong shape</td></tr>
-                <tr><td>Headset = hangout</td><td>Headset = sense-making place</td></tr>
-                <tr><td>Vaults hold private notes</td><td>Shared multi-voice wall</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">Only useful if it closes a named gap — not if it redraws every arrow.</p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Stakeholders</p>
-          <h3>Weaknesses that stay</h3>
-          <ul>
-            <li>Hardware cost and comfort</li>
-            <li>Store fees and policy</li>
-            <li>Empty wall without import</li>
-            <li>Chat and feed still own daily habit</li>
-            <li>Growth capital can break patient loops</li>
-            <li>Reverse loyalty (people → product) not earned yet</li>
-          </ul>
-          <p className="full-story-closing">Opportunity is real. Structural one-ways do not vanish.</p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Impact</p>
-          <h3>Impact: harms have owners</h3>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Code</th><th>Harm</th><th>Mitigate by</th></tr></thead>
-              <tbody>
-                <tr><td>H1</td><td>Premium access only</td><td>Cross-device as first-class</td></tr>
-                <tr><td>H2</td><td>Doomscroll in a sphere</td><td>Never use dwell as north star</td></tr>
-                <tr><td>H3</td><td>Spatial harassment / steward load</td><td>Tools before multi-user scale</td></tr>
-                <tr><td>H4</td><td>Voice / biometric exposure</td><td>Opt-in body data; text always works</td></tr>
-                <tr><td>H5</td><td>Empty wall</td><td>Seed + stewards before “living community” marketing</td></tr>
-                <tr><td>H8</td><td>False impact claims</td><td>Publish falsifiers; wall-vs-feed study</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">Impact work is incomplete until we name who can be hurt and what we change.</p>
-          <p className="full-story-src"><a href="/cosmos/impact-analysis/">→ Impact analysis</a></p>
-        </section>
-
-        <p className="full-story-act" id="fs-act4">Act 4 · Prototype &amp; next</p>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Making</p>
-          <h3>What we shipped: /web planetarium</h3>
-          <div className="media-split full-story-media">
-            <div>
-              <p>Live: <a href="https://cosmosweb.web.app/web" target="_blank" rel="noreferrer">cosmosweb.web.app/web</a></p>
-              <p>Camera at center. Look, do not fly.</p>
-              <p>Smooth browse, time fog, AI layout pipeline, admin, on-device gaze privacy.</p>
-              <p>Community posting deferred until reading proves value.</p>
-            </div>
-            <img src="/assets/images/cosmos/intro-hero.jpg" alt="Cosmos wall of discourse cards over a living room" />
-          </div>
-          <p className="full-story-closing">The research object exists. It is studyable. It is not fully validated.</p>
-          <p className="full-story-src"><a href="/cosmos/making/">→ Making Cosmos</a></p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Making</p>
-          <h3>Content becomes a wall in three steps</h3>
-          <div className="making-pipeline">
-            <article><span>01</span><h3>Generator</h3><p>~150+ posts across subtopics.</p></article>
-            <article><span>02</span><h3>Cartographer</h3><p>Stance, emotion, themes, links — stream partial batches.</p></article>
-            <article><span>03</span><h3>Architect</h3><p>Clusters, sphere positions, bridges, gaps.</p></article>
-          </div>
-          <p className="full-story-closing">Cache first, then stream — the wall should appear before the pipeline finishes.</p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Making</p>
-          <h3>Two surfaces, one wall idea</h3>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Surface</th><th>Contract</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td><strong>/web</strong></td><td>Look from center; drag / gaze / seated VR</td><td>Shipped</td></tr>
-                <tr><td><strong>/VR</strong></td><td>Walk the wall; stock locomotion; proximity voice</td><td>PRD locked, not built</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">/web proves reading. /VR is a second contract — not the same seated browser rebranded.</p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Next</p>
-          <h3>Proof still missing</h3>
-          <p>Primary interviews shaped design. They are <strong>not</strong> the wall-vs-feed study.</p>
-          <ul>
-            <li>Same seed discourse: flat feed vs Cosmos wall</li>
-            <li>Outcomes: comprehension, place memory, calm exit</li>
-            <li>Kill criterion: no advantage after novelty — or harm worse than feed</li>
-          </ul>
-          <p className="full-story-closing">Making phase 02: <strong>next proof</strong> — not “done because people liked the idea.”</p>
-        </section>
-
-        <section className="full-story-slide">
-          <p className="full-story-ref">Pressure test</p>
-          <h3>Go / stop</h3>
-          <div className="report-table-scroll">
-            <table className="report-table report-table-wide">
-              <thead><tr><th>Go if</th><th>Stop or narrow if</th></tr></thead>
-              <tbody>
-                <tr><td>Wall beats feed on sense-making</td><td>No gain after controlling for novelty</td></tr>
-                <tr><td>People leave without FOMO</td><td>Product only works as a dwell engine</td></tr>
-                <tr><td>Cross-device path exists</td><td>Impact only for premium headset owners</td></tr>
-                <tr><td>Seeded walls feel real</td><td>Empty spheres and wasted contributor labor</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="full-story-closing">If layout does not help understanding, do not add more social complexity.</p>
-        </section>
-
-        <section className="full-story-slide full-story-slide--close">
-          <p className="full-story-ref">Close</p>
-          <h3>Walk the wall. Leave without punishment.</h3>
-          <p>Research: wall first, body and trust first.</p>
-          <p>Analysis: close map and calm gaps; hardware and stores still hurt.</p>
-          <p>Prototype: /web is live; contribution and /VR wait on proof.</p>
-          <p className="full-story-closing">Cosmos is researchable. It is not finished — and that is the honest place to stop.</p>
-          <p className="full-story-src">
-            <a href="https://cosmosweb.web.app/web" target="_blank" rel="noreferrer">Try /web →</a>
-            {" · "}
-            <a href="/cosmos/">Introduction →</a>
-          </p>
-        </section>
-      </article>
-
-      <div className="report-next-links">
-        <a href="/cosmos/">Next: Introduction →</a>
-        <a href="/cosmos/making/">Making Cosmos →</a>
-      </div>
+      <div className="full-story-controls">{controls}</div>
     </section>
   );
 }
@@ -5297,7 +5030,8 @@ function ImpactAnalysisPage() {
 
       <div className="report-next-links impact-next-links">
         <a href="/cosmos/stakeholder-map/">← Stakeholder analysis</a>
-        <a href="/cosmos/making/">Next: Making Cosmos →</a>
+        <a href="/cosmos/design-decision/">Next: Design decision →</a>
+        <a href="/cosmos/making/">Making Cosmos →</a>
       </div>
     </section>
   );
@@ -5537,7 +5271,7 @@ function Version1Review() {
           <p>
             This pipeline doesn't just display data; it extracts semantic dimensions to coordinate the physical geometry of the discussion:
           </p>
-          <div className="masking-diagram" style={{ margin: "24px 0", padding: "24px", background: "rgba(10, 25, 47, 0.3)", borderRadius: "8px", border: "1px solid var(--navy)", display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="masking-diagram" style={{ margin: "24px 0", padding: "24px", background: "var(--paper-deep)", borderRadius: "8px", border: "1px solid var(--navy)", display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
               <div style={{ padding: "8px 12px", border: "1px dashed var(--pink)", borderRadius: "4px", fontSize: "11px", color: "var(--pink)" }}>Topic Input</div>
               <div style={{ fontSize: "14px", color: "var(--mint)" }}>→</div>
@@ -5554,7 +5288,7 @@ function Version1Review() {
           </div>
           <h3>Cartographer Enrichment Profile</h3>
           <p>The Cartographer enriches every post with structural metadata. The resulting schema represents a rich semantic envelope that determines card layout, edge connections, and position hints:</p>
-          <pre style={{ background: "rgba(10, 25, 47, 0.4)", border: "1px solid var(--navy)", padding: "16px", borderRadius: "8px", overflowX: "auto", fontSize: "12px", color: "var(--mint)" }}>
+          <pre style={{ background: "#fbfaf6", border: "1px solid var(--navy)", padding: "16px", borderRadius: "8px", overflowX: "auto", fontSize: "12px", color: "var(--mint)" }}>
 {`{
   "id": "post_42",
   "stance": "pro-density-housing",
@@ -5767,7 +5501,11 @@ function App() {
         ? "socially-late"
         : window.location.pathname.includes("/secondary/vr-reading")
           ? "vr-reading"
-          : "overview";
+          : window.location.pathname.includes("/secondary/spatial-organization")
+            ? "spatial-organization"
+            : window.location.pathname.includes("/secondary/market-landscape")
+              ? "market-landscape"
+              : "overview";
   const primaryPage = window.location.pathname.includes("/primary/interview-kris")
     ? "interview-kris"
     : window.location.pathname.includes("/primary/interview-yves")
@@ -5793,11 +5531,13 @@ function App() {
             ? "stakeholder-map"
             : window.location.pathname.includes("/impact-analysis")
               ? "impact-analysis"
-              : window.location.pathname.includes("/making")
-                ? "making"
-                : window.location.pathname.includes("/cosmos/00") || window.location.pathname.endsWith("/00/") || window.location.pathname.endsWith("/00")
-                  ? "full-story"
-                  : "intro";
+              : window.location.pathname.includes("/design-decision")
+                ? "design-decision"
+                : window.location.pathname.includes("/making")
+                  ? "making"
+                  : window.location.pathname.includes("/cosmos/00") || window.location.pathname.endsWith("/00/") || window.location.pathname.endsWith("/00")
+                    ? "full-story"
+                    : "intro";
   return (
     <div id="top">
       <Progress />
@@ -5817,7 +5557,7 @@ function App() {
           <div className="hero-grid">
             <div className="hero-copy">
               <p className="eyebrow">Spatializing asynchronous community</p>
-              <h1>Doomscroll in 3D,<br /><em>not 2D.</em></h1>
+              <h1>Explore ideas spatially,<br /><em>not doomscrolling vertically.</em></h1>
               <p className="hero-summary">Cosmos investigates whether VR can make online discussions easier to understand by rebuilding a familiar offline behavior: reading a public wall.</p>
               <a className="text-link" href="/cosmos/00/">Full story (00) <span>→</span></a>
               {" "}
@@ -5954,7 +5694,7 @@ function App() {
                   <tr><td>Reading without posting is meaningful behavior</td><td>Strong literature support</td><td>Lurking and participation-inequality research</td><td>Interviews with the target audience</td></tr>
                   <tr><td>Feeds make structure difficult to see</td><td>Moderate support</td><td>Feed fatigue and information-overload research</td><td>Flat feed versus Cosmos task comparison</td></tr>
                   <tr><td>Voice-forward social VR can create pressure</td><td>Moderate support</td><td>Social VR research and public user discourse</td><td>Interviews with social VR users</td></tr>
-                  <tr><td>Spatial layout may support sensemaking</td><td>Moderate theory support</td><td>Spatial hypertext, information foraging, and visual sensemaking</td><td>Comprehension and place-memory testing</td></tr>
+                  <tr><td>Spatial layout may support sensemaking</td><td>Moderate–strong historical + HCI support</td><td>Spatial organization of knowledge (Memex → Xanadu → spatial hypertext); information foraging</td><td>Comprehension and place-memory testing · see <a href="/cosmos/secondary/spatial-organization/">02.5</a></td></tr>
                   <tr><td>Headset text comfort is fragile</td><td>Strong support</td><td>VR interface, reading, and cybersickness research</td><td>Testing on real devices</td></tr>
                   <tr><td>AI summaries need source inspection</td><td>Strong technical support</td><td>Summarization consistency and AI-trust research</td><td>Source-trace and correction tasks</td></tr>
                   <tr><td>Wall-first is the right strategy</td><td>Strategic inference</td><td>Reference model, platform cold-start logic, and content rights</td><td>User preference, return intent, and expert review</td></tr>
@@ -5990,24 +5730,25 @@ function App() {
                     <tr><th>Chapter</th><th>What you get</th></tr>
                   </thead>
                   <tbody>
-                    <tr><td><a href="/cosmos/secondary/">02 Secondary research</a></td><td>Literature and prior art that support (or bound) the wall idea.</td></tr>
+                    <tr><td><a href="/cosmos/secondary/">02 Secondary research</a></td><td>Literature that supports or bounds the wall idea.</td></tr>
                     <tr><td><a href="/cosmos/primary/">03 Primary research</a></td><td>Interviews, experts, and V1 peer review — comfort, focus, trust.</td></tr>
                     <tr><td><a href="/cosmos/user-waveline/">04 User waveline</a></td><td>Cosmos vs feed vs plain VR browse across one session spine.</td></tr>
                     <tr><td><a href="/cosmos/storyboard/">05 Storyboard</a></td><td>Jeenie scenario: body constraints and wall browse under care load.</td></tr>
                     <tr><td><a href="/cosmos/stakeholder-map/">06 Stakeholder analysis</a></td><td>Already-there vs hypothesized edges; gaps the app can close.</td></tr>
                     <tr><td><a href="/cosmos/impact-analysis/">07 Impact analysis</a></td><td>Harms, misuse, measurement, mitigation.</td></tr>
-                    <tr><td><a href="/cosmos/making/">08 Making Cosmos</a></td><td>What shipped on /web, what waits (/VR, community), phase order.</td></tr>
+                    <tr><td><a href="/cosmos/design-decision/">08 Design decision</a></td><td>Named placement rules, focus/density, reader actions, open tests.</td></tr>
+                    <tr><td><a href="/cosmos/making/">09 Making Cosmos</a></td><td>What shipped on /web, what waits (/VR, community), phase order.</td></tr>
                   </tbody>
                 </table>
               </div>
               <p style={{ marginTop: "16px" }}>
-                Presentation version of this arc:{" "}
+                Present this arc as slides:{" "}
                 <a href="/cosmos/00/"><strong>00 · Full story</strong></a>
-                {" · "}
-                <a href="/#cosmos-00" target="_blank" rel="noreferrer">also as Web Slides</a>
+                {" "}(standalone deck — arrows, fullscreen)
               </p>
               <div className="report-next-links">
                 <a href="/cosmos/secondary/">Continue to secondary research <span>→</span></a>
+                <a href="/cosmos/design-decision/">Design decisions <span>→</span></a>
                 <a href="/cosmos/making/">See what is built <span>→</span></a>
               </div>
             </section>
@@ -6030,18 +5771,20 @@ function App() {
               <a href="#secondary-walls"><span>2</span>Offline community walls</a>
               <a href="#secondary-reading"><span>3</span>Quiet reading</a>
               <a href="#secondary-space"><span>4</span>Spatial communication</a>
-              <a href="#secondary-market"><span>5</span>Market landscape</a>
-              <a href="#secondary-xr"><span>6</span>XR reading and devices</a>
-              <a href="#secondary-ai"><span>7</span>AI and source trust</a>
-              <a href="#secondary-synthesis"><span>8</span>Synthesis</a>
-              <a href="#secondary-gaps"><span>9</span>Evidence gaps</a>
+              <a href="#secondary-knowledge"><span>5</span>Spatial organization of knowledge</a>
+              <a href="#secondary-market"><span>6</span>Market landscape</a>
+              <a href="#secondary-market-gap"><span>7</span>Market gap</a>
+              <a href="#secondary-xr"><span>8</span>XR reading and devices</a>
+              <a href="#secondary-ai"><span>9</span>AI and source trust</a>
+              <a href="#secondary-synthesis"><span>10</span>Synthesis</a>
+              <a href="#secondary-gaps"><span>11</span>Evidence gaps</a>
             </nav>
 
             <section className="report-chapter" id="secondary-method">
               <span className="report-number">0</span>
               <h2>Scope and method</h2>
               <p className="report-lead">The secondary research tests the assumptions behind Cosmos before the project commits to a platform, interaction model, or hardware-specific implementation.</p>
-              <p>The review combines research on online participation, social media fatigue, information foraging, spatial memory, VR interface comfort, trustworthy AI summarization, and large-scale spatial communications. It also uses offline message walls as design references and compares adjacent products across forums, chat, social VR, spatial computing, structured debate, and AI synthesis.</p>
+              <p>The review combines research on online participation, social media fatigue, information foraging, spatial memory, the spatial organization of knowledge (from Memex and Xanadu through spatial hypertext), VR interface comfort, trustworthy AI summarization, and large-scale spatial communications. It also uses offline message walls as design references and compares adjacent products across forums, chat, social VR, spatial computing, structured debate, and AI synthesis.</p>
               <p>Evidence is evaluated by strength and by relevance. A strong adjacent finding does not automatically validate Cosmos. For example, spatial audio research demonstrates that location cues can help attention, but it does not prove that a spatial message wall improves reading comprehension. Those claims remain separate.</p>
               <aside className="report-note"><b>Review standard</b><p>Each evidence cluster must produce a limited conclusion, a product implication, and a primary-research question. The review does not treat conceptual fit as validation.</p></aside>
             </section>
@@ -6057,6 +5800,7 @@ function App() {
                   <tr><td>Non-posting participation</td><td>Design for quiet readers first.</td><td>Strong literature support</td><td>Interview the intended audience.</td></tr>
                   <tr><td>Feed and algorithm fatigue</td><td>Provide orientation rather than another ranking system.</td><td>Moderate support</td><td>Compare task performance against a flat feed.</td></tr>
                   <tr><td>Spatial communications</td><td>Use spatial attention cues; defer live voice.</td><td>Strong adjacent technical support</td><td>Test async spatial browsing before co-presence.</td></tr>
+                  <tr><td>Spatial organization of knowledge</td><td>Place and proximity can carry meaning; structure systems fail when authoring cost is high.</td><td>Strong historical + HCI support</td><td>Test whether AI-laid clusters read as structure or noise.</td></tr>
                   <tr><td>XR reading comfort</td><td>Reading comfort is a product requirement.</td><td>Strong support</td><td>Test typography and navigation on real devices.</td></tr>
                   <tr><td>Device landscape</td><td>Cosmos must be cross-device.</td><td>Strong market support</td><td>Match tasks to desktop, headset, and glasses modes.</td></tr>
                   <tr><td>AI summarization</td><td>Every generated label needs a source trail.</td><td>Strong technical support</td><td>Run source-trace and correction tasks.</td></tr>
@@ -6101,11 +5845,31 @@ function App() {
                 <a className="report-subreport-link" href="/cosmos/secondary/memory-pods/" style={{ margin: 0 }}><span>Detailed report 02.2</span><b>MemoryPods: Enhancing Asynchronous Communication in Extended Reality</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/secondary/socially-late/" style={{ margin: 0 }}><span>Detailed report 02.3</span><b>Socially Late, Virtually Present: Transforming Asynchronous Social VR (Stanford)</b><i>Read analysis →</i></a>
                 <a className="report-subreport-link" href="/cosmos/secondary/vr-reading/" style={{ margin: 0 }}><span>Detailed report 02.4</span><b>Reading in VR: Customizing Your Reading Experience (HTC VIVE)</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/secondary/spatial-organization/" style={{ margin: 0 }}><span>Detailed report 02.5</span><b>Spatial organization of knowledge — from Xanadu to the wall</b><i>Read analysis →</i></a>
+                <a className="report-subreport-link" href="/cosmos/secondary/market-landscape/" style={{ margin: 0 }}><span>Detailed report 02.6</span><b>Vertical community market — scale, moderation, and the provenance opening</b><i>Read analysis →</i></a>
               </div>
             </section>
 
-            <section className="report-chapter" id="secondary-market">
+            <section className="report-chapter" id="secondary-knowledge">
               <span className="report-number">5</span>
+              <h2>Spatial organization of knowledge: what earlier systems already constrained</h2>
+              <p>From Memex trails and Project Xanadu to spatial hypertext and argument maps, computing has repeatedly tried to make knowledge navigable as structure and place rather than as a ranked list. That lineage supports Cosmos’s premise that arrangement can help orientation. It also bounds the claim: spatial structure systems often fail when every relationship must be hand-authored, when free layout becomes clutter, or when the product confuses a blank canvas with a multi-voice public wall.</p>
+              <p>The detailed report traces the line from Xanadu’s non-sequential, parallel documents and persistent addressing through spatial hypertext (Aquanet, VIKI/VKB and related work) to modern boards and debate tools — and states what Cosmos should inherit, reject, and test.</p>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Arrangement rules must be teachable and inspectable. Prefer a wall that is readable without hand-authoring a graph; every AI layout must open to sources.</p></aside>
+              <a className="report-subreport-link" href="/cosmos/secondary/spatial-organization/"><span>Detailed report 02.5</span><b>Spatial organization of knowledge</b><i>Read analysis →</i></a>
+            </section>
+
+            <section className="report-chapter" id="secondary-market">
+              <span className="report-number">6</span>
+              <h2>The vertical feed Cosmos is arguing against is still growing</h2>
+              <p>Threads passed X in mobile daily active users in early 2026 and grew 127.8% year over year, while Facebook comment volume rose 20% — the incumbent vertical text feed is not in decline, and any Cosmos framing built on “engagement collapse” will not survive scrutiny. What is shifting is where value sits: Reddit monetizes authenticity directly through LLM data licensing and markedly cheaper ads, because peer-vetted human discourse has become scarce.</p>
+              <p>The detailed report maps scale, engagement by platform, the fork in moderation models and legal regimes, and the convergence on ads plus AI — then extracts the constraints those place on a spatial community wall.</p>
+              <aside className="report-note report-note-yellow"><b>Implication for Cosmos</b><p>Compete on verifiability, not reach. The market is repricing around provenance, which turns source trace from a user preference into a strategic position.</p></aside>
+              <a className="report-subreport-link" href="/cosmos/secondary/market-landscape/"><span>Detailed report 02.6</span><b>Vertical community market</b><i>Read analysis →</i></a>
+            </section>
+
+            <section className="report-chapter" id="secondary-market-gap">
+              <span className="report-number">7</span>
               <h2>The market offers parts of the experience, not the whole model</h2>
               <table className="report-table">
                 <thead><tr><th>Product category</th><th>What it offers</th><th>What remains missing</th></tr></thead>
@@ -6123,7 +5887,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-xr">
-              <span className="report-number">6</span>
+              <span className="report-number">8</span>
               <h2>XR hardware creates different reading modes</h2>
               <p>Desktop, mixed-reality headsets, spatial computers, and smart glasses should not be treated as interchangeable displays. They support different durations, input methods, fields of view, and levels of attention.</p>
               <p>Public discussion around Vision Pro and Quest indicates that dense web layouts, unstable focus targets, blurry text, and excessive motion can make text-heavy browsing tiring. Cosmos cannot solve this by moving a standard feed into depth.</p>
@@ -6140,7 +5904,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-ai">
-              <span className="report-number">7</span>
+              <span className="report-number">9</span>
               <h2>AI can organize the wall only if its structure remains inspectable</h2>
               <p>AI-generated summaries and labels can reduce the cost of navigating a large discussion, but they can also compress disagreement, omit minority voices, or present an inferred cluster as if it were an objective fact.</p>
               <p>Cosmos should treat AI structure as a navigational layer rather than a replacement for source material. Every label, cluster, tension, and missing-voice claim should link back to the posts that produced it. Users should be able to inspect, correct, or dismiss the generated structure.</p>
@@ -6148,7 +5912,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-synthesis">
-              <span className="report-number">8</span>
+              <span className="report-number">10</span>
               <h2>Cross-study synthesis</h2>
               <p>No single evidence cluster validates Cosmos. Together, they define a coherent prototype and narrow what should be tested first.</p>
               <table className="report-table">
@@ -6157,6 +5921,7 @@ function App() {
                   <tr><td>Offline walls already support spatial asynchronous participation.</td><td>Use the wall—not the feed—as the interaction metaphor.</td></tr>
                   <tr><td>Reading without posting can be intentional participation.</td><td>Measure comprehension and return behavior before contribution rate.</td></tr>
                   <tr><td>Spatial cues can help direct attention.</td><td>Test location, density, adjacency, and distance as reading cues.</td></tr>
+                  <tr><td>Xanadu → spatial hypertext → boards already explored arrangement as structure.</td><td>Inherit inspectability and source-linked reuse; reject high hand-authoring cost as the reader’s job.</td></tr>
                   <tr><td>Live spatial voice is technically and socially expensive.</td><td>Keep audio optional and outside the initial validation scope.</td></tr>
                   <tr><td>XR reading comfort is fragile.</td><td>Use stable cards, generous spacing, predictable focus, and low motion.</td></tr>
                   <tr><td>AI synthesis can hide source context.</td><td>Make generated structure inspectable and reversible.</td></tr>
@@ -6167,7 +5932,7 @@ function App() {
             </section>
 
             <section className="report-chapter" id="secondary-gaps">
-              <span className="report-number">9</span>
+              <span className="report-number">11</span>
               <h2>Evidence gaps</h2>
               <p>The secondary research establishes a defensible direction, but the central product claim remains untested. The next phase must answer:</p>
               <ul>
@@ -6175,6 +5940,7 @@ function App() {
                 <li>Whether place memory improves retrieval after a delay.</li>
                 <li>Whether headset reading is comfortable enough for sustained discussion browsing.</li>
                 <li>Whether source-linked AI labels increase trust or add cognitive overhead.</li>
+                <li>Whether AI-laid spatial structure avoids the authoring-cost failure mode of earlier knowledge-organization tools.</li>
                 <li>Whether quiet readers feel less pressure in a wall or more visible in an immersive space.</li>
                 <li>Whether the value persists on desktop, where spatial depth is reduced.</li>
               </ul>
@@ -6184,6 +5950,7 @@ function App() {
                 <a href="/cosmos/secondary/memory-pods/">Read MemoryPods analysis <span>→</span></a>
                 <a href="/cosmos/secondary/socially-late/">Read Stanford Asynchronous VR analysis <span>→</span></a>
                 <a href="/cosmos/secondary/vr-reading/">Read Customizing VR Reading analysis <span>→</span></a>
+                <a href="/cosmos/secondary/spatial-organization/">Read spatial organization of knowledge <span>→</span></a>
                 <a href="/cosmos/primary/">Continue to primary research <span>→</span></a>
               </div>
             </section>
@@ -6394,7 +6161,7 @@ function App() {
             <div className="masking-diagram" aria-label="Diagram of Transformed Social Interaction versus raw spatial replay">
               <div className="flat-mix" style={{ borderColor: "var(--pink)" }}><span>Raw Spatial Replay</span><div><i>A₁</i><i>A₂</i></div><b>Locked, unaligned recording</b></div>
               <div className="diagram-arrow">→</div>
-              <div className="spatial-mix" style={{ borderColor: "var(--mint)" }}><span>Transformed Interaction</span><div className="listener" style={{ backgroundColor: "var(--mint)" }}><i>U</i></div><i className="voice v1">A₁*</i><i className="voice v2">A₂*</i><b>Dynamic Gaze + Position Realignment</b></div>
+              <div className="spatial-mix" style={{ borderColor: "var(--mint)" }}><span>Transformed Interaction</span><div className="listener" style={{ backgroundColor: "var(--mint)", color: "#fff" }}><i>U</i></div><i className="voice v1">A₁*</i><i className="voice v2">A₂*</i><b>Dynamic Gaze + Position Realignment</b></div>
             </div>
           </div>
 
@@ -6448,7 +6215,7 @@ function App() {
             <div className="masking-diagram" aria-label="Diagram of Static Flat Layout versus Cosmos Adaptive Canvas">
               <div className="flat-mix" style={{ borderColor: "var(--pink)" }}><span>Flat 2D Projection</span><div><i>T₁</i><i>T₂</i></div><b>High-glare, rigid depth placement</b></div>
               <div className="diagram-arrow">→</div>
-              <div className="spatial-mix" style={{ borderColor: "var(--mint)" }}><span>Cosmos Adaptive Canvas</span><div className="listener" style={{ backgroundColor: "var(--mint)" }}><i>R</i></div><i className="voice v1">C₁*</i><i className="voice v2">C₂*</i><b>Dynamic Curve + Amber Contrast</b></div>
+              <div className="spatial-mix" style={{ borderColor: "var(--mint)" }}><span>Cosmos Adaptive Canvas</span><div className="listener" style={{ backgroundColor: "var(--mint)", color: "#fff" }}><i>R</i></div><i className="voice v1">C₁*</i><i className="voice v2">C₂*</i><b>Dynamic Curve + Amber Contrast</b></div>
             </div>
           </div>
 
@@ -6471,6 +6238,584 @@ function App() {
           </div>
 
           <footer className="video-source-note"><span>Source</span><p>“VIVE TALK - Reading in VR: Customizing Your Reading Experience,” HTC VIVE, official presentation on ergonomic customization and sensory optimization in virtual reality. Video ID wWj7egAS7Vs.</p><a href="https://www.youtube.com/watch?v=wWj7egAS7Vs" target="_blank" rel="noreferrer">HTC VIVE ↗</a></footer>
+        </section>}
+
+        {activeChapter === "secondary" && secondaryPage === "spatial-organization" && <section className="report-section secondary spatial-organization" id="spatial-organization">
+          <ChapterLabel number="02.5">Secondary research / Lineage</ChapterLabel>
+          <article className="report-document secondary-document">
+            <header className="report-page-intro">
+              <p className="eyebrow">Spatial organization of knowledge</p>
+              <h1>From Xanadu to the wall.<br /><em>Arrangement systems that constrain Cosmos.</em></h1>
+              <p>
+                Cosmos is not the first system to treat information as something you can arrange, parallel, and return to.
+                This report follows that lineage — Memex trails, Project Xanadu, spatial hypertext, argument maps, and modern boards —
+                and states what Cosmos should inherit, refuse, and test.
+              </p>
+            </header>
+
+            <nav className="report-contents" aria-label="Spatial organization of knowledge contents">
+              <p>In this report</p>
+              <a href="#sok-why"><span>0</span>Why this cluster</a>
+              <a href="#sok-memex"><span>1</span>Memex and trails</a>
+              <a href="#sok-xanadu"><span>2</span>Xanadu</a>
+              <a href="#sok-hypertext"><span>3</span>Spatial hypertext</a>
+              <a href="#sok-structure"><span>4</span>Structure tools as caution</a>
+              <a href="#sok-modern"><span>5</span>Modern cousins</a>
+              <a href="#sok-cosmos"><span>6</span>So what for Cosmos</a>
+              <a href="#sok-open"><span>7</span>Open questions</a>
+              <a href="#sok-sources"><span>8</span>Sources</a>
+            </nav>
+
+            <section className="report-chapter" id="sok-why">
+              <span className="report-number">0</span>
+              <h2>Why this cluster exists</h2>
+              <p className="report-lead">
+                Secondary reports 2.1–2.4 cover spatial <em>attention</em>, async <em>presence</em>, and VR <em>reading comfort</em>.
+                None of them answers: has computing already tried to organize knowledge as place and structure — and what broke?
+              </p>
+              <p>
+                Without that lineage, Cosmos risks two errors: claiming novelty for “spatial knowledge,” or ignoring decades of failure modes
+                (hand-authored graphs nobody maintains, free layout that becomes clutter, tools that only experts can use).
+              </p>
+              <aside className="report-note"><b>Working claim</b><p>
+                Arrangement can help orientation. Cosmos’s novel bet is a multi-voice <strong>community wall</strong> that is readable without requiring every reader to author the structure — not “we invented spatial hypertext in a headset.”
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="sok-memex">
+              <span className="report-number">1</span>
+              <h2>Before Xanadu: trails, not feeds</h2>
+              <p>
+                Vannevar Bush’s 1945 essay <em>As We May Think</em> proposed the Memex: a personal device for storing records and building
+                <strong>associative trails</strong> through them — paths a person could follow and share, rather than only hierarchical filing.
+              </p>
+              <p>
+                The relevant idea for Cosmos is narrow. Meaning can live in a <em>path</em> through material, not only in a single document or a ranked list.
+                The Memex is not a social wall and not VR. It is the intellectual ancestor of “I return to a place in my knowledge landscape.”
+              </p>
+              <p className="report-source">
+                <span>Source</span>
+                <a href="https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/" target="_blank" rel="noreferrer">Bush, “As We May Think,” The Atlantic, July 1945 ↗</a>
+              </p>
+              <aside className="report-note report-note-yellow"><b>Cosmos take</b><p>
+                Design for return paths and place memory. Do not confuse “trail” with “algorithmic next post.”
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="sok-xanadu">
+              <span className="report-number">2</span>
+              <h2>Xanadu: non-sequential writing, parallel documents, durable links</h2>
+              <p>
+                Project Xanadu, begun by Ted Nelson in the 1960s, is the classic attempt to replace sequential documents and one-way “links as jumps”
+                with a hypermedia system built for comparison, quotation with context, and stable addressing. Nelson’s writing stresses
+                <strong>non-sequential writing</strong>, side-by-side views, and <strong>transclusion</strong> — reusing content by reference so sources stay visible rather than copy-pasted away.
+              </p>
+              <p>
+                Public Xanadu materials and Nelson’s long project history also show the hard boundary: ambitious global hypermedia is a lifetime of systems work.
+                Partial demos and prototypes exist; the full “universal library with perfect parallel documents” did not become the everyday web.
+                The web that won optimized for publish-and-link simplicity, not for Xanadu’s stronger guarantees about versioning, payment, and parallel structure.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Xanadu idea</th><th>What it is for</th><th>Cosmos implication</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Non-sequential structure</td>
+                      <td>Ideas are not forced into one scroll order</td>
+                      <td>Wall layout may encode relation without pretending chronology is truth</td>
+                    </tr>
+                    <tr>
+                      <td>Parallel documents</td>
+                      <td>Compare versions / sides without losing place</td>
+                      <td>Stance clusters and side-by-side cards beat a single ranked stream</td>
+                    </tr>
+                    <tr>
+                      <td>Transclusion / source-linked reuse</td>
+                      <td>Quote and re-use with origin intact</td>
+                      <td>AI labels and clusters must open into original posts</td>
+                    </tr>
+                    <tr>
+                      <td>Persistent addressing</td>
+                      <td>Links that still mean something later</td>
+                      <td>Stable IDs for posts, clusters, and return paths</td>
+                    </tr>
+                    <tr>
+                      <td>Universal hypermedia ambition</td>
+                      <td>One grand system for all literature</td>
+                      <td><strong>Do not start here.</strong> Prove a wall, not a world library</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="report-source">
+                <span>Sources</span>
+                <a href="https://xanadu.com/" target="_blank" rel="noreferrer">Project Xanadu (official site) ↗</a>
+                {" · "}
+                <a href="https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/" target="_blank" rel="noreferrer">Bush (lineage context) ↗</a>
+              </p>
+              <aside className="report-note"><b>Honest limit</b><p>
+                This report does not treat Xanadu as a finished product case study with public A/B metrics. It treats Xanadu as the clearest early statement that
+                <em>structure and parallel view</em> matter more than a single timeline — and as a warning that platform-scale ambition can outrun usable delivery.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="sok-hypertext">
+              <span className="report-number">3</span>
+              <h2>Spatial hypertext: position and proximity as meaning</h2>
+              <p>
+                In the early 1990s, researchers including Catherine Marshall and Frank Shipman developed systems where users organized information
+                in a visual workspace. <strong>Spatial hypertext</strong> (a term associated with this line of work) treats layout itself as a way to express relationships —
+                not only typed links in a graph.
+              </p>
+              <p>
+                Systems such as <strong>Aquanet</strong> (typed visual networks) and later spatial workspaces (VIKI / VKB and related tools) let people
+                cluster, nest, and rearrange nodes. Users often express structure <em>implicitly</em> by putting things near each other before they formalize links.
+                That is a design lesson: free spatial arrangement supports thinking in progress; forced formal schemas can block early sense-making.
+              </p>
+              <p>
+                Shipman’s surveys of spatial hypertext research also surface recurring problems: recognizing intended structure from layout,
+                scaling from a personal map to shared maps, and the tension between informal spatial cues and explicit navigational hypertext.
+              </p>
+              <p className="report-source">
+                <span>Sources</span>
+                <a href="https://cs.brown.edu/memex/ACM_HypertextTestbed/papers/37.html" target="_blank" rel="noreferrer">Shipman, “Spatial Hypertext: An Alternative to Navigational and Semantic Links” ↗</a>
+                {" · "}
+                <a href="https://people.engr.tamu.edu/shipman/SpatialHypertext/SH1/shipman.pdf" target="_blank" rel="noreferrer">Shipman, “Seven Directions for Spatial Hypertext Research” (PDF) ↗</a>
+              </p>
+              <aside className="report-note report-note-yellow"><b>Cosmos take</b><p>
+                Density, adjacency, and cluster position can be first-class reading cues. But a public multi-author wall is not a personal spatial hypertext canvas:
+                readers did not lay out the map. If AI or moderators lay it out, the map must stay inspectable — or it will feel arbitrary.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="sok-structure">
+              <span className="report-number">4</span>
+              <h2>Structure tools as caution: when the map becomes the job</h2>
+              <p>
+                Argument-mapping and issue-based information systems (for example work in the IBIS tradition, including gIBIS) made claims, questions, and relations explicit.
+                That clarity helps experts and facilitators. It often fails as a casual mass medium: every edge needs an author, visual complexity grows faster than reading time,
+                and participation collapses to specialists.
+              </p>
+              <p>
+                The secondary overview already places argument-mapping tools in the market table: strong for structured debate, weak for everyday contribution cost.
+                The spatial-organization lineage explains why. Formal structure is expensive. Spatial freeform is cheaper to start and harder to share as a stable public artifact.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table">
+                  <thead>
+                    <tr><th>Failure mode</th><th>What it looks like</th><th>Cosmos risk if ignored</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Authoring tax</td>
+                      <td>Every relation must be drawn or typed</td>
+                      <td>Empty walls; only power users “build the map”</td>
+                    </tr>
+                    <tr>
+                      <td>Schema lock-in</td>
+                      <td>Nodes/types too rigid for messy discourse</td>
+                      <td>Real threads refuse the model; people leave for chat</td>
+                    </tr>
+                    <tr>
+                      <td>Visual overload</td>
+                      <td>Maps denser than the text they organize</td>
+                      <td>Headset fatigue; “Excel in a circle” reviews</td>
+                    </tr>
+                    <tr>
+                      <td>Private map, public myth</td>
+                      <td>One person’s layout is unreadable to others</td>
+                      <td>Clusters feel random; place memory fails across people</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside className="report-note"><b>Boundary</b><p>
+                Cosmos should not require readers to construct a knowledge graph to get value. Structure is a navigational layer over multi-voice posts — preferably generated, always reversible, always source-linked.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="sok-modern">
+              <span className="report-number">5</span>
+              <h2>Modern cousins: boards, canvases, curatorial walls</h2>
+              <p>
+                Tools such as spatial canvases in note apps, mood-board products, and curatorial platforms (for example Are.na-style boards) continue the spatial-organization idea for
+                <strong>personal and small-group knowledge work</strong>. They prove that people still want arrangement, collections, and visual grouping.
+              </p>
+              <p>
+                They are not Cosmos. Most optimize solitary curation or studio workflow, not asynchronous public multi-voice discourse with competing worldviews.
+                They rarely solve place memory for strangers reading the same political or community fight. They rarely need steward tools for harassment at feed scale.
+              </p>
+              <aside className="report-note report-note-yellow"><b>Cosmos difference</b><p>
+                Offline community walls + multi-author threads + optional AI layout in place. Not a blank infinite canvas for one curator’s taste.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="sok-cosmos">
+              <span className="report-number">6</span>
+              <h2>So what for Cosmos</h2>
+              <p className="report-lead">Inherit the old idea that arrangement carries meaning. Refuse the old failure mode that every reader must become a cartographer.</p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>From the lineage</th><th>Inherit</th><th>Reject / defer</th><th>Test</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Memex trails</td>
+                      <td>Return paths; place memory</td>
+                      <td>Personal-only archive as the whole product</td>
+                      <td>Delayed retrieval by place vs title</td>
+                    </tr>
+                    <tr>
+                      <td>Xanadu parallel / transclusion</td>
+                      <td>Source-linked reuse; compare sides</td>
+                      <td>Universal hypermedia platform as v1</td>
+                      <td>Inspect cluster → open source posts</td>
+                    </tr>
+                    <tr>
+                      <td>Spatial hypertext</td>
+                      <td>Proximity and density as cues</td>
+                      <td>Assume free layout = shared meaning</td>
+                      <td>Inter-rater agreement on cluster meaning</td>
+                    </tr>
+                    <tr>
+                      <td>Argument maps</td>
+                      <td>Explicit tension when useful</td>
+                      <td>Hand-authored graphs for every thread</td>
+                      <td>Time-to-find opposing view vs feed</td>
+                    </tr>
+                    <tr>
+                      <td>Modern boards</td>
+                      <td>Collection / wall metaphors people already know</td>
+                      <td>Curator-only authorship</td>
+                      <td>Quiet-reader success without posting</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside className="report-note"><b>Secondary-research conclusion</b><p>
+                Earlier systems already showed that arrangement can carry meaning — and that structure tools collapse under authoring cost and clutter.
+                Cosmos’s researchable claim is narrower: a VR (and cross-device) reconstruction of an offline-style community wall can improve orientation
+                in multi-voice discourse <em>without</em> making every reader a cartographer — if AI layout stays inspectable and reading stays comfortable.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="sok-open">
+              <span className="report-number">7</span>
+              <h2>Open questions for primary research</h2>
+              <ul>
+                <li>Do strangers interpret the same AI-laid clusters consistently, or does layout feel arbitrary after novelty fades?</li>
+                <li>Does place memory improve retrieval after a delay compared with a flat feed of the same posts?</li>
+                <li>Does source-linked structure increase trust, or does it add a second interface to learn?</li>
+                <li>When does spatial density help orientation, and when does it recreate the “too many cards” failure from V1 reviews?</li>
+                <li>What subset of wall structure survives on desktop without depth — trails, lists of clusters, or something else?</li>
+              </ul>
+              <div className="report-next-links">
+                <a href="/cosmos/secondary/">← Secondary overview</a>
+                <a href="/cosmos/secondary/spatial-communications/">Spatial communications 2.1 →</a>
+                <a href="/cosmos/primary/">Primary research →</a>
+              </div>
+            </section>
+
+            <section className="report-chapter" id="sok-sources">
+              <span className="report-number">8</span>
+              <h2>Sources and further reading</h2>
+              <ul>
+                <li>
+                  <a href="https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/" target="_blank" rel="noreferrer">Vannevar Bush, “As We May Think,” The Atlantic (1945) ↗</a>
+                </li>
+                <li>
+                  <a href="https://xanadu.com/" target="_blank" rel="noreferrer">Project Xanadu — official project site ↗</a>
+                </li>
+                <li>
+                  <a href="https://cs.brown.edu/memex/ACM_HypertextTestbed/papers/37.html" target="_blank" rel="noreferrer">Frank M. Shipman III, spatial hypertext overview (Brown Memex archive) ↗</a>
+                </li>
+                <li>
+                  <a href="https://people.engr.tamu.edu/shipman/SpatialHypertext/SH1/shipman.pdf" target="_blank" rel="noreferrer">Shipman, “Seven Directions for Spatial Hypertext Research” (PDF) ↗</a>
+                </li>
+                <li>
+                  Marshall, C. C., Halasz, F. G., Rogers, R. A., &amp; Janssen, W. C. (1991). Aquanet: a hypertext tool to hold your knowledge in place. <em>Proceedings of Hypertext ’91</em>. ACM.
+                </li>
+              </ul>
+              <p>
+                Related Cosmos library pages: offline walls and market structure in{" "}
+                <a href="/cosmos/secondary/">secondary overview</a>; AI inspectability in overview §8; V1 clutter findings in{" "}
+                <a href="/cosmos/primary/version1-review/">primary 3.6</a>.
+              </p>
+            </section>
+          </article>
+        </section>}
+
+        {activeChapter === "secondary" && secondaryPage === "market-landscape" && <section className="report-section secondary market-landscape" id="market-landscape">
+          <ChapterLabel number="02.6">Secondary research / Market</ChapterLabel>
+          <article className="report-document secondary-document">
+            <header className="report-page-intro">
+              <p className="eyebrow">Vertical community market</p>
+              <h1>Where vertical text platforms stand.<br /><em>And why trust became the scarce asset.</em></h1>
+              <p>
+                Cosmos proposes a spatial alternative to the vertical text feed. That argument only holds if we are honest about what the
+                vertical feed is actually doing right now — how big it is, whether engagement is really collapsing, and what the incumbents
+                are competing on. This report maps the mid-2026 landscape and extracts the constraints it places on a spatial wall.
+              </p>
+            </header>
+
+            <aside className="report-note"><b>Provenance</b><p>
+              The figures in this report come from a market brief compiled for the Cosmos team, not from primary data collection.
+              They have not yet been traced back to their original sources. Treat every number here as
+              <strong> directional and pending verification</strong> — see §7 before quoting any of it externally.
+            </p></aside>
+
+            <nav className="report-contents" aria-label="Vertical community market contents">
+              <p>In this report</p>
+              <a href="#mkt-why"><span>0</span>Why this report</a>
+              <a href="#mkt-scale"><span>1</span>Scale and momentum</a>
+              <a href="#mkt-engagement"><span>2</span>Engagement is diverging</a>
+              <a href="#mkt-reddit"><span>3</span>Reddit: trust as the product</a>
+              <a href="#mkt-moderation"><span>4</span>The moderation fork</a>
+              <a href="#mkt-money"><span>5</span>Monetization: ads plus AI</a>
+              <a href="#mkt-cosmos"><span>6</span>So what for Cosmos</a>
+              <a href="#mkt-verify"><span>7</span>Verification status</a>
+            </nav>
+
+            <section className="report-chapter" id="mkt-why">
+              <span className="report-number">0</span>
+              <h2>Why this report exists</h2>
+              <p className="report-lead">
+                Reports 2.1–2.5 argue that space can carry meaning. None of them checks whether the thing Cosmos is displacing is weak or strong.
+              </p>
+              <p>
+                If the vertical feed were quietly dying, Cosmos could win on novelty alone. It is not dying. Threads is the fastest-growing
+                platform across all generations, and the incumbents are still adding users at a scale no research prototype approaches.
+                So Cosmos cannot compete on reach or habit. It has to compete on something the feed structurally cannot offer.
+              </p>
+              <aside className="report-note"><b>Working claim</b><p>
+                The vertical feed is winning on scale and losing on <strong>verifiability</strong>. That gap — not 3D itself — is the opening
+                Cosmos is aiming at, and it lines up with what our interviewees said about source trust.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="mkt-scale">
+              <span className="report-number">1</span>
+              <h2>Scale and momentum</h2>
+              <p>
+                Threads crossed a symbolic line in early 2026: it passed X in mobile daily active users. The growth rate matters more than the
+                absolute number — this is a platform converting from novelty into daily habit, not a plateau.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Metric</th><th>Value</th><th>Read</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Threads mobile DAU (early 2026)</td><td>141.5M vs X at 125M</td><td>First time Threads leads X on daily mobile use</td></tr>
+                    <tr><td>Threads YoY growth</td><td>+127.8%</td><td>Fastest-growing platform across all generations</td></tr>
+                    <tr><td>Threads MAU trajectory</td><td>275M (Q3 2024) → 400M (late 2025)</td><td>Novelty converting into routine</td></tr>
+                    <tr><td>Bluesky migration from X</td><td>42.5M users</td><td>Largely attributed to content-moderation concerns</td></tr>
+                    <tr><td>Meta family reach</td><td>Facebook 3.07B+, Instagram 3.0B, WhatsApp 3.0B MAU</td><td>Roughly 22–25% of global digital ad spend</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                Generational split is worth noting for recruitment: millennials adopted Threads most readily, plausibly because they were already
+                inside Meta&apos;s ecosystem, while Gen X and boomers still lead on Facebook and YouTube.
+              </p>
+              <aside className="report-note report-note-yellow"><b>Cosmos take</b><p>
+                Do not frame Cosmos as a replacement for the feed. The feed is growing. Frame it as a different <em>task</em> — bounded,
+                comparative reading — which is what primary research 3.0 already concluded.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="mkt-engagement">
+              <span className="report-number">2</span>
+              <h2>Engagement is diverging, not uniformly declining</h2>
+              <p>
+                The convenient story is that engagement is collapsing everywhere and users are exhausted. The data does not support that as a
+                blanket claim — it splits by platform, and in one case moves in the opposite direction.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Platform</th><th>Signal</th><th>Median engagement rate</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Facebook</td><td>Comment volume up 20% YoY</td><td>~5.6%</td></tr>
+                    <tr><td>Instagram</td><td>Comments down ~20% YoY</td><td>~5.5%</td></tr>
+                    <tr><td>LinkedIn</td><td>Highest median of the set</td><td>~6.2%</td></tr>
+                    <tr><td>TikTok, Pinterest, Threads</td><td>Mid-tier band</td><td>3.6–4.6%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                Facebook — the &ldquo;old&rdquo; platform — grew comment volume 20% year over year. That is a genuine dialogue reflex, not residual
+                traffic. Instagram&apos;s gentle decline means static posts now need more deliberate prompting to draw comment.
+              </p>
+              <aside className="report-note"><b>Caution on reading these</b><p>
+                A falling engagement rate does not automatically mean decline; it can reflect audience maturation as a platform&apos;s follower base
+                grows faster than its active commenters. Engagement rate is a ratio, and the denominator moves.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="mkt-reddit">
+              <span className="report-number">3</span>
+              <h2>Reddit: trust as the product</h2>
+              <p className="report-lead">
+                Reddit&apos;s position in 2026 is not built on reach. It is built on authenticity — and authenticity has become independently monetizable.
+              </p>
+              <p>
+                Discovery behaviour has shifted underneath search: Gen Z now reaches for social media (41%) over traditional search (32%) when
+                looking things up. Reddit sits at the centre of that shift because people are deliberately bypassing brand-optimized results in
+                favour of peer-vetted threads.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Dimension</th><th>Position</th><th>Why it matters here</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Corpus</td><td>25B+ posts and comments, ~500M weekly users</td><td>Depth of genuine multi-voice discourse</td></tr>
+                    <tr><td>AI value</td><td>#2 training-data source for large language models</td><td>Human conversation is now a scarce, licensable asset</td></tr>
+                    <tr><td>Ad efficiency</td><td>CPC ~$0.71 vs Facebook $1.86, Instagram $2.04</td><td>50–70% cheaper — a trust discount, effectively</td></tr>
+                    <tr><td>Brand surface</td><td>100,000+ subreddits open to participation</td><td>Community-scoped rather than broadcast</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                The strategic consequence is that Reddit is leaning into AI safety and community-driven moderation not as a cost centre but as
+                protection of its core asset. If synthetic content floods the corpus, the licensing value and the trust discount both evaporate.
+              </p>
+              <aside className="report-note report-note-yellow"><b>Cosmos take</b><p>
+                This is the strongest external validation of primary directive 4 (<em>source trace</em>). The market is now pricing provenance.
+                A wall that can show where a claim came from is aligned with where value is moving, not just with what our interviewees preferred.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="mkt-moderation">
+              <span className="report-number">4</span>
+              <h2>The moderation fork</h2>
+              <p>
+                Moderation has split into two operating models, and — separately — into two legal regimes. Both forks constrain what a
+                community product can promise.
+              </p>
+              <div className="implication-grid">
+                <article>
+                  <b>Model A · Crowd verification</b>
+                  <p>X built Community Notes after its internal trust &amp; safety organisation was cut back in 2022. Meta adopted the same
+                  open-source system for Facebook, Instagram, and Threads in March 2025. Reddit relies on user flagging.</p>
+                </article>
+                <article>
+                  <b>Model B · Hybrid ML plus human</b>
+                  <p>YouTube, TikTok, and Meta train machine-learning systems on human-moderator decisions, escalating flagged content to
+                  human review. Scale is machine; judgement is human.</p>
+                </article>
+                <article>
+                  <b>Regime A · EU and UK</b>
+                  <p>The Digital Services Act and the Online Safety Act made moderation a legal mandate with real financial penalties.
+                  Child-safety rules are tightening further.</p>
+                </article>
+                <article>
+                  <b>Regime B · US</b>
+                  <p>Looser. Platforms have measurably tightened moderation in the EU while relaxing it in the US — the same product,
+                  two different behaviours by jurisdiction.</p>
+                </article>
+              </div>
+              <p>
+                X is the clearest illustration of the cost curve. The 2022 takeover triggered mass trust &amp; safety cuts and
+                researcher-documented spikes in harmful content; the company later announced a 100-person Austin moderation hub focused on
+                CSAM and hate speech, under regulatory and Senate pressure. Moderation capacity removed under cost pressure had to be rebuilt
+                under legal pressure.
+              </p>
+              <aside className="report-note"><b>Constraint for Cosmos</b><p>
+                Regulatory fragmentation is a product-design constraint, not a policy footnote. A spatial wall that surfaces community content
+                inherits these obligations, and &ldquo;the algorithm placed it there&rdquo; is not a defence. This connects directly to the harm
+                analysis in <a href="/cosmos/impact-analysis/">chapter 07</a>.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="mkt-money">
+              <span className="report-number">5</span>
+              <h2>Monetization is converging on ads plus AI</h2>
+              <p>
+                Threads opened to advertisers in January 2025, a deliberate play to capture budget shaken loose by volatility at TikTok and X.
+                Instagram Reels added a follower activity feed and Threads rolled out analytics in the same period — the standard sequence of a
+                platform maturing into an ad product.
+              </p>
+              <p>
+                Every major platform has now deployed AI-powered feeds, recommendations, and creator tools, with Meta AI embedded across
+                Facebook, Instagram, and WhatsApp. AI is simultaneously the growth lever and the new trust risk: it drives ranking and creation
+                while making synthetic content and moderation-at-scale harder problems.
+              </p>
+              <blockquote className="report-quote">
+                The same technology that makes the feed cheaper to fill is the technology that makes its contents harder to believe.
+              </blockquote>
+            </section>
+
+            <section className="report-chapter" id="mkt-cosmos">
+              <span className="report-number">6</span>
+              <h2>So what for Cosmos</h2>
+              <p className="report-lead">
+                Three constraints and one opening fall out of this landscape.
+              </p>
+              <ul>
+                <li>
+                  <strong>Do not compete on scale or habit.</strong> Threads added users at 127.8% YoY. Cosmos has no path to that and should
+                  not pretend to one. Reports 2.1–2.5 and primary 3.0 already point at a bounded, deliberate reading task instead.
+                </li>
+                <li>
+                  <strong>Do not claim the feed is dying.</strong> Facebook comment volume is up 20% YoY. Any Cosmos framing built on
+                  &ldquo;engagement collapse&rdquo; is factually weak and will not survive scrutiny.
+                </li>
+                <li>
+                  <strong>Assume moderation obligations from day one.</strong> The EU and UK regimes apply to community surfaces regardless of
+                  how novel the display is, and the industry is converging on crowd verification as the scalable mechanism.
+                </li>
+                <li>
+                  <strong>The opening is provenance.</strong> Reddit is monetizing authenticity directly — LLM licensing, 50–70% lower CPCs.
+                  The market is paying for traceable human discourse at exactly the moment Cosmos proposes to make relationships between
+                  sources visible in space.
+                </li>
+              </ul>
+              <aside className="report-note report-note-yellow"><b>Where this lands in the argument</b><p>
+                This report does not add a new Cosmos feature. It changes the <em>justification</em> for an existing one: source trace moves from
+                &ldquo;users asked for it&rdquo; to &ldquo;users asked for it and the market is repricing around it.&rdquo;
+              </p></aside>
+              <p>
+                Related Cosmos library pages: source-trust findings in{" "}
+                <a href="/cosmos/primary/">primary 3.0</a>; harm and moderation exposure in{" "}
+                <a href="/cosmos/impact-analysis/">chapter 07</a>; the arrangement lineage in{" "}
+                <a href="/cosmos/secondary/spatial-organization/">2.5</a>.
+              </p>
+            </section>
+
+            <section className="report-chapter" id="mkt-verify">
+              <span className="report-number">7</span>
+              <h2>Verification status</h2>
+              <p>
+                Every other report in this library cites a traceable source per claim. This one does not yet, and that gap is recorded here
+                rather than hidden. The figures arrived as a compiled market brief without attribution.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Claim group</th><th>Status</th><th>Needed to promote to cited</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Threads and X DAU/MAU figures</td><td>Unverified</td><td>Sensor Tower or Meta earnings disclosure with date</td></tr>
+                    <tr><td>Engagement rates by platform</td><td>Unverified</td><td>The underlying 10-platform study, named and dated</td></tr>
+                    <tr><td>Reddit corpus, CPC, LLM training rank</td><td>Unverified</td><td>Reddit filings for corpus and users; ad benchmark report for CPC</td></tr>
+                    <tr><td>Moderation policy and dates</td><td>Partly checkable</td><td>Platform newsroom posts; DSA and OSA primary texts</td></tr>
+                    <tr><td>Bluesky migration figure</td><td>Unverified</td><td>Bluesky public stats or a named analytics provider</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside className="report-note"><b>Rule for reuse</b><p>
+                Do not carry these numbers into the deck, the poster, or any external conversation until the corresponding row above is closed.
+                The qualitative structure — scale versus verifiability, the moderation fork, provenance as the opening — holds independently of
+                the exact figures and is safe to argue now.
+              </p></aside>
+            </section>
+          </article>
         </section>}
 
         {activeChapter === "primary" && primaryPage === "overview" && <section className="report-section primary" id="primary">
@@ -6507,7 +6852,7 @@ function App() {
                   <tr><td><b>Interview 01 (Kris)</b></td><td>Software Engineer at BigTech; owns Quest 3; low routine XR use</td><td>Semi-structured walkthrough on web</td><td>Adoption convenience & text density limits</td></tr>
                   <tr><td><b>Interview 02 (Yves)</b></td><td>3D Artist; prior Unity XR developer; highly sensitive to motion</td><td>Concept walk & design critique</td><td>Physical comfort & spatial composition</td></tr>
                   <tr><td><b>Interview 03 (Johnny)</b></td><td>Graphic Designer; zero VR experience; frequent screen reader</td><td>Think-aloud walkthrough</td><td>Visual isolation, focus & source trust</td></tr>
-                  <tr><td><b>Interview 04 (JD Suh)</b></td><td>Research Engineer; wears prescription glasses; highly interested in smart glasses & ambient AI</td><td>Semi-structured interview & conceptual critique</td><td>Doom scrolling feasibility & critical value of headset scrolling</td></tr>
+                  <tr><td><b>Interview 04 (JD Suh)</b></td><td>Research Engineer; wears prescription glasses; highly interested in smart glasses & ambient AI</td><td>Semi-structured interview & conceptual critique</td><td>Doomscrolling feasibility & critical value of headset scrolling</td></tr>
                   <tr><td><b>Expert Survey</b></td><td>UX, UI, XR practitioners and experienced VR readers</td><td>Remote structured questionnaire</td><td>Typographic criteria & input modalities</td></tr>
                 </tbody>
               </table></div>
@@ -6521,7 +6866,7 @@ function App() {
               <div className="report-table-scroll"><table className="report-table report-table-wide">
                 <thead><tr><th>Dimension</th><th>Identified user barrier</th><th>Empirical evidence</th><th>Strategic design directive</th></tr></thead>
                 <tbody>
-                  <tr><td><b>Convenience & Access</b></td><td>Headset adoption threshold is high; phone is default for quick browsing.</td><td>Kris: <i>“If I want to doom scroll, isn't it easier to use my phone?”</i></td><td>Establish a spatially unique task (multi-source comparison) instead of feed parity.</td></tr>
+                  <tr><td><b>Convenience & Access</b></td><td>Headset adoption threshold is high; phone is default for quick browsing.</td><td>Kris: <i>“If I want to doomscroll, isn’t it a lot easier to take out my phone…?”</i></td><td>Establish a spatially unique task (multi-source comparison) instead of feed parity.</td></tr>
                   <tr><td><b>Physical Ergonomics</b></td><td>Headset fatigue limits productive reading sessions to 20–30 minutes.</td><td>Yves: Red marks, nose bridge pressure, makeup contamination, motion sickness.</td><td>Design for stationary, 20-minute focused review. Avoid continuous locomotion.</td></tr>
                   <tr><td><b>Information Structure</b></td><td>High-density text layouts in VR feel chaotic and visually overwhelming.</td><td>Kris: <i>“One of the biggest limitations is how many words there are.”</i></td><td>Use progressive peripheral disclosure; reduce background text; highlight one focus card.</td></tr>
                   <tr><td><b>Cognitive Trust</b></td><td>AI grouping and summaries provoke immediate skepticism about source validity.</td><td>Johnny: Refuses to trust synthesized threads without explicit source tracking.</td><td>Implement absolute provenance; let users trace every label back to raw text.</td></tr>
@@ -6552,7 +6897,7 @@ function App() {
             <section className="report-chapter" id="primary-focus">
               <span className="report-number">4</span>
               <h2>Focus and source trust</h2>
-              <p>Johnny’s design eye: <b>immersion is not the product; focus is.</b> A full sphere of competing cards felt noisy. Isolating one card and dimming the rest worked — “being here now instead of everywhere.”</p>
+              <p>Johnny’s design eye: a full sphere of competing cards felt noisy. Isolating one card and dimming the rest worked — “being here now instead of everywhere.” Focus isolation is a product rule, not a visual flourish.</p>
               <blockquote className="report-quote">“I love that everything else goes away. In a physical book, your eyes block out the room. VR should do that for my screen.”</blockquote>
               <p>He also distrusted AI-built structure until he could see origins: who wrote the post, and how a label or summary was made.</p>
               <aside className="report-note report-note-yellow"><b>Trust standard</b><p>Every AI summary, label, or cluster needs a clear path back to the original text. Trust comes from inspectable sources, not opaque grouping.</p></aside>
@@ -6678,7 +7023,7 @@ function App() {
                   <tr><td>Voice input</td><td>Generally prefers typing because speech recognition may produce incorrect results</td><td>Voice should remain optional rather than the default input method.</td></tr>
                 </tbody>
               </table>
-              <blockquote className="report-quote">“If I want to doom scroll, isn’t it a lot easier to take out my phone and open the app, compared to turning on my headset?”</blockquote>
+              <blockquote className="report-quote">“If I want to doomscroll, isn’t it a lot easier to take out my phone and open the app, compared to turning on my headset?”</blockquote>
               <p>Kris identified one situational convenience advantage: browsing while lying down without holding a phone above the face. More significantly, he imagined a spatial workspace with Reddit, X, Threads, market information, and news visible simultaneously. This suggests that cross-source monitoring may be a stronger spatial use case than a single immersive feed.</p>
             </section>
 
@@ -7092,7 +7437,7 @@ function App() {
             <header className="report-page-intro interview-intro">
               <p className="eyebrow">Semi-structured interview + conceptual critique</p>
               <h1>JD Suh<br /><span>Research engineer</span></h1>
-              <p>JD Suh discussed smart glasses, personal AI intelligence, and scrolling habits. He offered a direct and grounded critique of the project's core hypothesis, questioning the ultimate value of making headset doom scrolling easier.</p>
+              <p>JD Suh discussed smart glasses, personal AI intelligence, and scrolling habits. He offered a direct and grounded critique of the project's core hypothesis, questioning the ultimate value of making headset doomscrolling easier.</p>
             </header>
 
             <table className="report-table interview-meta">
@@ -7118,10 +7463,10 @@ function App() {
             <section className="report-chapter" id="jd-summary">
               <span className="report-number">0</span>
               <h2>Interview summary</h2>
-              <p className="report-lead">JD Suh did not reject the potential of heads-up technology, but he forcefully challenged the premise of bringing "doom scrolling" into VR headsets.</p>
+              <p className="report-lead">JD Suh did not reject the potential of heads-up technology, but he forcefully challenged the premise of bringing “doomscrolling” into VR headsets.</p>
               <p>His background as a research engineer and a glasses wearer shaped a highly practical perspective. While he doesn't use VR daily and experienced severe dizziness trying it a decade ago, he is extremely eager to adopt smart glasses—specifically as a host for a Jarvis-like ambient AI assistant that offers real-time contextual advice.</p>
-              <p>When presented with the concept of making it easier to navigate long-form text/forums in VR headsets to support "doom scrolling," his response was immediate and skeptical: "Sounds dizzy." More fundamentally, he questioned the desirability of the objective itself, asking why a developer would intentionally make a friction-filled, addictive behavior like doom scrolling easier to perform in an immersive headset. This feedback became a vital steering signal for the project's value proposition.</p>
-              <aside className="report-note"><b>Primary interpretation</b><p>The project should not aim to optimize "doom scrolling" or mimic passive feeds. JD Suh's critique confirms that VR text consumption must be framed around active, intentional information synthesis rather than lowering the friction of mindless scrolling.</p></aside>
+              <p>When presented with the concept of making it easier to navigate long-form text/forums in VR headsets to support “doomscrolling,” his response was immediate and skeptical: “Sounds dizzy.” More fundamentally, he questioned the desirability of the objective itself, asking why a developer would intentionally make a friction-filled, addictive behavior like doomscrolling easier to perform in an immersive headset. This feedback became a vital steering signal for the project's value proposition.</p>
+              <aside className="report-note"><b>Primary interpretation</b><p>The project should not aim to optimize “doomscrolling” or mimic passive feeds. JD Suh's critique confirms that VR text consumption must be framed around active, intentional information synthesis rather than lowering the friction of mindless scrolling.</p></aside>
             </section>
 
             <section className="report-chapter" id="jd-method">
@@ -7131,7 +7476,7 @@ function App() {
               <h3>What the interview can support</h3>
               <ul>
                 <li>Direct validation of optical/glasses-wearer friction for heads-up displays.</li>
-                <li>Grounded ethical and functional critique of "easy doom scrolling" in headsets.</li>
+                <li>Grounded ethical and functional critique of “easy doomscrolling” in headsets.</li>
                 <li>Design parameters for future ambient smart-glasses integrations (AI Jarvis scenario).</li>
               </ul>
               <h3>What the interview cannot support</h3>
@@ -7150,7 +7495,7 @@ function App() {
                 <tbody>
                   <tr><td>VR Experience</td><td>Low routine use. Tried once 10 years ago; experienced severe motion sickness and dizziness.</td><td>Any immersive reading design must aggressively protect against visual and motion triggers.</td></tr>
                   <tr><td>Optical Needs</td><td>Wears prescription lenses daily. No smart glasses owned yet.</td><td>Smart glasses must fit prescription lenses without hard ordering friction.</td></tr>
-                  <tr><td>Ambient Motivation</td><td>Strong desire to purchase future smart glasses to host an ambient "personal AI intelligence" (Jarvis model).</td><td>The smart glasses mode of Cosmos must focus on ambient, real-time advice and glanceable summaries, not deep reading.</td></tr>
+                  <tr><td>Ambient Motivation</td><td>Strong desire to purchase future smart glasses to host an ambient “personal AI intelligence” (Jarvis model).</td><td>The smart glasses mode of Cosmos must focus on ambient, real-time advice and glanceable summaries, not deep reading.</td></tr>
                 </tbody>
               </table>
               <blockquote className="report-quote">“I want a personal AI intelligence—like Tony Stark’s Jarvis—to receive ambient, real-time advice throughout the day on my smart glasses.”</blockquote>
@@ -7170,13 +7515,13 @@ function App() {
             <section className="report-chapter" id="jd-reaction">
               <span className="report-number">4</span>
               <h2>Reaction & Critical Feedback: Head-on value challenge</h2>
-              <p>JD Suh provided the most direct challenge of the research cycle. When the interviewer shared their Quest-based journey and the hypothesis that VR headsets are underused because "doom scrolling long-form forums is currently too difficult in headset," JD Suh questioned the desirability of the solution.</p>
+              <p>JD Suh provided the most direct challenge of the research cycle. When the interviewer shared their Quest-based journey and the hypothesis that VR headsets are underused because “doomscrolling long-form forums is currently too difficult in headset," JD Suh questioned the desirability of the solution.</p>
               <div className="focus-context-diagram" style={{ margin: "24px 0" }}>
                 <article style={{ width: "100%", maxWidth: "100%" }}>
                   <span>Core Critique</span>
-                  <b>"Why do you want people to doom scroll easy on your headset?"</b>
+                  <b>“Why do you want people to doom scroll easy on your headset?”</b>
                   <p style={{ marginTop: "12px", color: "var(--pink)", fontWeight: "600" }}>
-                    "Why do you want the experience of doom scrolling easier on VR headsets?"
+                    “Why do you want the experience of doom scrolling easier on VR headsets?”
                   </p>
                   <p style={{ marginTop: "12px" }}>
                     This counter-feedback cuts to the core of the Cosmos value proposition. It forces a clear distinction between <b>mindless, high-friction scrolling (slop)</b> and <b>high-value, structured research and comparison (sensemaking)</b>.
@@ -7184,8 +7529,8 @@ function App() {
                 </article>
               </div>
               <aside className="report-note report-note-yellow">
-                <b>The "Sounds Dizzy" Barrier</b>
-                <p>His immediate reaction to the idea of headset doom scrolling ("Sounds dizzy") highlights that motion sickness and physical fatigue remain absolute roadblocks for casual, non-essential headset tasks.</p>
+                <b>The “Sounds Dizzy” Barrier</b>
+                <p>His immediate reaction to the idea of headset doomscrolling (“Sounds dizzy”) highlights that motion sickness and physical fatigue remain absolute roadblocks for casual, non-essential headset tasks.</p>
               </aside>
             </section>
 
@@ -7197,12 +7542,12 @@ function App() {
               <h3>Strategic Design Directives from JD Suh</h3>
               <div className="implication-grid" style={{ marginTop: "24px" }}>
                 <article>
-                  <b>1. Reject Doom Scrolling</b>
-                  <p>Reposition Cosmos away from "making feed-scrolling easier" and toward structured, purposeful comparison workspaces.</p>
+                  <b>1. Reject Doomscrolling</b>
+                  <p>Reposition Cosmos away from “making feed-scrolling easier” and toward structured, purposeful comparison workspaces.</p>
                 </article>
                 <article>
                   <b>2. Guard Ergonomics</b>
-                  <p>Design specifically for zero-rotation, stationary, and comfortable layout models to prevent the "dizzy" response.</p>
+                  <p>Design specifically for zero-rotation, stationary, and comfortable layout models to prevent the “dizzy” response.</p>
                 </article>
                 <article>
                   <b>3. Smart-Glasses Hook</b>
@@ -7220,15 +7565,349 @@ function App() {
           </article>
         </section>}
 
+        {activeChapter === "design-decision" && <section className="report-section design-decision" id="design-decision">
+          <ChapterLabel number="08">Design decision</ChapterLabel>
+          <article className="report-document">
+            <header className="report-page-intro">
+              <p className="eyebrow">Chapter 08 · before Making</p>
+              <h1>Every card position needs a rule<br /><em>the reader can name.</em></h1>
+              <p>
+                Rules below come from secondary research, interviews, the storyboard, stakeholder gaps, and impact analysis.
+                They fix the product job, placement model, density, reader actions, body limits, and AI trust — and name what
+                is still untested.
+              </p>
+            </header>
+
+            <nav className="report-contents" aria-label="Design decision contents">
+              <p>In this report</p>
+              <a href="#dd-job"><span>0</span>Product job</a>
+              <a href="#dd-compose"><span>1</span>Placement model</a>
+              <a href="#dd-focus"><span>2</span>Focus and density</a>
+              <a href="#dd-verbs"><span>3</span>Reader actions</a>
+              <a href="#dd-body"><span>4</span>Body and session</a>
+              <a href="#dd-trust"><span>5</span>AI and sources</a>
+              <a href="#dd-gaps"><span>6</span>Gaps the wall may close</a>
+              <a href="#dd-mitigate"><span>7</span>Weakness and mitigation</a>
+              <a href="#dd-open"><span>8</span>Unanswered</a>
+              <a href="#dd-next"><span>9</span>Build checklist</a>
+            </nav>
+
+            <section className="report-chapter" id="dd-job">
+              <span className="report-number">0</span>
+              <h2>Product job</h2>
+              <p className="report-lead">
+                <strong>Tagline:</strong> Explore ideas spatially, not doomscrolling vertically.
+              </p>
+              <p>
+                Cosmos reconstructs an offline asynchronous community wall for multi-voice discourse.
+                It is not a live hangout, not a blank canvas, and not infinite scroll moved into a headset.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Decision</th><th>Grounding</th><th>Consequence</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Success is orientation and calm exit — not dwell time</td>
+                      <td>JD Suh: why make doomscroll easier in a headset? Impact H2: never use dwell as north star. Johnny: easy exit back to “real life.”</td>
+                      <td>Metrics: comprehension, find opposing view, leave without FOMO. Kill criterion: no gain vs flat feed after novelty.</td>
+                    </tr>
+                    <tr>
+                      <td>Phone wins pure scroll; Cosmos must not compete on convenience of scroll</td>
+                      <td>Kris: phone is easier than headset warm-up just to doomscroll</td>
+                      <td>Spatial job = multi-source / multi-stance orientation and comparison, not feed parity</td>
+                    </tr>
+                    <tr>
+                      <td>Wall metaphor over feed metaphor</td>
+                      <td>Secondary: offline walls; quiet reading is participation; market gap table</td>
+                      <td>Scanning, density, adjacency, optional contribution; no ranked “what next” as the only path</td>
+                    </tr>
+                    <tr>
+                      <td>Reading before community features</td>
+                      <td>Primary synthesis; Making phase rule; stakeholder empty-wall risk</td>
+                      <td>Native posting, identity, live voice deferred until reading value is shown</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="report-chapter" id="dd-compose">
+              <span className="report-number">1</span>
+              <h2>Placement model</h2>
+              <p className="report-lead">
+                A post in front of the reader must answer <em>why here</em> without a guided tour.
+                Scatter with no named rule is not a layout.
+              </p>
+              <p>
+                Spatial organization of knowledge work (Memex → Xanadu → spatial hypertext → boards) shows arrangement can encode
+                structure — and that systems fail when every edge is hand-authored or when the map is illegible.
+                In interviews, people invent placement rules when the real rules stay hidden (color → topic, and so on).
+              </p>
+
+              <h3>1.1 Three axes</h3>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Axis</th><th>Default meaning</th><th>Evidence / pressure</th><th>Must show</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Region</strong> (left/right/around)</td>
+                      <td>Topic or discourse neighborhood (e.g. local, tech, relationships) — fixed map for a seed wall</td>
+                      <td>Kris inferred color→topic and wanted gather-by-theme; Yves responded well to “related notes clustered”; mentor: regions must be legible</td>
+                      <td>Region labels, boundaries, or legend — not color alone</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Depth</strong> (near/far)</td>
+                      <td>Recency and/or attention priority: newer or higher-priority cards closer</td>
+                      <td>Prototype intent (recent forward); Kris did not discover time layers without instruction</td>
+                      <td>Readable depth cue + short teach-in; optional “by time” rearrange</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Adjacency</strong></td>
+                      <td>Similarity, shared thread, or bridge between clusters</td>
+                      <td>AI similarity layout (Rae→Yves); mentor: “what is it similar to?” must be visible</td>
+                      <td>Visible links, shared tags, cluster halo, or “why neighbors” affordance</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3>1.2 Priority inside a region</h3>
+              <p>
+                Readers will not read everything. Default order inside a region is a <strong>priority stack</strong>:
+              </p>
+              <ol>
+                <li><strong>High</strong> — needs attention for the session task (unread opposing stance, unresolved conflict, followed sources)</li>
+                <li><strong>Medium</strong> — same neighborhood, lower urgency</li>
+                <li><strong>Peripheral</strong> — kept for context; summarized or dimmed until selected</li>
+              </ol>
+              <p>
+                Priority criteria are hypotheses shown in the UI (e.g. “unread + stance conflict”) until a layout pilot
+                checks whether people name the same high-priority cards.
+              </p>
+
+              <h3>1.3 After defaults, what the reader may change</h3>
+              <ul>
+                <li>Rearrange by <strong>time</strong> or by <strong>source</strong> (platform / origin)</li>
+                <li>Reassign a personal region (“local here”) after defaults are clear — not required for first use</li>
+                <li>Pin cards for return (see reader actions)</li>
+              </ul>
+              <aside className="report-note report-note-yellow"><b>Ship bar</b><p>
+                A placement rule that a new user cannot name within about 30 seconds is not done — even if the code runs.
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="dd-focus">
+              <span className="report-number">2</span>
+              <h2>Focus and density</h2>
+              <p className="report-lead">
+                One focus card at a time. Neighbors stay dim and short. Full text only on the focused card.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Decision</th><th>Participant language</th><th>Rule</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Focus isolation</td>
+                      <td>Johnny: “being here now instead of being everywhere”; “where to put my blinders”</td>
+                      <td>Selecting a card enlarges it, dims neighbors, keeps a faint field so context remains</td>
+                    </tr>
+                    <tr>
+                      <td>Text budget</td>
+                      <td>Kris: “too many words”; “show a summary… for the main one you select, show more”</td>
+                      <td>Peripheral cards: short title + one line. Full body only on focus</td>
+                    </tr>
+                    <tr>
+                      <td>Category coding</td>
+                      <td>Kris: colors look similar; colorblind risk</td>
+                      <td>Never color alone — labels, icons, region placement, pattern</td>
+                    </tr>
+                    <tr>
+                      <td>Avoid “Excel sphere”</td>
+                      <td>Yves: notes feel flat until rotated; want organic clustering</td>
+                      <td>Clusters may be slightly irregular, but never so free that rules disappear</td>
+                    </tr>
+                    <tr>
+                      <td>V1 review debt</td>
+                      <td>SIGGRAPH: too many cards; text hard to read</td>
+                      <td>Cap simultaneous full-text cards; enforce comfort distance and type size on device tests</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="report-chapter" id="dd-verbs">
+              <span className="report-number">3</span>
+              <h2>Reader actions</h2>
+              <p>
+                If the reader cannot focus, save, discard, rearrange, open a source, or leave in one step, the wall is incomplete.
+              </p>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Verb</th><th>Behavior</th><th>Where it goes</th><th>Why</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Focus / bring forward</strong></td>
+                      <td>Select by gaze, click, or hand; card becomes the reading surface</td>
+                      <td>Center / near plane</td>
+                      <td>Johnny focus; Kris gaze attempts</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Save / pin for return</strong></td>
+                      <td>Mark a card or path to reopen later</td>
+                      <td>A “saved” shelf or region, not a hidden list only</td>
+                      <td>Place memory; secondary return paths; stakeholder “chat owns home” gap</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Discard / archive</strong></td>
+                      <td>Remove from active wall without deleting the source corpus</td>
+                      <td>Archive / “later if ever” zone, recoverable</td>
+                      <td>Triage; mentor save/discard; anti-dwell</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Rearrange</strong></td>
+                      <td>Re-sort active wall by time or by source; optional topic filter</td>
+                      <td>Same wall, new layout; animate so rule is felt</td>
+                      <td>Mentor multi-source; Kris multi-app monitoring</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Open source</strong></td>
+                      <td>From any AI label or card, open original post trail</td>
+                      <td>Detail panel with provenance</td>
+                      <td>Johnny: “where are all these sources?”</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Leave</strong></td>
+                      <td>Exit is one action; no FOMO countdown</td>
+                      <td>Back to room / desktop chrome</td>
+                      <td>Johnny throw phone down; impact intentional exit</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside className="report-note"><b>Input</b><p>
+                Default browse: gaze + pointer; hand gestures for swipe/select (Kris). Controllers optional — storyboard: hands free for care.
+                Voice optional and never required (Kris prefers typing; Yves awkward speaking to empty space).
+              </p></aside>
+            </section>
+
+            <section className="report-chapter" id="dd-body">
+              <span className="report-number">4</span>
+              <h2>Body and session</h2>
+              <ul>
+                <li><strong>Session length:</strong> ~20–30 minutes focused review (Yves); also support 5–10 minute pockets (JD).</li>
+                <li><strong>Stationary reading:</strong> no continuous locomotion while reading; seated or lying is valid (Yves, Kris).</li>
+                <li><strong>Gaze-first:</strong> basic browse without controllers so hands can hold a baby or stay free (storyboard Jeenie).</li>
+                <li><strong>Care stays in the room:</strong> passthrough / transparent wall; scenarios use asleep baby or short free attention — not “ignore the child for cyberspace.”</li>
+                <li><strong>Cross-device:</strong> /web is first-class (impact H1). Placement rules must map to 2D regions and lists, not collapse into a pure feed.</li>
+              </ul>
+            </section>
+
+            <section className="report-chapter" id="dd-trust">
+              <span className="report-number">5</span>
+              <h2>AI and sources</h2>
+              <p>
+                AI may propose clusters, labels, bridges, and layout. It may not replace posts or hide disagreement.
+              </p>
+              <ul>
+                <li>Every generated label links to the posts that produced it (Johnny provenance; secondary AI inspectability).</li>
+                <li>Users can dismiss or correct a cluster; layout regenerates without trapping them.</li>
+                <li>Seeded or generated content is labeled honestly when not live community data.</li>
+                <li>Generator → Cartographer → Architect pipeline (Making) serves the rules above — cache first so the wall appears before the pipeline finishes.</li>
+              </ul>
+            </section>
+
+            <section className="report-chapter" id="dd-gaps">
+              <span className="report-number">6</span>
+              <h2>Gaps the wall may close</h2>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Field today</th><th>Wall response</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Rank answers “what next?”</td><td>Regions + priority answer “where is this debate?”</td></tr>
+                    <tr><td>Short-form owns leisure</td><td>Stoppable scan; one-step leave</td></tr>
+                    <tr><td>Chat owns “where we live”</td><td>Wall for thread-shaped work; save paths that return</td></tr>
+                    <tr><td>Headset = hangout</td><td>Headset for orientation tasks; voice optional and late</td></tr>
+                    <tr><td>Vaults hold private notes</td><td>Shared multi-voice wall, not private notes in 3D</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="report-chapter" id="dd-mitigate">
+              <span className="report-number">7</span>
+              <h2>Weakness and mitigation</h2>
+              <div className="report-table-scroll">
+                <table className="report-table report-table-wide">
+                  <thead>
+                    <tr><th>Weakness</th><th>Mitigation in design</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Hardware cost and comfort</td><td>Cross-device /web first; short sessions; stationary read</td></tr>
+                    <tr><td>Empty wall without import</td><td>Controlled seed corpora; no “living community” claim until supply exists</td></tr>
+                    <tr><td>Chat and feed still own daily habit</td><td>Win on orientation tasks only; do not chase scroll habit</td></tr>
+                    <tr><td>AI layout feels arbitrary</td><td>Legible rules + source trail + dismiss/correct</td></tr>
+                    <tr><td>Doomscroll in a sphere (H2)</td><td>No dwell north star; priority triage; intentional leave</td></tr>
+                    <tr><td>Steward / harassment load at scale</td><td>Tools before multi-user contribution (impact)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="report-chapter" id="dd-open">
+              <span className="report-number">8</span>
+              <h2>Unanswered</h2>
+              <ul>
+                <li>Do strangers name the same regions and high-priority cards without a tour?</li>
+                <li>Which depth encoding works better: recency, unread, or stance conflict?</li>
+                <li>Does place memory beat a flat feed after a delay on the same seed?</li>
+                <li>How much of the wall map survives on desktop without depth?</li>
+                <li>What default region set fits each corpus (local / tech / relationships are examples only)?</li>
+              </ul>
+              <p>
+                Layout pilots should score against words participants already used: “a bit chaotic,” “where I should be now,”
+                “too many words,” “where are the sources?”
+              </p>
+            </section>
+
+            <section className="report-chapter" id="dd-next">
+              <span className="report-number">9</span>
+              <h2>Build checklist for Making</h2>
+              <ol>
+                <li>Ship <strong>legible regions + priority</strong> on the live wall (legend or labels).</li>
+                <li>Ship <strong>focus isolation</strong> and peripheral summary density.</li>
+                <li>Ship <strong>save / discard / rearrange (time, source)</strong> as first-class controls.</li>
+                <li>Ship <strong>source trail</strong> from every AI label.</li>
+                <li>Keep community and /VR walkable surface behind reading proof.</li>
+              </ol>
+              <div className="report-next-links">
+                <a href="/cosmos/impact-analysis/">← Impact analysis</a>
+                <a href="/cosmos/primary/">Primary research</a>
+                <a href="/cosmos/secondary/spatial-organization/">Spatial organization of knowledge</a>
+                <a href="/cosmos/making/">Making Cosmos →</a>
+              </div>
+            </section>
+          </article>
+        </section>}
+
         {activeChapter === "making" && <section className="report-section making making-page" id="making">
-          <ChapterLabel number="08">Making Cosmos</ChapterLabel>
+          <ChapterLabel number="09">Making Cosmos</ChapterLabel>
           <div className="section-heading">
-            <h2>Ship the wall.<br /><em>Prove reading. Earn community.</em></h2>
+            <h2>What is built, what waits,<br /><em>and the phase order.</em></h2>
             <p>
-              Making is no longer a blank research wish-list. The product PRDs in{" "}
-              <code>2606-Cosmos-Vr/prd</code> describe a production dual-surface system: a shipped desktop
-              planetarium (<code>/web</code>) and a locked walkable IWSDK surface (<code>/VR</code>). This chapter
-              is the build truth — principles, modules, pipeline, and the phase order that keeps research honest.
+              Build status for the dual-surface system: shipped desktop planetarium (<code>/web</code>) and locked walkable
+              IWSDK surface (<code>/VR</code>), from PRDs in <code>2606-Cosmos-Vr/prd</code>. Placement and focus rules
+              that the build must implement are in <a href="/cosmos/design-decision/">08 Design decision</a>.
             </p>
           </div>
 

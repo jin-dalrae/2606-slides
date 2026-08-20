@@ -7,10 +7,11 @@ export const cosmosPages = [
   ["storyboard", "05", "Storyboard", "/cosmos/storyboard/"],
   ["stakeholder-map", "06", "Stakeholder analysis", "/cosmos/stakeholder-map/"],
   ["impact-analysis", "07", "Impact analysis", "/cosmos/impact-analysis/"],
-  ["making", "08", "Making Cosmos", "/cosmos/making/"],
+  ["design-decision", "08", "Design decision", "/cosmos/design-decision/"],
+  ["making", "09", "Making Cosmos", "/cosmos/making/"],
 ];
 
-/** Not a chapter index item — linked from the left-rail footer only. */
+/** Not in the chapter rail — linked from Making next-links only. */
 export const designSystemLink = {
   id: "design",
   label: "Design system",
@@ -23,6 +24,8 @@ export const secondaryReports = [
   ["memory-pods", "2.2", "MemoryPods (arXiv)", "/cosmos/secondary/memory-pods/"],
   ["socially-late", "2.3", "Asynchronous social VR", "/cosmos/secondary/socially-late/"],
   ["vr-reading", "2.4", "Customizing VR reading", "/cosmos/secondary/vr-reading/"],
+  ["spatial-organization", "2.5", "Spatial organization of knowledge", "/cosmos/secondary/spatial-organization/"],
+  ["market-landscape", "2.6", "Vertical community market", "/cosmos/secondary/market-landscape/"],
 ];
 
 export const primaryReports = [
@@ -65,17 +68,29 @@ export function CosmosHeader({ meta = "Research report · 2026" }) {
   );
 }
 
+function readCosmosRailOpen() {
+  try {
+    return window.localStorage.getItem("cosmos-rail") !== "closed";
+  } catch {
+    return true;
+  }
+}
+
+function applyCosmosRailDataset(isOpen) {
+  document.documentElement.dataset.cosmosRail = isOpen ? "open" : "closed";
+}
+
 export function CosmosSidebar({ active, subActive }) {
+  // Apply dataset in the state initializer so main margin matches rail on first paint
+  // (useEffect would flash margin-left 260px → 0 when the rail is closed).
   const [open, setOpen] = React.useState(() => {
-    try {
-      return window.localStorage.getItem("cosmos-rail") !== "closed";
-    } catch {
-      return true;
-    }
+    const isOpen = readCosmosRailOpen();
+    applyCosmosRailDataset(isOpen);
+    return isOpen;
   });
 
   React.useEffect(() => {
-    document.documentElement.dataset.cosmosRail = open ? "open" : "closed";
+    applyCosmosRailDataset(open);
     try {
       window.localStorage.setItem("cosmos-rail", open ? "open" : "closed");
     } catch {
@@ -102,7 +117,7 @@ export function CosmosSidebar({ active, subActive }) {
           <h2>Cosmos</h2>
           <span>Spatializing asynchronous community</span>
         </div>
-        <nav>
+        <nav className="chapter-rail__nav">
           <p>Index</p>
           {cosmosPages.map(([id, number, label, path]) => (
             <React.Fragment key={id}>
@@ -119,15 +134,6 @@ export function CosmosSidebar({ active, subActive }) {
             </React.Fragment>
           ))}
         </nav>
-        <div className="rail-footer">
-          <a
-            className={`rail-footer__design ${active === "design" ? "active" : ""}`}
-            href={designSystemLink.path}
-          >
-            {designSystemLink.label}
-          </a>
-          <div className="rail-status"><i /> Cosmos archive <span>2026</span></div>
-        </div>
       </aside>
       {!open && (
         <button
