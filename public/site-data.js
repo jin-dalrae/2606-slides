@@ -8,7 +8,7 @@
   const projects = [
     {
       name: "Cosmos",
-      tagline: "Explore ideas spatially, not doomscrolling vertically"
+      tagline: "Explore the social world in 3D"
     },
     {
       name: "Cadinalpay",
@@ -52,7 +52,7 @@
     {
       slug: "cosmos-00",
       title: "COSMOS",
-      docTitle: "Explore ideas spatially, not doomscrolling vertically",
+      docTitle: "Explore the social world in 3D",
       sidebarTitle: "Full story",
       project: "Cosmos",
       date: "July 30, 2026",
