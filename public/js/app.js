@@ -1288,9 +1288,48 @@ async function renderHome() {
   renderSpeakerNotes();
   updateEditButtonState();
 
+  const latestItem = presentations[0];
+  const latestIndex = latestItem ? presentations.indexOf(latestItem) : -1;
+
   slide.classList.add("slide--home");
   slide.innerHTML = `
-    <div class="home-deck-grid" id="homeDeckGrid"></div>
+    <div class="home-landing">
+      <section class="home-hero" aria-labelledby="homeHeroTitle">
+        <p class="home-eyebrow">Rae Jin · Interaction design archive</p>
+        <h1 id="homeHeroTitle">Design work from research to experience.</h1>
+        <p class="home-hero__summary">A living collection of presentations, prototypes, and project documentation — organized by the questions each project is trying to answer.</p>
+        <div class="home-hero__actions">
+          ${latestIndex >= 0 ? `<button class="text-button home-primary-action" type="button" data-presentation-index="${latestIndex}">Open latest story</button>` : ""}
+          <a class="text-button home-secondary-action" href="docs/">Browse project docs</a>
+        </div>
+      </section>
+
+      ${latestItem ? `
+        <section class="home-featured" aria-labelledby="homeFeaturedTitle">
+          <div class="home-section-kicker">Featured deck</div>
+          <button class="home-featured-card" type="button" data-presentation-index="${latestIndex}">
+            <span class="home-featured-card__copy">
+              <span class="home-featured-card__project">${escapeHtml(latestItem.project || "Latest")}</span>
+              <strong id="homeFeaturedTitle">${escapeHtml(latestItem.docTitle || latestItem.sidebarTitle || latestItem.title)}</strong>
+              <span class="home-featured-card__tagline">${escapeHtml(latestItem.tagline || "")}</span>
+              <span class="home-featured-card__meta">${escapeHtml(latestItem.date)} · Open presentation <span aria-hidden="true">→</span></span>
+            </span>
+            <span class="home-featured-card__mark" aria-hidden="true">01</span>
+          </button>
+        </section>
+      ` : ""}
+
+      <section class="home-library" aria-labelledby="homeLibraryTitle">
+        <div class="home-library__header">
+          <div>
+            <p class="home-eyebrow">Library</p>
+            <h2 id="homeLibraryTitle">Browse the work</h2>
+          </div>
+          <span class="home-library__count">${presentations.length} deck${presentations.length === 1 ? "" : "s"}</span>
+        </div>
+        <div class="home-deck-grid" id="homeDeckGrid"></div>
+      </section>
+    </div>
   `;
 
   renderPresentationList();
@@ -1310,8 +1349,11 @@ async function renderHome() {
       return `
         <section class="home-project-section">
           <div class="home-project-section__header">
-            <h3>${escapeHtml(section)}</h3>
-            ${tagline ? `<p>${escapeHtml(tagline)}</p>` : ""}
+            <div>
+              <h3>${escapeHtml(section)}</h3>
+              ${tagline ? `<p>${escapeHtml(tagline)}</p>` : ""}
+            </div>
+            <span class="home-project-section__count">${items.length} deck${items.length === 1 ? "" : "s"}</span>
           </div>
           <div class="home-project-section__cards">
             ${items
@@ -1332,7 +1374,7 @@ async function renderHome() {
     })
     .join("");
 
-  deckGrid.querySelectorAll("[data-presentation-index]").forEach((card) => {
+  slide.querySelectorAll("[data-presentation-index]").forEach((card) => {
     card.addEventListener("click", () => goToPresentation(Number(card.dataset.presentationIndex)));
   });
 }
